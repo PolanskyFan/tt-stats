@@ -68,22 +68,6 @@ you never need to touch `index.html` or `app.js` again.
 If a change doesn't show up, it's almost always the browser holding an old copy
 of `data.json`. A hard refresh (Ctrl-Shift-R, or Cmd-Shift-R on a Mac) clears it.
 
-### If a tab comes up blank
-
-The page tells you why, in a banner under the tabs. The usual causes:
-
-| Banner | Fix |
-|---|---|
-| *data.json returned 404* | The file isn't beside `index.html`, or the name isn't lower-case `data.json`. |
-| *These files are from different versions* | `index.html`, `desk.html` and `app.js` must be uploaded as a set. Upload all three, then hard-refresh. |
-| *This page is older than app.js* | Same cause — re-upload the HTML files. |
-| *Opened straight from your hard drive* | Expected over `file://`. Use **Load a data file** in the editor. |
-| *data.json isn't valid JSON* | Re-save from the editor and upload again. |
-
-No banner and still blank means the data really is empty for that tab — with no
-matches loaded, Matches, Players, Teams and Titles are all legitimately empty
-while Rankings still shows.
-
 ---
 
 ## What gets worked out for you
