@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tennis Tipping — 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --court:#0B1620; --panel:#12222E; --panel-2:#18303F;
+  --line:#E8EFEA; --ball:#DDF247; --slate:#7E98A6;
+  --rule:rgba(232,239,234,.10); --rule-strong:rgba(232,239,234,.22);
+  --warn:#F2A93B; --bad:#E2564B;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--court);color:var(--line);font-family:"IBM Plex Sans",system-ui,sans-serif;
+  font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1580px;margin:0 auto;padding:28px 22px 90px}
+
+/* masthead */
+.masthead{display:flex;flex-wrap:wrap;gap:22px;align-items:flex-end;justify-content:space-between;
+  padding-bottom:16px;border-bottom:2px solid var(--rule-strong)}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--slate);margin:0 0 5px}
+h1{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:clamp(34px,5.2vw,54px);
+  line-height:.92;text-transform:uppercase;margin:0}
+h1 em{font-style:normal;color:var(--ball)}
+.scoreboard{display:flex;border:1px solid var(--rule-strong);background:var(--panel)}
+.sb{padding:9px 16px;min-width:82px;border-right:1px solid var(--rule)}
+.sb:last-child{border-right:0}
+.sb .n{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:27px;line-height:1;
+  display:block;font-variant-numeric:tabular-nums}
+.sb .k{font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--slate);display:block;margin-top:3px}
+.sb.live .n{color:var(--ball)}
+.sb.flag .n{color:var(--warn)}
+
+/* nav */
+nav{display:flex;flex-wrap:wrap;gap:2px;margin:0 0 24px;border-bottom:1px solid var(--rule)}
+nav button{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;
+  text-transform:uppercase;background:transparent;border:0;border-bottom:2px solid transparent;
+  color:var(--slate);padding:12px 15px;cursor:pointer;transition:color .12s,border-color .12s}
+nav button:hover{color:var(--line)}
+nav button[aria-selected=true]{color:var(--ball);border-bottom-color:var(--ball)}
+nav .pill{display:inline-block;margin-left:6px;background:var(--warn);color:#0B1620;
+  border-radius:9px;padding:0 6px;font-size:9.5px;font-weight:600;letter-spacing:0}
+nav .pill:empty{display:none}
+
+.view{display:none}
+.view.on{display:block}
+.modeflag{margin-left:auto;align-self:center;font-family:"IBM Plex Mono",monospace;font-size:9.5px;
+  letter-spacing:.13em;text-transform:uppercase;color:var(--slate);padding:0 4px}
+.modeflag a{color:var(--ball);text-decoration:none;border-bottom:1px solid rgba(221,240,75,.35)}
+body[data-mode="view"] .editcol{display:none !important}
+.unsaved{color:var(--warn)}
+.unsaved::before{content:"\25CF";margin-right:5px;font-size:9px;vertical-align:middle}
+
+/* panels */
+.panel{background:var(--panel);border:1px solid var(--rule);padding:19px}
+.panel h2,.blockhead{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--slate);font-weight:500;margin:0 0 11px}
+.deck{display:grid;grid-template-columns:1.1fr .9fr;gap:20px;align-items:start}
+@media(max-width:980px){.deck{grid-template-columns:1fr}}
+.lede{color:var(--slate);font-size:13.5px;margin:0 0 14px;max-width:74ch}
+
+textarea{width:100%;height:250px;resize:vertical;background:var(--court);color:var(--line);
+  border:1px solid var(--rule-strong);padding:11px;font-family:"IBM Plex Mono",monospace;
+  font-size:12.5px;line-height:1.6}
+textarea:focus,input:focus,select:focus,button:focus-visible{outline:2px solid var(--ball);outline-offset:1px}
+textarea::placeholder{color:#4A6472}
+.field{margin-bottom:13px}
+label{display:block;font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--slate);margin-bottom:5px}
+input[type=text],select{width:100%;background:var(--court);color:var(--line);
+  border:1px solid var(--rule-strong);padding:8px 9px;font-family:"IBM Plex Sans",sans-serif;font-size:14px}
+.check{display:flex;gap:8px;align-items:flex-start;margin-bottom:9px;cursor:pointer}
+.check input{margin:3px 0 0;accent-color:var(--ball);flex-shrink:0}
+.check span{font-size:12.5px;color:var(--slate)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+
+button.btn{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.1em;
+  text-transform:uppercase;font-weight:500;cursor:pointer;border:1px solid var(--rule-strong);
+  background:transparent;color:var(--line);padding:9px 15px;transition:.12s}
+button.btn:hover{border-color:var(--ball);color:var(--ball)}
+button.btn.primary{background:var(--ball);color:#0B1620;border-color:var(--ball);font-weight:600}
+button.btn.primary:hover{background:#EAFF63}
+button.btn.sm{padding:5px 9px;font-size:10px}
+.btnrow{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}
+
+.msg{margin-top:11px;font-size:13px;padding:9px 11px;border-left:3px solid var(--ball);
+  background:rgba(221,240,75,.07)}
+.msg.warn{border-color:var(--warn);background:rgba(242,169,59,.08);color:#F6D9A8}
+.msg.err{border-color:var(--bad);background:rgba(226,86,75,.09);color:#F5B8B2}
+.msg:empty{display:none}
+
+/* controls */
+.controls{display:flex;flex-wrap:wrap;gap:11px;align-items:flex-end;margin:0 0 0;
+  padding-bottom:14px;border-bottom:2px solid var(--rule-strong)}
+.controls .field{margin:0}
+.controls .grow{flex:1;min-width:170px}
+.controls .sm{width:124px}
+.controls .xs{width:96px}
+
+/* tables */
+.tablescroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+thead th{position:sticky;top:0;z-index:2;background:var(--court);font-family:"IBM Plex Mono",monospace;
+  font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--slate);font-weight:500;
+  text-align:left;padding:11px 9px;white-space:nowrap;cursor:pointer;user-select:none;
+  border-bottom:1px solid var(--rule-strong)}
+thead th:hover{color:var(--ball)}
+thead th .arr{opacity:0;margin-left:3px;color:var(--ball)}
+thead th.sorted .arr{opacity:1}
+thead th.nosort{cursor:default}
+thead th.nosort:hover{color:var(--slate)}
+tbody td{padding:8px 9px;border-bottom:1px solid var(--rule);white-space:nowrap}
+tbody tr:hover{background:var(--panel)}
+.win{font-weight:600}
+.win::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;
+  background:var(--ball);margin-right:7px;vertical-align:middle}
+.lose{color:var(--slate)}
+.mono,.seed,.ctry,.num{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+.seed,.ctry{font-size:11px;color:var(--slate)}
+.num{text-align:right}
+.rnd{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ball)}
+.dim{color:var(--slate)}
+.tied td{background:rgba(242,169,59,.05)}
+.flip{border:0;background:transparent;color:var(--slate);padding:1px 5px;font-size:14px;cursor:pointer}
+.flip:hover{color:var(--ball)}
+.empty{padding:54px 20px;text-align:center;color:var(--slate)}
+.empty strong{display:block;font-family:"Barlow Condensed",sans-serif;font-size:24px;
+  text-transform:uppercase;color:var(--line);margin-bottom:5px;font-weight:600}
+
+/* win-loss bar: the one flourish */
+.wl{display:flex;align-items:center;gap:7px}
+.wlbar{width:74px;height:5px;background:rgba(232,239,234,.13);position:relative;flex-shrink:0}
+.wlbar i{position:absolute;left:0;top:0;bottom:0;background:var(--ball)}
+.wlpct{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--slate);min-width:34px}
+
+/* review / issues */
+.review{border:1px solid var(--warn);background:rgba(242,169,59,.06);padding:17px 19px;margin-bottom:22px}
+.review .blockhead{color:var(--warn)}
+.rq{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:10px 0;
+  border-top:1px solid rgba(242,169,59,.2)}
+.rq:first-of-type{border-top:0}
+.tag{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.1em;color:var(--warn);
+  border:1px solid rgba(242,169,59,.4);padding:2px 6px;white-space:nowrap}
+.ctx{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--slate);flex:1;min-width:210px}
+.ok{padding:34px 18px;text-align:center;color:var(--slate);border:1px solid var(--rule);background:var(--panel)}
+.ok b{color:var(--ball);font-family:"Barlow Condensed",sans-serif;font-size:20px;
+  text-transform:uppercase;display:block;margin-bottom:4px}
+
+.subnav{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 14px}
+.subnav button{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.1em;
+  text-transform:uppercase;background:transparent;border:1px solid var(--rule);color:var(--slate);
+  padding:6px 11px;cursor:pointer}
+.subnav button[aria-pressed=true]{border-color:var(--ball);color:var(--ball)}
+.hint{font-size:12px;color:var(--slate);margin:10px 0 0}
+h3.sec{font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:22px;text-transform:uppercase;
+  margin:26px 0 10px;letter-spacing:.01em}
+@media(prefers-reduced-motion:no-preference){
+  tbody tr{animation:in .16s ease both}
+  @keyframes in{from{opacity:0}to{opacity:1}}
+}
+</style>
+</head>
+<body data-mode="view">
+<div class="wrap">
+
+  <header class="masthead">
+    <div>
+      <p class="eyebrow">2026 season · results &amp; records</p>
+      <h1>Tennis <em>Tipping</em></h1>
+    </div>
+    <div class="scoreboard">
+      <div class="sb live"><span class="n" id="sbMatches">0</span><span class="k">Matches</span></div>
+      <div class="sb"><span class="n" id="sbPlayers">0</span><span class="k">Players</span></div>
+      <div class="sb"><span class="n" id="sbEvents">0</span><span class="k">Events</span></div>
+      <div class="sb"><span class="n" id="sbWeeks">0</span><span class="k">Rank wks</span></div>
+    </div>
+  </header>
+
+  <nav id="nav">
+    <button data-view="matches" aria-selected="true">Matches</button>
+    <button data-view="players" aria-selected="false">Players</button>
+    <button data-view="teams" aria-selected="false">Teams</button>
+    <button data-view="titles" aria-selected="false">Titles</button>
+    <button data-view="rankings" aria-selected="false">Rankings</button>
+  </nav>
+
+  
+
+  <!-- MATCHES ---------------------------------------------------------- -->
+  <section class="view on" id="v-matches">
+    <div class="controls">
+      <div class="field grow"><label for="mQ">Search</label>
+        <input type="text" id="mQ" placeholder="Player, country, event…"></div>
+      <div class="field sm"><label for="mDisc">Discipline</label>
+        <select id="mDisc"><option value="">All</option></select></div>
+      <div class="field sm"><label for="mStage">Stage</label>
+        <select id="mStage"><option value="">All</option></select></div>
+      <div class="field sm"><label for="mEvent">Event</label>
+        <select id="mEvent"><option value="">All</option></select></div>
+      <div class="field xs"><label for="mRound">Round</label>
+        <select id="mRound"><option value="">All</option></select></div>
+      <div class="field"><label>&nbsp;</label>
+        <button class="btn" id="btnMcsv">Download CSV</button></div>
+    </div>
+    <div class="tablescroll"><table><thead><tr id="mHead"></tr></thead><tbody id="mBody"></tbody></table></div>
+    <div class="empty" id="mEmpty"><strong>No matches yet</strong>Add a draw on the first tab.</div>
+  </section>
+
+  <!-- PLAYERS ---------------------------------------------------------- -->
+  <section class="view" id="v-players">
+    <p class="lede">One table in place of eight tabs — main-draw record, titles, record against the
+      top 10, qualifying record and main-draw record as a qualifier or lucky loser. Click any heading to sort.</p>
+    <div class="controls">
+      <div class="field grow"><label for="pQ">Search</label>
+        <input type="text" id="pQ" placeholder="Player or country…"></div>
+      <div class="field sm"><label for="pCtry">Country</label>
+        <select id="pCtry"><option value="">All</option></select></div>
+      <div class="field"><label>&nbsp;</label>
+        <button class="btn" id="btnPcsv">Download CSV</button></div>
+    </div>
+    <div class="tablescroll"><table><thead><tr id="pHead"></tr></thead><tbody id="pBody"></tbody></table></div>
+    <div class="empty" id="pEmpty"><strong>No players yet</strong>Add a draw on the first tab.</div>
+  </section>
+
+  <!-- TEAMS ------------------------------------------------------------ -->
+  <section class="view" id="v-teams">
+    <p class="lede">Teams are identified by their pair of players, so partner order never splits a
+      record in two. Change a partner and it's correctly a different team.</p>
+    <div class="controls">
+      <div class="field grow"><label for="tQ">Search</label>
+        <input type="text" id="tQ" placeholder="Team or player…"></div>
+      <div class="field"><label>&nbsp;</label>
+        <button class="btn" id="btnTcsv">Download CSV</button></div>
+    </div>
+    <div class="tablescroll"><table><thead><tr id="tHead"></tr></thead><tbody id="tBody"></tbody></table></div>
+    <div class="empty" id="tEmpty"><strong>No teams yet</strong>Add a doubles draw on the first tab.</div>
+  </section>
+
+  <!-- TITLES ----------------------------------------------------------- -->
+  <section class="view" id="v-titles">
+    <p class="lede">Winner, finalist and both semi-finalists for every event, singles and doubles.</p>
+    <div class="controls">
+      <div class="field grow"><label for="ttQ">Search</label>
+        <input type="text" id="ttQ" placeholder="Event or player…"></div>
+      <div class="field"><label>&nbsp;</label>
+        <button class="btn" id="btnTtcsv">Download CSV</button></div>
+    </div>
+    <div class="tablescroll"><table><thead><tr id="ttHead"></tr></thead><tbody id="ttBody"></tbody></table></div>
+    <div class="empty" id="ttEmpty"><strong>No finished events yet</strong>Titles appear once an event has a final.</div>
+  </section>
+
+  <!-- RANKINGS --------------------------------------------------------- -->
+  <section class="view" id="v-rankings">
+    <div class="subnav" id="rankSub">
+      <button data-sub="list" aria-pressed="true">Week list</button>
+      <button data-sub="hist" aria-pressed="false">One player's history</button>
+    </div>
+    <div id="rankList">
+      <div class="controls">
+        <div class="field sm"><label for="rWeek">Week</label><select id="rWeek"></select></div>
+        <div class="field grow"><label for="rQ">Search</label>
+          <input type="text" id="rQ" placeholder="Player or country…"></div>
+        <div class="field"><label>&nbsp;</label>
+          <button class="btn" id="btnRcsv">Download CSV</button></div>
+      </div>
+      <div class="tablescroll"><table><thead><tr id="rHead"></tr></thead><tbody id="rBody"></tbody></table></div>
+      <div class="empty" id="rEmpty"><strong>No rankings yet</strong>Paste a ranking list on the first tab.</div>
+    </div>
+    <div id="rankHist" style="display:none">
+      <div class="controls">
+        <div class="field grow"><label for="hPlayer">Player</label>
+          <input type="text" id="hPlayer" placeholder="Start typing a name…" list="playerList">
+          <datalist id="playerList"></datalist></div>
+      </div>
+      <div class="tablescroll"><table><thead><tr id="hHead"></tr></thead><tbody id="hBody"></tbody></table></div>
+      <div class="empty" id="hEmpty"><strong>Pick a player</strong>Their ranking week by week appears here.</div>
+    </div>
+  </section>
+
+  
+
+</div>
+<script src="app.js"></script>
+</body>
+</html>
