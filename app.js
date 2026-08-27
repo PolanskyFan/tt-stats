@@ -521,7 +521,11 @@ const MATCH_COLS = [
 ];
 
 const PLAYER_COLS = [
-  {k:"player",h:"Player"}, {k:"country",h:"Country",cls:"ctry"},
+  {k:"player",h:"Player",render:r=>{
+      const b=document.createElement("button"); b.className="linkish"; b.textContent=r.player;
+      b.addEventListener("click",()=>showRanking("Singles", r.player)); return b;
+    }, csv:r=>r.player},
+  {k:"country",h:"Country",cls:"ctry"},
   {k:"w",h:"W",cls:"num",desc:true}, {k:"l",h:"L",cls:"num"},
   {k:"pct",h:"Win %",render:r=>wlBar(r.w,r.l),
     csv:r=>(r.w+r.l)?Math.round(r.w/(r.w+r.l)*100)+"%":"",desc:true},
@@ -556,31 +560,602 @@ const TITLE_COLS = [
   {k:"dSF1",h:"Doubles SF",cls:"dim"}, {k:"dSF2",h:"Doubles SF",cls:"dim"}
 ];
 
+
+/* ==================================================================
+   RANKINGS
+   Two parallel tours, singles and doubles, sharing one implementation.
+   A week is identified by tour + season + name, so "January 5th" in one
+   year never collides with "January 5th" in another.
+   ================================================================== */
+
+const MONTHS = {january:0,february:1,march:2,april:3,may:4,june:5,july:6,
+  august:7,september:8,october:9,november:10,december:11};
+
+/* Week names read like "August 3rd". Turning them into real dates keeps the
+   list, the charts and "most recent" in true chronological order instead of
+   whatever order they happened to be pasted in. */
+function weekDate(name, season){
+  const m = String(name||"").match(/([A-Za-z]+)\s+(\d{1,2})\s*(st|nd|rd|th)?/i);
+  if(!m) return null;
+  const mo = MONTHS[m[1].toLowerCase()];
+  if(mo === undefined) return null;
+  const yr = parseInt(season,10);
+  return new Date(isNaN(yr)?2000:yr, mo, parseInt(m[2],10));
+}
+
+const tourWeeks   = tour => WEEKS.filter(w => (w.tour||"Singles") === tour);
+const weekLabel   = w => w ? w.name + (w.season ? ` ${w.season}` : "") : "";
+const weekId      = w => `${w.tour||"Singles"}|${w.season||""}|${w.name}`;
+const tourSeasons = tour => [...new Set(tourWeeks(tour).map(w=>w.season).filter(Boolean))]
+                              .sort((a,b)=>b.localeCompare(a));   // newest first
+
+function sortWeeks(){
+  WEEKS.forEach((w,i)=>{ w._i = i; if(w.date===undefined) w.date = weekDate(w.name, w.season); });
+  WEEKS.sort((a,b)=>{
+    if(a.date && b.date) return a.date - b.date;
+    if(a.date) return -1;
+    if(b.date) return 1;
+    return a._i - b._i;
+  });
+}
+
+/* One player's whole ranking record on a tour, oldest first. */
+function playerHistory(tour, name){
+  const k = keyOf(name), out = [];
+  let prev = null;
+  for(const w of tourWeeks(tour)){
+    const hit = (w.list||[]).find(r => keyOf(r.name) === k);
+    if(!hit){ prev = null; continue; }
+    out.push({week:w.name, season:w.season, date:w.date, rank:hit.rank,
+      points:hit.points, move: prev===null ? null : prev-hit.rank});
+    prev = hit.rank;
+  }
+  return out;
+}
+
+function historyStats(hist, season){
+  if(!hist.length) return null;
+  const seasons = [...new Set(hist.map(h=>h.season).filter(Boolean))].sort((a,b)=>b.localeCompare(a));
+  const current = hist[hist.length-1];
+  const sel = season || current.season || seasons[0] || "";
+  const inSeason = hist.filter(h => h.season === sel);
+  const best  = a => a.reduce((m,h)=> h.rank < m.rank ? h : m, a[0]);
+  const worst = a => a.reduce((m,h)=> h.rank > m.rank ? h : m, a[0]);
+  return {
+    current,
+    careerHigh: best(hist),
+    seasonHigh: inSeason.length ? best(inSeason)  : null,
+    seasonLow:  inSeason.length ? worst(inSeason) : null,
+    weeks: hist.length,
+    atNo1:  hist.filter(h=>h.rank===1).length,
+    inTop10: hist.filter(h=>h.rank<=10).length,
+    seasonWeeks: inSeason.length,
+    season: sel, seasons
+  };
+}
+
+/* The final week of each season, which is what "year-end" means here. */
+function yearEndWeeks(tour){
+  const by = new Map();
+  for(const w of tourWeeks(tour)) if(w.season) by.set(w.season, w);   // sorted, so last wins
+  return [...by.entries()].sort((a,b)=>b[0].localeCompare(a[0])).map(e=>e[1]);
+}
+
+/* ------------------------------------------------------------------
+   CHARTS
+   One drawing routine for both metrics. Rank runs downward so number 1
+   sits at the top; points run upward the usual way.
+   ------------------------------------------------------------------ */
+const SVGNS = "http://www.w3.org/2000/svg";
+const SERIES_COLOURS = ["var(--ball)", "var(--ball2)"];
+
+function lineChart(series, metric){
+  const W = 900, H = 270, padL = 54, padR = 18, padT = 18, padB = 42;
+  const svg = document.createElementNS(SVGNS,"svg");
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.setAttribute("class","chart");
+  svg.setAttribute("role","img");
+  const mk = (tag, attrs, cls) => {
+    const e = document.createElementNS(SVGNS, tag);
+    for(const k in attrs) e.setAttribute(k, attrs[k]);
+    if(cls) e.setAttribute("class", cls);
+    return e;
+  };
+
+  const live = series.filter(s => s.data.length);
+  const total = live.reduce((n,s)=>n+s.data.length, 0);
+  if(!total || live.every(s=>s.data.length < 2)){
+    const t = mk("text",{x:W/2,y:H/2,"text-anchor":"middle"},"cLabel");
+    t.textContent = total ? "Only one week recorded so far" : "Nothing to plot yet";
+    svg.appendChild(t); return svg;
+  }
+
+  const isRank = metric === "rank";
+  const vals = live.flatMap(s=>s.data.map(d=>d[metric]));
+  let lo = Math.min(...vals), hi = Math.max(...vals);
+  if(lo === hi){ lo = isRank ? Math.max(1,lo-1) : Math.max(0,lo-1); hi = hi+1; }
+  const pad = Math.max(1, Math.round((hi-lo)*0.12));
+  lo = isRank ? Math.max(1, lo-pad) : Math.max(0, lo-pad);
+  hi = hi + pad;
+
+  // a common time axis across every series
+  const stamps = [...new Set(live.flatMap(s=>s.data.map(d=>d.date? d.date.getTime() : null)))]
+                   .filter(v=>v!==null).sort((a,b)=>a-b);
+  const useDates = stamps.length > 1;
+  const maxLen = Math.max(...live.map(s=>s.data.length));
+  const xOf = d => {
+    const span = W-padL-padR;
+    if(useDates && d.date){
+      const t0=stamps[0], t1=stamps[stamps.length-1];
+      return padL + span * ((d.date.getTime()-t0)/(t1-t0 || 1));
+    }
+    return padL + span * (maxLen===1 ? .5 : (d._i/(maxLen-1)));
+  };
+  const yOf = v => isRank
+    ? padT + (H-padT-padB) * ((v-lo)/(hi-lo))          // downward
+    : H-padB - (H-padT-padB) * ((v-lo)/(hi-lo));       // upward
+
+  // gridlines
+  const ticks=[], step=Math.max(1, Math.ceil((hi-lo)/4));
+  for(let v=lo; v<=hi; v+=step) ticks.push(v);
+  if(ticks[ticks.length-1]!==hi) ticks.push(hi);
+  ticks.forEach(v=>{
+    svg.appendChild(mk("line",{x1:padL,x2:W-padR,y1:yOf(v),y2:yOf(v)},"cGrid"));
+    const t=mk("text",{x:padL-8,y:yOf(v)+4,"text-anchor":"end"},"cLabel");
+    t.textContent = isRank ? "#"+v : (v>=1000 ? (v/1000).toFixed(1)+"k" : v);
+    svg.appendChild(t);
+  });
+
+  live.forEach((s, si)=>{
+    s.data.forEach((d,i)=> d._i = i);
+    const col = SERIES_COLOURS[si % SERIES_COLOURS.length];
+    const d = s.data.map((p,i)=> (i?"L":"M")+xOf(p).toFixed(1)+" "+yOf(p[metric]).toFixed(1)).join(" ");
+    const path = mk("path",{d, fill:"none"},"cLine");
+    path.style.stroke = col;              // inline wins over the .cLine rule
+    svg.appendChild(path);
+    const bestIdx = isRank
+      ? s.data.indexOf(s.data.reduce((m,p)=> p.rank<m.rank?p:m, s.data[0]))
+      : -1;
+    s.data.forEach((p,i)=>{
+      const best = i===bestIdx;
+      const c = mk("circle",{cx:xOf(p), cy:yOf(p[metric]), r: best?4.5:2.6}, best?"":"cDot");
+      c.style.fill = best ? "var(--court)" : col;
+      if(best){ c.style.stroke = col; c.style.strokeWidth = "2.5"; }
+      const ttl=document.createElementNS(SVGNS,"title");
+      ttl.textContent = `${s.name} \u2014 ${p.week}${p.season?" "+p.season:""}: #${p.rank} (${p.points} pts)`;
+      c.appendChild(ttl); svg.appendChild(c);
+    });
+  });
+
+  // x labels
+  const ref = live.reduce((a,b)=> a.data.length>=b.data.length?a:b);
+  const multi = new Set(ref.data.map(d=>d.season)).size > 1;
+  const label = p => multi
+    ? (p.season||"") + " " + p.week.replace(/\s*\d+(st|nd|rd|th)?$/,"").slice(0,3)
+    : p.week.replace(/(st|nd|rd|th)$/,"");
+  /* keep a minimum gap between labels: weeks are unevenly spaced once several
+     seasons are loaded, so index-based thinning alone lets them collide */
+  const GAP = multi ? 108 : 92;
+  let lastX = -Infinity;
+  ref.data.forEach((p,i)=>{
+    const last = i===ref.data.length-1;
+    const x = xOf(p);
+    if(!last && (x-lastX) < GAP) return;
+    if(last && (x-lastX) < GAP*0.6){
+      const prev = svg.querySelector("text.cLabel[data-x]");
+      if(prev && svg.lastElementChild && svg.lastElementChild.classList.contains("cLabel"))
+        svg.lastElementChild.remove();
+    }
+    const anchor = i===0 ? "start" : last ? "end" : "middle";
+    const t=mk("text",{x, y:H-14, "text-anchor":anchor, "data-x":Math.round(x)},"cLabel");
+    t.textContent = label(p);
+    svg.appendChild(t);
+    lastX = x;
+  });
+
+  if(live.length>1){
+    live.forEach((s,si)=>{
+      const g=mk("g",{transform:`translate(${padL+si*180},${padT-4})`});
+      const ln=mk("line",{x1:0,x2:18,y1:0,y2:0,"stroke-width":2});
+      ln.style.stroke=SERIES_COLOURS[si%2]; g.appendChild(ln);
+      const t=mk("text",{x:24,y:4},"cLabel"); t.textContent=s.name; g.appendChild(t);
+      svg.appendChild(g);
+    });
+  }
+  return svg;
+}
+
+/* ------------------------------------------------------------------
+   COLUMNS
+   ------------------------------------------------------------------ */
 const RANK_COLS = [
   {k:"rank",h:"Rank",cls:"num"}, {k:"prev",h:"Prev",cls:"num"},
-  {k:"move",h:"Move",render:r=>{
-      if(r.prev===""||r.prev==null) return '<span class="dim">new</span>';
-      const d=r.prev-r.rank;
-      if(d>0) return `<span style="color:var(--ball)">\u25B2 ${d}</span>`;
-      if(d<0) return `<span style="color:var(--warn)">\u25BC ${-d}</span>`;
-      return '<span class="dim">\u2014</span>';
-    }, csv:r=>(r.prev===""?"new":r.prev-r.rank)},
-  {k:"name",h:"Player",render:r=>esc(canonName(r.name)),csv:r=>canonName(r.name)},
+  {k:"move",h:"Move",render:r=>moveCell(r.prev===""||r.prev==null?null:r.prev-r.rank, r.prev),
+    csv:r=>(r.prev===""?"new":r.prev-r.rank)},
+  {k:"name",h:"Player",csv:r=>canonName(r.name)},
   {k:"country",h:"Country",cls:"ctry"},
   {k:"points",h:"Points",cls:"num",desc:true},
   {k:"events",h:"# Trn",cls:"num"}
 ];
-
 const HIST_COLS = [
-  {k:"week",h:"Week"}, {k:"rank",h:"Ranking",cls:"num"},
-  {k:"points",h:"Points",cls:"num"},
-  {k:"move",h:"Change",render:r=>{
-      if(r.move===null) return '<span class="dim">\u2014</span>';
-      if(r.move>0) return `<span style="color:var(--ball)">\u25B2 ${r.move}</span>`;
-      if(r.move<0) return `<span style="color:var(--warn)">\u25BC ${-r.move}</span>`;
-      return '<span class="dim">\u2014</span>';
-    }, csv:r=>r.move??""}
+  {k:"week",h:"Week"}, {k:"season",h:"Season",cls:"mono"},
+  {k:"rank",h:"Ranking",cls:"num"}, {k:"points",h:"Points",cls:"num"},
+  {k:"move",h:"Change",render:r=>moveCell(r.move,1), csv:r=>r.move??""}
 ];
+function moveCell(d, prev){
+  if(prev===""||prev==null) return '<span class="dim">new</span>';
+  if(d===null||d===undefined) return '<span class="dim">\u2014</span>';
+  if(d>0) return `<span style="color:var(--ball)">\u25B2 ${d}</span>`;
+  if(d<0) return `<span style="color:var(--warn)">\u25BC ${-d}</span>`;
+  return '<span class="dim">\u2014</span>';
+}
+
+/* ------------------------------------------------------------------
+   VIEW STATE
+   ------------------------------------------------------------------ */
+const RANK_UI = {
+  Singles:{mount:"rankMount",  sub:"list", season:"", week:null, q:"", player:null,
+           metric:"rank", pSeason:"", cmpA:"", cmpB:"", sort:{k:"rank",dir:1}},
+  Doubles:{mount:"drankMount", sub:"list", season:"", week:null, q:"", player:null,
+           metric:"rank", pSeason:"", cmpA:"", cmpB:"", sort:{k:"rank",dir:1}}
+};
+
+function renderRankings(){ ["Singles","Doubles"].forEach(renderTour); }
+
+function renderTour(tour){
+  const st = RANK_UI[tour], mount = $(st.mount);
+  if(!mount) return;
+  const weeks = tourWeeks(tour);
+  mount.innerHTML = "";
+
+  if(!weeks.length){
+    mount.innerHTML = `<div class="empty"><strong>No ${tour.toLowerCase()} rankings yet</strong>
+      ${EDIT ? `Paste a ranking list on the Add data tab and set its tour to ${tour}.`
+             : "Nothing has been published here yet."}</div>`;
+    return;
+  }
+
+  // sub-navigation
+  const subs = [["list","Week list"],["yearend","Year-end"],["movers","Movers"],["compare","Compare"]];
+  const nav = document.createElement("div"); nav.className="subnav";
+  subs.forEach(([k,label])=>{
+    const b=document.createElement("button");
+    b.textContent=label; b.setAttribute("aria-pressed", String(st.sub===k && !st.player));
+    b.addEventListener("click",()=>{ st.sub=k; st.player=null; renderTour(tour); });
+    nav.appendChild(b);
+  });
+  mount.appendChild(nav);
+
+  if(st.player)             renderHistoryPanel(tour, mount);
+  else if(st.sub==="yearend") renderYearEnd(tour, mount);
+  else if(st.sub==="movers")  renderMovers(tour, mount);
+  else if(st.sub==="compare") renderCompare(tour, mount);
+  else                        renderWeekPanel(tour, mount);
+}
+
+/* helper: a labelled control block */
+function field(label, node, cls){
+  const d=document.createElement("div"); d.className="field "+(cls||"");
+  const l=document.createElement("label"); l.innerHTML=label||"&nbsp;";
+  d.appendChild(l); d.appendChild(node); return d;
+}
+function selectOf(options, value, onChange){
+  const s=document.createElement("select");
+  options.forEach(([v,t])=>{ const o=document.createElement("option"); o.value=v; o.textContent=t; s.appendChild(o); });
+  if(value!=null) s.value=value;
+  s.addEventListener("change",()=>onChange(s.value));
+  return s;
+}
+function tableOf(cols, rows, opts){
+  const o = opts||{};
+  const wrap=document.createElement("div"); wrap.className="tablescroll";
+  const tbl=document.createElement("table");
+  const thead=document.createElement("thead"), htr=document.createElement("tr");
+  cols.forEach(c=>{
+    const th=document.createElement("th");
+    if(o.sort){
+      th.innerHTML=`${esc(c.h)}<span class="arr">${o.sort.k===c.k&&o.sort.dir<0?"\u25B2":"\u25BC"}</span>`;
+      if(o.sort.k===c.k) th.classList.add("sorted");
+      th.addEventListener("click",()=>o.onSort(c));
+    } else { th.className="nosort"; th.textContent=c.h; }
+    if(c.cls==="num") th.style.textAlign="right";
+    htr.appendChild(th);
+  });
+  thead.appendChild(htr); tbl.appendChild(thead);
+  const tb=document.createElement("tbody");
+  rows.forEach(r=>{
+    const tr=document.createElement("tr");
+    cols.forEach(c=>{
+      const td=document.createElement("td");
+      if(c.cls) td.className=c.cls;
+      if(c.k==="name" && o.onPlayer){
+        const b=document.createElement("button"); b.className="linkish";
+        b.textContent=canonName(r.name);
+        b.addEventListener("click",()=>o.onPlayer(canonName(r.name)));
+        td.appendChild(b);
+      } else if(c.render){ td.innerHTML=c.render(r); }
+      else { const v=r[c.k]; td.textContent=(v===""||v==null)?"\u2014":v; }
+      tr.appendChild(td);
+    });
+    tb.appendChild(tr);
+  });
+  tbl.appendChild(tb); wrap.appendChild(tbl);
+  return wrap;
+}
+
+/* ---------------- week list ---------------- */
+function renderWeekPanel(tour, mount){
+  const st=RANK_UI[tour];
+  const seasons=tourSeasons(tour);
+  if(seasons.length && !seasons.includes(st.season)) st.season = seasons[0];
+  let weeks = tourWeeks(tour).filter(w=>!st.season || w.season===st.season);
+  if(!weeks.length) weeks = tourWeeks(tour);
+  if(!weeks.some(w=>weekId(w)===st.week)) st.week = weekId(weeks[weeks.length-1]);
+  const week = weeks.find(w=>weekId(w)===st.week) || weeks[weeks.length-1];
+
+  const bar=document.createElement("div"); bar.className="controls";
+  if(seasons.length>1)
+    bar.appendChild(field("Season", selectOf(seasons.map(s=>[s,s]), st.season,
+      v=>{ st.season=v; st.week=null; renderTour(tour); }), "xs"));
+  bar.appendChild(field("Week", selectOf(
+    weeks.slice().reverse().map(w=>[weekId(w), weekLabel(w)]), st.week,
+    v=>{ st.week=v; renderTour(tour); }), "sm"));
+  const inp=document.createElement("input");
+  inp.type="text"; inp.placeholder="Player or country\u2026"; inp.value=st.q;
+  inp.addEventListener("input",()=>{ st.q=inp.value; renderTour(tour);
+    const el=$(st.mount).querySelector(".controls input");
+    if(el){ el.focus(); el.setSelectionRange(el.value.length,el.value.length); } });
+  bar.appendChild(field("Search", inp, "grow"));
+  const dl=document.createElement("button"); dl.className="btn"; dl.textContent="Download CSV";
+  bar.appendChild(field("", dl));
+  mount.appendChild(bar);
+
+  const q=st.q.trim().toLowerCase();
+  let rows=(week?week.list:[]).filter(r=>!q||hay(canonName(r.name),r.country).includes(q));
+  dl.addEventListener("click",()=>downloadCsv(RANK_COLS, rows,
+    `${tour.toLowerCase()}-rankings-${weekLabel(week).replace(/\s+/g,"-")}.csv`));
+
+  const {k,dir}=st.sort;
+  rows=rows.slice().sort((a,b)=>{
+    const x=a[k], y=b[k], nx=parseFloat(x), ny=parseFloat(y);
+    if(!isNaN(nx)&&!isNaN(ny)) return (nx-ny)*dir;
+    return String(x??"").toLowerCase().localeCompare(String(y??"").toLowerCase())*dir;
+  });
+
+  mount.appendChild(tableOf(RANK_COLS, rows, {
+    sort:st.sort,
+    onSort:c=>{ st.sort={k:c.k, dir: st.sort.k===c.k ? -st.sort.dir : (c.desc?-1:1)}; renderTour(tour); },
+    onPlayer:n=>{ st.player=n; renderTour(tour); }
+  }));
+  const hint=document.createElement("p"); hint.className="hint";
+  hint.textContent = rows.length ? "Click a player to see their ranking history."
+                                 : "Nothing matches that search.";
+  mount.appendChild(hint);
+}
+
+/* ---------------- year-end ---------------- */
+function renderYearEnd(tour, mount){
+  const st=RANK_UI[tour];
+  const ends=yearEndWeeks(tour);
+  if(!ends.length){
+    mount.innerHTML+=`<div class="empty"><strong>No completed seasons</strong>Year-end needs at least one week with a season on it.</div>`;
+    return;
+  }
+  const p=document.createElement("p"); p.className="lede";
+  p.textContent="The final ranking week of each season.";
+  mount.appendChild(p);
+
+  // who finished number one, season by season
+  const champs=ends.map(w=>{
+    const top=(w.list||[]).slice().sort((a,b)=>a.rank-b.rank)[0];
+    return {season:w.season, week:w.name, name:top?top.name:"", country:top?top.country:"",
+            points:top?top.points:""};
+  });
+  const CH=[{k:"season",h:"Season",cls:"mono"},{k:"week",h:"Final week"},
+            {k:"name",h:"Year-end no. 1",csv:r=>canonName(r.name)},
+            {k:"country",h:"Country",cls:"ctry"},{k:"points",h:"Points",cls:"num"}];
+  mount.appendChild(tableOf(CH, champs, {onPlayer:n=>{ st.player=n; renderTour(tour); }}));
+
+  const h=document.createElement("h3"); h.className="sec"; h.textContent="Full year-end list";
+  mount.appendChild(h);
+
+  if(!ends.some(w=>weekId(w)===st.yeWeek)) st.yeWeek = weekId(ends[0]);
+  const bar=document.createElement("div"); bar.className="controls";
+  bar.appendChild(field("Season", selectOf(ends.map(w=>[weekId(w), `${w.season} \u2014 ${w.name}`]),
+    st.yeWeek, v=>{ st.yeWeek=v; renderTour(tour); }), "sm"));
+  const dl=document.createElement("button"); dl.className="btn"; dl.textContent="Download CSV";
+  bar.appendChild(field("", dl));
+  mount.appendChild(bar);
+
+  const wk=ends.find(w=>weekId(w)===st.yeWeek)||ends[0];
+  const rows=(wk.list||[]).slice().sort((a,b)=>a.rank-b.rank);
+  dl.addEventListener("click",()=>downloadCsv(RANK_COLS, rows,
+    `${tour.toLowerCase()}-year-end-${wk.season}.csv`));
+  mount.appendChild(tableOf(RANK_COLS, rows, {onPlayer:n=>{ st.player=n; renderTour(tour); }}));
+}
+
+/* ---------------- movers ---------------- */
+function renderMovers(tour, mount){
+  const st=RANK_UI[tour];
+  const weeks=tourWeeks(tour);
+  if(!weeks.some(w=>weekId(w)===st.mvWeek)) st.mvWeek = weekId(weeks[weeks.length-1]);
+  const week=weeks.find(w=>weekId(w)===st.mvWeek)||weeks[weeks.length-1];
+
+  const bar=document.createElement("div"); bar.className="controls";
+  bar.appendChild(field("Week", selectOf(weeks.slice().reverse().map(w=>[weekId(w), weekLabel(w)]),
+    st.mvWeek, v=>{ st.mvWeek=v; renderTour(tour); }), "sm"));
+  mount.appendChild(bar);
+
+  const moved=(week.list||[])
+    .filter(r=>r.prev!=="" && r.prev!=null)
+    .map(r=>({...r, delta:r.prev-r.rank}))
+    .filter(r=>r.delta!==0);
+  const newcomers=(week.list||[]).filter(r=>r.prev===""||r.prev==null);
+
+  const COLS=[{k:"delta",h:"Move",render:r=>moveCell(r.delta,1),csv:r=>r.delta},
+    {k:"name",h:"Player",csv:r=>canonName(r.name)},
+    {k:"country",h:"Country",cls:"ctry"},
+    {k:"prev",h:"From",cls:"num"},{k:"rank",h:"To",cls:"num"},
+    {k:"points",h:"Points",cls:"num"}];
+
+  const pair=document.createElement("div"); pair.className="pairgrid";
+  [["Biggest risers", moved.slice().sort((a,b)=>b.delta-a.delta).slice(0,15)],
+   ["Biggest fallers", moved.slice().sort((a,b)=>a.delta-b.delta).slice(0,15)]
+  ].forEach(([title,rows])=>{
+    const col=document.createElement("div");
+    const h=document.createElement("p"); h.className="blockhead"; h.textContent=title;
+    col.appendChild(h);
+    if(rows.length) col.appendChild(tableOf(COLS, rows, {onPlayer:n=>{ st.player=n; renderTour(tour); }}));
+    else { const e=document.createElement("p"); e.className="hint"; e.textContent="Nobody moved this week."; col.appendChild(e); }
+    pair.appendChild(col);
+  });
+  mount.appendChild(pair);
+
+  if(newcomers.length){
+    const h=document.createElement("h3"); h.className="sec";
+    h.textContent=`New entries \u2014 ${newcomers.length}`;
+    mount.appendChild(h);
+    mount.appendChild(tableOf(
+      [{k:"rank",h:"Rank",cls:"num"},{k:"name",h:"Player",csv:r=>canonName(r.name)},
+       {k:"country",h:"Country",cls:"ctry"},{k:"points",h:"Points",cls:"num"}],
+      newcomers.slice().sort((a,b)=>a.rank-b.rank),
+      {onPlayer:n=>{ st.player=n; renderTour(tour); }}));
+  }
+}
+
+/* ---------------- compare ---------------- */
+function renderCompare(tour, mount){
+  const st=RANK_UI[tour];
+  const names=[...new Set(tourWeeks(tour).flatMap(w=>(w.list||[]).map(r=>canonName(r.name))))]
+                .sort((a,b)=>a.toLowerCase().localeCompare(b.toLowerCase()));
+
+  const dl=document.createElement("datalist"); dl.id="cmpNames_"+tour;
+  names.forEach(nm=>{ const o=document.createElement("option"); o.value=nm; dl.appendChild(o); });
+  mount.appendChild(dl);
+
+  const bar=document.createElement("div"); bar.className="controls";
+  const mkInput=(val,ph,set)=>{
+    const i=document.createElement("input"); i.type="text"; i.value=val; i.placeholder=ph;
+    i.setAttribute("list","cmpNames_"+tour);
+    i.addEventListener("change",()=>{ set(i.value); renderTour(tour); });
+    return i;
+  };
+  bar.appendChild(field("Player one", mkInput(st.cmpA,"Start typing\u2026",v=>st.cmpA=v), "grow"));
+  bar.appendChild(field("Player two", mkInput(st.cmpB,"Start typing\u2026",v=>st.cmpB=v), "grow"));
+  bar.appendChild(field("Metric", selectOf([["rank","Ranking"],["points","Points"]], st.metric,
+    v=>{ st.metric=v; renderTour(tour); }), "xs"));
+  mount.appendChild(bar);
+
+  const series=[st.cmpA, st.cmpB].filter(Boolean)
+    .map(nm=>({name:canonName(nm), data:playerHistory(tour, nm)}));
+  if(!series.length){
+    const e=document.createElement("div"); e.className="empty";
+    e.innerHTML="<strong>Pick two players</strong>Their ranking lines are drawn on one chart.";
+    mount.appendChild(e); return;
+  }
+  const missing=series.filter(s=>!s.data.length);
+  if(missing.length){
+    const m=document.createElement("div"); m.className="msg warn";
+    m.textContent=`No ${tour.toLowerCase()} ranking weeks for ${missing.map(s=>s.name).join(" or ")}.`;
+    mount.appendChild(m);
+  }
+  const box=document.createElement("div"); box.className="chartbox";
+  box.appendChild(lineChart(series, st.metric));
+  mount.appendChild(box);
+
+  const rows=series.filter(s=>s.data.length).map(s=>{
+    const st2=historyStats(s.data);
+    return {name:s.name, current:"#"+st2.current.rank, high:"#"+st2.careerHigh.rank,
+      weeks:st2.weeks, no1:st2.atNo1, top10:st2.inTop10,
+      points:st2.current.points};
+  });
+  mount.appendChild(tableOf([
+    {k:"name",h:"Player"},{k:"current",h:"Current",cls:"num"},{k:"high",h:"Career high",cls:"num"},
+    {k:"points",h:"Points",cls:"num"},{k:"weeks",h:"Weeks ranked",cls:"num"},
+    {k:"no1",h:"Weeks at no. 1",cls:"num"},{k:"top10",h:"Weeks in top 10",cls:"num"}
+  ], rows));
+}
+
+/* ---------------- one player's history ---------------- */
+function renderHistoryPanel(tour, mount){
+  const st=RANK_UI[tour];
+  const hist=playerHistory(tour, st.player);
+  const stats=historyStats(hist, st.pSeason);
+
+  const back=document.createElement("button");
+  back.className="btn sm"; back.textContent="\u2190 Back";
+  back.addEventListener("click",()=>{ st.player=null; st.pSeason=""; renderTour(tour); });
+  mount.appendChild(back);
+
+  const h=document.createElement("h3"); h.className="sec"; h.style.margin="12px 0 2px";
+  h.innerHTML=`${esc(canonName(st.player))} <span class="ctry" style="font-size:13px">${esc(canonCountry(st.player))}</span>`;
+  mount.appendChild(h);
+  const sub=document.createElement("p"); sub.className="lede"; sub.style.margin="0 0 16px";
+  sub.textContent=`${tour} ranking history`;
+  mount.appendChild(sub);
+
+  if(!stats){
+    const e=document.createElement("div"); e.className="empty";
+    e.innerHTML=`<strong>Never ranked in ${tour.toLowerCase()}</strong>This player doesn't appear in any ${tour.toLowerCase()} ranking week.`;
+    mount.appendChild(e); return;
+  }
+
+  if(stats.seasons.length>1){
+    const bar=document.createElement("div"); bar.className="controls";
+    bar.appendChild(field("Season for the high and low",
+      selectOf(stats.seasons.map(s=>[s,s]), stats.season, v=>{ st.pSeason=v; renderTour(tour); }), "sm"));
+    mount.appendChild(bar);
+  }
+
+  const cards=[
+    ["Current","#"+stats.current.rank, weekLabel(stats.current)],
+    ["Career high","#"+stats.careerHigh.rank, weekLabel(stats.careerHigh)],
+    ["Season high", stats.seasonHigh?"#"+stats.seasonHigh.rank:"\u2014", stats.seasonHigh?stats.seasonHigh.week+" "+stats.season:""],
+    ["Season low",  stats.seasonLow ?"#"+stats.seasonLow.rank :"\u2014", stats.seasonLow ?stats.seasonLow.week +" "+stats.season:""],
+    ["Weeks at no. 1", String(stats.atNo1), stats.atNo1?"career":""],
+    ["Weeks in top 10", String(stats.inTop10), stats.inTop10?"career":""],
+    ["Weeks ranked", String(stats.weeks), stats.seasons.slice(0,4).join(", ")+(stats.seasons.length>4?"\u2026":"")]
+  ];
+  const grid=document.createElement("div"); grid.className="statgrid";
+  cards.forEach(([k,v,note])=>{
+    const c=document.createElement("div"); c.className="stat";
+    c.innerHTML=`<span class="k">${esc(k)}</span><span class="v">${esc(v)}</span>
+                 <span class="note">${esc(note||"")}</span>`;
+    grid.appendChild(c);
+  });
+  mount.appendChild(grid);
+
+  const toggle=document.createElement("div"); toggle.className="subnav"; toggle.style.margin="0 0 12px";
+  [["rank","Ranking"],["points","Points"]].forEach(([k,label])=>{
+    const b=document.createElement("button"); b.textContent=label;
+    b.setAttribute("aria-pressed", String(st.metric===k));
+    b.addEventListener("click",()=>{ st.metric=k; renderTour(tour); });
+    toggle.appendChild(b);
+  });
+  mount.appendChild(toggle);
+
+  const box=document.createElement("div"); box.className="chartbox";
+  box.appendChild(lineChart([{name:canonName(st.player), data:hist}], st.metric));
+  mount.appendChild(box);
+
+  const bar=document.createElement("div"); bar.className="controls";
+  const dl=document.createElement("button"); dl.className="btn"; dl.textContent="Download CSV";
+  dl.addEventListener("click",()=>downloadCsv(HIST_COLS, hist,
+    `${canonName(st.player).replace(/\W+/g,"_")}-${tour.toLowerCase()}-ranking.csv`));
+  bar.appendChild(field("", dl));
+  mount.appendChild(bar);
+
+  mount.appendChild(tableOf(HIST_COLS, hist.slice().reverse()));
+}
+
+/* Jump straight to a player's ranking history from anywhere. */
+function showRanking(tour, name){
+  const st=RANK_UI[tour];
+  st.player=canonName(name); st.pSeason=""; st.sub="list";
+  renderTour(tour);
+  const btn=document.querySelector(`#nav button[data-view="${tour==="Doubles"?"drankings":"rankings"}"]`);
+  if(btn) btn.click();
+}
 
 /* ==================================================================
    FILTERS
@@ -610,25 +1185,6 @@ function titleRows(){
   return deriveTitles().filter(t=>!q||hay(t.event,t.season,t.sWinner,t.sFinalist,t.sSF1,t.sSF2,
     t.dWinner,t.dFinalist,t.dSF1,t.dSF2).includes(q));
 }
-function rankRows(){
-  const w=WEEKS.find(x=>x.name===val("rWeek"));
-  if(!w) return [];
-  const q=val("rQ").trim().toLowerCase();
-  return w.list.filter(r=>!q||hay(canonName(r.name),r.country).includes(q));
-}
-function histRows(){
-  const name=val("hPlayer").trim();
-  if(!name) return [];
-  const k=keyOf(name), out=[]; let prev=null;
-  for(const w of WEEKS){
-    const hit=w.list.find(r=>keyOf(r.name)===k);
-    if(!hit){ prev=null; continue; }
-    out.push({week:w.name, rank:hit.rank, points:hit.points,
-      move: prev===null ? null : prev-hit.rank});
-    prev=hit.rank;
-  }
-  return out;
-}
 
 /* ==================================================================
    TABLE INSTANCES
@@ -646,10 +1202,6 @@ const tTeams   = makeTable({head:"tHead",body:"tBody",empty:"tEmpty",
   cols:()=>TEAM_COLS, rows:teamRows, defaultSort:"w", defaultDir:-1});
 const tTitles  = makeTable({head:"ttHead",body:"ttBody",empty:"ttEmpty",
   cols:()=>TITLE_COLS, rows:titleRows});
-const tRanks   = makeTable({head:"rHead",body:"rBody",empty:"rEmpty",
-  cols:()=>RANK_COLS, rows:rankRows, defaultSort:"rank", defaultDir:1});
-const tHist    = makeTable({head:"hHead",body:"hBody",empty:"hEmpty",
-  cols:()=>HIST_COLS, rows:histRows});
 
 function swapRow(r){
   [r.winnerSeed,r.loserSeed]=[r.loserSeed,r.winnerSeed];
@@ -684,7 +1236,7 @@ on("btnDraw", "click", ()=>{
   }
 
   const season=val("season").trim(), week=val("rankWeek"), keepByes=$("optByes").checked;
-  const wk = WEEKS.find(w=>w.name===week);
+  const wk = tourWeeks("Singles").find(w=>w.name===week && (w.season||"")===season);
   let added=0, dup=0, byes=0, ranked=0;
 
   for(const r of rows){
@@ -732,24 +1284,28 @@ on("btnRank", "click", ()=>{
     msg.textContent="No ranking lines recognised. Each should read like: 1 (1) Michael!(GER)....2795 ...45"; return; }
 
   const name=val("weekName").trim() || week || `Week ${WEEKS.length+1}`;
+  const tour=val("rankTour") || "Singles";
   const index=new Map();
   list.forEach(r=>{ index.set(keyOf(r.name), r.rank); seePlayer(r.name, r.country); });
 
-  const existing=WEEKS.findIndex(w=>w.name===name);
-  const entry={name, season, list, index};
+  const existing=WEEKS.findIndex(w=>w.name===name && (w.season||"")===season && (w.tour||"Singles")===tour);
+  const entry={name, season, tour, list, index, date:weekDate(name, season)};
   let replaced=false;
   if(existing>=0){ WEEKS[existing]=entry; replaced=true; } else WEEKS.push(entry);
+  sortWeeks();
 
   // Backfill any matches already tagged with this week.
   let back=0;
-  for(const r of MATCHES) if(r.week===name) back+=applyRanks(r,entry);
+  if(tour==="Singles") for(const r of MATCHES)
+    if(r.week===name && (r.season||"")===season) back+=applyRanks(r,entry);
 
-  const bits=[`${replaced?"Replaced":"Added"} "${name}" with ${list.length} players.`];
+  const bits=[`${replaced?"Replaced":"Added"} ${tour.toLowerCase()} week "${name}" with ${list.length} players.`];
   if(back) bits.push(`${back} rank values backfilled into matches already loaded.`);
   if(bad.length) bits.push(`${bad.length} line${bad.length===1?"":"s"} looked like rankings but didn't parse.`);
   msg.className = bad.length ? "msg warn" : "msg";
   msg.textContent = bits.join(" ");
   setVal("rankIn", ""); setVal("weekName", "");
+  RANK_UI[tour].week=null; RANK_UI[tour].player=null; RANK_UI[tour].season=season; RANK_UI[tour].sub="list";
   markDirty(); refreshAll();
 });
 
@@ -774,7 +1330,7 @@ function renderReview(){
       b.addEventListener("click",()=>{
         const row=makeRow(p,idx,"manual");
         row.event=p.event; row.season=p.season; row.week=p.week;
-        const wk=WEEKS.find(w=>w.name===p.week); if(wk) applyRanks(row,wk);
+        const wk=tourWeeks("Singles").find(w=>w.name===p.week && (w.season||"")===(p.season||"")); if(wk) applyRanks(row,wk);
         const k=matchKey(row);
         if(SEEN.has(k)) DUPES.push(row); else { SEEN.add(k); MATCHES.push(row); }
         PENDING.splice(PENDING.indexOf(p),1);
@@ -960,18 +1516,49 @@ function syncFilters(){
   fill("mRound", uniq(MATCHES.map(m=>m.round))
     .sort((a,b)=>ROUND_ORDER.indexOf(a)-ROUND_ORDER.indexOf(b)));
   fill("pCtry", uniq(derivePlayers().map(p=>p.country)).sort());
-  fill("rWeek", WEEKS.map(w=>w.name), false);
 
   const wk=$("rankWeek");
   if(wk){ const keep=wk.value;
-  wk.innerHTML = WEEKS.length ? '<option value="">None</option>' : '<option value="">None loaded</option>';
-  WEEKS.forEach(w=>{ const o=document.createElement("option"); o.value=w.name; o.textContent=w.name; wk.appendChild(o); });
-  if(WEEKS.some(w=>w.name===keep)) wk.value=keep;
-  else if(WEEKS.length) wk.value=WEEKS[WEEKS.length-1].name; }
+  wk.innerHTML = tourWeeks("Singles").length ? '<option value="">None</option>' : '<option value="">None loaded</option>';
+  const sw=tourWeeks("Singles");
+  sw.slice().reverse().forEach(w=>{ const o=document.createElement("option"); o.value=w.name;
+    o.textContent=w.name+(w.season?` ${w.season}`:""); wk.appendChild(o); });
+  if(sw.some(w=>w.name===keep)) wk.value=keep;
+  else if(sw.length) wk.value=sw[sw.length-1].name; }
 
-  const dl=$("playerList"); dl.innerHTML="";
-  uniq([...REG.values()].map(e=>e.name)).sort().forEach(n=>{
-    const o=document.createElement("option"); o.value=n; dl.appendChild(o); });
+  const dl=$("playerList");
+  if(dl){ dl.innerHTML="";
+    uniq([...REG.values()].map(e=>e.name)).sort().forEach(n=>{
+      const o=document.createElement("option"); o.value=n; dl.appendChild(o); }); }
+}
+
+function renderWeekManager(){
+  const el=$("weekManager"); if(!el) return;
+  if(!WEEKS.length){ el.textContent="None yet."; return; }
+  el.innerHTML="";
+  ["Singles","Doubles"].forEach(tour=>{
+    const ws=tourWeeks(tour); if(!ws.length) return;
+    const h=document.createElement("p"); h.className="blockhead"; h.style.margin="10px 0 4px";
+    h.textContent=`${tour} \u2014 ${ws.length} week${ws.length===1?"":"s"}`;
+    el.appendChild(h);
+    ws.slice().reverse().forEach(w=>{
+      const row=document.createElement("div"); row.className="wkrow";
+      const undated = !w.date;
+      row.innerHTML=`<span class="nm">${esc(w.name)}
+        <span class="dim">${esc(w.season||"no season")} \u00b7 ${(w.list||[]).length} players</span>
+        ${undated?'<span class="tag" style="margin-left:6px">no date read</span>':""}</span>`;
+      const del=document.createElement("button");
+      del.className="btn sm"; del.textContent="Remove";
+      del.addEventListener("click",()=>{
+        const used = tour==="Singles"
+          ? MATCHES.filter(r=>r.week===w.name && (r.season||"")===(w.season||"")).length : 0;
+        const warn = used ? `\n\n${used} match${used===1?"":"es"} tagged with this week will lose their rank columns.` : "";
+        if(!confirm(`Remove the ${tour.toLowerCase()} week "${w.name}" ${w.season||""}?${warn}`)) return;
+        removeWeek(w.name, w.season, tour); markDirty(); refreshAll();
+      });
+      row.appendChild(del); el.appendChild(row);
+    });
+  });
 }
 
 function renderSummary(){
@@ -983,7 +1570,7 @@ function renderSummary(){
   const evs=uniq(MATCHES.map(m=>m.event));
   el.innerHTML = `${parts.join(" \u00b7 ")}<br>
     ${evs.length} event${evs.length===1?"":"s"}: ${esc(evs.sort().join(", "))||"\u2014"}<br>
-    ${WEEKS.length} ranking week${WEEKS.length===1?"":"s"}${WEEKS.length?": "+esc(WEEKS.map(w=>w.name).join(", ")):""}
+    ${tourWeeks("Singles").length} singles and ${tourWeeks("Doubles").length} doubles ranking weeks
     ${DIRTY?'<br><span class="unsaved">Unsaved changes \u2014 save data.json before you close this tab.</span>':""}`;
 }
 
@@ -993,8 +1580,8 @@ function renderSummary(){
 function refreshAll(){
   syncFilters();
   tMatches.render(); tPlayers.render(); tTeams.render();
-  tTitles.render(); tRanks.render(); tHist.render();
-  renderReview(); renderIssues(); renderSummary();
+  tTitles.render(); renderRankings();
+  renderReview(); renderIssues(); renderSummary(); renderWeekManager();
   setText("sbMatches", MATCHES.length);
   setText("sbPlayers", derivePlayers().length);
   setText("sbEvents", uniq(MATCHES.map(m=>m.event)).length);
@@ -1013,12 +1600,6 @@ $("nav").addEventListener("click", e=>{
   document.querySelectorAll(".view").forEach(v=>v.classList.remove("on"));
   $("v-"+b.dataset.view).classList.add("on");
 });
-on("rankSub","click", e=>{
-  const b=e.target.closest("button[data-sub]"); if(!b) return;
-  [...$("rankSub").querySelectorAll("button")].forEach(x=>x.setAttribute("aria-pressed", x===b));
-  $("rankList").style.display = b.dataset.sub==="list" ? "" : "none";
-  $("rankHist").style.display = b.dataset.sub==="hist" ? "" : "none";
-});
 
 ["mQ","mDisc","mStage","mEvent","mRound"].forEach(id=>{
   on(id,"input",()=>tMatches.render()); on(id,"change",()=>tMatches.render()); });
@@ -1026,15 +1607,11 @@ on("rankSub","click", e=>{
   on(id,"input",()=>tPlayers.render()); on(id,"change",()=>tPlayers.render()); });
 on("tQ","input",()=>tTeams.render());
 on("ttQ","input",()=>tTitles.render());
-["rWeek","rQ"].forEach(id=>{
-  on(id,"input",()=>tRanks.render()); on(id,"change",()=>tRanks.render()); });
-on("hPlayer","input",()=>tHist.render());
 
 on("btnMcsv","click",()=>downloadCsv(MATCH_COLS,matchRows(),"matches.csv"));
 on("btnPcsv","click",()=>downloadCsv(PLAYER_COLS,playerRows(),"players.csv"));
 on("btnTcsv","click",()=>downloadCsv(TEAM_COLS,teamRows(),"teams.csv"));
 on("btnTtcsv","click",()=>downloadCsv(TITLE_COLS,titleRows(),"titles.csv"));
-on("btnRcsv","click",()=>downloadCsv(RANK_COLS,rankRows(),"rankings.csv"));
 
 on("btnWipe", "click",()=>{
   if(!MATCHES.length && !WEEKS.length) return;
@@ -1122,7 +1699,7 @@ function serialise(){
     format: FORMAT,
     savedAt: new Date().toISOString(),
     matches: MATCHES.map(m=>{ const {raw, ...rest}=m; return rest; }),
-    weeks: WEEKS.map(w=>({name:w.name, season:w.season, list:w.list})),
+    weeks: WEEKS.map(w=>({name:w.name, season:w.season, tour:w.tour||"Singles", list:w.list})),
     aliases: [...ALIAS.entries()].map(([from,to])=>({from,to})),
     pinned
   };
@@ -1141,8 +1718,10 @@ function deserialise(data){
   (data.weeks||[]).forEach(w=>{
     const index=new Map();
     (w.list||[]).forEach(r=>{ index.set(keyOf(r.name), r.rank); seePlayer(r.name, r.country); });
-    WEEKS.push({name:w.name, season:w.season, list:w.list||[], index});
+    WEEKS.push({name:w.name, season:w.season, tour:w.tour||"Singles",
+                list:w.list||[], index, date:weekDate(w.name, w.season)});
   });
+  sortWeeks();
 
   data.matches.forEach(m=>{
     const r = Object.assign({}, m);
@@ -1169,6 +1748,7 @@ function deserialise(data){
   });
 
   DIRTY=false;
+  ["Singles","Doubles"].forEach(t=>{ RANK_UI[t].week=null; RANK_UI[t].player=null; RANK_UI[t].q=""; });
   refreshAll();
   return {matches:MATCHES.length, weeks:WEEKS.length, dupes:DUPES.length};
 }
@@ -1182,6 +1762,7 @@ function reindex(){
     w.index = new Map();
     (w.list||[]).forEach(r=>{ w.index.set(keyOf(r.name), r.rank); seePlayer(r.name, r.country); });
   }
+  sortWeeks();
   for(const r of MATCHES){
     if(r.disc==="Doubles"){
       const wc=(r.winnerCountry||"").split("/"), lc=(r.loserCountry||"").split("/");
@@ -1240,6 +1821,16 @@ function mergePlayers(fromName, toName){
 }
 
 function unmerge(fromKey){ ALIAS.delete(fromKey); reindex(); }
+
+function removeWeek(name, season, tour){
+  const i = WEEKS.findIndex(w => w.name===name && (w.season||"")===(season||"") && (w.tour||"Singles")===tour);
+  if(i < 0) return false;
+  WEEKS.splice(i,1);
+  /* any match tagged with it loses its ranks rather than keeping stale ones */
+  if(tour==="Singles") for(const r of MATCHES)
+    if(r.week===name && (r.season||"")===(season||"")){ r.week=""; r.winnerRank=""; r.loserRank=""; }
+  return true;
+}
 
 function saveMsg(text, cls){ const m=$("saveMsg"); if(!m) return; m.className="msg"+(cls?" "+cls:""); m.textContent=text; }
 

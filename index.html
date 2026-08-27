@@ -12,7 +12,7 @@
   --court:#0B1620; --panel:#12222E; --panel-2:#18303F;
   --line:#E8EFEA; --ball:#DDF247; --slate:#7E98A6;
   --rule:rgba(232,239,234,.10); --rule-strong:rgba(232,239,234,.22);
-  --warn:#F2A93B; --bad:#E2564B;
+  --warn:#F2A93B; --bad:#E2564B; --ball2:#5FD3E8;
 }
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
@@ -161,6 +161,33 @@ tbody tr:hover{background:var(--panel)}
 .hint{font-size:12px;color:var(--slate);margin:10px 0 0}
 h3.sec{font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:22px;text-transform:uppercase;
   margin:26px 0 10px;letter-spacing:.01em}
+
+/* rankings: chart, stat cards, clickable player names */
+.linkish{background:none;border:0;padding:0;color:var(--line);font:inherit;cursor:pointer;
+  text-align:left;border-bottom:1px solid rgba(221,240,75,.35)}
+.linkish:hover{color:var(--ball);border-bottom-color:var(--ball)}
+.statgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:1px;
+  background:var(--rule);border:1px solid var(--rule);margin-bottom:22px}
+.stat{background:var(--panel);padding:13px 16px}
+.stat .k{display:block;font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--slate)}
+.stat .v{display:block;font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:31px;
+  line-height:1.05;margin-top:3px;font-variant-numeric:tabular-nums}
+.stat .note{display:block;font-size:11.5px;color:var(--slate);margin-top:1px}
+.chartbox{background:var(--panel);border:1px solid var(--rule);padding:14px 12px 6px;margin-bottom:20px}
+.chart{width:100%;height:auto;display:block}
+.cGrid{stroke:rgba(232,239,234,.10);stroke-width:1}
+.cLine{stroke:var(--ball);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.cDot{fill:var(--ball);opacity:.75}
+.cDotBest{fill:var(--court);stroke:var(--ball);stroke-width:2.5}
+.cLabel{fill:var(--slate);font-family:"IBM Plex Mono",monospace;font-size:10px}
+.profhead{margin-bottom:4px}
+.wkrow{display:flex;gap:10px;align-items:center;padding:7px 0;border-top:1px solid var(--rule)}
+.wkrow:first-child{border-top:0}
+.wkrow .nm{flex:1;min-width:150px}
+.pairgrid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+@media(max-width:900px){.pairgrid{grid-template-columns:1fr}}
+.pairgrid .blockhead{margin-bottom:8px}
 @media(prefers-reduced-motion:no-preference){
   tbody tr{animation:in .16s ease both}
   @keyframes in{from{opacity:0}to{opacity:1}}
@@ -189,6 +216,7 @@ h3.sec{font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:22px;
     <button data-view="teams" aria-selected="false">Teams</button>
     <button data-view="titles" aria-selected="false">Titles</button>
     <button data-view="rankings" aria-selected="false">Rankings</button>
+    <button data-view="drankings" aria-selected="false">Doubles</button>
   </nav>
 
   
@@ -257,32 +285,10 @@ h3.sec{font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:22px;
   </section>
 
   <!-- RANKINGS --------------------------------------------------------- -->
-  <section class="view" id="v-rankings">
-    <div class="subnav" id="rankSub">
-      <button data-sub="list" aria-pressed="true">Week list</button>
-      <button data-sub="hist" aria-pressed="false">One player's history</button>
-    </div>
-    <div id="rankList">
-      <div class="controls">
-        <div class="field sm"><label for="rWeek">Week</label><select id="rWeek"></select></div>
-        <div class="field grow"><label for="rQ">Search</label>
-          <input type="text" id="rQ" placeholder="Player or country…"></div>
-        <div class="field"><label>&nbsp;</label>
-          <button class="btn" id="btnRcsv">Download CSV</button></div>
-      </div>
-      <div class="tablescroll"><table><thead><tr id="rHead"></tr></thead><tbody id="rBody"></tbody></table></div>
-      <div class="empty" id="rEmpty"><strong>No rankings yet</strong>Paste a ranking list on the first tab.</div>
-    </div>
-    <div id="rankHist" style="display:none">
-      <div class="controls">
-        <div class="field grow"><label for="hPlayer">Player</label>
-          <input type="text" id="hPlayer" placeholder="Start typing a name…" list="playerList">
-          <datalist id="playerList"></datalist></div>
-      </div>
-      <div class="tablescroll"><table><thead><tr id="hHead"></tr></thead><tbody id="hBody"></tbody></table></div>
-      <div class="empty" id="hEmpty"><strong>Pick a player</strong>Their ranking week by week appears here.</div>
-    </div>
-  </section>
+  <section class="view" id="v-rankings"><div id="rankMount"></div></section>
+
+  <!-- DOUBLES RANKINGS -------------------------------------------------- -->
+  <section class="view" id="v-drankings"><div id="drankMount"></div></section>
 
   
 
