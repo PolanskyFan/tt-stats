@@ -287,6 +287,11 @@ const has = id => !!document.getElementById(id);
 const on  = (id, ev, fn) => { const el=$(id); if(el) el.addEventListener(ev, fn); };
 const setText = (id, v) => { const el=$(id); if(el) el.textContent = v; };
 const EDIT = document.body.dataset.mode === "edit";
+
+/* index.html, desk.html and app.js are uploaded together. Updating only some
+   of them leaves a page whose markup and code disagree, which shows up as a
+   blank tab rather than an error, so they carry a matching stamp. */
+const APP_VERSION = "2026-08-27e";
 const esc = s => String(s).replace(/[&<>"']/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
@@ -585,6 +590,9 @@ function weekDate(name, season){
 
 const tourWeeks   = tour => WEEKS.filter(w => (w.tour||"Singles") === tour);
 const weekLabel   = w => w ? w.name + (w.season ? ` ${w.season}` : "") : "";
+/* A history entry keeps its week under .week, not .name, so it needs its own
+   label helper — using weekLabel on one silently produced "undefined 2026". */
+const histLabel   = h => h ? h.week + (h.season ? ` ${h.season}` : "") : "";
 const weekId      = w => `${w.tour||"Singles"}|${w.season||""}|${w.name}`;
 const tourSeasons = tour => [...new Set(tourWeeks(tour).map(w=>w.season).filter(Boolean))]
                               .sort((a,b)=>b.localeCompare(a));   // newest first
@@ -650,7 +658,9 @@ const SVGNS = "http://www.w3.org/2000/svg";
 const SERIES_COLOURS = ["var(--ball)", "var(--ball2)"];
 
 function lineChart(series, metric){
-  const W = 900, H = 270, padL = 54, padR = 18, padT = 18, padB = 42;
+  const isRank = metric === "rank";
+  const W = 900, H = 270, padR = 18, padT = 18, padB = 42;
+  const padL = isRank ? 54 : 72;          // point totals need more room than "#12"
   const svg = document.createElementNS(SVGNS,"svg");
   svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
   svg.setAttribute("class","chart");
@@ -670,7 +680,6 @@ function lineChart(series, metric){
     svg.appendChild(t); return svg;
   }
 
-  const isRank = metric === "rank";
   const vals = live.flatMap(s=>s.data.map(d=>d[metric]));
   let lo = Math.min(...vals), hi = Math.max(...vals);
   if(lo === hi){ lo = isRank ? Math.max(1,lo-1) : Math.max(0,lo-1); hi = hi+1; }
@@ -702,7 +711,7 @@ function lineChart(series, metric){
   ticks.forEach(v=>{
     svg.appendChild(mk("line",{x1:padL,x2:W-padR,y1:yOf(v),y2:yOf(v)},"cGrid"));
     const t=mk("text",{x:padL-8,y:yOf(v)+4,"text-anchor":"end"},"cLabel");
-    t.textContent = isRank ? "#"+v : (v>=1000 ? (v/1000).toFixed(1)+"k" : v);
+    t.textContent = isRank ? "#"+v : String(v);
     svg.appendChild(t);
   });
 
@@ -899,7 +908,7 @@ function renderWeekPanel(tour, mount){
       v=>{ st.season=v; st.week=null; renderTour(tour); }), "xs"));
   bar.appendChild(field("Week", selectOf(
     weeks.slice().reverse().map(w=>[weekId(w), weekLabel(w)]), st.week,
-    v=>{ st.week=v; renderTour(tour); }), "sm"));
+    v=>{ st.week=v; renderTour(tour); }), "md"));
   const inp=document.createElement("input");
   inp.type="text"; inp.placeholder="Player or country\u2026"; inp.value=st.q;
   inp.addEventListener("input",()=>{ st.q=inp.value; renderTour(tour);
@@ -945,16 +954,22 @@ function renderYearEnd(tour, mount){
   p.textContent="The final ranking week of each season.";
   mount.appendChild(p);
 
-  // who finished number one, season by season
+  /* Doubles partnerships share a rank, so more than one player can sit at
+     the top. List all of them rather than picking one arbitrarily. */
   const champs=ends.map(w=>{
-    const top=(w.list||[]).slice().sort((a,b)=>a.rank-b.rank)[0];
-    return {season:w.season, week:w.name, name:top?top.name:"", country:top?top.country:"",
-            points:top?top.points:""};
+    const list=(w.list||[]).slice().sort((a,b)=>a.rank-b.rank);
+    const top=list.length?list[0].rank:null;
+    const tied=list.filter(r=>r.rank===top);
+    return {season:w.season, week:w.name,
+            name: tied.map(r=>canonName(r.name)).join(" \u00b7 "),
+            country: [...new Set(tied.map(r=>r.country))].join(" \u00b7 "),
+            points: tied.length?tied[0].points:"",
+            _one: tied.length===1 ? canonName(tied[0].name) : null};
   });
   const CH=[{k:"season",h:"Season",cls:"mono"},{k:"week",h:"Final week"},
-            {k:"name",h:"Year-end no. 1",csv:r=>canonName(r.name)},
+            {k:"name",h:"Year-end no. 1"},
             {k:"country",h:"Country",cls:"ctry"},{k:"points",h:"Points",cls:"num"}];
-  mount.appendChild(tableOf(CH, champs, {onPlayer:n=>{ st.player=n; renderTour(tour); }}));
+  mount.appendChild(tableOf(CH, champs));
 
   const h=document.createElement("h3"); h.className="sec"; h.textContent="Full year-end list";
   mount.appendChild(h);
@@ -962,7 +977,7 @@ function renderYearEnd(tour, mount){
   if(!ends.some(w=>weekId(w)===st.yeWeek)) st.yeWeek = weekId(ends[0]);
   const bar=document.createElement("div"); bar.className="controls";
   bar.appendChild(field("Season", selectOf(ends.map(w=>[weekId(w), `${w.season} \u2014 ${w.name}`]),
-    st.yeWeek, v=>{ st.yeWeek=v; renderTour(tour); }), "sm"));
+    st.yeWeek, v=>{ st.yeWeek=v; renderTour(tour); }), "md"));
   const dl=document.createElement("button"); dl.className="btn"; dl.textContent="Download CSV";
   bar.appendChild(field("", dl));
   mount.appendChild(bar);
@@ -983,7 +998,7 @@ function renderMovers(tour, mount){
 
   const bar=document.createElement("div"); bar.className="controls";
   bar.appendChild(field("Week", selectOf(weeks.slice().reverse().map(w=>[weekId(w), weekLabel(w)]),
-    st.mvWeek, v=>{ st.mvWeek=v; renderTour(tour); }), "sm"));
+    st.mvWeek, v=>{ st.mvWeek=v; renderTour(tour); }), "md"));
   mount.appendChild(bar);
 
   const moved=(week.list||[])
@@ -1108,10 +1123,10 @@ function renderHistoryPanel(tour, mount){
   }
 
   const cards=[
-    ["Current","#"+stats.current.rank, weekLabel(stats.current)],
-    ["Career high","#"+stats.careerHigh.rank, weekLabel(stats.careerHigh)],
-    ["Season high", stats.seasonHigh?"#"+stats.seasonHigh.rank:"\u2014", stats.seasonHigh?stats.seasonHigh.week+" "+stats.season:""],
-    ["Season low",  stats.seasonLow ?"#"+stats.seasonLow.rank :"\u2014", stats.seasonLow ?stats.seasonLow.week +" "+stats.season:""],
+    ["Current","#"+stats.current.rank, histLabel(stats.current)],
+    ["Career high","#"+stats.careerHigh.rank, histLabel(stats.careerHigh)],
+    ["Season high", stats.seasonHigh?"#"+stats.seasonHigh.rank:"\u2014", histLabel(stats.seasonHigh)],
+    ["Season low",  stats.seasonLow ?"#"+stats.seasonLow.rank :"\u2014", histLabel(stats.seasonLow)],
     ["Weeks at no. 1", String(stats.atNo1), stats.atNo1?"career":""],
     ["Weeks in top 10", String(stats.inTop10), stats.inTop10?"career":""],
     ["Weeks ranked", String(stats.weeks), stats.seasons.slice(0,4).join(", ")+(stats.seasons.length>4?"\u2026":"")]
@@ -1864,16 +1879,66 @@ on("fileIn", "change", e=>{
   e.target.value="";
 });
 
-/* Pick up data.json sitting beside this page. Over file:// the browser
-   blocks that read, which is expected — use Load a data file instead. */
+/* Pick up data.json sitting beside this page. Anything that goes wrong is
+   reported on the page: a blank site with no explanation is the worst
+   possible outcome, so every failure says what happened and what to do. */
+function loadBanner(kind, title, detail){
+  const wrap = document.querySelector(".wrap");
+  if(!wrap) return;
+  const old = $("loadBanner"); if(old) old.remove();
+  const el = document.createElement("div");
+  el.id = "loadBanner";
+  el.className = "msg " + kind;
+  el.style.margin = "0 0 20px";
+  el.innerHTML = `<strong>${esc(title)}</strong><br>${detail}`;
+  const nav = document.querySelector("nav");
+  wrap.insertBefore(el, nav ? nav.nextSibling : wrap.firstChild);
+}
+
 async function autoload(){
+  const local = location.protocol === "file:";
+  let res;
   try{
-    const res = await fetch("data.json", {cache:"no-store"});
-    if(!res.ok) return false;
-    const r = deserialise(await res.json());
+    res = await fetch("data.json", {cache:"no-store"});
+  }catch(err){
+    if(local){
+      loadBanner("warn","Opened straight from your hard drive, so data.json can't load",
+        `Browsers block a local page from reading a local file. ${EDIT
+          ? "Use <b>Load a data file</b> on the Add data tab."
+          : "This is only a limitation of opening the file directly \u2014 the published site loads normally."}`);
+    } else {
+      loadBanner("err","Couldn't reach data.json",
+        `The request failed: ${esc(err.message)}. Check that <code>data.json</code> sits in the same folder as this page.`);
+    }
+    return false;
+  }
+  if(!res.ok){
+    loadBanner("err", `data.json returned ${res.status}`,
+      res.status===404
+        ? "That file isn't where this page expects it. It must sit in the <b>same folder</b> as index.html, spelled exactly <code>data.json</code> in lower case."
+        : "The server refused the request.");
+    return false;
+  }
+  let json;
+  try{ json = await res.json(); }
+  catch(err){
+    loadBanner("err","data.json isn't valid JSON",
+      "The file downloaded but couldn't be read. Re-save it from the editor and upload it again.");
+    return false;
+  }
+  try{
+    const r = deserialise(json);
+    if(!r.weeks && !r.matches){
+      loadBanner("warn","data.json loaded, but it's empty",
+        "No matches and no ranking weeks in the file.");
+      return true;
+    }
     if(EDIT) saveMsg(`Loaded ${r.matches} matches and ${r.weeks} ranking weeks from data.json.`);
     return true;
-  }catch(err){ return false; }
+  }catch(err){
+    loadBanner("err","data.json couldn't be loaded", esc(err.message));
+    return false;
+  }
 }
 
 window.addEventListener("beforeunload", e=>{
@@ -1893,6 +1958,24 @@ function applyMode(){
     : 'Read-only';
 }
 
+function checkVersion(){
+  const want = document.body.dataset.appVersion;
+  if(want && want !== APP_VERSION){
+    loadBanner("err","These files are from different versions",
+      `This page expects app.js version <code>${esc(want)}</code> but the loaded one is
+       <code>${esc(APP_VERSION)}</code>. Upload <b>index.html</b>, <b>desk.html</b> and
+       <b>app.js</b> from the same batch, then hard-refresh with Ctrl-Shift-R.`);
+    return false;
+  }
+  if(!document.getElementById("rankMount")){
+    loadBanner("err","This page is older than app.js",
+      "The rankings section is missing from the markup. Re-upload <b>index.html</b> and <b>desk.html</b>, then hard-refresh with Ctrl-Shift-R.");
+    return false;
+  }
+  return true;
+}
+
 applyMode();
 refreshAll();
+checkVersion();
 autoload();
