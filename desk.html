@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tennis Tipping — 2026</title>
+<title>Results Desk — editor</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -196,35 +196,117 @@ h3.sec{font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:22px;
 }
 </style>
 </head>
-<body data-mode="view" data-app-version="2026-08-27c">
+<body data-mode="edit" data-app-version="2026-08-27c">
 <div class="wrap">
 
   <header class="masthead">
     <div>
-      <p class="eyebrow">2026 season · results &amp; records</p>
-      <h1>Tennis <em>Tipping</em></h1>
+      <p class="eyebrow">Tennis Tipping · Results desk</p>
+      <h1>Results <em>Desk</em></h1>
     </div>
     <div class="scoreboard">
       <div class="sb live"><span class="n" id="sbMatches">0</span><span class="k">Matches</span></div>
       <div class="sb"><span class="n" id="sbPlayers">0</span><span class="k">Players</span></div>
       <div class="sb"><span class="n" id="sbEvents">0</span><span class="k">Events</span></div>
       <div class="sb"><span class="n" id="sbWeeks">0</span><span class="k">Rank wks</span></div>
+      <div class="sb flag"><span class="n" id="sbIssues">0</span><span class="k">Issues</span></div>
     </div>
   </header>
 
   <nav id="nav">
-    <button data-view="matches" aria-selected="true">Matches</button>
+    <button data-view="add" aria-selected="true" data-edit>Add data</button>
+    <button data-view="matches" aria-selected="false">Matches</button>
     <button data-view="players" aria-selected="false">Players</button>
     <button data-view="teams" aria-selected="false">Teams</button>
     <button data-view="titles" aria-selected="false">Titles</button>
     <button data-view="rankings" aria-selected="false">Rankings</button>
     <button data-view="drankings" aria-selected="false">Doubles</button>
+    <button data-view="issues" aria-selected="false" data-edit>Issues<span class="pill" id="pillIssues"></span></button>
+    <span class="modeflag" id="modeFlag"></span>
   </nav>
 
-  
+  <!-- ADD ------------------------------------------------------------- -->
+  <section class="view on" id="v-add">
+    <div class="deck">
+      <div class="panel">
+        <h2>Paste a draw</h2>
+        <p class="lede">Round headers and match lines, exactly as they come off the forum. Singles and
+          doubles can go in together. Winners are read from the bracket.</p>
+        <textarea id="drawIn" spellcheck="false" placeholder="Singles R32 Results
+Matches Counted: 32
+Matches Remaining: 0
+
+19:22 | Herzeleid (GER) vs. Colt th magnific (FRA) #SRs: 12-10
+..."></textarea>
+        <div class="row2" style="margin-top:13px">
+          <div class="field"><label for="tourn">Event</label>
+            <input type="text" id="tourn" placeholder="e.g. Brisbane"></div>
+          <div class="field"><label for="season">Season</label>
+            <input type="text" id="season" placeholder="2026"></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label for="stage">Stage</label>
+            <select id="stage"><option>Main</option><option>Qualifying</option></select></div>
+          <div class="field"><label for="rankWeek">Ranking week</label>
+            <select id="rankWeek"><option value="">None loaded</option></select></div>
+        </div>
+        <label class="check"><input type="checkbox" id="optByes"><span>Keep byes as rows</span></label>
+        <div class="btnrow">
+          <button class="btn primary" id="btnDraw">Add draw</button>
+          <button class="btn" id="btnDrawSample">Load sample</button>
+        </div>
+        <div class="msg" id="drawMsg"></div>
+      </div>
+
+      <div class="panel">
+        <h2>Paste a ranking list</h2>
+        <p class="lede">The forum post, dot leaders and all. The week name is picked up from the title
+          line if it's there. Once loaded, every draw you tag with that week gets both rank columns
+          filled in automatically.</p>
+        <textarea id="rankIn" spellcheck="false" placeholder="TT Singles Rankings 2026: January 5th
+
+1 (1) Michael!(GER).......................2795 ...45 ...30 ...25 ...140
+2 (2) Egiorazz(LIT).......................2785 ...36 ...25 ...25 ...20
+..."></textarea>
+        <div class="row2" style="margin-top:13px">
+          <div class="field"><label for="rankTour">Tour</label>
+            <select id="rankTour"><option>Singles</option><option>Doubles</option></select></div>
+          <div class="field"><label for="weekName">Week name (override)</label>
+            <input type="text" id="weekName" placeholder="Read from the title line"></div>
+        </div>
+        <div class="btnrow">
+          <button class="btn primary" id="btnRank">Add rankings</button>
+          <button class="btn" id="btnRankSample">Load sample</button>
+        </div>
+        <div class="msg" id="rankMsg"></div>
+      </div>
+    </div>
+
+    <div id="reviewWrap" style="margin-top:24px"></div>
+
+    <h3 class="sec">Ranking weeks loaded</h3>
+    <div class="panel">
+      <div id="weekManager" class="dim" style="font-size:13.5px">None yet.</div>
+    </div>
+
+    <h3 class="sec">Your data file</h3>
+    <div class="panel">
+      <div id="loadSummary" class="dim" style="font-size:13.5px">Nothing loaded yet.</div>
+      <p class="lede" style="margin:14px 0 0">Everything lives in <code>data.json</code>. Save it when
+        you're done, drop it next to this page, and it loads by itself next time. Commit that same file
+        to your repository and the published site shows it.</p>
+      <div class="btnrow">
+        <button class="btn primary" id="btnSave">Save data.json</button>
+        <button class="btn" id="btnLoad">Load a data file</button>
+        <input type="file" id="fileIn" accept=".json,application/json" style="display:none">
+        <button class="btn" id="btnWipe">Clear everything</button>
+      </div>
+      <div class="msg" id="saveMsg"></div>
+    </div>
+  </section>
 
   <!-- MATCHES ---------------------------------------------------------- -->
-  <section class="view on" id="v-matches">
+  <section class="view" id="v-matches">
     <div class="controls">
       <div class="field grow"><label for="mQ">Search</label>
         <input type="text" id="mQ" placeholder="Player, country, event…"></div>
@@ -292,7 +374,12 @@ h3.sec{font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:22px;
   <!-- DOUBLES RANKINGS -------------------------------------------------- -->
   <section class="view" id="v-drankings"><div id="drankMount"></div></section>
 
-  
+  <!-- ISSUES ----------------------------------------------------------- -->
+  <section class="view" id="v-issues">
+    <p class="lede">Everything the tool thinks is a data-entry slip rather than a real result. Nothing
+      here is deleted automatically — you decide.</p>
+    <div id="issuesBody"></div>
+  </section>
 
 </div>
 <script src="app.js"></script>

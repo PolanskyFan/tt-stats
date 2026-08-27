@@ -287,6 +287,11 @@ const has = id => !!document.getElementById(id);
 const on  = (id, ev, fn) => { const el=$(id); if(el) el.addEventListener(ev, fn); };
 const setText = (id, v) => { const el=$(id); if(el) el.textContent = v; };
 const EDIT = document.body.dataset.mode === "edit";
+
+/* index.html, desk.html and app.js are uploaded together. Updating only some
+   of them leaves a page whose markup and code disagree, which shows up as a
+   blank tab rather than an error, so they carry a matching stamp. */
+const APP_VERSION = "2026-08-27c";
 const esc = s => String(s).replace(/[&<>"']/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
@@ -1864,16 +1869,66 @@ on("fileIn", "change", e=>{
   e.target.value="";
 });
 
-/* Pick up data.json sitting beside this page. Over file:// the browser
-   blocks that read, which is expected — use Load a data file instead. */
+/* Pick up data.json sitting beside this page. Anything that goes wrong is
+   reported on the page: a blank site with no explanation is the worst
+   possible outcome, so every failure says what happened and what to do. */
+function loadBanner(kind, title, detail){
+  const wrap = document.querySelector(".wrap");
+  if(!wrap) return;
+  const old = $("loadBanner"); if(old) old.remove();
+  const el = document.createElement("div");
+  el.id = "loadBanner";
+  el.className = "msg " + kind;
+  el.style.margin = "0 0 20px";
+  el.innerHTML = `<strong>${esc(title)}</strong><br>${detail}`;
+  const nav = document.querySelector("nav");
+  wrap.insertBefore(el, nav ? nav.nextSibling : wrap.firstChild);
+}
+
 async function autoload(){
+  const local = location.protocol === "file:";
+  let res;
   try{
-    const res = await fetch("data.json", {cache:"no-store"});
-    if(!res.ok) return false;
-    const r = deserialise(await res.json());
+    res = await fetch("data.json", {cache:"no-store"});
+  }catch(err){
+    if(local){
+      loadBanner("warn","Opened straight from your hard drive, so data.json can't load",
+        `Browsers block a local page from reading a local file. ${EDIT
+          ? "Use <b>Load a data file</b> on the Add data tab."
+          : "This is only a limitation of opening the file directly \u2014 the published site loads normally."}`);
+    } else {
+      loadBanner("err","Couldn't reach data.json",
+        `The request failed: ${esc(err.message)}. Check that <code>data.json</code> sits in the same folder as this page.`);
+    }
+    return false;
+  }
+  if(!res.ok){
+    loadBanner("err", `data.json returned ${res.status}`,
+      res.status===404
+        ? "That file isn't where this page expects it. It must sit in the <b>same folder</b> as index.html, spelled exactly <code>data.json</code> in lower case."
+        : "The server refused the request.");
+    return false;
+  }
+  let json;
+  try{ json = await res.json(); }
+  catch(err){
+    loadBanner("err","data.json isn't valid JSON",
+      "The file downloaded but couldn't be read. Re-save it from the editor and upload it again.");
+    return false;
+  }
+  try{
+    const r = deserialise(json);
+    if(!r.weeks && !r.matches){
+      loadBanner("warn","data.json loaded, but it's empty",
+        "No matches and no ranking weeks in the file.");
+      return true;
+    }
     if(EDIT) saveMsg(`Loaded ${r.matches} matches and ${r.weeks} ranking weeks from data.json.`);
     return true;
-  }catch(err){ return false; }
+  }catch(err){
+    loadBanner("err","data.json couldn't be loaded", esc(err.message));
+    return false;
+  }
 }
 
 window.addEventListener("beforeunload", e=>{
@@ -1893,6 +1948,24 @@ function applyMode(){
     : 'Read-only';
 }
 
+function checkVersion(){
+  const want = document.body.dataset.appVersion;
+  if(want && want !== APP_VERSION){
+    loadBanner("err","These files are from different versions",
+      `This page expects app.js version <code>${esc(want)}</code> but the loaded one is
+       <code>${esc(APP_VERSION)}</code>. Upload <b>index.html</b>, <b>desk.html</b> and
+       <b>app.js</b> from the same batch, then hard-refresh with Ctrl-Shift-R.`);
+    return false;
+  }
+  if(!document.getElementById("rankMount")){
+    loadBanner("err","This page is older than app.js",
+      "The rankings section is missing from the markup. Re-upload <b>index.html</b> and <b>desk.html</b>, then hard-refresh with Ctrl-Shift-R.");
+    return false;
+  }
+  return true;
+}
+
 applyMode();
 refreshAll();
+checkVersion();
 autoload();
