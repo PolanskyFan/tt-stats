@@ -1,10 +1,16 @@
 {
  "format": "tennis-tipping/1",
- "savedAt": "2026-08-27T18:38:08.701Z",
+ "savedAt": "2026-08-28T14:22:29.475Z",
  "matches": [],
  "rankingFiles": [
-  "rankings-2026.json"
+  "rankings-2026.json",
+  "rankings-2025.json"
  ],
  "aliases": [],
- "pinned": []
+ "pinned": [
+  {
+   "key": "pierre.",
+   "country": "FRA"
+  }
+ ]
 }
