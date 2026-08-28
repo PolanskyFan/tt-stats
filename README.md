@@ -43,10 +43,12 @@ how safe the data is.
 
 ## Day-to-day use
 
-1. Open `desk.html`, then **Load a data file** and pick `data.json`. Load the
-   season files you're going to touch the same way — for 2025 that's
-   `rankings-2025.json`. Seasons you don't load are left alone; the index keeps
-   listing them and their files are never rewritten.
+1. Open `desk.html` and click **Load a whole folder**, pointing it at the folder
+   holding your files. The index and every season go in together, in the right
+   order. **Load files…** does the same for a hand-picked selection — hold Ctrl
+   or Cmd to choose several — which is how you open just the seasons you plan to
+   touch. Seasons you don't load are left alone; the index keeps listing them and
+   their files are never rewritten.
 2. Paste the week's ranking post into the right-hand box. Add rankings.
 3. For each tournament: name the event, pick the ranking week, paste the draw. Add draw.
 4. Check the **Issues** tab if the counter is showing anything.
@@ -316,6 +318,10 @@ Then each `rankings-<year>.json` you actually need.
   file appears when you save.
 - **Adding to a season already on the site?** Load that year's file first, or
   you'll save a version containing only the weeks you just pasted.
+Loading a folder is the usual way in. Files that aren't recognised are skipped
+and named, and loading the same folder twice replaces what's open rather than
+stacking a second copy of every week.
+
 - **Seasons you don't load** appear as *not loaded* in the file list and are
   never rewritten. Leave those files in the repository — `data.json` keeps
   listing them, so the site still loads them.

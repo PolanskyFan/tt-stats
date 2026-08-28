@@ -197,7 +197,7 @@ h3.sec{font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:22px;
 }
 </style>
 </head>
-<body data-mode="edit" data-app-version="2026-08-28j">
+<body data-mode="edit" data-app-version="2026-08-28k">
 <div class="wrap">
 
   <header class="masthead">
@@ -309,12 +309,16 @@ Matches Remaining: 0
       <div id="loadSummary" class="dim" style="font-size:13.5px">Nothing loaded yet.</div>
       <p class="lede" style="margin:14px 0 0">Rankings are split into one file per season, so a week's
         entry only rewrites that year rather than the whole archive. <b>Save all files</b> downloads the
-        index and every season; the list below lets you take just the ones that changed.</p>
+        index and every season; the list below lets you take just the ones that changed.
+        To load, point <b>Load a whole folder</b> at the folder holding them — the index and every
+        season go in together, in the right order.</p>
       <div id="fileManager" style="margin:14px 0 4px"></div>
       <div class="btnrow">
         <button class="btn primary" id="btnSave">Save all files</button>
-        <button class="btn" id="btnLoad">Load a data file</button>
-        <input type="file" id="fileIn" accept=".json,application/json" style="display:none">
+        <button class="btn" id="btnLoadFolder">Load a whole folder</button>
+        <button class="btn" id="btnLoad">Load files…</button>
+        <input type="file" id="fileIn" accept=".json,application/json" multiple style="display:none">
+        <input type="file" id="folderIn" webkitdirectory directory style="display:none">
         <button class="btn" id="btnWipe">Clear everything</button>
       </div>
       <div class="msg" id="saveMsg"></div>
@@ -398,6 +402,6 @@ Matches Remaining: 0
   </section>
 
 </div>
-<script src="app.js?v=2026-08-28j"></script>
+<script src="app.js?v=2026-08-28k"></script>
 </body>
 </html>

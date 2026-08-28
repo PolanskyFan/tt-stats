@@ -360,7 +360,7 @@ const EDIT = document.body.dataset.mode === "edit";
 /* index.html, desk.html and app.js are uploaded together. Updating only some
    of them leaves a page whose markup and code disagree, which shows up as a
    blank tab rather than an error, so they carry a matching stamp. */
-const APP_VERSION = "2026-08-28j";
+const APP_VERSION = "2026-08-28k";
 const esc = s => String(s).replace(/[&<>"']/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
@@ -2752,6 +2752,10 @@ function decodeSeason(data){
   if(!data || data.format !== RANKINGS_FORMAT)
     throw new Error(`Expected a ${RANKINGS_FORMAT} file.`);
   const P=data.players||[], C=data.countries||[];
+  /* Loading a season that's already open replaces it, so picking the same
+     folder twice doesn't end up with every week duplicated. */
+  const sea = data.season==="unknown" ? "" : data.season;
+  for(let i=WEEKS.length-1;i>=0;i--) if((WEEKS[i].season||"")===(sea||"")) WEEKS.splice(i,1);
   (data.weeks||[]).forEach(w=>{
     const list=(w.r||[]).map(row=>({
       rank:row[0], prev: row[1]===-1 ? "" : row[1],
@@ -2994,34 +2998,74 @@ on("btnSave", "click", ()=>{
 });
 
 on("btnLoad", "click", ()=>{
-  if(DIRTY && !confirm("Loading a file replaces what's on screen, and you have unsaved changes. Continue?")) return;
+  if(DIRTY && !confirm("Loading replaces what's on screen, and you have unsaved changes. Continue?")) return;
   $("fileIn").click();
 });
-on("fileIn", "change", e=>{
-  const f=e.target.files[0]; if(!f) return;
-  const rd=new FileReader();
-  rd.onload=()=>{
+/* A folder or a multiple selection arrives in no particular order, so the
+   index is read first and the season files after it \u2014 loading the index is
+   what clears the board, so doing it second would wipe the seasons. */
+function readFileText(f){
+  return new Promise((res,rej)=>{
+    const rd=new FileReader();
+    rd.onload=()=>res(rd.result);
+    rd.onerror=()=>rej(new Error(`couldn't read ${f.name}`));
+    rd.readAsText(f);
+  });
+}
+
+async function loadFiles(files){
+  const list=[...files].filter(f=>/\.json$/i.test(f.name));
+  if(!list.length){ saveMsg("No .json files in that selection.","err"); return; }
+
+  const parsed=[], bad=[];
+  for(const f of list){
+    try{ parsed.push({f, data:JSON.parse(await readFileText(f))}); }
+    catch(err){ bad.push(`${f.name} (${err.message})`); }
+  }
+  const index   = parsed.filter(p=>p.data && Array.isArray(p.data.matches));
+  const seasons = parsed.filter(p=>p.data && p.data.format===RANKINGS_FORMAT);
+  const unknown = parsed.filter(p=>!index.includes(p) && !seasons.includes(p));
+
+  if(index.length>1){
+    saveMsg(`That selection has ${index.length} index files (${index.map(p=>p.f.name).join(", ")}). `
+      + "Pick one folder at a time.","err");
+    return;
+  }
+
+  snapshot("file load");
+  const notes=[];
+  if(index.length){
     try{
-      const parsed=JSON.parse(rd.result);
-      if(parsed && parsed.format===RANKINGS_FORMAT){     // a season file on its own
-        decodeSeason(parsed); KNOWN_SEASONS.add(parsed.season); sortWeeks();
-        ["Singles","Doubles"].forEach(t=>{ RANK_UI[t].week=null; RANK_UI[t].player=null; });
-        refreshAll();
-        saveMsg(`Added ${parsed.season} from ${f.name}. ${WEEKS.length} ranking weeks loaded in total.`);
-        return;
-      }
-      const r=deserialise(parsed);
-      if((parsed.rankingFiles||[]).length)
-        saveMsg(`Loaded ${r.matches} matches from ${f.name}. Now load each season file `
-          + `(${parsed.rankingFiles.join(", ")}) with the same button.`, "warn");
-      else saveMsg(`Loaded ${r.matches} matches and ${r.weeks} ranking weeks from ${f.name}.`
-        + (r.dupes?` ${r.dupes} repeated ${r.dupes===1?"match":"matches"} held back \u2014 see Issues.`:""),
-        r.dupes?"warn":"");
-    }catch(err){ saveMsg("Couldn't read that file: "+err.message,"err"); }
-  };
-  rd.onerror=()=>saveMsg("Couldn't read that file.","err");
-  rd.readAsText(f);
-  e.target.value="";
+      const r=deserialise(index[0].data);
+      notes.push(`${r.matches} matches from ${index[0].f.name}`);
+    }catch(err){ saveMsg(`Couldn't read ${index[0].f.name}: ${err.message}`,"err"); return; }
+  }
+  let weeks=0;
+  seasons.sort((a,b)=>String(a.data.season).localeCompare(String(b.data.season)));
+  seasons.forEach(p=>{
+    try{ decodeSeason(p.data); KNOWN_SEASONS.add(p.data.season); weeks+=(p.data.weeks||[]).length; }
+    catch(err){ bad.push(`${p.f.name} (${err.message})`); }
+  });
+  sortWeeks();
+  ["Singles","Doubles"].forEach(t=>{ RANK_UI[t].week=null; RANK_UI[t].player=null; });
+  DIRTY=false;
+  refreshAll();
+
+  if(seasons.length) notes.push(`${weeks.toLocaleString()} ranking weeks across `
+    + `${seasons.length} season file${seasons.length===1?"":"s"} (${seasons.map(p=>p.data.season).join(", ")})`);
+  if(!index.length && seasons.length) notes.push("no index file in that selection, so matches were left as they are");
+  if(unknown.length) notes.push(`${unknown.length} file${unknown.length===1?"":"s"} skipped, not recognised `
+    + `(${unknown.map(p=>p.f.name).slice(0,3).join(", ")})`);
+  if(bad.length) notes.push(`${bad.length} failed: ${bad.slice(0,3).join(", ")}`);
+
+  saveMsg("Loaded " + notes.join("; ") + ".", (bad.length||unknown.length) ? "warn" : "");
+}
+
+on("fileIn", "change", e=>{ const f=e.target.files; if(f&&f.length) loadFiles(f); e.target.value=""; });
+on("folderIn", "change", e=>{ const f=e.target.files; if(f&&f.length) loadFiles(f); e.target.value=""; });
+on("btnLoadFolder", "click", ()=>{
+  if(DIRTY && !confirm("Loading replaces what's on screen, and you have unsaved changes. Continue?")) return;
+  $("folderIn").click();
 });
 
 /* Pick up data.json sitting beside this page. Anything that goes wrong is
