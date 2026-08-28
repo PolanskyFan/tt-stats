@@ -13,8 +13,12 @@ const QUAL_LEVELS = {"QFR":0,"QF R":0,"QR3":1,"QR2":2,"QR1":3};
 const MAIN_LABEL = {0:"F",1:"SF",2:"QF",3:"R16",4:"R32",5:"R64",6:"R128",7:"R256",8:"R512"};
 const QUAL_LABEL = {0:"QFR",1:"QR3",2:"QR2",3:"QR1"};
 
-const HEADER_RE = /^(Singles|Doubles)\s+(\S+)\s+Results/i;
-const MATCH_RE  = /^\s*(\d+):(\d+)\s*\|\s*(.+?)\s+vs\.\s+(.+?)\s+#SRs:\s*(\d+)-(\d+)\s*(.*)$/;
+/* Round headers come in two shapes: the long form "Singles R32 Results" and
+   the bare form "R32" used in the draw threads. The discipline is optional in
+   the bare form and falls back to the one chosen on the Add data tab. */
+const HEADER_RE = /^(?:(Singles|Doubles)\s+)?(F|SF|QF|R\d{1,3}|QR\d|QFR)(?:\s+Results)?\s*:?\s*$/i;
+const HEADER_LONG_RE = /^(Singles|Doubles)\s+(\S+)\s+Results/i;
+const MATCH_RE  = /^\s*(\d+):(\d+)\s*\|\s*(.+?)\s+vs\.\s*(.+?)\s*#SRs:\s*(\d+)-(\d+)\s*(.*)$/;
 const SETS_RE   = /Sets to the winner:\s*(\d+)-(\d+)/i;
 
 /* ==================================================================
@@ -111,7 +115,8 @@ function sideKey(side, isDoubles){
   return isDoubles ? teamKeyOf(side.name) : keyOf(side.name);
 }
 
-function parseDraw(text, stage){
+function parseDraw(text, stage, defaultDisc){
+  defaultDisc = defaultDisc || "Singles";
   const qual = stage === "Qualifying";
   const LEVELS = qual ? QUAL_LEVELS : MAIN_LEVELS;
   const LABEL  = qual ? QUAL_LABEL  : MAIN_LABEL;
@@ -121,12 +126,13 @@ function parseDraw(text, stage){
   for(const raw of String(text).split(/\r?\n/)){
     const line = raw.trim();
     if(!line) continue;
-    const h = line.match(HEADER_RE);
+    const h = line.match(HEADER_LONG_RE) || line.match(HEADER_RE);
     if(h){
       const lbl = h[2].toUpperCase();
       const level = LEVELS[lbl];
       if(level === undefined){ unknownRounds.push(h[2]); cur = null; continue; }
-      cur = {disc: h[1][0].toUpperCase()+h[1].slice(1).toLowerCase(), level, matches:[]};
+      const named = h[1] ? h[1][0].toUpperCase()+h[1].slice(1).toLowerCase() : defaultDisc;
+      cur = {disc: named, level, matches:[]};
       groups.push(cur);
       continue;
     }
@@ -241,12 +247,55 @@ function makeRow(meta, idx, method){
    1 (1) Michael!(GER).......................2795 ...45 ...30 ...25 ...140
    ================================================================== */
 const RANK_RE = /^\s*(\d+)\s*\((\d+|NR|-)\)\s*(.+?)\(([A-Za-z]{2,4})\)\s*\.{2,}\s*(\d+)((?:\s*\.{2,}\s*\d+)*)/;
-const TITLE_RE = /Rankings?\s*(\d{4})?\s*[:\u2013-]\s*(.+?)\s*$/i;
+/* Title lines aren't consistent between years:
+     "TT Singles Rankings 2026: January 5th"
+     "TT Singles Rankings January 6th 2025"
+   so rather than match one layout, pull the year, the date and the tour out of
+   wherever they appear. Dates are normalised to "January 6th" so the same week
+   written either way is recognised as one week. */
+const MONTH_RE = /\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{1,2})(?:st|nd|rd|th)?\b/i;
+function ordinal(n){
+  const v=+n, t=v%100;
+  if(t>=11 && t<=13) return v+"th";
+  return v + ({1:"st",2:"nd",3:"rd"}[v%10] || "th");
+}
+function parseTitle(line){
+  const yr = (line.match(/\b(?:19|20)\d{2}\b/) || [])[0] || "";
+  const dm = line.match(MONTH_RE);
+  const week = dm ? dm[1][0].toUpperCase()+dm[1].slice(1).toLowerCase()+" "+ordinal(dm[2]) : "";
+  const tour = /\bdoubles\b/i.test(line) ? "Doubles"
+             : /\bsingles\b/i.test(line) ? "Singles" : "";
+  return {season:yr, week, tour};
+}
+
+/* ------------------------------------------------------------------
+   BULK PASTE
+   A whole forum thread can go in at once. Each week begins at its title
+   line; everything between titles that isn't a ranking row — post
+   headers, reaction lines, the "Weeks at #1" tables, stray comments —
+   simply never matches and is passed over. A line only counts as a title
+   if a month and day can actually be read from it, so a remark like
+   "rankings are going to be late this week" doesn't start a new block.
+   ------------------------------------------------------------------ */
+function parseRankingBlocks(text){
+  const lines = String(text).split(/\r?\n/);
+  const starts = [];
+  lines.forEach((l,i)=>{
+    if(!/rankings?/i.test(l)) return;
+    const t = parseTitle(l);
+    if(t.week) starts.push({i,t});
+  });
+  if(!starts.length) return [{text:String(text), title:null}];
+  return starts.map((s,k)=>({
+    text: lines.slice(s.i, k+1<starts.length ? starts[k+1].i : lines.length).join("\n"),
+    title: s.t
+  }));
+}
 
 function parseRankings(text){
   const lines = String(text).split(/\r?\n/);
   const list = [], bad = [];
-  let week = "", season = "";
+  let week = "", season = "", tour = "";
 
   for(const raw of lines){
     const line = raw.trim();
@@ -261,14 +310,14 @@ function parseRankings(text){
       });
       continue;
     }
-    if(!week && /rankings/i.test(line)){
-      const t = line.match(TITLE_RE);
-      if(t){ season = t[1]||""; week = t[2].trim(); }
+    if(!week && /rankings?/i.test(line)){
+      const t = parseTitle(line);
+      if(t.week){ week = t.week; season = t.season; tour = t.tour; }
       continue;
     }
     if(/^\s*\d+\s*\(/.test(line)) bad.push(line);
   }
-  return {list, week, season, bad};
+  return {list, week, season, tour, bad};
 }
 /* ==================================================================
    STATE
@@ -291,7 +340,7 @@ const EDIT = document.body.dataset.mode === "edit";
 /* index.html, desk.html and app.js are uploaded together. Updating only some
    of them leaves a page whose markup and code disagree, which shows up as a
    blank tab rather than an error, so they carry a matching stamp. */
-const APP_VERSION = "2026-08-27e";
+const APP_VERSION = "2026-08-28c";
 const esc = s => String(s).replace(/[&<>"']/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
@@ -1097,10 +1146,27 @@ function renderHistoryPanel(tour, mount){
   const hist=playerHistory(tour, st.player);
   const stats=historyStats(hist, st.pSeason);
 
+  const bar0=document.createElement("div");
+  bar0.style.cssText="display:flex;gap:9px;flex-wrap:wrap;align-items:center";
   const back=document.createElement("button");
   back.className="btn sm"; back.textContent="\u2190 Back";
   back.addEventListener("click",()=>{ st.player=null; st.pSeason=""; renderTour(tour); });
-  mount.appendChild(back);
+  bar0.appendChild(back);
+
+  /* jump to the same player on the other tour without hunting for them */
+  const other = tour==="Singles" ? "Doubles" : "Singles";
+  const otherHist = playerHistory(other, st.player);
+  const swap=document.createElement("button");
+  swap.className="btn sm";
+  swap.textContent=`${other} ranking \u2192`;
+  if(otherHist.length){
+    swap.addEventListener("click",()=>showRanking(other, st.player));
+  } else {
+    swap.disabled=true; swap.style.opacity=".45";
+    swap.title=`No ${other.toLowerCase()} ranking weeks for this player`;
+  }
+  bar0.appendChild(swap);
+  mount.appendChild(bar0);
 
   const h=document.createElement("h3"); h.className="sec"; h.style.margin="12px 0 2px";
   h.innerHTML=`${esc(canonName(st.player))} <span class="ctry" style="font-size:13px">${esc(canonCountry(st.player))}</span>`;
@@ -1240,13 +1306,13 @@ on("btnDraw", "click", ()=>{
 
   PENDING_EVENT = event;
   const stage=val("stage");
-  const {rows,pending,bad,unknownRounds,groupCount}=parseDraw(text,stage);
+  const {rows,pending,bad,unknownRounds,groupCount}=parseDraw(text,stage,val("drawDisc")||"Singles");
 
   if(groupCount===0){
     msg.className="msg err";
     msg.textContent = unknownRounds.length
       ? `Round "${unknownRounds[0]}" isn't one this stage uses. Main draw expects F, SF, QF, R16\u2026R256; qualifying expects QR1\u2013QR3 and QFR. Is the Stage set correctly?`
-      : 'No round headers found. Each round needs a line like "Singles R32 Results" above its matches.';
+      : 'No round headers found. Each round needs its own line above its matches \u2014 either "R32" on its own or "Singles R32 Results".';
     return;
   }
 
@@ -1294,35 +1360,88 @@ on("btnRank", "click", ()=>{
   const msg=$("rankMsg"); msg.className="msg";
   const text=val("rankIn");
   if(!text.trim()){ msg.className="msg err"; msg.textContent="Nothing to add \u2014 the ranking box is empty."; return; }
-  const {list,week,season,bad}=parseRankings(text);
-  if(!list.length){ msg.className="msg err";
-    msg.textContent="No ranking lines recognised. Each should read like: 1 (1) Michael!(GER)....2795 ...45"; return; }
 
-  const name=val("weekName").trim() || week || `Week ${WEEKS.length+1}`;
-  const tour=val("rankTour") || "Singles";
-  const index=new Map();
-  list.forEach(r=>{ index.set(keyOf(r.name), r.rank); seePlayer(r.name, r.country); });
+  const blocks=parseRankingBlocks(text);
+  const forcedTour=val("rankTour");
+  const seasonOverride=val("rankSeason").trim();
+  const nameOverride=val("weekName").trim();
+  if(blocks.length>1 && nameOverride){
+    msg.className="msg err";
+    msg.textContent=`That paste holds ${blocks.length} weeks, so the week-name override can't apply. Clear it, or paste one week at a time.`;
+    return;
+  }
 
-  const existing=WEEKS.findIndex(w=>w.name===name && (w.season||"")===season && (w.tour||"Singles")===tour);
-  const entry={name, season, tour, list, index, date:weekDate(name, season)};
-  let replaced=false;
-  if(existing>=0){ WEEKS[existing]=entry; replaced=true; } else WEEKS.push(entry);
+  const added=[], replaced=[], empty=[], noSeason=[];
+  let rows=0, badLines=0, lastTour=null;
+
+  blocks.forEach((block,bi)=>{
+    const {list, week, season:titleSeason, tour:titleTour, bad}=parseRankings(block.text);
+    badLines += bad.length;
+    const name = nameOverride || week || `Week ${WEEKS.length+1}`;
+    if(!list.length){ if(week) empty.push(name); return; }
+
+    const tour=(forcedTour==="Auto" ? (titleTour||"Singles") : forcedTour) || "Singles";
+    const season=seasonOverride || titleSeason || "";
+    if(!season) noSeason.push(name);
+    lastTour=tour;
+
+    const index=new Map();
+    list.forEach(r=>{ index.set(keyOf(r.name), r.rank); seePlayer(r.name, r.country); });
+    const entry={name, season, tour, list, index, date:weekDate(name, season)};
+
+    const at=WEEKS.findIndex(w=>w.name===name && (w.season||"")===season && (w.tour||"Singles")===tour);
+    if(at>=0){ WEEKS[at]=entry; replaced.push(`${name} ${season}`); }
+    else { WEEKS.push(entry); added.push(`${name} ${season}`); }
+    SEASON_DIRTY.add(season||"unknown"); KNOWN_SEASONS.add(season||"unknown");
+    rows += list.length;
+
+    if(tour==="Singles") for(const r of MATCHES)
+      if(r.week===name && (r.season||"")===season) applyRanks(r, entry);
+  });
+
   sortWeeks();
 
-  // Backfill any matches already tagged with this week.
-  let back=0;
-  if(tour==="Singles") for(const r of MATCHES)
-    if(r.week===name && (r.season||"")===season) back+=applyRanks(r,entry);
+  if(!added.length && !replaced.length){
+    msg.className="msg err";
+    msg.textContent = blocks.length>1
+      ? "Found ranking titles but no ranking lines under any of them."
+      : "No ranking lines recognised. Each should read like: 1 (1) Michael!(GER)....2795 ...45";
+    return;
+  }
 
-  const bits=[`${replaced?"Replaced":"Added"} ${tour.toLowerCase()} week "${name}" with ${list.length} players.`];
-  if(back) bits.push(`${back} rank values backfilled into matches already loaded.`);
-  if(bad.length) bits.push(`${bad.length} line${bad.length===1?"":"s"} looked like rankings but didn't parse.`);
-  msg.className = bad.length ? "msg warn" : "msg";
-  msg.textContent = bits.join(" ");
+  const bits=[];
+  if(added.length)    bits.push(`Added ${added.length} week${added.length===1?"":"s"}`);
+  if(replaced.length) bits.push(`${added.length?"replaced":"Replaced"} ${replaced.length}`);
+  bits[0] = bits[0] + `, ${rows.toLocaleString()} ranking rows in all.`;
+  if(blocks.length>1) bits.push(`Everything between the weeks was ignored.`);
+  if(empty.length)    bits.push(`${empty.length} title${empty.length===1?" had":"s had"} no ranking lines (${empty.slice(0,3).join(", ")}${empty.length>3?"\u2026":""}).`);
+  if(noSeason.length) bits.push(`No year found for ${noSeason.length} week${noSeason.length===1?"":"s"} \u2014 set one in the Season box, or weeks from different years will collide.`);
+  if(badLines)        bits.push(`${badLines} line${badLines===1?"":"s"} looked like rankings but didn't parse.`);
+
+  const gaps=checkWeekGaps(lastTour||"Singles");
+  if(gaps.length) bits.push(`Possible missing weeks: ${gaps.slice(0,4).join("; ")}${gaps.length>4?"\u2026":""}.`);
+
+  msg.className=(noSeason.length||badLines||empty.length||gaps.length)?"msg warn":"msg";
+  msg.textContent=bits.join(" ");
+
   setVal("rankIn", ""); setVal("weekName", "");
-  RANK_UI[tour].week=null; RANK_UI[tour].player=null; RANK_UI[tour].season=season; RANK_UI[tour].sub="list";
+  const t=lastTour||"Singles";
+  RANK_UI[t].week=null; RANK_UI[t].player=null; RANK_UI[t].season=""; RANK_UI[t].sub="list";
   markDirty(); refreshAll();
 });
+
+/* Weeks land about seven days apart. A much wider gap usually means a post
+   was skipped, which is worth saying out loud during a long entry session. */
+function checkWeekGaps(tour){
+  const ws=tourWeeks(tour).filter(w=>w.date);
+  const out=[];
+  for(let i=1;i<ws.length;i++){
+    if((ws[i].season||"") !== (ws[i-1].season||"")) continue;   // the off-season isn't a gap
+    const days=Math.round((ws[i].date-ws[i-1].date)/86400000);
+    if(days>21) out.push(`${days} days between ${ws[i-1].name} and ${ws[i].name} ${ws[i].season||""}`.replace(/\s+/g," "));
+  }
+  return out;
+}
 
 /* ==================================================================
    REVIEW STRIP
@@ -1547,6 +1666,47 @@ function syncFilters(){
       const o=document.createElement("option"); o.value=n; dl.appendChild(o); }); }
 }
 
+function renderFileManager(){
+  const el=$("fileManager"); if(!el) return;
+  const seasons=loadedSeasons();
+  if(!WEEKS.length && !MATCHES.length){ el.textContent="Nothing to save yet."; return; }
+  el.innerHTML="";
+  const missing=unloadedSeasons();
+  const rows=[["data.json", "index \u00b7 matches, merges, pinned names", DIRTY||LEGACY_INLINE, ()=>{
+      saveIndex(); saveMsg("Saved data.json."); renderFileManager(); }]]
+    .concat(seasons.map(sea=>{
+      const ws=WEEKS.filter(w=>seasonKey(w)===sea);
+      const n=ws.reduce((a,w)=>a+(w.list||[]).length,0);
+      return [seasonFile(sea),
+        `${ws.length} week${ws.length===1?"":"s"} \u00b7 ${n.toLocaleString()} rows`,
+        SEASON_DIRTY.has(sea)||LEGACY_INLINE,
+        ()=>{ const b=saveSeason(sea);
+              saveMsg(`Saved ${seasonFile(sea)} (${(b/1024).toFixed(0)} KB).`);
+              renderFileManager(); }];
+    }));
+  rows.forEach(([name,note,changed,go])=>{
+    const row=document.createElement("div"); row.className="wkrow";
+    row.innerHTML=`<span class="nm"><code>${esc(name)}</code>
+      <span class="dim">${note}</span>
+      ${changed?'<span class="tag" style="margin-left:6px">changed</span>':""}</span>`;
+    const b=document.createElement("button"); b.className="btn sm"; b.textContent="Download";
+    b.addEventListener("click",go); row.appendChild(b); el.appendChild(row);
+  });
+  missing.forEach(sea=>{
+    const row=document.createElement("div"); row.className="wkrow";
+    row.innerHTML=`<span class="nm"><code>${esc(seasonFile(sea))}</code>
+      <span class="dim">listed in data.json, not open in this session</span>
+      <span class="tag" style="margin-left:6px">not loaded</span></span>
+      <span class="dim" style="font-size:12px">left untouched</span>`;
+    el.appendChild(row);
+  });
+  const p=document.createElement("p"); p.className="hint";
+  p.textContent = missing.length
+    ? "Only the files marked changed need re-committing. The ones marked not loaded stay exactly as they are \u2014 don't delete them from the repository."
+    : "Only the files marked changed need re-committing.";
+  el.appendChild(p);
+}
+
 function renderWeekManager(){
   const el=$("weekManager"); if(!el) return;
   if(!WEEKS.length){ el.textContent="None yet."; return; }
@@ -1596,11 +1756,13 @@ function refreshAll(){
   syncFilters();
   tMatches.render(); tPlayers.render(); tTeams.render();
   tTitles.render(); renderRankings();
-  renderReview(); renderIssues(); renderSummary(); renderWeekManager();
+  renderReview(); renderIssues(); renderSummary(); renderWeekManager(); renderFileManager();
   setText("sbMatches", MATCHES.length);
   setText("sbPlayers", derivePlayers().length);
   setText("sbEvents", uniq(MATCHES.map(m=>m.event)).length);
-  setText("sbWeeks", WEEKS.length);
+  /* The same calendar week usually exists on both tours; counting the pair
+     twice would say 52 for a 26-week season. */
+  setText("sbWeeks", new Set(WEEKS.map(w=>(w.season||"")+"|"+w.name)).size);
   const n=issueCount();
   setText("sbIssues", n);
   setText("pillIssues", n || "");
@@ -1706,7 +1868,68 @@ const SAMPLE_RANK=`TT Singles Rankings 2026: January 5th
    ================================================================== */
 const FORMAT = "tennis-tipping/1";
 let DIRTY = false;
+let LEGACY_INLINE = false;
 const markDirty = () => { DIRTY = true; renderSummary(); };
+
+/* ------------------------------------------------------------------
+   FILE LAYOUT
+   Rankings dwarf everything else — a single season of one tour runs to
+   roughly 4,400 rows — so they live in one file per season rather than in
+   data.json. Two things keep those files small: a dictionary of player and
+   country names, which otherwise repeat on every row, and positional rows
+   instead of named fields. Together that's about a sixth of the plain form.
+   ------------------------------------------------------------------ */
+const RANKINGS_FORMAT = "tt-rankings/1";
+const seasonKey  = w => (w.season || "unknown");
+const seasonFile = s => `rankings-${s}.json`;
+const SEASON_DIRTY = new Set();
+/* Seasons named by data.json but not currently open. You only need the season
+   you're working on in memory, so the index has to keep listing the rest —
+   otherwise saving after a partial load would quietly drop them from the site. */
+const KNOWN_SEASONS = new Set();
+
+function loadedSeasons(){
+  return [...new Set(WEEKS.map(seasonKey))].sort((a,b)=>b.localeCompare(a));
+}
+function allSeasons(){
+  return [...new Set([...KNOWN_SEASONS, ...WEEKS.map(seasonKey)])].sort((a,b)=>b.localeCompare(a));
+}
+const unloadedSeasons = () => allSeasons().filter(x=>!loadedSeasons().includes(x));
+
+function encodeSeason(season){
+  const players=[], pIdx=new Map(), countries=[], cIdx=new Map();
+  const idx=(arr,map,v)=>{ v=v??""; if(!map.has(v)){ map.set(v,arr.length); arr.push(v); } return map.get(v); };
+  const weeks = WEEKS.filter(w=>seasonKey(w)===season).map(w=>({
+    t: (w.tour||"Singles")==="Doubles" ? "D" : "S",
+    n: w.name,
+    r: (w.list||[]).map(r=>[
+        r.rank,
+        (r.prev===""||r.prev==null) ? -1 : r.prev,
+        idx(players,pIdx,r.name),
+        idx(countries,cIdx,r.country),
+        r.points,
+        (r.events===""||r.events==null) ? -1 : r.events ])
+  }));
+  return {format:RANKINGS_FORMAT, season, savedAt:new Date().toISOString(),
+          players, countries, weeks};
+}
+
+function decodeSeason(data){
+  if(!data || data.format !== RANKINGS_FORMAT)
+    throw new Error(`Expected a ${RANKINGS_FORMAT} file.`);
+  const P=data.players||[], C=data.countries||[];
+  (data.weeks||[]).forEach(w=>{
+    const list=(w.r||[]).map(row=>({
+      rank:row[0], prev: row[1]===-1 ? "" : row[1],
+      name:P[row[2]]??"", country:C[row[3]]??"",
+      points:row[4], events: row[5]===-1 ? "" : row[5] }));
+    const index=new Map();
+    list.forEach(r=>{ index.set(keyOf(r.name), r.rank); seePlayer(r.name, r.country); });
+    WEEKS.push({name:w.n, season: data.season==="unknown" ? "" : data.season,
+                tour: w.t==="D" ? "Doubles" : "Singles",
+                list, index, date:weekDate(w.n, data.season)});
+  });
+}
 
 function serialise(){
   const pinned = [...PINS.entries()].map(([key,p])=>({key, name:p.name, country:p.country}));
@@ -1714,7 +1937,7 @@ function serialise(){
     format: FORMAT,
     savedAt: new Date().toISOString(),
     matches: MATCHES.map(m=>{ const {raw, ...rest}=m; return rest; }),
-    weeks: WEEKS.map(w=>({name:w.name, season:w.season, tour:w.tour||"Singles", list:w.list})),
+    rankingFiles: allSeasons().map(seasonFile),
     aliases: [...ALIAS.entries()].map(([from,to])=>({from,to})),
     pinned
   };
@@ -1727,15 +1950,24 @@ function deserialise(data){
     throw new Error(`That file says it's format "${data.format}", which this page doesn't read.`);
 
   MATCHES=[]; PENDING=[]; WEEKS=[]; DUPES=[]; SEEN.clear(); REG.clear();
-  ALIAS.clear(); PINS.clear(); ROW_ID=0;
+  ALIAS.clear(); PINS.clear(); SEASON_DIRTY.clear(); KNOWN_SEASONS.clear();
+  LEGACY_INLINE=false; ROW_ID=0;
+  (data.rankingFiles||[]).forEach(f=>{
+    const m=String(f).match(/^rankings-(.+)\.json$/i);
+    if(m) KNOWN_SEASONS.add(m[1]);
+  });
   (data.aliases||[]).forEach(a=>{ if(a && a.from && a.to) ALIAS.set(a.from, a.to); });
 
+  /* Older files kept the weeks inline; newer ones list separate season files
+     that the caller loads. Both are accepted so nothing has to be converted
+     by hand. */
   (data.weeks||[]).forEach(w=>{
     const index=new Map();
     (w.list||[]).forEach(r=>{ index.set(keyOf(r.name), r.rank); seePlayer(r.name, r.country); });
     WEEKS.push({name:w.name, season:w.season, tour:w.tour||"Singles",
                 list:w.list||[], index, date:weekDate(w.name, w.season)});
   });
+  if(data.weeks && data.weeks.length){ LEGACY_INLINE = true; loadedSeasons().forEach(x=>SEASON_DIRTY.add(x)); }
   sortWeeks();
 
   data.matches.forEach(m=>{
@@ -1840,6 +2072,7 @@ function unmerge(fromKey){ ALIAS.delete(fromKey); reindex(); }
 function removeWeek(name, season, tour){
   const i = WEEKS.findIndex(w => w.name===name && (w.season||"")===(season||"") && (w.tour||"Singles")===tour);
   if(i < 0) return false;
+  SEASON_DIRTY.add(season||"unknown");
   WEEKS.splice(i,1);
   /* any match tagged with it loses its ranks rather than keeping stale ones */
   if(tour==="Singles") for(const r of MATCHES)
@@ -1849,14 +2082,45 @@ function removeWeek(name, season, tour){
 
 function saveMsg(text, cls){ const m=$("saveMsg"); if(!m) return; m.className="msg"+(cls?" "+cls:""); m.textContent=text; }
 
+function saveJson(obj, filename, pretty){
+  const text = pretty ? JSON.stringify(obj,null,1) : JSON.stringify(obj);
+  const url=URL.createObjectURL(new Blob([text],{type:"application/json"}));
+  const a=document.createElement("a");
+  a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1500);
+  return text.length;
+}
+
+function saveIndex(){
+  const n = saveJson(serialise(), "data.json", true);
+  return n;
+}
+function saveSeason(season){
+  const n = saveJson(encodeSeason(season), seasonFile(season), false);
+  SEASON_DIRTY.delete(season);
+  return n;
+}
+
+/* Browsers queue downloads rather than firing them at once, so they're spaced
+   out; without the gap most of them are silently dropped. */
+async function saveAll(){
+  const seasons = loadedSeasons();
+  let bytes = saveIndex();
+  for(const s of seasons){
+    await new Promise(r=>setTimeout(r,450));
+    bytes += saveSeason(s);
+  }
+  DIRTY=false; LEGACY_INLINE=false; renderSummary(); renderFileManager();
+  const missing=unloadedSeasons();
+  saveMsg(`Saved data.json and ${seasons.length} season file${seasons.length===1?"":"s"} `
+    + `(${(bytes/1024).toFixed(0)} KB in total). Put them all in the same folder.`
+    + (missing.length ? ` ${missing.length} other season${missing.length===1?"":"s"} `
+        + `(${missing.join(", ")}) weren't open and haven't been rewritten \u2014 leave those files where they are.` : ""),
+    missing.length ? "warn" : "");
+}
 on("btnSave", "click", ()=>{
   if(!MATCHES.length && !WEEKS.length){ saveMsg("Nothing to save yet.","err"); return; }
-  const blob=new Blob([JSON.stringify(serialise(),null,1)],{type:"application/json"});
-  const url=URL.createObjectURL(blob), a=document.createElement("a");
-  a.href=url; a.download="data.json"; document.body.appendChild(a); a.click(); a.remove();
-  setTimeout(()=>URL.revokeObjectURL(url),1000);
-  DIRTY=false; renderSummary();
-  saveMsg(`Saved ${MATCHES.length} matches and ${WEEKS.length} ranking weeks to data.json.`);
+  saveAll();
 });
 
 on("btnLoad", "click", ()=>{
@@ -1868,8 +2132,19 @@ on("fileIn", "change", e=>{
   const rd=new FileReader();
   rd.onload=()=>{
     try{
-      const r=deserialise(JSON.parse(rd.result));
-      saveMsg(`Loaded ${r.matches} matches and ${r.weeks} ranking weeks from ${f.name}.`
+      const parsed=JSON.parse(rd.result);
+      if(parsed && parsed.format===RANKINGS_FORMAT){     // a season file on its own
+        decodeSeason(parsed); KNOWN_SEASONS.add(parsed.season); sortWeeks();
+        ["Singles","Doubles"].forEach(t=>{ RANK_UI[t].week=null; RANK_UI[t].player=null; });
+        refreshAll();
+        saveMsg(`Added ${parsed.season} from ${f.name}. ${WEEKS.length} ranking weeks loaded in total.`);
+        return;
+      }
+      const r=deserialise(parsed);
+      if((parsed.rankingFiles||[]).length)
+        saveMsg(`Loaded ${r.matches} matches from ${f.name}. Now load each season file `
+          + `(${parsed.rankingFiles.join(", ")}) with the same button.`, "warn");
+      else saveMsg(`Loaded ${r.matches} matches and ${r.weeks} ranking weeks from ${f.name}.`
         + (r.dupes?` ${r.dupes} repeated ${r.dupes===1?"match":"matches"} held back \u2014 see Issues.`:""),
         r.dupes?"warn":"");
     }catch(err){ saveMsg("Couldn't read that file: "+err.message,"err"); }
@@ -1928,6 +2203,27 @@ async function autoload(){
   }
   try{
     const r = deserialise(json);
+    const files = json.rankingFiles || [];
+    if(files.length){
+      const results = await Promise.all(files.map(async f=>{
+        try{
+          const fr = await fetch(f, {cache:"no-store"});
+          if(!fr.ok) return {f, err:`returned ${fr.status}`};
+          decodeSeason(await fr.json());
+          return {f, ok:true};
+        }catch(e){ return {f, err:e.message}; }
+      }));
+      sortWeeks();
+      ["Singles","Doubles"].forEach(t=>{ RANK_UI[t].week=null; RANK_UI[t].player=null; });
+      refreshAll();
+      const failed = results.filter(x=>x.err);
+      if(failed.length){
+        loadBanner("err", `${failed.length} ranking file${failed.length===1?"":"s"} couldn't be loaded`,
+          failed.map(x=>`<code>${esc(x.f)}</code> \u2014 ${esc(x.err)}`).join("<br>") +
+          "<br>Every file listed in data.json must sit in the same folder.");
+      }
+      r.weeks = WEEKS.length;
+    }
     if(!r.weeks && !r.matches){
       loadBanner("warn","data.json loaded, but it's empty",
         "No matches and no ranking weeks in the file.");

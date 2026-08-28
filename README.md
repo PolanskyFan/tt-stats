@@ -4,11 +4,22 @@ Turns pasted draw sheets into a searchable, sortable results site. No build
 step, no server, no database.
 
 ```
-index.html    the public site        <- commit this
-app.js        the shared logic       <- commit this
-data.json     all your data          <- commit this
-desk.html     the editor             <- keep on your computer
+index.html              the public site      <- commit this
+app.js                  the shared logic     <- commit this
+data.json               index: matches, merges, pinned names
+rankings-2026.json      one file per season
+rankings-2025.json      ...
+desk.html               the editor           <- keep on your computer
 ```
+
+Rankings are split by season because they're by far the bulk of the data: one
+season of one tour is roughly 4,400 rows. Splitting means entering a week
+rewrites that year's file only, so a commit is kilobytes rather than megabytes
+and the repository history stays small.
+
+Inside a season file the names are held once in a dictionary and each row is a
+plain array, which is about a sixth the size of the obvious layout — roughly
+100 KB per season rather than 600 KB.
 
 ---
 
@@ -32,11 +43,16 @@ how safe the data is.
 
 ## Day-to-day use
 
-1. Open `desk.html` on your computer, then **Load a data file** and pick `data.json`.
+1. Open `desk.html`, then **Load a data file** and pick `data.json`. Load the
+   season files you're going to touch the same way — for 2025 that's
+   `rankings-2025.json`. Seasons you don't load are left alone; the index keeps
+   listing them and their files are never rewritten.
 2. Paste the week's ranking post into the right-hand box. Add rankings.
 3. For each tournament: name the event, pick the ranking week, paste the draw. Add draw.
 4. Check the **Issues** tab if the counter is showing anything.
-5. **Save data.json** and put the downloaded file next to `index.html`.
+5. **Save all files**, and put every download next to `index.html`. The file list
+   marks which ones actually changed — usually just `data.json` and the current
+   season, so those are the only two you need to commit.
 
 Step 5 matters. Nothing is written automatically — until you save, the data
 lives only in that browser tab. The page warns you if you try to close it with
@@ -148,6 +164,42 @@ Since it's JSON in Git, every commit is a restore point. If an entry goes wrong,
 
 ## Rounds it understands
 
+## Pasting draws
+
+Round headers work in either shape: `R32` on its own, as the draw threads write
+them, or the longer `Singles R32 Results`. When the header doesn't say which
+discipline it is, the **Discipline** dropdown decides.
+
+## Pasting rankings
+
+The title line is read whichever way round it's written — `Rankings 2026:
+January 5th` or `Rankings January 6th 2025` — and the year, the date and the
+tour all come from it. Dates are normalised, so "January 6" and "January 6th"
+are the same week either way.
+
+### Pasting a whole thread at once
+
+You don't have to add weeks one at a time. Copy as much of the forum thread as
+you like — several posts, a whole season — and paste the lot. Each week starts
+at its own title line, and anything between titles that isn't a ranking row is
+passed over: post headers, join dates, reaction lines, "Weeks at #1" tables,
+other people's comments.
+
+A line only starts a new week if a month and day can be read from it, so a post
+saying "rankings are going to be a bit late this week" doesn't create an empty
+one.
+
+The week-name override only applies to a single-week paste; with several weeks
+in the box the page asks you to clear it.
+
+After a bulk paste you get a count of weeks and rows added, and a warning if
+consecutive weeks in the same season sit more than three weeks apart — usually
+the sign of a post that got skipped. Gaps across the off-season are ignored.
+
+Leave **Tour** on *Auto* to take it from the title. If a title has no year, the
+page says so and you can type one into **Season**; without it, weeks from
+different years collide.
+
 | Stage | Rounds |
 |---|---|
 | Main | `F` `SF` `QF` `R16` `R32` `R64` `R128` `R256` `R512` |
@@ -186,6 +238,23 @@ Each tour has four views:
 | **Compare** | Two players' ranking or points lines on one chart, with a summary. |
 
 ---
+
+## Which files to load
+
+`data.json` first — it holds the matches and tells the page which seasons exist.
+Then each `rankings-<year>.json` you actually need.
+
+- **Entering a season for the first time?** Load nothing for it. Just paste; the
+  file appears when you save.
+- **Adding to a season already on the site?** Load that year's file first, or
+  you'll save a version containing only the weeks you just pasted.
+- **Seasons you don't load** appear as *not loaded* in the file list and are
+  never rewritten. Leave those files in the repository — `data.json` keeps
+  listing them, so the site still loads them.
+
+Career high and weeks-at-number-one are worked out from whatever is loaded, so
+open every season if you want those to read correctly while you work. It makes
+no difference to what gets saved.
 
 ## Ranking weeks
 

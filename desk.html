@@ -197,7 +197,7 @@ h3.sec{font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:22px;
 }
 </style>
 </head>
-<body data-mode="edit" data-app-version="2026-08-27e">
+<body data-mode="edit" data-app-version="2026-08-28c">
 <div class="wrap">
 
   <header class="masthead">
@@ -248,6 +248,8 @@ Matches Remaining: 0
         <div class="row2">
           <div class="field"><label for="stage">Stage</label>
             <select id="stage"><option>Main</option><option>Qualifying</option></select></div>
+          <div class="field"><label for="drawDisc">Discipline</label>
+            <select id="drawDisc"><option>Singles</option><option>Doubles</option></select></div>
           <div class="field"><label for="rankWeek">Ranking week</label>
             <select id="rankWeek"><option value="">None loaded</option></select></div>
         </div>
@@ -271,9 +273,14 @@ Matches Remaining: 0
 ..."></textarea>
         <div class="row2" style="margin-top:13px">
           <div class="field"><label for="rankTour">Tour</label>
-            <select id="rankTour"><option>Singles</option><option>Doubles</option></select></div>
+            <select id="rankTour"><option>Auto</option><option>Singles</option><option>Doubles</option></select></div>
+          <div class="field"><label for="rankSeason">Season</label>
+            <input type="text" id="rankSeason" placeholder="From the title"></div>
+        </div>
+        <div class="row2">
           <div class="field"><label for="weekName">Week name (override)</label>
-            <input type="text" id="weekName" placeholder="Read from the title line"></div>
+            <input type="text" id="weekName" placeholder="From the title"></div>
+          <div class="field"></div>
         </div>
         <div class="btnrow">
           <button class="btn primary" id="btnRank">Add rankings</button>
@@ -293,11 +300,12 @@ Matches Remaining: 0
     <h3 class="sec">Your data file</h3>
     <div class="panel">
       <div id="loadSummary" class="dim" style="font-size:13.5px">Nothing loaded yet.</div>
-      <p class="lede" style="margin:14px 0 0">Everything lives in <code>data.json</code>. Save it when
-        you're done, drop it next to this page, and it loads by itself next time. Commit that same file
-        to your repository and the published site shows it.</p>
+      <p class="lede" style="margin:14px 0 0">Rankings are split into one file per season, so a week's
+        entry only rewrites that year rather than the whole archive. <b>Save all files</b> downloads the
+        index and every season; the list below lets you take just the ones that changed.</p>
+      <div id="fileManager" style="margin:14px 0 4px"></div>
       <div class="btnrow">
-        <button class="btn primary" id="btnSave">Save data.json</button>
+        <button class="btn primary" id="btnSave">Save all files</button>
         <button class="btn" id="btnLoad">Load a data file</button>
         <input type="file" id="fileIn" accept=".json,application/json" style="display:none">
         <button class="btn" id="btnWipe">Clear everything</button>
