@@ -135,6 +135,13 @@ Everything questionable lands on the **Issues** tab instead of into the data.
 - **Spelling variants** are already treated as one player; you choose which
   spelling is displayed and exported.
 - **Undecidable matches** wait for you to pick a winner.
+- **Weeks with only one tour** are flagged once a season has some of each — the
+  two tours run the same calendar, so a week on one and not the other is nearly
+  always a post that didn't get pasted.
+
+Once you pick a spelling or a country, that conflict is settled and drops out of
+the list. Settled ones sit in a collapsed *Settled earlier* section at the
+bottom with an Undo beside each, so the list above only ever shows what's new.
 
 ---
 

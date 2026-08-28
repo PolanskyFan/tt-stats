@@ -345,7 +345,7 @@ const EDIT = document.body.dataset.mode === "edit";
 /* index.html, desk.html and app.js are uploaded together. Updating only some
    of them leaves a page whose markup and code disagree, which shows up as a
    blank tab rather than an error, so they carry a matching stamp. */
-const APP_VERSION = "2026-08-28e";
+const APP_VERSION = "2026-08-28f";
 const esc = s => String(s).replace(/[&<>"']/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
@@ -529,21 +529,62 @@ function deriveTitles(){
 /* ==================================================================
    ISSUES
    ================================================================== */
+/* A conflict counts as settled once you've pinned a choice for that field, and
+   settled ones drop off the list. Without that, every spelling you'd already
+   decided on came back on every load and buried whatever was actually new. */
 function deriveIssues(){
-  const countryConflicts=[], nameVariants=[];
+  const countryConflicts=[], nameVariants=[], resolved=[];
   for(const e of REG.values()){
+    const p = PINS.get(e.key) || {};
     const cs = Object.keys(e.countries).filter(Boolean);
-    if(cs.length>1) countryConflicts.push({e, options:cs.map(c=>({c,n:e.countries[c]}))
-      .sort((a,b)=>b.n-a.n)});
+    if(cs.length>1){
+      const item={e, field:"country", options:cs.map(c=>({c,n:e.countries[c]})).sort((a,b)=>b.n-a.n)};
+      (p.country ? resolved : countryConflicts).push(item);
+    }
     const ns = Object.keys(e.names);
-    if(ns.length>1) nameVariants.push({e, options:ns.map(n=>({n,c:e.names[n]}))
-      .sort((a,b)=>b.c-a.c)});
+    if(ns.length>1){
+      const item={e, field:"name", options:ns.map(n=>({n,c:e.names[n]})).sort((a,b)=>b.c-a.c)};
+      (p.name ? resolved : nameVariants).push(item);
+    }
   }
-  return {countryConflicts, nameVariants, dupes:DUPES, pending:PENDING};
+  return {countryConflicts, nameVariants, resolved,
+          tourGaps:deriveTourGaps(), dupes:DUPES, pending:PENDING};
 }
+
+/* Both tours run the same calendar, so a week that exists on one and not the
+   other is nearly always a post that didn't get pasted. Only checked once a
+   season has some of each, so a season part-way through entry stays quiet. */
+function deriveTourGaps(){
+  const by=new Map();
+  for(const w of WEEKS){
+    const s=w.season||"";
+    if(!by.has(s)) by.set(s,{S:new Map(), D:new Map()});
+    by.get(s)[(w.tour||"Singles")==="Doubles"?"D":"S"].set(w.name, w);
+  }
+  const out=[];
+  for(const [season,{S,D}] of by){
+    if(!S.size || !D.size) continue;
+    for(const [name,w] of S) if(!D.has(name)) out.push({season, week:name, has:"Singles", missing:"Doubles", date:w.date});
+    for(const [name,w] of D) if(!S.has(name)) out.push({season, week:name, has:"Doubles", missing:"Singles", date:w.date});
+  }
+  return out.sort((a,b)=> (b.season||"").localeCompare(a.season||"") ||
+    ((a.date&&b.date) ? a.date-b.date : String(a.week).localeCompare(String(b.week))));
+}
+
+function unpin(key, field){
+  const p=PINS.get(key); if(!p) return;
+  delete p[field];
+  if(!p.name && !p.country) PINS.delete(key);
+  const e=REG.get(key);
+  if(e){ e.pinned = PINS.has(key);
+    if(!p.name)    e.name    = topOf(e.names)    || e.name;
+    if(!p.country) e.country = topOf(e.countries) || e.country; }
+}
+
 function issueCount(){
   const i = deriveIssues();
-  return i.countryConflicts.length + i.nameVariants.length + i.dupes.length + i.pending.length;
+  return i.countryConflicts.length + i.nameVariants.length
+       + i.tourGaps.length + i.dupes.length + i.pending.length;
 }
 
 /* ==================================================================
@@ -1553,17 +1594,38 @@ function renderMergePanel(box){
 
 function renderIssues(){
   const box=$("issuesBody"); if(!box) return;
-  const {countryConflicts,nameVariants,dupes,pending}=deriveIssues();
+  const {countryConflicts,nameVariants,resolved,tourGaps,dupes,pending}=deriveIssues();
   box.innerHTML="";
   renderMergePanel(box);
-  const total=countryConflicts.length+nameVariants.length+dupes.length+pending.length;
+  const total=countryConflicts.length+nameVariants.length+tourGaps.length+dupes.length+pending.length;
 
   if(!total){
     const ok=document.createElement("div"); ok.className="ok";
     ok.innerHTML=`<b>All clean</b>No conflicting countries, no duplicate spellings,
-      no repeated matches, nothing waiting on a verdict.`;
+      no repeated matches, no half-entered weeks, nothing waiting on a verdict.`;
     box.appendChild(ok);
+    renderResolved(box, resolved);
     return;
+  }
+
+  if(tourGaps.length){
+    const s=document.createElement("section"); s.className="review";
+    s.innerHTML=`<p class="blockhead">Weeks with only one tour \u2014 ${tourGaps.length}</p>
+      <p class="lede" style="margin-bottom:6px">These weeks exist on one tour but not the other,
+      matched on the week name. Usually a post that didn't get pasted.</p>`;
+    tourGaps.slice(0,60).forEach(g=>{
+      const q=document.createElement("div"); q.className="rq";
+      q.innerHTML=`<span class="tag">${esc(g.season||"no year")}</span>
+        <span class="ctx">${esc(g.week)} \u2014 has ${esc(g.has.toLowerCase())},
+        <b>no ${esc(g.missing.toLowerCase())}</b></span>`;
+      s.appendChild(q);
+    });
+    if(tourGaps.length>60){
+      const more=document.createElement("p"); more.className="hint";
+      more.textContent=`\u2026and ${tourGaps.length-60} more.`;
+      s.appendChild(more);
+    }
+    box.appendChild(s);
   }
 
   if(countryConflicts.length){
@@ -1633,6 +1695,34 @@ function renderIssues(){
       <p class="lede">Decide these on the Add data tab.</p>`;
     box.appendChild(s);
   }
+  renderResolved(box, resolved);
+}
+
+/* Settled conflicts, kept out of the way but reversible. */
+function renderResolved(box, resolved){
+  if(!resolved.length) return;
+  const d=document.createElement("details");
+  d.className="panel"; d.style.marginTop="20px";
+  const sum=document.createElement("summary");
+  sum.style.cssText="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:10.5px;"
+    +"letter-spacing:.16em;text-transform:uppercase;color:var(--slate)";
+  sum.textContent=`Settled earlier \u2014 ${resolved.length}`;
+  d.appendChild(sum);
+  const p=document.createElement("p"); p.className="lede"; p.style.margin="12px 0 4px";
+  p.textContent="Choices you've already made. They stay out of the list above until you undo one.";
+  d.appendChild(p);
+  resolved.forEach(({e,field,options})=>{
+    const q=document.createElement("div"); q.className="wkrow";
+    const chosen = field==="country" ? e.country : e.name;
+    q.innerHTML=`<span class="nm"><span class="tag">${field}</span>
+      <b style="margin-left:8px">${esc(chosen)}</b>
+      <span class="dim">chosen over ${esc(options
+        .map(o=>field==="country"?o.c:o.n).filter(v=>v!==chosen).join(", "))}</span></span>`;
+    const u=document.createElement("button"); u.className="btn sm"; u.textContent="Undo";
+    u.addEventListener("click",()=>{ unpin(e.key, field); markDirty(); refreshAll(); });
+    q.appendChild(u); d.appendChild(q);
+  });
+  box.appendChild(d);
 }
 
 /* ==================================================================

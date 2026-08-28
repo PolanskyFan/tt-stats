@@ -1,6 +1,6 @@
 {
  "format": "tennis-tipping/1",
- "savedAt": "2026-08-28T15:13:43.822Z",
+ "savedAt": "2026-08-28T16:48:37.981Z",
  "matches": [
   {
    "id": 1,
@@ -1451,6 +1451,206 @@
    "method": "score",
    "isBye": false,
    "tied": false
+  },
+  {
+   "id": 59,
+   "disc": "Singles",
+   "stage": "Qualifying",
+   "event": "Brisbane",
+   "season": "",
+   "week": "August 24th",
+   "round": "QFR",
+   "level": 0,
+   "winnerSeed": "3",
+   "winner": "rjd/Joaquin",
+   "winnerCountry": "ARG/CHI",
+   "loserSeed": "",
+   "loser": "alwaysfan (ESP)/^Bibi^",
+   "loserCountry": "KOR",
+   "winnerScore": 3,
+   "loserScore": 2,
+   "winnerSC": 2,
+   "loserSC": 2,
+   "winnerRank": "",
+   "loserRank": "",
+   "method": "score",
+   "isBye": false,
+   "tied": false
+  },
+  {
+   "id": 60,
+   "disc": "Singles",
+   "stage": "Qualifying",
+   "event": "Brisbane",
+   "season": "",
+   "week": "August 24th",
+   "round": "QFR",
+   "level": 0,
+   "winnerSeed": "2",
+   "winner": "Fogmeister/andrepeixe",
+   "winnerCountry": "BRA/POR",
+   "loserSeed": "4",
+   "loser": "FERNANDO CORDEIR/rafagami",
+   "loserCountry": "ARG/PNG",
+   "winnerScore": 2,
+   "loserScore": 1,
+   "winnerSC": 1,
+   "loserSC": 0,
+   "winnerRank": "",
+   "loserRank": "",
+   "method": "score",
+   "isBye": false,
+   "tied": false
+  },
+  {
+   "id": 61,
+   "disc": "Doubles",
+   "stage": "Qualifying",
+   "event": "Brisbane",
+   "season": "",
+   "week": "August 24th",
+   "round": "QFR",
+   "level": 0,
+   "winnerSeed": "3",
+   "winner": "rjd/Joaquin",
+   "winnerCountry": "ARG/CHI",
+   "loserSeed": "",
+   "loser": "alwaysfan (ESP)/^Bibi^",
+   "loserCountry": "KOR",
+   "winnerScore": 3,
+   "loserScore": 2,
+   "winnerSC": 2,
+   "loserSC": 2,
+   "winnerRank": "",
+   "loserRank": "",
+   "method": "bracket",
+   "isBye": false,
+   "tied": false
+  },
+  {
+   "id": 62,
+   "disc": "Doubles",
+   "stage": "Qualifying",
+   "event": "Brisbane",
+   "season": "",
+   "week": "August 24th",
+   "round": "QFR",
+   "level": 0,
+   "winnerSeed": "2",
+   "winner": "Fogmeister/andrepeixe",
+   "winnerCountry": "BRA/POR",
+   "loserSeed": "4",
+   "loser": "FERNANDO CORDEIR/rafagami",
+   "loserCountry": "ARG/PNG",
+   "winnerScore": 2,
+   "loserScore": 1,
+   "winnerSC": 1,
+   "loserSC": 0,
+   "winnerRank": "",
+   "loserRank": "",
+   "method": "bracket",
+   "isBye": false,
+   "tied": false
+  },
+  {
+   "id": 63,
+   "disc": "Singles",
+   "stage": "Qualifying",
+   "event": "Brisbane",
+   "season": "",
+   "week": "January 5th",
+   "round": "QFR",
+   "level": 0,
+   "winnerSeed": "",
+   "winner": "Joaquin",
+   "winnerCountry": "CHI",
+   "loserSeed": "7",
+   "loser": "Jaker",
+   "loserCountry": "CAN",
+   "winnerScore": 2,
+   "loserScore": 1,
+   "winnerSC": 2,
+   "loserSC": 0,
+   "winnerRank": "",
+   "loserRank": "",
+   "method": "score",
+   "isBye": false,
+   "tied": false
+  },
+  {
+   "id": 64,
+   "disc": "Singles",
+   "stage": "Qualifying",
+   "event": "Brisbane",
+   "season": "",
+   "week": "January 5th",
+   "round": "QFR",
+   "level": 0,
+   "winnerSeed": "8",
+   "winner": "RIPwtaworld",
+   "winnerCountry": "MEX",
+   "loserSeed": "2",
+   "loser": "njnetswill",
+   "loserCountry": "USA",
+   "winnerScore": 2,
+   "loserScore": 1,
+   "winnerSC": 1,
+   "loserSC": 0,
+   "winnerRank": "",
+   "loserRank": "",
+   "method": "score",
+   "isBye": false,
+   "tied": false
+  },
+  {
+   "id": 65,
+   "disc": "Singles",
+   "stage": "Qualifying",
+   "event": "Brisbane",
+   "season": "",
+   "week": "January 5th",
+   "round": "QFR",
+   "level": 0,
+   "winnerSeed": "",
+   "winner": "BMT360",
+   "winnerCountry": "USA",
+   "loserSeed": "",
+   "loser": "andrepeixe",
+   "loserCountry": "POR",
+   "winnerScore": 1,
+   "loserScore": 1,
+   "winnerSC": 1,
+   "loserSC": 0,
+   "winnerRank": "",
+   "loserRank": "",
+   "method": "bracket",
+   "isBye": false,
+   "tied": false
+  },
+  {
+   "id": 66,
+   "disc": "Singles",
+   "stage": "Qualifying",
+   "event": "Brisbane",
+   "season": "",
+   "week": "January 5th",
+   "round": "QFR",
+   "level": 0,
+   "winnerSeed": "",
+   "winner": "rjd",
+   "winnerCountry": "ARG",
+   "loserSeed": "4",
+   "loser": "lucian iasi",
+   "loserCountry": "ROU",
+   "winnerScore": 1,
+   "loserScore": 0,
+   "winnerSC": 0,
+   "loserSC": 0,
+   "winnerRank": "",
+   "loserRank": "",
+   "method": "bracket",
+   "isBye": false,
+   "tied": false
   }
  ],
  "rankingFiles": [
@@ -1474,6 +1674,95 @@
   {
    "key": "p_varna",
    "name": "p_varna"
+  },
+  {
+   "key": "starluk",
+   "name": "starluk",
+   "country": "CHN"
+  },
+  {
+   "key": "slice and dice",
+   "country": "USA"
+  },
+  {
+   "key": "alejan milos",
+   "name": "alejan_Milos"
+  },
+  {
+   "key": "egiorazz",
+   "name": "egiorazz"
+  },
+  {
+   "key": "rodrigol 87",
+   "name": "rodrigol_87"
+  },
+  {
+   "key": "rafagami",
+   "name": "rafagami"
+  },
+  {
+   "key": "^bibi^",
+   "name": "^bibi^"
+  },
+  {
+   "key": "sapfosakellaridifan",
+   "name": "SapfoSakellaridiFan"
+  },
+  {
+   "key": "scher",
+   "name": "Scher"
+  },
+  {
+   "key": "njnetswill",
+   "name": "njnetswill"
+  },
+  {
+   "key": "sdtoot",
+   "name": "sdtoot"
+  },
+  {
+   "key": "vjatceslav",
+   "name": "vjatceslav"
+  },
+  {
+   "key": "chowdahead25",
+   "name": "Chowdahead25"
+  },
+  {
+   "key": "lucian iasi",
+   "name": "lucian_iasi"
+  },
+  {
+   "key": "alwaysfan",
+   "name": "alwaysfan"
+  },
+  {
+   "key": "eljab",
+   "name": "eljab"
+  },
+  {
+   "key": "danieln1",
+   "name": "danieln1"
+  },
+  {
+   "key": "ozone",
+   "name": "Ozone"
+  },
+  {
+   "key": "p varna",
+   "name": "p_varna"
+  },
+  {
+   "key": "supertom",
+   "name": "supertom"
+  },
+  {
+   "key": "bry17may",
+   "name": "bry17may"
+  },
+  {
+   "key": "gooudinusa",
+   "name": "goOudinUSA"
   }
  ]
 }
