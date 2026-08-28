@@ -18,7 +18,9 @@ const QUAL_LABEL = {0:"QFR",1:"QR3",2:"QR2",3:"QR1"};
    the bare form and falls back to the one chosen on the Add data tab. */
 const HEADER_RE = /^(?:(Singles|Doubles)\s+)?(F|SF|QF|R\d{1,3}|QR\d|QFR)(?:\s+Results)?\s*:?\s*$/i;
 const HEADER_LONG_RE = /^(Singles|Doubles)\s+(\S+)\s+Results/i;
-const MATCH_RE  = /^\s*(\d+):(\d+)\s*\|\s*(.+?)\s+vs\.\s*(.+?)\s*#SRs:\s*(\d+)-(\d+)\s*(.*)$/;
+/* The tag is written "#SRs:" in main-draw posts and "#SR:" in some qualifying
+   ones, so the "s" is optional. */
+const MATCH_RE  = /^\s*(\d+):(\d+)\s*\|\s*(.+?)\s+vs\.\s*(.+?)\s*#SRs?:\s*(\d+)-(\d+)\s*(.*)$/;
 const SETS_RE   = /Sets to the winner:\s*(\d+)-(\d+)/i;
 
 /* ==================================================================
@@ -52,7 +54,10 @@ function normSeed(v){
    ------------------------------------------------------------------ */
 const ALIAS = new Map();          // old key -> current key
 
-const rawKey = n => String(n).trim().toLowerCase().replace(/\s+/g," ");
+/* "lucian_iasi" and "lucian iasi" are the same person typed two ways, which
+   happens constantly in these posts. Treating the underscore as a space keeps
+   them as one player instead of quietly splitting a record in two. */
+const rawKey = n => String(n).trim().toLowerCase().replace(/_/g," ").replace(/\s+/g," ");
 function keyOf(n){
   let k = rawKey(n), guard = 0;
   while(ALIAS.has(k) && guard++ < 20) k = ALIAS.get(k);   // guard stops a cycle
@@ -340,7 +345,7 @@ const EDIT = document.body.dataset.mode === "edit";
 /* index.html, desk.html and app.js are uploaded together. Updating only some
    of them leaves a page whose markup and code disagree, which shows up as a
    blank tab rather than an error, so they carry a matching stamp. */
-const APP_VERSION = "2026-08-28d";
+const APP_VERSION = "2026-08-28e";
 const esc = s => String(s).replace(/[&<>"']/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
