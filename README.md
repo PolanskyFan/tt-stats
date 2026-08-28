@@ -256,9 +256,29 @@ Each tour has four views:
 | View | What it shows |
 |---|---|
 | **Week list** | One week's full table. Season and week pickers, newest first. |
+| **No. 1s & top 10** | Weeks spent at the top and in the top ten, plus every reign newest first. |
 | **Year-end** | The final week of every season, plus who finished number one each year. |
 | **Movers** | Biggest risers, biggest fallers and new entries for a chosen week. |
 | **Compare** | Two players' ranking or points lines on one chart, with a summary. |
+
+**No. 1s & top 10** holds seven tables: weeks at no. 1 (with reigns, longest
+reign and year-end titles), weeks in the top 10 (with the longest unbroken run),
+highest points ever held, the biggest single-week climbs on record, weeks at
+no. 1 by country, the most recent debuts, and every reign newest first.
+
+Consecutive weeks under the same player are grouped into one reign, so a long
+run reads as a single line rather than thirty. A top-10 run counts unbroken
+weeks — dropping out for one week starts it again. Doubles partnerships share a
+rank, so a week can have more than one holder; both are counted and the reign is
+listed under both names.
+
+## Players who stopped playing
+
+Someone missing from the most recent week isn't ranked any more, so their last
+figure is a leaving position rather than a current one. Their page shows
+**Current: NR** with *not ranked since …*, keeps the leaving rank in a **Last
+ranked** card, and says so under their name. Career high, weeks at no. 1 and the
+rest are unaffected. The Compare table and the debut list mark them the same way.
 
 ---
 

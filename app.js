@@ -360,7 +360,7 @@ const EDIT = document.body.dataset.mode === "edit";
 /* index.html, desk.html and app.js are uploaded together. Updating only some
    of them leaves a page whose markup and code disagree, which shows up as a
    blank tab rather than an error, so they carry a matching stamp. */
-const APP_VERSION = "2026-08-28g";
+const APP_VERSION = "2026-08-28i";
 const esc = s => String(s).replace(/[&<>"']/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
@@ -902,6 +902,11 @@ const histLabel   = h => h ? h.week + (h.season ? ` ${h.season}` : "") : "";
 const weekId      = w => `${w.tour||"Singles"}|${w.season||""}|${w.name}`;
 const tourSeasons = tour => [...new Set(tourWeeks(tour).map(w=>w.season).filter(Boolean))]
                               .sort((a,b)=>b.localeCompare(a));   // newest first
+/* Weeks are held in date order, so the newest on a tour is simply the last. */
+function latestWeek(tour){
+  const t=tourWeeks(tour);
+  return t.length ? t[t.length-1] : null;
+}
 
 function sortWeeks(){
   WEEKS.forEach((w,i)=>{ w._i = i; if(w.date===undefined) w.date = weekDate(w.name, w.season); });
@@ -936,7 +941,8 @@ function historyStats(hist, season){
   const best  = a => a.reduce((m,h)=> h.rank < m.rank ? h : m, a[0]);
   const worst = a => a.reduce((m,h)=> h.rank > m.rank ? h : m, a[0]);
   return {
-    current,
+    current, debut: hist[0],
+    active: null,          // filled in by the caller, which knows the tour
     careerHigh: best(hist),
     seasonHigh: inSeason.length ? best(inSeason)  : null,
     seasonLow:  inSeason.length ? worst(inSeason) : null,
@@ -1131,7 +1137,8 @@ function renderTour(tour){
   }
 
   // sub-navigation
-  const subs = [["list","Week list"],["yearend","Year-end"],["movers","Movers"],["compare","Compare"]];
+  const subs = [["list","Week list"],["records","No. 1s & top 10"],
+                ["yearend","Year-end"],["movers","Movers"],["compare","Compare"]];
   const nav = document.createElement("div"); nav.className="subnav";
   subs.forEach(([k,label])=>{
     const b=document.createElement("button");
@@ -1141,7 +1148,8 @@ function renderTour(tour){
   });
   mount.appendChild(nav);
 
-  if(st.player)             renderHistoryPanel(tour, mount);
+  if(st.player)              renderHistoryPanel(tour, mount);
+  else if(st.sub==="records") renderRecords(tour, mount);
   else if(st.sub==="yearend") renderYearEnd(tour, mount);
   else if(st.sub==="movers")  renderMovers(tour, mount);
   else if(st.sub==="compare") renderCompare(tour, mount);
@@ -1246,6 +1254,238 @@ function renderWeekPanel(tour, mount){
   hint.textContent = rows.length ? "Click a player to see their ranking history."
                                  : "Nothing matches that search.";
   mount.appendChild(hint);
+}
+
+/* ------------------------------------------------------------------
+   RANKING RECORDS
+   Weeks spent at the top and in the top ten, and the run of number ones
+   week by week. Doubles partnerships share a rank, so a week can have
+   more than one holder; every one of them is counted.
+   ------------------------------------------------------------------ */
+function rankTallies(tour){
+  const ws=tourWeeks(tour);
+  const no1=new Map(), top10=new Map(), firstAt=new Map(), lastAt=new Map();
+  const firstSeen=new Map(), lastSeen=new Map(), bestPts=new Map();
+  const streak=new Map(), bestStreak=new Map(), lastIdx=new Map();
+  const climbs=[];
+  const timeline=[];
+
+  ws.forEach((w,i)=>{
+    const holders=[];
+    (w.list||[]).forEach(r=>{
+      const k=keyOf(r.name);
+      if(!firstSeen.has(k)) firstSeen.set(k,w);
+      lastSeen.set(k,w);
+
+      const bp=bestPts.get(k);
+      if(!bp || Number(r.points)>bp.points) bestPts.set(k,{points:Number(r.points), week:w, rank:r.rank});
+
+      /* A top-10 run only continues if the player was in the top 10 in the
+         immediately preceding week; missing a week ends it. */
+      if(r.rank<=10){
+        top10.set(k,(top10.get(k)||0)+1);
+        const run = lastIdx.get(k)===i-1 ? (streak.get(k)||0)+1 : 1;
+        streak.set(k,run); lastIdx.set(k,i);
+        if(run > ((bestStreak.get(k)||{}).weeks||0)) bestStreak.set(k,{weeks:run, to:w});
+      }
+      if(r.rank===1){
+        no1.set(k,(no1.get(k)||0)+1);
+        if(!firstAt.has(k)) firstAt.set(k,w);
+        lastAt.set(k,w);
+        holders.push(k);
+      }
+      const prev=r.prev;
+      if(prev!=="" && prev!=null){
+        const d=Number(prev)-Number(r.rank);
+        if(d>0) climbs.push({key:k, gain:d, from:Number(prev), to:Number(r.rank), week:w});
+      }
+    });
+    timeline.push({w, holders});
+  });
+  return {no1, top10, firstAt, lastAt, firstSeen, lastSeen, bestPts, bestStreak, climbs, timeline};
+}
+
+/* Consecutive weeks under the same holder collapse into one reign, which is
+   how a run at the top actually reads. */
+function no1Reigns(tour, tallies){
+  const {timeline}=tallies || rankTallies(tour);
+  const out=[]; let cur=null;
+  timeline.forEach(({w,holders})=>{
+    if(!holders.length){ cur=null; return; }
+    const sig=holders.slice().sort().join("|");
+    if(cur && cur.sig===sig){ cur.weeks++; cur.to=w; return; }
+    cur={sig, keys:holders.slice(), from:w, to:w, weeks:1};
+    out.push(cur);
+  });
+  return out.reverse();
+}
+
+/* Someone missing from the most recent week isn't ranked any more, so their
+   last figure is a leaving position rather than a current one. */
+function isActive(tour, key, tallies){
+  const last=latestWeek(tour); if(!last) return false;
+  const seen=(tallies||rankTallies(tour)).lastSeen.get(key);
+  return !!seen && seen===last;
+}
+
+function recordRows(tour){
+  const t=rankTallies(tour);
+  const reigns=no1Reigns(tour, t);
+  const last=latestWeek(tour);
+  const runsFor=new Map(), longest=new Map();
+  reigns.forEach(r=>r.keys.forEach(k=>{
+    runsFor.set(k,(runsFor.get(k)||0)+1);
+    longest.set(k, Math.max(longest.get(k)||0, r.weeks));
+  }));
+
+  const yearEnd=new Map();
+  yearEndWeeks(tour).forEach(w=>(w.list||[]).forEach(r=>{
+    if(r.rank===1){ const k=keyOf(r.name); yearEnd.set(k,(yearEnd.get(k)||0)+1); }
+  }));
+
+  const status=k=>(t.lastSeen.get(k)===last) ? "" : `left after ${weekLabel(t.lastSeen.get(k))}`;
+
+  const one=[...t.no1.entries()].map(([k,v])=>({
+    key:k, player:canonName(k), country:canonCountry(k), weeks:v,
+    reigns:runsFor.get(k)||0, longest:longest.get(k)||0, yearEnd:yearEnd.get(k)||0,
+    first:weekLabel(t.firstAt.get(k)), last:weekLabel(t.lastAt.get(k))
+  })).sort((a,b)=>b.weeks-a.weeks || a.player.localeCompare(b.player));
+
+  const ten=[...t.top10.entries()].map(([k,v])=>({
+    key:k, player:canonName(k), country:canonCountry(k), weeks:v,
+    streak:(t.bestStreak.get(k)||{}).weeks||0,
+    streakEnd:weekLabel((t.bestStreak.get(k)||{}).to),
+    atNo1:t.no1.get(k)||0
+  })).sort((a,b)=>b.weeks-a.weeks || a.player.localeCompare(b.player));
+
+  const points=[...t.bestPts.entries()].map(([k,v])=>({
+    key:k, player:canonName(k), country:canonCountry(k),
+    points:v.points, rank:v.rank, week:weekLabel(v.week)
+  })).sort((a,b)=>b.points-a.points).slice(0,40);
+
+  const climbs=t.climbs.slice().sort((a,b)=>b.gain-a.gain).slice(0,25).map(c=>({
+    player:canonName(c.key), country:canonCountry(c.key),
+    gain:c.gain, from:c.from, to:c.to, week:weekLabel(c.week)
+  }));
+
+  const byCountry=new Map();
+  t.no1.forEach((v,k)=>{
+    const c=canonCountry(k)||"\u2014";
+    if(!byCountry.has(c)) byCountry.set(c,{country:c, weeks:0, players:new Set()});
+    const e=byCountry.get(c); e.weeks+=v; e.players.add(canonName(k));
+  });
+  const countries=[...byCountry.values()].map(e=>({
+    country:e.country, weeks:e.weeks, count:e.players.size,
+    who:[...e.players].sort().join(", ")
+  })).sort((a,b)=>b.weeks-a.weeks);
+
+  const debuts=[...t.firstSeen.entries()].map(([k,w])=>({
+    key:k, player:canonName(k), country:canonCountry(k),
+    debut:weekLabel(w), date:w.date,
+    lastSeen:weekLabel(t.lastSeen.get(k)),
+    status:status(k) ? "left" : "active"
+  })).sort((a,b)=>(b.date&&a.date)?b.date-a.date:0).slice(0,40);
+
+  return {one, ten, points, climbs, countries, debuts, reigns, tallies:t};
+}
+
+/* ---------------- records ---------------- */
+function renderRecords(tour, mount){
+  const st=RANK_UI[tour];
+  const R=recordRows(tour);
+  const go=x=>{ st.player=x; renderTour(tour); };
+
+  if(!R.one.length){
+    mount.innerHTML+=`<div class="empty"><strong>Nothing to show yet</strong>Load some ranking weeks first.</div>`;
+    return;
+  }
+
+  const ws=tourWeeks(tour);
+  const bestOne=R.one.reduce((m,o)=>o.longest>m.longest?o:m, R.one[0]);
+  const bestTen=R.ten.reduce((m,o)=>o.streak>m.streak?o:m, R.ten[0]);
+  const grid=document.createElement("div"); grid.className="statgrid";
+  [["Weeks recorded", String(ws.length), `${weekLabel(ws[0])} onward`],
+   ["Players at no. 1", String(R.one.length), "all time"],
+   ["Separate reigns", String(R.reigns.length), "runs at the top"],
+   ["Longest reign", `${bestOne.longest} wks`, bestOne.player],
+   ["Longest top-10 run", `${bestTen.streak} wks`, bestTen.player],
+   ["Most points held", R.points[0].points.toLocaleString(), `${R.points[0].player}, ${R.points[0].week}`]
+  ].forEach(([k,v,note])=>{
+    const c=document.createElement("div"); c.className="stat";
+    c.innerHTML=`<span class="k">${esc(k)}</span><span class="v">${esc(v)}</span><span class="note">${esc(note||"")}</span>`;
+    grid.appendChild(c);
+  });
+  mount.appendChild(grid);
+
+  const section=(title, note, cols, rows, file, opts)=>{
+    const h=document.createElement("h3"); h.className="sec"; h.textContent=title;
+    mount.appendChild(h);
+    if(note){ const p=document.createElement("p"); p.className="lede"; p.textContent=note; mount.appendChild(p); }
+    const bar=document.createElement("div"); bar.className="controls";
+    const b=document.createElement("button"); b.className="btn"; b.textContent="Download CSV";
+    b.addEventListener("click",()=>downloadCsv(cols, rows, `${tour.toLowerCase()}-${file}.csv`));
+    bar.appendChild(field("", b)); mount.appendChild(bar);
+    mount.appendChild(tableOf(cols, rows, opts||{onPlayer:go}));
+  };
+
+  section("Weeks at no. 1", "", [
+    {k:"player",h:"Player",csv:r=>r.player},{k:"country",h:"Country",cls:"ctry"},
+    {k:"weeks",h:"Weeks at no. 1",cls:"num"},{k:"reigns",h:"Reigns",cls:"num"},
+    {k:"longest",h:"Longest reign",cls:"num"},{k:"yearEnd",h:"Year-end no. 1",cls:"num"},
+    {k:"first",h:"First"},{k:"last",h:"Most recent"}
+  ], R.one, "weeks-at-no1");
+
+  section("Weeks in the top 10",
+    "Longest run counts unbroken weeks \u2014 dropping out for a single week starts it again.", [
+    {k:"player",h:"Player",csv:r=>r.player},{k:"country",h:"Country",cls:"ctry"},
+    {k:"weeks",h:"Weeks in top 10",cls:"num"},{k:"streak",h:"Longest run",cls:"num"},
+    {k:"streakEnd",h:"Run ended"},{k:"atNo1",h:"of those, at no. 1",cls:"num"}
+  ], R.ten, "weeks-in-top-10");
+
+  section("Highest points ever held", "The single best points total each player has recorded.", [
+    {k:"player",h:"Player",csv:r=>r.player},{k:"country",h:"Country",cls:"ctry"},
+    {k:"points",h:"Points",cls:"num"},{k:"rank",h:"Rank then",cls:"num"},{k:"week",h:"Week"}
+  ], R.points, "highest-points");
+
+  section("Biggest weekly climbs", "The largest single-week rises anywhere in the record.", [
+    {k:"gain",h:"Places gained",cls:"num",render:r=>`<span style="color:var(--ball)">\u25B2 ${r.gain}</span>`,csv:r=>r.gain},
+    {k:"player",h:"Player",csv:r=>r.player},{k:"country",h:"Country",cls:"ctry"},
+    {k:"from",h:"From",cls:"num"},{k:"to",h:"To",cls:"num"},{k:"week",h:"Week"}
+  ], R.climbs, "biggest-climbs", {});
+
+  section("Weeks at no. 1 by country", "", [
+    {k:"country",h:"Country",cls:"ctry"},{k:"weeks",h:"Weeks",cls:"num"},
+    {k:"count",h:"Players",cls:"num"},{k:"who",h:"Who"}
+  ], R.countries, "no1-by-country", {});
+
+  section("Most recent debuts", "The week each player first appeared in the rankings.", [
+    {k:"player",h:"Player",csv:r=>r.player},{k:"country",h:"Country",cls:"ctry"},
+    {k:"debut",h:"First ranked"},{k:"lastSeen",h:"Last ranked"},
+    {k:"status",h:"Status",render:r=>r.status==="active"
+      ? '<span style="color:var(--ball)">active</span>' : '<span class="dim">no longer ranked</span>',
+      csv:r=>r.status}
+  ], R.debuts, "debuts");
+
+  const h=document.createElement("h3"); h.className="sec"; h.textContent="Every reign, newest first";
+  mount.appendChild(h);
+  const note=document.createElement("p"); note.className="lede";
+  note.textContent="Consecutive weeks under the same player are grouped into one reign.";
+  mount.appendChild(note);
+  const rows=R.reigns.map(r=>({
+    holder:r.keys.map(k=>canonName(k)).join(" \u00b7 "),
+    country:[...new Set(r.keys.map(k=>canonCountry(k)))].join(" \u00b7 "),
+    from:weekLabel(r.from), to:weekLabel(r.to), weeks:r.weeks,
+    span:r.weeks===1 ? weekLabel(r.from) : `${weekLabel(r.from)} \u2013 ${weekLabel(r.to)}`
+  }));
+  const bar=document.createElement("div"); bar.className="controls";
+  const b=document.createElement("button"); b.className="btn"; b.textContent="Download CSV";
+  b.addEventListener("click",()=>downloadCsv(
+    [{k:"holder",h:"No. 1"},{k:"country",h:"Country"},{k:"from",h:"From"},{k:"to",h:"To"},{k:"weeks",h:"Weeks"}],
+    rows, `${tour.toLowerCase()}-no1-reigns.csv`));
+  bar.appendChild(field("", b)); mount.appendChild(bar);
+  mount.appendChild(tableOf([
+    {k:"holder",h:"No. 1"},{k:"country",h:"Country",cls:"ctry"},
+    {k:"span",h:"Weeks held"},{k:"weeks",h:"Weeks",cls:"num"}], rows));
 }
 
 /* ---------------- year-end ---------------- */
@@ -1384,9 +1624,11 @@ function renderCompare(tour, mount){
   box.appendChild(lineChart(series, st.metric));
   mount.appendChild(box);
 
+  const newest=latestWeek(tour);
   const rows=series.filter(s=>s.data.length).map(s=>{
     const st2=historyStats(s.data);
-    return {name:s.name, current:"#"+st2.current.rank, high:"#"+st2.careerHigh.rank,
+    const live = !!newest && st2.current.week===newest.name && (st2.current.season||"")===(newest.season||"");
+    return {name:s.name, current: live ? "#"+st2.current.rank : "NR", high:"#"+st2.careerHigh.rank,
       weeks:st2.weeks, no1:st2.atNo1, top10:st2.inTop10,
       points:st2.current.points};
   });
@@ -1402,6 +1644,9 @@ function renderHistoryPanel(tour, mount){
   const st=RANK_UI[tour];
   const hist=playerHistory(tour, st.player);
   const stats=historyStats(hist, st.pSeason);
+  const newest=latestWeek(tour);
+  if(stats) stats.active = !!newest && stats.current.week===newest.name &&
+    (stats.current.season||"")===(newest.season||"");
 
   const bar0=document.createElement("div");
   bar0.style.cssText="display:flex;gap:9px;flex-wrap:wrap;align-items:center";
@@ -1429,7 +1674,9 @@ function renderHistoryPanel(tour, mount){
   h.innerHTML=`${esc(canonName(st.player))} <span class="ctry" style="font-size:13px">${esc(canonCountry(st.player))}</span>`;
   mount.appendChild(h);
   const sub=document.createElement("p"); sub.className="lede"; sub.style.margin="0 0 16px";
-  sub.textContent=`${tour} ranking history`;
+  sub.textContent = stats && !stats.active
+    ? `${tour} ranking history \u2014 no longer ranked, last appeared ${histLabel(stats.current)}`
+    : `${tour} ranking history`;
   mount.appendChild(sub);
 
   if(!stats){
@@ -1445,14 +1692,20 @@ function renderHistoryPanel(tour, mount){
     mount.appendChild(bar);
   }
 
+  /* A rank from two years ago isn't a current rank. Anyone missing from the
+     newest week reads as NR, with their leaving position kept alongside. */
   const cards=[
-    ["Current","#"+stats.current.rank, histLabel(stats.current)],
+    stats.active
+      ? ["Current","#"+stats.current.rank, histLabel(stats.current)]
+      : ["Current","NR", `not ranked since ${histLabel(stats.current)}`],
+    ...(stats.active ? [] : [["Last ranked","#"+stats.current.rank, histLabel(stats.current)]]),
     ["Career high","#"+stats.careerHigh.rank, histLabel(stats.careerHigh)],
     ["Season high", stats.seasonHigh?"#"+stats.seasonHigh.rank:"\u2014", histLabel(stats.seasonHigh)],
     ["Season low",  stats.seasonLow ?"#"+stats.seasonLow.rank :"\u2014", histLabel(stats.seasonLow)],
     ["Weeks at no. 1", String(stats.atNo1), stats.atNo1?"career":""],
     ["Weeks in top 10", String(stats.inTop10), stats.inTop10?"career":""],
-    ["Weeks ranked", String(stats.weeks), stats.seasons.slice(0,4).join(", ")+(stats.seasons.length>4?"\u2026":"")]
+    ["Weeks ranked", String(stats.weeks), stats.seasons.slice(0,4).join(", ")+(stats.seasons.length>4?"\u2026":"")],
+    ["First ranked", histLabel(stats.debut), "debut"]
   ];
   const grid=document.createElement("div"); grid.className="statgrid";
   cards.forEach(([k,v,note])=>{
