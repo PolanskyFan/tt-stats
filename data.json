@@ -1,6 +1,6 @@
 {
  "format": "tennis-tipping/1",
- "savedAt": "2026-08-28T14:22:29.475Z",
+ "savedAt": "2026-08-28T14:50:22.571Z",
  "matches": [],
  "rankingFiles": [
   "rankings-2026.json",
@@ -11,6 +11,18 @@
   {
    "key": "pierre.",
    "country": "FRA"
+  },
+  {
+   "key": "mr.schumacher",
+   "name": "Mr.schumacher"
+  },
+  {
+   "key": "applegate",
+   "name": "applegate"
+  },
+  {
+   "key": "p_varna",
+   "name": "p_varna"
   }
  ]
 }
