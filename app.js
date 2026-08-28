@@ -105,12 +105,27 @@ function canonTeam(team){
 function parseSide(token){
   token = String(token).trim();
   if(/^bye(\s*\/\s*bye)*$/i.test(token)) return {bye:true, seed:"", name:"BYE", country:""};
-  let country="";
-  const c = token.match(/\(([^()]*)\)\s*$/);
-  if(c){ country = c[1].trim(); token = token.slice(0,c.index).trim(); }
+
   let seed="";
   const s = token.match(/^\(([^()]*)\)\s+/);
   if(s){ seed = normSeed(s[1]); token = token.slice(s[0].length).trim(); }
+
+  /* Doubles sides are written two ways: "A/B (X/Y)" with the countries grouped
+     at the end, and "A (X)/B (Y)" with one per player. Reading only the trailing
+     bracket turns the second form into a player literally called
+     "alwaysfan (ESP)/^Bibi^", which then counts as a separate team. */
+  if(token.includes("/")){
+    const parts = token.split("/").map(x=>x.trim());
+    if(parts.length>1 && parts.every(x=>/\([^()]*\)$/.test(x))){
+      return {bye:false, seed,
+        name: parts.map(x=>x.replace(/\s*\([^()]*\)$/,"").trim()).join("/"),
+        country: parts.map(x=>x.match(/\(([^()]*)\)$/)[1].trim()).join("/")};
+    }
+  }
+
+  let country="";
+  const c = token.match(/\(([^()]*)\)\s*$/);
+  if(c){ country = c[1].trim(); token = token.slice(0,c.index).trim(); }
   return {bye:false, seed, name:token, country};
 }
 
@@ -345,7 +360,7 @@ const EDIT = document.body.dataset.mode === "edit";
 /* index.html, desk.html and app.js are uploaded together. Updating only some
    of them leaves a page whose markup and code disagree, which shows up as a
    blank tab rather than an error, so they carry a matching stamp. */
-const APP_VERSION = "2026-08-28f";
+const APP_VERSION = "2026-08-28g";
 const esc = s => String(s).replace(/[&<>"']/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
@@ -538,8 +553,12 @@ function deriveIssues(){
     const p = PINS.get(e.key) || {};
     const cs = Object.keys(e.countries).filter(Boolean);
     if(cs.length>1){
-      const item={e, field:"country", options:cs.map(c=>({c,n:e.countries[c]})).sort((a,b)=>b.n-a.n)};
-      (p.country ? resolved : countryConflicts).push(item);
+      const ok=acceptedCountries(e.key);
+      const unexplained=cs.filter(c=>!ok.has(c));
+      const item={e, field:"country", moves:COUNTRY_MOVES.get(e.key)||[],
+        options:cs.map(c=>({c,n:e.countries[c]})).sort((a,b)=>b.n-a.n)};
+      if(p.country || (ok.size && unexplained.length===0)) resolved.push(item);
+      else countryConflicts.push(item);
     }
     const ns = Object.keys(e.names);
     if(ns.length>1){
@@ -548,12 +567,203 @@ function deriveIssues(){
     }
   }
   return {countryConflicts, nameVariants, resolved,
-          tourGaps:deriveTourGaps(), dupes:DUPES, pending:PENDING};
+          tourGaps:deriveTourGaps(), eventProblems:deriveEventProblems(),
+          dateProblems:deriveDateProblems(), renames:deriveRenameCandidates(),
+          dupes:DUPES, pending:PENDING};
 }
 
 /* Both tours run the same calendar, so a week that exists on one and not the
    other is nearly always a post that didn't get pasted. Only checked once a
    season has some of each, so a season part-way through entry stays quiet. */
+/* Every match at one event should sit on the same ranking week. More than one
+   means a paste was tagged with the wrong week. Events do repeat year on year,
+   so this compares within an event *and* season rather than by name alone. */
+function deriveEventProblems(){
+  const out=[];
+  for(const g of matchGroups()){
+    if(!g.season) out.push({kind:"no season", g,
+      text:`${g.event} \u2014 ${g.disc} ${g.stage.toLowerCase()}, ${g.rows.length} matches, no season set`});
+  }
+  const byEvent=new Map();
+  for(const r of MATCHES){
+    const k=[r.event, r.season||"", r.disc].join("|");
+    if(!byEvent.has(k)) byEvent.set(k,{event:r.event, season:r.season||"", disc:r.disc, weeks:new Map()});
+    const e=byEvent.get(k);
+    const w=r.week||"(none)";
+    e.weeks.set(w,(e.weeks.get(w)||0)+1);
+  }
+  for(const e of byEvent.values()){
+    if(e.weeks.size>1) out.push({kind:"mixed weeks", e,
+      text:`${e.event} ${e.season} \u2014 ${e.disc} uses ${e.weeks.size} different ranking weeks: `
+        + [...e.weeks].map(([w,c])=>`${w} (${c})`).join(", ")});
+  }
+  return out;
+}
+
+/* Ranking posts land on a Monday. A date that isn't one is nearly always a typo
+   or a post that slipped a day, and it also stops singles and doubles for the
+   same week lining up. The suggestion is the nearest Monday. */
+function nearestMonday(date){
+  const d=new Date(date.getTime());
+  const day=d.getDay();                    // 0 Sun, 1 Mon
+  let shift=(1-day);
+  if(shift<-3) shift+=7;
+  if(shift>3)  shift-=7;
+  d.setDate(d.getDate()+shift);
+  return d;
+}
+const MONTH_NAMES=["January","February","March","April","May","June","July",
+  "August","September","October","November","December"];
+const dateToWeekName = d => `${MONTH_NAMES[d.getMonth()]} ${ordinal(d.getDate())}`;
+
+const DAYS_IN={0:31,1:29,2:31,3:30,4:31,5:30,6:31,7:31,8:30,9:31,10:30,11:31};
+function impossibleDate(name){
+  const m=String(name||"").match(MONTH_RE);
+  if(!m) return false;
+  const mo=MONTHS[m[1].toLowerCase()], day=+m[2];
+  return mo!==undefined && (day<1 || day>DAYS_IN[mo]);
+}
+
+function deriveDateProblems(){
+  const out=[];
+  for(const w of WEEKS){
+    if(impossibleDate(w.name)){
+      out.push({w, kind:"impossible date", suggest:null,
+        text:`${w.name} ${w.season||""} (${w.tour||"Singles"}) \u2014 that day doesn't exist in that month, `
+          + `so the week has been placed at ${w.date?dateToWeekName(w.date):"an unknown date"}. `
+          + `Check the post and rename it by hand.`});
+      continue;
+    }
+    if(!w.date){ out.push({w, kind:"no date", suggest:null,
+      text:`${w.name} ${w.season||""} (${w.tour||"Singles"}) \u2014 no date could be read from the name`});
+      continue; }
+    if(w.date.getDay()!==1){
+      const m=nearestMonday(w.date), name=dateToWeekName(m);
+      const days=Math.round((m-w.date)/86400000);
+      out.push({w, kind:"not a Monday", suggest:name,
+        text:`${w.name} ${w.season||""} (${w.tour||"Singles"}) falls on a `
+          + `${["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][w.date.getDay()]}`
+          + ` \u2014 ${days>0?"+":""}${days} day${Math.abs(days)===1?"":"s"} to ${name}`});
+    }
+  }
+  /* Singles and doubles for the same week, a day or two apart. */
+  const byTour={Singles:[],Doubles:[]};
+  WEEKS.forEach(w=>{ if(w.date) byTour[(w.tour||"Singles")==="Doubles"?"Doubles":"Singles"].push(w); });
+  byTour.Singles.forEach(sw=>{
+    if(byTour.Doubles.some(dw=>dw.season===sw.season && dw.name===sw.name)) return;
+    const near=byTour.Doubles.find(dw=>dw.season===sw.season &&
+      Math.abs(dw.date-sw.date)>0 && Math.abs(dw.date-sw.date)<=3*86400000);
+    if(near) out.push({w:near, kind:"a day out", suggest:sw.name,
+      text:`Doubles "${near.name}" and singles "${sw.name}" ${sw.season||""} are `
+        + `${Math.round(Math.abs(near.date-sw.date)/86400000)} day(s) apart \u2014 probably the same week`});
+  });
+  return out;
+}
+
+function renameWeek(w, newName){
+  const clash=WEEKS.find(x=>x!==w && x.name===newName &&
+    (x.season||"")===(w.season||"") && (x.tour||"Singles")===(w.tour||"Singles"));
+  if(clash) throw new Error(`There's already a ${(w.tour||"Singles").toLowerCase()} week called "${newName}" in ${w.season||"that season"}.`);
+  const old=w.name;
+  w.name=newName; w.date=weekDate(newName, w.season);
+  /* matches point at a week by name, so they have to follow it */
+  for(const r of MATCHES)
+    if(r.week===old && (r.season||"")===(w.season||"")) r.week=newName;
+  SEASON_DIRTY.add(w.season||"unknown");
+  sortWeeks();
+}
+
+/* ------------------------------------------------------------------
+   COUNTRY CHANGES
+   A player genuinely moving country looks exactly like a typo until you
+   say otherwise. Accepting one records where the switch happened, so the
+   pair stops being flagged while a third code still would.
+   ------------------------------------------------------------------ */
+const COUNTRY_MOVES = new Map();     // key -> [{from,to,season,week}]
+function firstWeekWithCountry(key, code){
+  for(const w of WEEKS){
+    const hit=(w.list||[]).find(r=>keyOf(r.name)===key && r.country===code);
+    if(hit) return w;
+  }
+  return null;
+}
+function acceptCountryChange(key, from, to){
+  const w=firstWeekWithCountry(key, to);
+  const list=COUNTRY_MOVES.get(key)||[];
+  list.push({from, to, season:w?(w.season||""):"", week:w?w.name:""});
+  COUNTRY_MOVES.set(key, list);
+  const e=REG.get(key); if(e){ e.country=to; }
+}
+function acceptedCountries(key){
+  const set=new Set();
+  (COUNTRY_MOVES.get(key)||[]).forEach(m=>{ set.add(m.from); set.add(m.to); });
+  return set;
+}
+
+/* ------------------------------------------------------------------
+   PROBABLE RENAMES
+   Someone who vanishes between two consecutive weeks and never returns,
+   in the same week that a name nobody has seen before turns up already
+   carrying a tournament count, is almost always the same person under a
+   new username: points and events played carry over, the name doesn't.
+   ------------------------------------------------------------------ */
+function deriveRenameCandidates(){
+  const out=[];
+  ["Singles","Doubles"].forEach(tour=>{
+    const ws=tourWeeks(tour);
+    if(ws.length<2) return;
+
+    const seenBefore=new Map();          // key -> first week index
+    const lastSeen=new Map();            // key -> last week index
+    ws.forEach((w,i)=>(w.list||[]).forEach(r=>{
+      const k=keyOf(r.name);
+      if(!seenBefore.has(k)) seenBefore.set(k,i);
+      lastSeen.set(k,i);
+    }));
+
+    for(let i=1;i<ws.length;i++){
+      const prev=new Map((ws[i-1].list||[]).map(r=>[keyOf(r.name),r]));
+      const now =new Map((ws[i].list||[]).map(r=>[keyOf(r.name),r]));
+
+      const gone=[...prev.keys()].filter(k=>!now.has(k) && lastSeen.get(k)===i-1);
+      const fresh=[...now.keys()].filter(k=>seenBefore.get(k)===i &&
+        Number(now.get(k).events)>1);          // already has history, so not a debutant
+
+      if(!gone.length || !fresh.length) continue;
+
+      /* Score every departure against every arrival, then take the best pairs
+         one at a time so nobody is proposed twice. A player with only a couple
+         of tournaments behind them is too thin to call either way. */
+      const pairs=[];
+      fresh.forEach(nk=>{
+        const nr=now.get(nk);
+        if(ALIAS.has(nk) || Number(nr.events||0)<3) return;
+        gone.forEach(ok=>{
+          const or=prev.get(ok);
+          if(ALIAS.has(ok) || Number(or.events||0)<3) return;
+          const dEv=Math.abs(Number(or.events||0)-Number(nr.events||0));
+          if(dEv>1) return;                       // tournaments played carry over
+          const op=Number(or.points||0), np=Number(nr.points||0);
+          const dPts=Math.abs(op-np);
+          if(op>0 && dPts/op > 0.25) return;      // and so, roughly, do points
+          pairs.push({cost:dEv*10000+dPts, ok, nk, or, nr});
+        });
+      });
+      pairs.sort((a,b)=>a.cost-b.cost);
+      const usedOld=new Set(), usedNew=new Set();
+      pairs.forEach(p=>{
+        if(usedOld.has(p.ok) || usedNew.has(p.nk)) return;
+        usedOld.add(p.ok); usedNew.add(p.nk);
+        out.push({tour, week:ws[i].name, season:ws[i].season,
+          from:p.or.name, to:p.nr.name,
+          fromEvents:p.or.events, toEvents:p.nr.events,
+          fromPoints:p.or.points, toPoints:p.nr.points});
+      });
+    }
+  });
+  return out;
+}
+
 function deriveTourGaps(){
   const by=new Map();
   for(const w of WEEKS){
@@ -583,8 +793,9 @@ function unpin(key, field){
 
 function issueCount(){
   const i = deriveIssues();
-  return i.countryConflicts.length + i.nameVariants.length
-       + i.tourGaps.length + i.dupes.length + i.pending.length;
+  return i.countryConflicts.length + i.nameVariants.length + i.tourGaps.length
+       + i.eventProblems.length + i.dateProblems.length + i.renames.length
+       + i.dupes.length + i.pending.length;
 }
 
 /* ==================================================================
@@ -1322,7 +1533,15 @@ const tMatches = makeTable({head:"mHead",body:"mBody",empty:"mEmpty",
     const b=document.createElement("button"); b.className="flip"; b.textContent="\u21C5";
     b.title="Swap winner and loser";
     b.setAttribute("aria-label",`Swap winner and loser for ${canonName(r.winner)} against ${canonName(r.loser)}`);
-    b.addEventListener("click",()=>{ swapRow(r); markDirty(); refreshAll(); }); return b; }});
+    b.addEventListener("click",()=>{ swapRow(r); markDirty(); refreshAll(); });
+    const x=document.createElement("button"); x.className="flip"; x.textContent="\u00d7";
+    x.title="Remove this match";
+    x.setAttribute("aria-label",`Remove ${canonName(r.winner)} against ${canonName(r.loser)}`);
+    x.addEventListener("click",()=>{
+      snapshot("match removal"); removeMatches([r]); markDirty(); refreshAll(); });
+    const wrap=document.createElement("span");
+    wrap.appendChild(b); wrap.appendChild(x);
+    return wrap; }});
 const tPlayers = makeTable({head:"pHead",body:"pBody",empty:"pEmpty",
   cols:()=>PLAYER_COLS, rows:playerRows, defaultSort:"w", defaultDir:-1});
 const tTeams   = makeTable({head:"tHead",body:"tBody",empty:"tEmpty",
@@ -1350,6 +1569,7 @@ on("btnDraw", "click", ()=>{
   const event=val("tourn").trim();
   if(!event){ msg.className="msg err"; msg.textContent="Give the event a name first \u2014 without one these matches can't be grouped or filtered."; return; }
 
+  snapshot(`draw for ${event}`);
   PENDING_EVENT = event;
   const stage=val("stage");
   const {rows,pending,bad,unknownRounds,groupCount}=parseDraw(text,stage,val("drawDisc")||"Singles");
@@ -1407,6 +1627,7 @@ on("btnRank", "click", ()=>{
   const text=val("rankIn");
   if(!text.trim()){ msg.className="msg err"; msg.textContent="Nothing to add \u2014 the ranking box is empty."; return; }
 
+  snapshot("ranking paste");
   const blocks=parseRankingBlocks(text);
   const forcedTour=val("rankTour");
   const seasonOverride=val("rankSeason").trim();
@@ -1594,10 +1815,12 @@ function renderMergePanel(box){
 
 function renderIssues(){
   const box=$("issuesBody"); if(!box) return;
-  const {countryConflicts,nameVariants,resolved,tourGaps,dupes,pending}=deriveIssues();
+  const {countryConflicts,nameVariants,resolved,tourGaps,eventProblems,
+         dateProblems,renames,dupes,pending}=deriveIssues();
   box.innerHTML="";
   renderMergePanel(box);
-  const total=countryConflicts.length+nameVariants.length+tourGaps.length+dupes.length+pending.length;
+  const total=countryConflicts.length+nameVariants.length+tourGaps.length+eventProblems.length
+    +dateProblems.length+renames.length+dupes.length+pending.length;
 
   if(!total){
     const ok=document.createElement("div"); ok.className="ok";
@@ -1606,6 +1829,68 @@ function renderIssues(){
     box.appendChild(ok);
     renderResolved(box, resolved);
     return;
+  }
+
+  if(eventProblems.length){
+    const s=document.createElement("section"); s.className="review";
+    s.innerHTML=`<p class="blockhead">Events needing attention \u2014 ${eventProblems.length}</p>
+      <p class="lede" style="margin-bottom:6px">Fix these on the Add data tab: remove the group and paste it again
+      with the right season and ranking week.</p>`;
+    eventProblems.forEach(pb=>{
+      const q=document.createElement("div"); q.className="rq";
+      q.innerHTML=`<span class="tag">${esc(pb.kind)}</span><span class="ctx">${esc(pb.text)}</span>`;
+      s.appendChild(q);
+    });
+    box.appendChild(s);
+  }
+
+  if(dateProblems.length){
+    const s=document.createElement("section"); s.className="review";
+    s.innerHTML=`<p class="blockhead">Week dates that look wrong \u2014 ${dateProblems.length}</p>
+      <p class="lede" style="margin-bottom:6px">Ranking posts land on a Monday, so anything else is usually
+      a slipped day. Applying a fix renames the week and moves any matches tagged with it.</p>`;
+    dateProblems.slice(0,80).forEach(dp=>{
+      const q=document.createElement("div"); q.className="rq";
+      q.innerHTML=`<span class="tag">${esc(dp.kind)}</span><span class="ctx">${esc(dp.text)}</span>`;
+      if(dp.suggest){
+        const b=document.createElement("button"); b.className="btn sm";
+        b.textContent=`Rename to ${dp.suggest}`;
+        b.addEventListener("click",()=>{
+          try{ snapshot("week rename"); renameWeek(dp.w, dp.suggest); markDirty(); refreshAll(); }
+          catch(err){ alert(err.message); }
+        });
+        q.appendChild(b);
+      }
+      s.appendChild(q);
+    });
+    if(dateProblems.length>80){
+      const m=document.createElement("p"); m.className="hint";
+      m.textContent=`\u2026and ${dateProblems.length-80} more.`; s.appendChild(m);
+    }
+    box.appendChild(s);
+  }
+
+  if(renames.length){
+    const s=document.createElement("section"); s.className="review";
+    s.innerHTML=`<p class="blockhead">Possible name changes \u2014 ${renames.length}</p>
+      <p class="lede" style="margin-bottom:6px">One player dropped out of the list for good in the same week
+      another appeared already carrying a tournament count. Points and tournaments played carry across a
+      rename; the name doesn't.</p>`;
+    renames.forEach(rn=>{
+      const q=document.createElement("div"); q.className="rq";
+      q.innerHTML=`<span class="tag">${esc(rn.tour)} ${esc(rn.season||"")}</span>
+        <span class="ctx"><b>${esc(rn.from)}</b> (${rn.fromEvents} trn, ${rn.fromPoints} pts) last seen before
+        <b>${esc(rn.to)}</b> (${rn.toEvents} trn, ${rn.toPoints} pts) appeared at ${esc(rn.week)}</span>`;
+      const yes=document.createElement("button"); yes.className="btn sm";
+      yes.textContent=`Merge into ${rn.to}`;
+      yes.addEventListener("click",()=>{
+        try{ snapshot("player merge"); mergePlayers(rn.from, rn.to); markDirty(); refreshAll(); }
+        catch(err){ alert(err.message); }
+      });
+      q.appendChild(yes);
+      s.appendChild(q);
+    });
+    box.appendChild(s);
   }
 
   if(tourGaps.length){
@@ -1644,6 +1929,22 @@ function renderIssues(){
         b.addEventListener("click",()=>{ pin(e.key,"country",o.c); markDirty(); refreshAll(); });
         q.appendChild(b);
       });
+      if(options.length===2){
+        const both=document.createElement("button"); both.className="btn sm";
+        both.textContent="Both \u2014 they moved";
+        both.title="Record a genuine change of country rather than picking one";
+        both.addEventListener("click",()=>{
+          snapshot("country change");
+          /* the later-appearing code is the one they moved to */
+          const first=firstWeekWithCountry(e.key, options[0].c);
+          const second=firstWeekWithCountry(e.key, options[1].c);
+          const order=(first&&second&&first.date&&second.date&&first.date>second.date)
+            ? [options[1].c, options[0].c] : [options[0].c, options[1].c];
+          acceptCountryChange(e.key, order[0], order[1]);
+          markDirty(); refreshAll();
+        });
+        q.appendChild(both);
+      }
       s.appendChild(q);
     });
     box.appendChild(s);
@@ -1714,12 +2015,19 @@ function renderResolved(box, resolved){
   resolved.forEach(({e,field,options})=>{
     const q=document.createElement("div"); q.className="wkrow";
     const chosen = field==="country" ? e.country : e.name;
-    q.innerHTML=`<span class="nm"><span class="tag">${field}</span>
-      <b style="margin-left:8px">${esc(chosen)}</b>
-      <span class="dim">chosen over ${esc(options
-        .map(o=>field==="country"?o.c:o.n).filter(v=>v!==chosen).join(", "))}</span></span>`;
+    const moves = field==="country" ? (COUNTRY_MOVES.get(e.key)||[]) : [];
+    q.innerHTML = moves.length
+      ? `<span class="nm"><span class="tag">moved</span>
+         <b style="margin-left:8px">${esc(e.name)}</b>
+         <span class="dim">${moves.map(m=>`${esc(m.from)} \u2192 ${esc(m.to)} at ${esc(m.week||"?")} ${esc(m.season||"")}`).join("; ")}</span></span>`
+      : `<span class="nm"><span class="tag">${field}</span>
+         <b style="margin-left:8px">${esc(chosen)}</b>
+         <span class="dim">chosen over ${esc(options
+           .map(o=>field==="country"?o.c:o.n).filter(v=>v!==chosen).join(", "))}</span></span>`;
     const u=document.createElement("button"); u.className="btn sm"; u.textContent="Undo";
-    u.addEventListener("click",()=>{ unpin(e.key, field); markDirty(); refreshAll(); });
+    u.addEventListener("click",()=>{
+      if(moves.length) COUNTRY_MOVES.delete(e.key); else unpin(e.key, field);
+      markDirty(); refreshAll(); });
     q.appendChild(u); d.appendChild(q);
   });
   box.appendChild(d);
@@ -1759,6 +2067,45 @@ function syncFilters(){
   if(dl){ dl.innerHTML="";
     uniq([...REG.values()].map(e=>e.name)).sort().forEach(n=>{
       const o=document.createElement("option"); o.value=n; dl.appendChild(o); }); }
+}
+
+function renderMatchManager(){
+  const el=$("matchManager"); if(!el) return;
+  const groups=matchGroups();
+  if(!groups.length){ el.textContent="No matches loaded."; return; }
+  el.innerHTML="";
+  groups.forEach(g=>{
+    const weeks=[...g.weeks].map(w=>w||"no week").join(", ");
+    const row=document.createElement("div"); row.className="wkrow";
+    row.innerHTML=`<span class="nm"><b>${esc(g.event||"unnamed")}</b>
+      <span class="dim">${esc(g.season||"no season")} \u00b7 ${esc(g.disc)} ${esc(g.stage.toLowerCase())}
+      \u00b7 ${g.rows.length} match${g.rows.length===1?"":"es"} \u00b7 ranks from ${esc(weeks)}</span>
+      ${!g.season?'<span class="tag" style="margin-left:6px">no season</span>':""}
+      ${g.weeks.size>1?'<span class="tag" style="margin-left:6px">mixed weeks</span>':""}</span>`;
+    const del=document.createElement("button");
+    del.className="btn sm"; del.textContent="Remove";
+    del.addEventListener("click",()=>{
+      if(!confirm(`Remove all ${g.rows.length} ${g.disc.toLowerCase()} ${g.stage.toLowerCase()} matches for ${g.event} ${g.season}?`)) return;
+      snapshot(`removing ${g.event} ${g.disc} ${g.stage}`);
+      removeMatches(g.rows); markDirty(); refreshAll();
+    });
+    row.appendChild(del); el.appendChild(row);
+  });
+}
+
+function renderUndo(){
+  const el=$("undoBar"); if(!el) return;
+  el.innerHTML="";
+  if(!UNDO){ el.style.display="none"; return; }
+  el.style.display="";
+  const b=document.createElement("button");
+  b.className="btn sm"; b.textContent=`\u21B6 Undo the last ${UNDO.label}`;
+  b.addEventListener("click",()=>{ const l=UNDO.label; if(undoLast()) saveMsg(`Undid the last ${l}.`,"warn"); });
+  el.appendChild(b);
+  const note=document.createElement("span");
+  note.className="dim"; note.style.cssText="font-size:12px;margin-left:10px";
+  note.textContent="Only the most recent change can be taken back.";
+  el.appendChild(note);
 }
 
 function renderFileManager(){
@@ -1856,7 +2203,8 @@ function refreshAll(){
   syncFilters();
   tMatches.render(); tPlayers.render(); tTeams.render();
   tTitles.render(); renderRankings();
-  renderReview(); renderIssues(); renderSummary(); renderWeekManager(); renderFileManager();
+  renderReview(); renderIssues(); renderSummary(); renderWeekManager();
+  renderFileManager(); renderMatchManager(); renderUndo();
   setText("sbMatches", MATCHES.length);
   setText("sbPlayers", derivePlayers().length);
   setText("sbEvents", uniq(MATCHES.map(m=>m.event)).length);
@@ -1969,6 +2317,42 @@ const SAMPLE_RANK=`TT Singles Rankings 2026: January 5th
 const FORMAT = "tennis-tipping/1";
 let DIRTY = false;
 let LEGACY_INLINE = false;
+
+/* One step of undo, taken immediately before anything is added. Match objects
+   are cloned because rank backfilling writes into them; the week list only
+   needs its array copied, since weeks are replaced rather than edited. */
+let UNDO = null;
+function snapshot(label){
+  UNDO = {
+    label,
+    matches: MATCHES.map(m=>Object.assign({},m)),
+    weeks:   WEEKS.slice(),
+    pending: PENDING.slice(),
+    dupes:   DUPES.slice(),
+    seen:    new Set(SEEN),
+    pins:    new Map([...PINS].map(([k,v])=>[k,Object.assign({},v)])),
+    alias:   new Map(ALIAS),
+    dirtySeasons: new Set(SEASON_DIRTY),
+    known:   new Set(KNOWN_SEASONS),
+    wasDirty: DIRTY
+  };
+}
+function undoLast(){
+  if(!UNDO) return false;
+  MATCHES = UNDO.matches; WEEKS = UNDO.weeks;
+  PENDING = UNDO.pending; DUPES = UNDO.dupes;
+  SEEN.clear(); UNDO.seen.forEach(k=>SEEN.add(k));
+  PINS.clear();  UNDO.pins.forEach((v,k)=>PINS.set(k,v));
+  ALIAS.clear(); UNDO.alias.forEach((v,k)=>ALIAS.set(k,v));
+  SEASON_DIRTY.clear(); UNDO.dirtySeasons.forEach(x=>SEASON_DIRTY.add(x));
+  KNOWN_SEASONS.clear(); UNDO.known.forEach(x=>KNOWN_SEASONS.add(x));
+  DIRTY = UNDO.wasDirty;
+  reindex(); sortWeeks();
+  ["Singles","Doubles"].forEach(t=>{ RANK_UI[t].week=null; RANK_UI[t].player=null; });
+  UNDO = null;
+  refreshAll();
+  return true;
+}
 const markDirty = () => { DIRTY = true; renderSummary(); };
 
 /* ------------------------------------------------------------------
@@ -2039,6 +2423,7 @@ function serialise(){
     matches: MATCHES.map(m=>{ const {raw, ...rest}=m; return rest; }),
     rankingFiles: allSeasons().map(seasonFile),
     aliases: [...ALIAS.entries()].map(([from,to])=>({from,to})),
+    countryMoves: [...COUNTRY_MOVES.entries()].map(([key,list])=>({key,list})),
     pinned
   };
 }
@@ -2050,13 +2435,14 @@ function deserialise(data){
     throw new Error(`That file says it's format "${data.format}", which this page doesn't read.`);
 
   MATCHES=[]; PENDING=[]; WEEKS=[]; DUPES=[]; SEEN.clear(); REG.clear();
-  ALIAS.clear(); PINS.clear(); SEASON_DIRTY.clear(); KNOWN_SEASONS.clear();
+  ALIAS.clear(); PINS.clear(); COUNTRY_MOVES.clear(); SEASON_DIRTY.clear(); KNOWN_SEASONS.clear();
   LEGACY_INLINE=false; ROW_ID=0;
   (data.rankingFiles||[]).forEach(f=>{
     const m=String(f).match(/^rankings-(.+)\.json$/i);
     if(m) KNOWN_SEASONS.add(m[1]);
   });
   (data.aliases||[]).forEach(a=>{ if(a && a.from && a.to) ALIAS.set(a.from, a.to); });
+  (data.countryMoves||[]).forEach(m=>{ if(m && m.key && Array.isArray(m.list)) COUNTRY_MOVES.set(m.key, m.list); });
 
   /* Older files kept the weeks inline; newer ones list separate season files
      that the caller loads. Both are accepted so nothing has to be converted
@@ -2168,6 +2554,27 @@ function mergePlayers(fromName, toName){
 }
 
 function unmerge(fromKey){ ALIAS.delete(fromKey); reindex(); }
+
+/* Matches are grouped the way they were entered, so a mis-tagged paste can be
+   taken back out in one go rather than row by row. */
+function matchGroups(){
+  const g=new Map();
+  for(const r of MATCHES){
+    const k=[r.event, r.season||"", r.disc, r.stage].join("|");
+    if(!g.has(k)) g.set(k, {event:r.event, season:r.season||"", disc:r.disc,
+      stage:r.stage, rows:[], weeks:new Set()});
+    const e=g.get(k); e.rows.push(r); e.weeks.add(r.week||"");
+  }
+  return [...g.values()].sort((a,b)=>
+    (a.event||"").localeCompare(b.event||"") || (b.season||"").localeCompare(a.season||"") ||
+    a.disc.localeCompare(b.disc) || a.stage.localeCompare(b.stage));
+}
+function removeMatches(rows){
+  const kill=new Set(rows.map(r=>r.id));
+  MATCHES = MATCHES.filter(r=>!kill.has(r.id));
+  SEEN.clear(); MATCHES.forEach(r=>SEEN.add(matchKey(r)));
+  reindex();
+}
 
 function removeWeek(name, season, tour){
   const i = WEEKS.findIndex(w => w.name===name && (w.season||"")===(season||"") && (w.tour||"Singles")===tour);

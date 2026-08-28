@@ -135,9 +135,25 @@ Everything questionable lands on the **Issues** tab instead of into the data.
 - **Spelling variants** are already treated as one player; you choose which
   spelling is displayed and exported.
 - **Undecidable matches** wait for you to pick a winner.
+- **Events needing attention** — a group of matches with no season set, or one
+  event using more than one ranking week. Events repeat year on year, so this
+  compares within an event *and* season, never by name alone.
+- **Week dates that look wrong.** Ranking posts land on a Monday, so anything
+  else is usually a slipped day; the fix button renames the week to the nearest
+  Monday and moves any matches tagged with it. A date that can't exist at all,
+  like February 31st, is flagged separately for you to correct by hand. Weeks
+  where singles and doubles sit a day or two apart are matched up too.
+- **Possible name changes.** When someone drops out of the rankings for good in
+  the same week that a name nobody has seen before appears already carrying a
+  tournament count, they're usually one person: points and tournaments played
+  follow a rename, the username doesn't. Each pair gets a Merge button.
 - **Weeks with only one tour** are flagged once a season has some of each — the
   two tours run the same calendar, so a week on one and not the other is nearly
   always a post that didn't get pasted.
+
+A country conflict has a third option, **Both — they moved**, for a player who
+genuinely changed country. That records where the switch happened and settles
+the pair, while a third code appearing later still raises a fresh issue.
 
 Once you pick a spelling or a country, that conflict is settled and drops out of
 the list. Settled ones sit in a collapsed *Settled earlier* section at the
@@ -250,6 +266,18 @@ Each tour has four views:
 > and the `rankings-*.json` files are *your* data. Only ever replace them with
 > files you saved from the editor. When you update the code, upload `index.html`,
 > `desk.html` and `app.js` and nothing else.
+
+## Undoing a mistake
+
+**Matches loaded** on the Add data tab lists every group of matches as it was
+entered — event, season, discipline, stage — with a Remove button, so a paste
+tagged with the wrong discipline or week can be taken out in one go and redone.
+Individual matches have an × in the table.
+
+An **Undo** bar appears after anything is added or removed and takes back that
+one step, including any ranks that were filled in at the same time. It's a
+single step, not a history — once you do the next thing, the previous state is
+gone.
 
 ## Which files to load
 
