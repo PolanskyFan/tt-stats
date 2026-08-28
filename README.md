@@ -199,9 +199,21 @@ Since it's JSON in Git, every commit is a restore point. If an entry goes wrong,
 
 ## Pasting draws
 
+Paste the whole tournament post at once — singles and doubles, qualifying and
+main draw. With **Discipline** and **Stage** on *Auto*:
+
+- The discipline comes from a heading such as `DOUBLES DRAW AND RESULTS`, and
+  applies until the next such heading. It has to say *draw* or *results* too, so
+  an ordinary sentence mentioning doubles won't switch it.
+- The stage comes from the round itself: `QR1`–`QR3` and `QFR` can only be
+  qualifying, everything else is main draw. No dropdown needed.
+
 Round headers work in either shape: `R32` on its own, as the draw threads write
-them, or the longer `Singles R32 Results`. When the header doesn't say which
-discipline it is, the **Discipline** dropdown decides.
+them, or the longer `Singles R32 Results`. Set either dropdown explicitly to
+override the detection for a paste that doesn't say.
+
+Because the whole post goes in together, a qualifying final can be settled
+against the main draw in the same paste rather than needing it loaded first.
 
 ## Pasting rankings
 

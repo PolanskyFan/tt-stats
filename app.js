@@ -125,7 +125,8 @@ function parseSide(token){
 
   let country="";
   const c = token.match(/\(([^()]*)\)\s*$/);
-  if(c){ country = c[1].trim(); token = token.slice(0,c.index).trim(); }
+  /* "CAN /BRA" turns up often enough to be worth tidying here */
+  if(c){ country = c[1].split("/").map(x=>x.trim()).join("/"); token = token.slice(0,c.index).trim(); }
   return {bye:false, seed, name:token, country};
 }
 
@@ -135,28 +136,55 @@ function sideKey(side, isDoubles){
   return isDoubles ? teamKeyOf(side.name) : keyOf(side.name);
 }
 
-function parseDraw(text, stage, defaultDisc){
+/* A banner line like "DOUBLES DRAW AND RESULTS" switches discipline partway
+   through a paste. "Results" or "draw" has to appear too, so an ordinary
+   sentence mentioning doubles doesn't flip it. */
+const DISC_BANNER_RE = /^\W*(singles|doubles)\b(?=.*\b(draw|results?)\b)/i;
+
+/* Round labels are unambiguous about which ladder they belong to: QR1..QR3 and
+   QFR are qualifying, everything else is main draw. So a post holding all four
+   sections needs no dropdowns at all. */
+function roundInfo(label, forcedStage){
+  const lbl=String(label).toUpperCase();
+  if(forcedStage==="Qualifying"){
+    const l=QUAL_LEVELS[lbl];
+    return l===undefined ? null : {stage:"Qualifying", level:l, name:QUAL_LABEL[l]};
+  }
+  if(forcedStage==="Main"){
+    const l=MAIN_LEVELS[lbl];
+    return l===undefined ? null : {stage:"Main", level:l, name:MAIN_LABEL[l]};
+  }
+  if(QUAL_LEVELS[lbl]!==undefined)
+    return {stage:"Qualifying", level:QUAL_LEVELS[lbl], name:QUAL_LABEL[QUAL_LEVELS[lbl]]};
+  if(MAIN_LEVELS[lbl]!==undefined)
+    return {stage:"Main", level:MAIN_LEVELS[lbl], name:MAIN_LABEL[MAIN_LEVELS[lbl]]};
+  return null;
+}
+
+function parseDraw(text, forcedStage, defaultDisc){
   defaultDisc = defaultDisc || "Singles";
-  const qual = stage === "Qualifying";
-  const LEVELS = qual ? QUAL_LEVELS : MAIN_LEVELS;
-  const LABEL  = qual ? QUAL_LABEL  : MAIN_LABEL;
   const groups = [], bad = [], unknownRounds = [];
-  let cur = null;
+  let cur = null, disc = defaultDisc;
 
   for(const raw of String(text).split(/\r?\n/)){
     const line = raw.trim();
     if(!line) continue;
+
     const h = line.match(HEADER_LONG_RE) || line.match(HEADER_RE);
     if(h){
-      const lbl = h[2].toUpperCase();
-      const level = LEVELS[lbl];
-      if(level === undefined){ unknownRounds.push(h[2]); cur = null; continue; }
-      const named = h[1] ? h[1][0].toUpperCase()+h[1].slice(1).toLowerCase() : defaultDisc;
-      cur = {disc: named, level, matches:[]};
+      const info = roundInfo(h[2], forcedStage);
+      if(!info){ unknownRounds.push(h[2]); cur = null; continue; }
+      const named = h[1] ? h[1][0].toUpperCase()+h[1].slice(1).toLowerCase() : disc;
+      cur = {disc:named, stage:info.stage, level:info.level, round:info.name, matches:[]};
       groups.push(cur);
       continue;
     }
+
+    const banner = line.match(DISC_BANNER_RE);
+    if(banner){ disc = banner[1][0].toUpperCase()+banner[1].slice(1).toLowerCase(); cur=null; continue; }
+
     if(/^Matches (Counted|Remaining)/i.test(line)) continue;
+
     const m = line.match(MATCH_RE);
     if(m && cur){
       const rest = m[7] || "";
@@ -173,33 +201,48 @@ function parseDraw(text, stage, defaultDisc){
     }
   }
 
-  // Who appears in each round.
+  /* Who appears where, kept separate per discipline and stage so a main-draw
+     R16 is never mistaken for a qualifying round. */
   const members = new Map();
+  const key = g => `${g.disc}|${g.stage}|${g.level}`;
   for(const g of groups){
     const isD = g.disc === "Doubles";
-    const set = new Set();
-    for(const mt of g.matches) for(const s of mt.sides){
-      const k = sideKey(s, isD); if(k) set.add(k);
+    const set = members.get(key(g)) || new Set();
+    for(const mt of g.matches) for(const sd of mt.sides){
+      const k = sideKey(sd, isD); if(k) set.add(k);
     }
-    members.set(g.disc+"|"+g.level, set);
+    members.set(key(g), set);
+  }
+
+  /* Everyone in this paste's main draw, per discipline — that's what settles a
+     qualifying final, since its winner walks into the main draw. */
+  const mdHere = new Map();
+  for(const g of groups){
+    if(g.stage!=="Main") continue;
+    const isD = g.disc==="Doubles";
+    const set = mdHere.get(g.disc) || new Set();
+    for(const mt of g.matches) for(const sd of mt.sides){
+      const k = sideKey(sd, isD); if(k) set.add(k);
+    }
+    mdHere.set(g.disc, set);
   }
 
   const out = [], pending = [];
   for(const g of groups){
     const isD = g.disc === "Doubles";
-    const next = members.get(g.disc+"|"+(g.level-1)) || new Set();
+    const next = members.get(`${g.disc}|${g.stage}|${g.level-1}`) || new Set();
     for(const mt of g.matches){
       const meta = {disc:g.disc, isDoubles:isD, level:g.level,
-        round: LABEL[g.level] ?? String(g.level), stage, match:mt};
-      const d = decideWinner(mt, next, isD, g.level, g.disc, stage);
+        round:g.round, stage:g.stage, match:mt};
+      const d = decideWinner(mt, next, isD, g.level, g.disc, g.stage, mdHere.get(g.disc));
       if(d === null){ pending.push(meta); continue; }
       out.push(makeRow(meta, d.idx, d.method));
     }
   }
-  return {rows:out, pending, bad, unknownRounds, groupCount:groups.length};
+  return {rows:out, pending, bad, unknownRounds, groupCount:groups.length, groups};
 }
 
-function decideWinner(mt, next, isD, level, disc, stage){
+function decideWinner(mt, next, isD, level, disc, stage, mdInPaste){
   const [L,R] = mt.sides;
   if(L.bye && !R.bye) return {idx:1, method:"bye"};
   if(R.bye && !L.bye) return {idx:0, method:"bye"};
@@ -212,7 +255,7 @@ function decideWinner(mt, next, isD, level, disc, stage){
   // 1b. A qualifying final has no next round here, but its winner walks into
   //     the main draw. If that draw is already loaded, use it.
   if(stage === "Qualifying" && level === 0 && !lAdv && !rAdv){
-    const md = mainDrawEntrants(disc);
+    const md = mdInPaste && mdInPaste.size ? mdInPaste : mainDrawEntrants(disc);
     lAdv = md.has(lk); rAdv = md.has(rk);
   }
   if(lAdv && !rAdv) return {idx:0, method:"bracket"};
@@ -360,7 +403,7 @@ const EDIT = document.body.dataset.mode === "edit";
 /* index.html, desk.html and app.js are uploaded together. Updating only some
    of them leaves a page whose markup and code disagree, which shows up as a
    blank tab rather than an error, so they carry a matching stamp. */
-const APP_VERSION = "2026-08-28k";
+const APP_VERSION = "2026-08-28l";
 const esc = s => String(s).replace(/[&<>"']/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
@@ -1869,7 +1912,8 @@ on("btnDraw", "click", ()=>{
   snapshot(`draw for ${event}`);
   PENDING_EVENT = event;
   const stage=val("stage");
-  const {rows,pending,bad,unknownRounds,groupCount}=parseDraw(text,stage,val("drawDisc")||"Singles");
+  const {rows,pending,bad,unknownRounds,groupCount,groups}=parseDraw(
+    text, stage==="Auto" ? "" : stage, val("drawDisc")==="Auto" ? "" : val("drawDisc"));
 
   if(groupCount===0){
     msg.className="msg err";
@@ -1880,12 +1924,15 @@ on("btnDraw", "click", ()=>{
   }
 
   const season=val("season").trim(), week=val("rankWeek"), keepByes=$("optByes").checked;
+  const breakdown={};
   const wk = tourWeeks("Singles").find(w=>w.name===week && (w.season||"")===season);
   let added=0, dup=0, byes=0, ranked=0;
 
   for(const r of rows){
     if(r.isBye && !keepByes){ byes++; continue; }
     r.event=event; r.season=season; r.week=week;
+    const bk=`${r.disc} ${r.stage.toLowerCase()}`;
+    breakdown[bk]=(breakdown[bk]||0)+1;
     if(wk){ const a=applyRanks(r,wk); ranked+=a; }
     const k=matchKey(r);
     if(SEEN.has(k)){ dup++; DUPES.push(r); continue; }
@@ -1894,7 +1941,9 @@ on("btnDraw", "click", ()=>{
   pending.forEach(p=>{ p.event=event; p.season=season; p.week=week; });
   PENDING=PENDING.concat(pending);
 
-  const bits=[`Added ${added} ${added===1?"match":"matches"} from ${groupCount} ${groupCount===1?"round":"rounds"}.`];
+  const parts=Object.entries(breakdown).sort().map(([k,v])=>`${v} ${k}`);
+  const bits=[`Added ${added} ${added===1?"match":"matches"} from ${groupCount} ${groupCount===1?"round":"rounds"}`
+    + (parts.length>1 ? ` \u2014 ${parts.join(", ")}.` : ".")];
   if(ranked) bits.push(`${ranked} rank ${ranked===1?"value":"values"} filled from ${week}.`);
   if(byes)   bits.push(`${byes} ${byes===1?"bye":"byes"} skipped.`);
   if(dup)    bits.push(`${dup} already in the table \u2014 skipped, listed under Issues.`);
