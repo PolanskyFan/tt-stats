@@ -360,7 +360,7 @@ const EDIT = document.body.dataset.mode === "edit";
 /* index.html, desk.html and app.js are uploaded together. Updating only some
    of them leaves a page whose markup and code disagree, which shows up as a
    blank tab rather than an error, so they carry a matching stamp. */
-const APP_VERSION = "2026-08-28i";
+const APP_VERSION = "2026-08-28j";
 const esc = s => String(s).replace(/[&<>"']/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
@@ -554,10 +554,9 @@ function deriveIssues(){
     const cs = Object.keys(e.countries).filter(Boolean);
     if(cs.length>1){
       const ok=acceptedCountries(e.key);
-      const unexplained=cs.filter(c=>!ok.has(c));
-      const item={e, field:"country", moves:COUNTRY_MOVES.get(e.key)||[],
+      const item={e, field:"country", accepted:ok,
         options:cs.map(c=>({c,n:e.countries[c]})).sort((a,b)=>b.n-a.n)};
-      if(p.country || (ok.size && unexplained.length===0)) resolved.push(item);
+      if(p.country || (ok.size>1 && cs.every(c=>ok.has(c)))) resolved.push(item);
       else countryConflicts.push(item);
     }
     const ns = Object.keys(e.names);
@@ -627,6 +626,7 @@ function impossibleDate(name){
 function deriveDateProblems(){
   const out=[];
   for(const w of WEEKS){
+    if(DATE_OK.has(weekTag(w))) continue;
     if(impossibleDate(w.name)){
       out.push({w, kind:"impossible date", suggest:null,
         text:`${w.name} ${w.season||""} (${w.tour||"Singles"}) \u2014 that day doesn't exist in that month, `
@@ -637,6 +637,7 @@ function deriveDateProblems(){
     if(!w.date){ out.push({w, kind:"no date", suggest:null,
       text:`${w.name} ${w.season||""} (${w.tour||"Singles"}) \u2014 no date could be read from the name`});
       continue; }
+    if(DATE_OK.has(weekTag(w))) continue;
     if(w.date.getDay()!==1){
       const m=nearestMonday(w.date), name=dateToWeekName(m);
       const days=Math.round((m-w.date)/86400000);
@@ -660,6 +661,29 @@ function deriveDateProblems(){
   return out;
 }
 
+/* Weeks you've confirmed are correct even though they aren't a Monday. */
+const DATE_OK = new Set();
+const weekTag = w => [(w.tour||"Singles"), (w.season||""), w.name].join("|");
+
+/* A free-text rename, for the dates no rule can guess \u2014 February 31st and
+   the like. Used from the Issues list and from the week manager. */
+function otherButton(w){
+  const b=document.createElement("button"); b.className="btn sm";
+  b.textContent="Other\u2026";
+  b.title="Type the correct week name yourself";
+  b.addEventListener("click",()=>{
+    const v=prompt(`Correct name for "${w.name}" ${w.season||""} (${w.tour||"Singles"}).\n`
+      + `Write it as a date, for example "March 2nd".`, w.name);
+    if(v===null) return;
+    const name=v.trim(); if(!name || name===w.name) return;
+    if(!weekDate(name, w.season) &&
+       !confirm(`"${name}" doesn't read as a date, so the week won't sort by calendar. Use it anyway?`)) return;
+    try{ snapshot("week rename"); renameWeek(w, name); markDirty(); refreshAll(); }
+    catch(err){ alert(err.message); }
+  });
+  return b;
+}
+
 function renameWeek(w, newName){
   const clash=WEEKS.find(x=>x!==w && x.name===newName &&
     (x.season||"")===(w.season||"") && (x.tour||"Singles")===(w.tour||"Singles"));
@@ -679,7 +703,12 @@ function renameWeek(w, newName){
    say otherwise. Accepting one records where the switch happened, so the
    pair stops being flagged while a third code still would.
    ------------------------------------------------------------------ */
-const COUNTRY_MOVES = new Map();     // key -> [{from,to,season,week}]
+/* A player can legitimately hold several countries over a career, and a code
+   like XXX isn't wrong either. So rather than "which one is right", each code
+   can be marked as genuine. The conflict settles once every code seen has been
+   accepted; a new one appearing later still raises a fresh issue. */
+const COUNTRY_OK = new Map();          // key -> Set of accepted codes
+
 function firstWeekWithCountry(key, code){
   for(const w of WEEKS){
     const hit=(w.list||[]).find(r=>keyOf(r.name)===key && r.country===code);
@@ -687,26 +716,39 @@ function firstWeekWithCountry(key, code){
   }
   return null;
 }
-function acceptCountryChange(key, from, to){
-  const w=firstWeekWithCountry(key, to);
-  const list=COUNTRY_MOVES.get(key)||[];
-  list.push({from, to, season:w?(w.season||""):"", week:w?w.name:""});
-  COUNTRY_MOVES.set(key, list);
-  const e=REG.get(key); if(e){ e.country=to; }
+function latestCountryFor(key){
+  for(let i=WEEKS.length-1;i>=0;i--){
+    const hit=(WEEKS[i].list||[]).find(r=>keyOf(r.name)===key && r.country);
+    if(hit) return hit.country;
+  }
+  return "";
 }
-function acceptedCountries(key){
-  const set=new Set();
-  (COUNTRY_MOVES.get(key)||[]).forEach(m=>{ set.add(m.from); set.add(m.to); });
-  return set;
+function acceptCountry(key, code){
+  if(!COUNTRY_OK.has(key)) COUNTRY_OK.set(key, new Set());
+  COUNTRY_OK.get(key).add(code);
+  applyAcceptedCountry(key);
 }
+function unacceptCountry(key, code){
+  const set=COUNTRY_OK.get(key); if(!set) return;
+  set.delete(code);
+  if(!set.size) COUNTRY_OK.delete(key);
+  const e=REG.get(key); if(e && !(PINS.get(key)||{}).country) e.country=topOf(e.countries)||e.country;
+  else applyAcceptedCountry(key);
+}
+function applyAcceptedCountry(key){
+  const e=REG.get(key); if(!e) return;
+  if((PINS.get(key)||{}).country) return;         // an explicit pin still wins
+  const set=COUNTRY_OK.get(key);
+  if(!set || !set.size) return;
+  const latest=latestCountryFor(key);
+  e.country = set.has(latest) ? latest : [...set][set.size-1];
+}
+const acceptedCountries = key => COUNTRY_OK.get(key) || new Set();
 
-/* ------------------------------------------------------------------
-   PROBABLE RENAMES
-   Someone who vanishes between two consecutive weeks and never returns,
-   in the same week that a name nobody has seen before turns up already
-   carrying a tournament count, is almost always the same person under a
-   new username: points and events played carry over, the name doesn't.
-   ------------------------------------------------------------------ */
+/* Pairs you've said aren't the same person, so they stop coming back. */
+const RENAME_NO = new Set();
+const renameKey = r => [r.tour, keyOf(r.from), keyOf(r.to)].join("|");
+
 function deriveRenameCandidates(){
   const out=[];
   ["Singles","Doubles"].forEach(tour=>{
@@ -753,11 +795,13 @@ function deriveRenameCandidates(){
       const usedOld=new Set(), usedNew=new Set();
       pairs.forEach(p=>{
         if(usedOld.has(p.ok) || usedNew.has(p.nk)) return;
-        usedOld.add(p.ok); usedNew.add(p.nk);
-        out.push({tour, week:ws[i].name, season:ws[i].season,
+        const cand={tour, week:ws[i].name, season:ws[i].season,
           from:p.or.name, to:p.nr.name,
           fromEvents:p.or.events, toEvents:p.nr.events,
-          fromPoints:p.or.points, toPoints:p.nr.points});
+          fromPoints:p.or.points, toPoints:p.nr.points};
+        if(RENAME_NO.has(renameKey(cand))) return;
+        usedOld.add(p.ok); usedNew.add(p.nk);
+        out.push(cand);
       });
     }
   });
@@ -2114,6 +2158,12 @@ function renderIssues(){
         });
         q.appendChild(b);
       }
+      q.appendChild(otherButton(dp.w));
+      const skip=document.createElement("button"); skip.className="btn sm";
+      skip.textContent="It's right"; skip.title="Leave this week alone and stop flagging it";
+      skip.addEventListener("click",()=>{ snapshot("week accepted");
+        DATE_OK.add(weekTag(dp.w)); markDirty(); refreshAll(); });
+      q.appendChild(skip);
       s.appendChild(q);
     });
     if(dateProblems.length>80){
@@ -2141,6 +2191,13 @@ function renderIssues(){
         catch(err){ alert(err.message); }
       });
       q.appendChild(yes);
+      const no=document.createElement("button"); no.className="btn sm";
+      no.textContent="Not the same";
+      no.title="Different people \u2014 stop suggesting this pair";
+      no.addEventListener("click",()=>{
+        snapshot("rename dismissal");
+        RENAME_NO.add(renameKey(rn)); markDirty(); refreshAll(); });
+      q.appendChild(no);
       s.appendChild(q);
     });
     box.appendChild(s);
@@ -2169,35 +2226,46 @@ function renderIssues(){
   if(countryConflicts.length){
     const s=document.createElement("section"); s.className="review";
     s.innerHTML=`<p class="blockhead">Conflicting countries \u2014 ${countryConflicts.length}</p>
-      <p class="lede" style="margin-bottom:6px">The same player has appeared under more than one code.
-      The most frequent one is being used; click another to pin it instead.</p>`;
-    countryConflicts.forEach(({e,options})=>{
+      <p class="lede" style="margin-bottom:6px">If one code is a typo, <b>use</b> the right one.
+      If the player genuinely holds more than one \u2014 they moved, or a code like XXX is meaningful \u2014
+      <b>accept</b> each that's correct. Accepting them all settles it, and a new code appearing later
+      still comes back here.</p>`;
+    countryConflicts.forEach(({e,options,accepted})=>{
       const q=document.createElement("div"); q.className="rq";
       q.innerHTML=`<span class="tag">country</span>
-        <span class="ctx">${esc(e.name)} \u2014 seen as ${options.map(o=>`${esc(o.c)} \u00d7${o.n}`).join(", ")}</span>`;
+        <span class="ctx">${esc(e.name)} \u2014 ${options.map(o=>`${esc(o.c)} \u00d7${o.n}`).join(", ")}
+        ${accepted.size?`<br><span style="color:var(--ball)">accepted: ${[...accepted].map(esc).join(", ")}</span>`:""}</span>`;
+
+      const useWrap=document.createElement("span");
+      useWrap.innerHTML=`<span class="dim" style="font-size:11px;margin-right:6px">use only</span>`;
+      options.forEach(o=>{
+        const b=document.createElement("button"); b.className="btn sm"; b.textContent=o.c;
+        if(e.country===o.c && !accepted.size){ b.style.borderColor="var(--ball)"; b.style.color="var(--ball)"; }
+        b.addEventListener("click",()=>{ snapshot("country choice"); pin(e.key,"country",o.c);
+          COUNTRY_OK.delete(e.key); markDirty(); refreshAll(); });
+        useWrap.appendChild(b);
+      });
+      q.appendChild(useWrap);
+
+      const okWrap=document.createElement("span");
+      okWrap.innerHTML=`<span class="dim" style="font-size:11px;margin:0 6px 0 12px">accept</span>`;
       options.forEach(o=>{
         const b=document.createElement("button"); b.className="btn sm";
-        b.textContent=o.c;
-        if(e.country===o.c) b.style.borderColor="var(--ball)", b.style.color="var(--ball)";
-        b.addEventListener("click",()=>{ pin(e.key,"country",o.c); markDirty(); refreshAll(); });
-        q.appendChild(b);
+        const on=accepted.has(o.c);
+        b.textContent=(on?"\u2713 ":"")+o.c;
+        if(on){ b.style.borderColor="var(--ball)"; b.style.color="var(--ball)"; }
+        b.addEventListener("click",()=>{
+          snapshot("country acceptance");
+          on ? unacceptCountry(e.key,o.c) : acceptCountry(e.key,o.c);
+          markDirty(); refreshAll(); });
+        okWrap.appendChild(b);
       });
-      if(options.length===2){
-        const both=document.createElement("button"); both.className="btn sm";
-        both.textContent="Both \u2014 they moved";
-        both.title="Record a genuine change of country rather than picking one";
-        both.addEventListener("click",()=>{
-          snapshot("country change");
-          /* the later-appearing code is the one they moved to */
-          const first=firstWeekWithCountry(e.key, options[0].c);
-          const second=firstWeekWithCountry(e.key, options[1].c);
-          const order=(first&&second&&first.date&&second.date&&first.date>second.date)
-            ? [options[1].c, options[0].c] : [options[0].c, options[1].c];
-          acceptCountryChange(e.key, order[0], order[1]);
-          markDirty(); refreshAll();
-        });
-        q.appendChild(both);
-      }
+      const all=document.createElement("button"); all.className="btn sm"; all.textContent="all";
+      all.title="Accept every code shown as genuine";
+      all.addEventListener("click",()=>{ snapshot("country acceptance");
+        options.forEach(o=>acceptCountry(e.key,o.c)); markDirty(); refreshAll(); });
+      okWrap.appendChild(all);
+      q.appendChild(okWrap);
       s.appendChild(q);
     });
     box.appendChild(s);
@@ -2254,13 +2322,14 @@ function renderIssues(){
 
 /* Settled conflicts, kept out of the way but reversible. */
 function renderResolved(box, resolved){
-  if(!resolved.length) return;
+  const extras = RENAME_NO.size + DATE_OK.size;
+  if(!resolved.length && !extras) return;
   const d=document.createElement("details");
   d.className="panel"; d.style.marginTop="20px";
   const sum=document.createElement("summary");
   sum.style.cssText="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:10.5px;"
     +"letter-spacing:.16em;text-transform:uppercase;color:var(--slate)";
-  sum.textContent=`Settled earlier \u2014 ${resolved.length}`;
+  sum.textContent=`Settled earlier \u2014 ${resolved.length+extras}`;
   d.appendChild(sum);
   const p=document.createElement("p"); p.className="lede"; p.style.margin="12px 0 4px";
   p.textContent="Choices you've already made. They stay out of the list above until you undo one.";
@@ -2268,21 +2337,48 @@ function renderResolved(box, resolved){
   resolved.forEach(({e,field,options})=>{
     const q=document.createElement("div"); q.className="wkrow";
     const chosen = field==="country" ? e.country : e.name;
-    const moves = field==="country" ? (COUNTRY_MOVES.get(e.key)||[]) : [];
-    q.innerHTML = moves.length
-      ? `<span class="nm"><span class="tag">moved</span>
+    const ok = field==="country" ? acceptedCountries(e.key) : new Set();
+    q.innerHTML = ok.size
+      ? `<span class="nm"><span class="tag">all genuine</span>
          <b style="margin-left:8px">${esc(e.name)}</b>
-         <span class="dim">${moves.map(m=>`${esc(m.from)} \u2192 ${esc(m.to)} at ${esc(m.week||"?")} ${esc(m.season||"")}`).join("; ")}</span></span>`
+         <span class="dim">${[...ok].map(c=>{
+             const w=firstWeekWithCountry(e.key,c);
+             return `${esc(c)}${w?` from ${esc(weekLabel(w))}`:""}`;
+           }).join(" \u00b7 ")} \u2014 showing ${esc(chosen)}</span></span>`
       : `<span class="nm"><span class="tag">${field}</span>
          <b style="margin-left:8px">${esc(chosen)}</b>
          <span class="dim">chosen over ${esc(options
            .map(o=>field==="country"?o.c:o.n).filter(v=>v!==chosen).join(", "))}</span></span>`;
     const u=document.createElement("button"); u.className="btn sm"; u.textContent="Undo";
     u.addEventListener("click",()=>{
-      if(moves.length) COUNTRY_MOVES.delete(e.key); else unpin(e.key, field);
+      if(ok.size) COUNTRY_OK.delete(e.key), (REG.get(e.key)||{}).country=topOf((REG.get(e.key)||{}).countries||{});
+      else unpin(e.key, field);
       markDirty(); refreshAll(); });
     q.appendChild(u); d.appendChild(q);
   });
+
+  RENAME_NO.forEach(k=>{
+    const [tour,from,to]=k.split("|");
+    const q=document.createElement("div"); q.className="wkrow";
+    q.innerHTML=`<span class="nm"><span class="tag">not a rename</span>
+      <b style="margin-left:8px">${esc(canonName(from))} / ${esc(canonName(to))}</b>
+      <span class="dim">${esc(tour)} \u2014 marked as different people</span></span>`;
+    const u=document.createElement("button"); u.className="btn sm"; u.textContent="Undo";
+    u.addEventListener("click",()=>{ RENAME_NO.delete(k); markDirty(); refreshAll(); });
+    q.appendChild(u); d.appendChild(q);
+  });
+
+  DATE_OK.forEach(k=>{
+    const [tour,season,name]=k.split("|");
+    const q=document.createElement("div"); q.className="wkrow";
+    q.innerHTML=`<span class="nm"><span class="tag">date kept</span>
+      <b style="margin-left:8px">${esc(name)} ${esc(season)}</b>
+      <span class="dim">${esc(tour)} \u2014 confirmed correct</span></span>`;
+    const u=document.createElement("button"); u.className="btn sm"; u.textContent="Undo";
+    u.addEventListener("click",()=>{ DATE_OK.delete(k); markDirty(); refreshAll(); });
+    q.appendChild(u); d.appendChild(q);
+  });
+
   box.appendChild(d);
 }
 
@@ -2422,6 +2518,7 @@ function renderWeekManager(){
       row.innerHTML=`<span class="nm">${esc(w.name)}
         <span class="dim">${esc(w.season||"no season")} \u00b7 ${(w.list||[]).length} players</span>
         ${undated?'<span class="tag" style="margin-left:6px">no date read</span>':""}</span>`;
+      row.appendChild(otherButton(w));
       const del=document.createElement("button");
       del.className="btn sm"; del.textContent="Remove";
       del.addEventListener("click",()=>{
@@ -2676,7 +2773,9 @@ function serialise(){
     matches: MATCHES.map(m=>{ const {raw, ...rest}=m; return rest; }),
     rankingFiles: allSeasons().map(seasonFile),
     aliases: [...ALIAS.entries()].map(([from,to])=>({from,to})),
-    countryMoves: [...COUNTRY_MOVES.entries()].map(([key,list])=>({key,list})),
+    countryAccepted: [...COUNTRY_OK.entries()].map(([key,set])=>({key, codes:[...set]})),
+    datesAccepted: [...DATE_OK],
+    renameRejected: [...RENAME_NO],
     pinned
   };
 }
@@ -2688,14 +2787,24 @@ function deserialise(data){
     throw new Error(`That file says it's format "${data.format}", which this page doesn't read.`);
 
   MATCHES=[]; PENDING=[]; WEEKS=[]; DUPES=[]; SEEN.clear(); REG.clear();
-  ALIAS.clear(); PINS.clear(); COUNTRY_MOVES.clear(); SEASON_DIRTY.clear(); KNOWN_SEASONS.clear();
+  ALIAS.clear(); PINS.clear(); COUNTRY_OK.clear(); RENAME_NO.clear(); DATE_OK.clear();
+  SEASON_DIRTY.clear(); KNOWN_SEASONS.clear();
   LEGACY_INLINE=false; ROW_ID=0;
   (data.rankingFiles||[]).forEach(f=>{
     const m=String(f).match(/^rankings-(.+)\.json$/i);
     if(m) KNOWN_SEASONS.add(m[1]);
   });
   (data.aliases||[]).forEach(a=>{ if(a && a.from && a.to) ALIAS.set(a.from, a.to); });
-  (data.countryMoves||[]).forEach(m=>{ if(m && m.key && Array.isArray(m.list)) COUNTRY_MOVES.set(m.key, m.list); });
+  (data.countryAccepted||[]).forEach(m=>{
+    if(m && m.key && Array.isArray(m.codes)) COUNTRY_OK.set(m.key, new Set(m.codes)); });
+  /* files written by an earlier build recorded a single move instead */
+  (data.countryMoves||[]).forEach(m=>{
+    if(!m || !m.key || !Array.isArray(m.list)) return;
+    const set=COUNTRY_OK.get(m.key) || new Set();
+    m.list.forEach(x=>{ if(x.from) set.add(x.from); if(x.to) set.add(x.to); });
+    COUNTRY_OK.set(m.key, set); });
+  (data.renameRejected||[]).forEach(k=>RENAME_NO.add(k));
+  (data.datesAccepted||[]).forEach(k=>DATE_OK.add(k));
 
   /* Older files kept the weeks inline; newer ones list separate season files
      that the caller loads. Both are accepted so nothing has to be converted
@@ -2762,6 +2871,7 @@ function reindex(){
   }
   PINS.forEach((p,k)=>{ const e=REG.get(k); if(e){ if(p.name) e.name=p.name;
     if(p.country) e.country=p.country; e.pinned=true; } });
+  COUNTRY_OK.forEach((_,k)=>applyAcceptedCountry(k));
 }
 
 /* Pins are held separately from the registry so a rebuild doesn't lose them. */

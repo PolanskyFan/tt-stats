@@ -140,24 +140,32 @@ Everything questionable lands on the **Issues** tab instead of into the data.
   compares within an event *and* season, never by name alone.
 - **Week dates that look wrong.** Ranking posts land on a Monday, so anything
   else is usually a slipped day; the fix button renames the week to the nearest
-  Monday and moves any matches tagged with it. A date that can't exist at all,
-  like February 31st, is flagged separately for you to correct by hand. Weeks
-  where singles and doubles sit a day or two apart are matched up too.
+  Monday and moves any matches tagged with it. **Other…** lets you type the right
+  name yourself, which is what a date like February 31st needs since nothing can
+  guess it. **It's right** keeps a date as it stands and stops flagging it. Weeks
+  where singles and doubles sit a day or two apart are matched up too. Every week
+  in *Ranking weeks loaded* has its own **Other…**, so you can rename any week,
+  flagged or not.
 - **Possible name changes.** When someone drops out of the rankings for good in
   the same week that a name nobody has seen before appears already carrying a
   tournament count, they're usually one person: points and tournaments played
-  follow a rename, the username doesn't. Each pair gets a Merge button.
+  follow a rename, the username doesn't. Each pair gets a **Merge** button and a **Not the same** button for when they're
+different people; dismissed pairs never come back.
 - **Weeks with only one tour** are flagged once a season has some of each — the
   two tours run the same calendar, so a week on one and not the other is nearly
   always a post that didn't get pasted.
 
-A country conflict has a third option, **Both — they moved**, for a player who
-genuinely changed country. That records where the switch happened and settles
-the pair, while a third code appearing later still raises a fresh issue.
+A country conflict offers two different answers. If one code is a typo, **use**
+the correct one. If the player genuinely holds several — they moved, or a code
+like XXX is meaningful — **accept** each that's right, or **all** at once. There's
+no limit on how many, so three or four countries over a career is fine. The
+conflict settles once every code seen has been accepted, and a code appearing
+later still comes back.
 
 Once you pick a spelling or a country, that conflict is settled and drops out of
-the list. Settled ones sit in a collapsed *Settled earlier* section at the
-bottom with an Undo beside each, so the list above only ever shows what's new.
+the list. Settled ones — chosen spellings, accepted countries, dismissed rename pairs and
+confirmed dates — sit in a collapsed *Settled earlier* section at the bottom with
+an Undo beside each, so the list above only ever shows what's new.
 
 ---
 
