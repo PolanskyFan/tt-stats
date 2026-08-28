@@ -340,7 +340,7 @@ const EDIT = document.body.dataset.mode === "edit";
 /* index.html, desk.html and app.js are uploaded together. Updating only some
    of them leaves a page whose markup and code disagree, which shows up as a
    blank tab rather than an error, so they carry a matching stamp. */
-const APP_VERSION = "2026-08-28c";
+const APP_VERSION = "2026-08-28d";
 const esc = s => String(s).replace(/[&<>"']/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
@@ -1677,8 +1677,13 @@ function renderFileManager(){
     .concat(seasons.map(sea=>{
       const ws=WEEKS.filter(w=>seasonKey(w)===sea);
       const n=ws.reduce((a,w)=>a+(w.list||[]).length,0);
+      const s=ws.filter(w=>(w.tour||"Singles")==="Singles").length;
+      const d=ws.length-s;
+      /* Spell out the tour split: a season file holds both, so "26 singles,
+         0 doubles" makes it obvious at a glance if a tour has gone missing. */
+      const mix=`${s} singles, ${d} doubles`;
       return [seasonFile(sea),
-        `${ws.length} week${ws.length===1?"":"s"} \u00b7 ${n.toLocaleString()} rows`,
+        `${mix} \u00b7 ${n.toLocaleString()} rows`,
         SEASON_DIRTY.has(sea)||LEGACY_INLINE,
         ()=>{ const b=saveSeason(sea);
               saveMsg(`Saved ${seasonFile(sea)} (${(b/1024).toFixed(0)} KB).`);

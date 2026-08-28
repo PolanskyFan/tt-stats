@@ -239,6 +239,11 @@ Each tour has four views:
 
 ---
 
+> **Never overwrite your own data files with copies from elsewhere.** `data.json`
+> and the `rankings-*.json` files are *your* data. Only ever replace them with
+> files you saved from the editor. When you update the code, upload `index.html`,
+> `desk.html` and `app.js` and nothing else.
+
 ## Which files to load
 
 `data.json` first — it holds the matches and tells the page which seasons exist.
