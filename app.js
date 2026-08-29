@@ -26,31 +26,47 @@ function parseHeaderLine(line){
   let t = String(line).replace(/\[\/?[A-Za-z]+\]/g, "").trim();
   if(!t || t.length>60) return null;
 
+  /* The discipline leads in some threads and trails in others \u2014 "Singles - QF
+     Round" against "QFR Singles" \u2014 so it's taken from wherever it appears. */
   let disc = null;
-  let m = t.match(/^(singles|doubles)\b/i);
-  if(m){ disc = m[1][0].toUpperCase()+m[1].slice(1).toLowerCase(); t = t.slice(m[0].length); }
-  t = t.replace(/^[\s\-\u2013\u2014:]+/, "").trim();
+  const dm = t.match(/\b(singles|doubles)\b/i);
+  if(dm){
+    disc = dm[1][0].toUpperCase()+dm[1].slice(1).toLowerCase();
+    t = (t.slice(0,dm.index)+" "+t.slice(dm.index+dm[0].length)).trim();
+  }
 
   let qual = false;
-  m = t.match(/^(qualifying|qualifier|qualifiers|qual)\b/i);
-  if(m){ qual = true; t = t.slice(m[0].length).trim(); }
+  const qm = t.match(/\b(qualifying|qualifier|qualifiers|qual)\b/i);
+  if(qm){ qual = true; t = (t.slice(0,qm.index)+" "+t.slice(qm.index+qm[0].length)).trim(); }
 
-  t = t.replace(/\b(round|results?|draw)\b\s*$/i, "").trim();
-  t = t.replace(/[\s:]+$/, "");
+  t = t.replace(/\b(round|results?|draw)\b/gi, " ").replace(/\s+/g," ");
+  t = t.replace(/^[\s\-\u2013\u2014:]+|[\s\-\u2013\u2014:]+$/g, "").trim();
 
   if(!t) return disc ? {disc, banner:true} : null;
+
+  /* Rounds are sometimes spelled out rather than abbreviated. */
+  const WORDS={final:"F", finals:"F", semi:"SF", semis:"SF", semifinal:"SF",
+    semifinals:"SF", "semi-final":"SF", "semi-finals":"SF", quarter:"QF",
+    quarters:"QF", quarterfinal:"QF", quarterfinals:"QF",
+    "quarter-final":"QF", "quarter-finals":"QF"};
+  const w=WORDS[t.toLowerCase()];
+  if(w) return {disc, qual, label:w};
 
   if(/^(F|SF|QF|QFR|FQR|R\d{1,3}|QR\d)$/i.test(t))
     return {disc, qual, label:t.toUpperCase()};
 
-  const num = t.match(/^round\s*(\d{1,2})$/i);
+  const num = t.match(/^(?:round\s*)?(\d{1,2})$/i);
   if(num) return {disc, qual, numbered:+num[1]};
 
   return null;
 }
 /* The tag is written "#SRs:" in main-draw posts and "#SR:" in some qualifying
    ones, so the "s" is optional. */
-const MATCH_RE  = /^\s*(\d+):(\d+)\s*\|\s*(.+?)\s+vs\.\s*(.+?)\s*#SRs?:\s*(\d+)-(\d+)\s*(.*)$/;
+/* Eighteen years of threads have written this line several ways: "|" or a
+   lowercase "l" between score and players, "vs" with or without a full stop,
+   and the tiebreak as "#SRs:", "#SR:", "SR:" or bare "SR", sometimes after a
+   dash, with its pair joined by "-" or ":". */
+const MATCH_RE  = /^\s*(\d+)\s*:\s*(\d+)\s*[|lI\u2502]\s*(.+?)\s+vs\.?\s+(.+?)\s*[-,\u2013]?\s*#?SRs?\s*:?\s*(\d+)\s*[-:]\s*(\d+)\s*(.*)$/i;
 const SETS_RE   = /Sets to the winner:\s*(\d+)-(\d+)/i;
 
 /* ==================================================================
@@ -140,6 +156,17 @@ function parseSide(token){
   const s = token.match(/^\(([^()]*)\)\s+/);
   if(s){ seed = normSeed(s[1]); token = token.slice(s[0].length).trim(); }
 
+  /* Some threads write "Anny (BLR) (1)" rather than "(1) Anny (BLR)". A closing
+     bracket that reads like a seed rather than a country is taken as one,
+     leaving the bracket before it as the country. */
+  if(!seed){
+    const tail = token.match(/\(([^()]*)\)\s*$/);
+    if(tail && /^(\d{1,3}|Q\d*|LL\d*|ALT\d*|ATL\d*|SE\d*|WC\d*)$/i.test(tail[1].trim())){
+      seed = normSeed(tail[1]);
+      token = token.slice(0, tail.index).trim();
+    }
+  }
+
   /* Doubles sides are written two ways: "A/B (X/Y)" with the countries grouped
      at the end, and "A (X)/B (Y)" with one per player. Reading only the trailing
      bracket turns the second form into a player literally called
@@ -197,7 +224,20 @@ function parseDraw(text, forcedStage, defaultDisc){
   let cur = null, disc = defaultDisc;
 
   const orphan=[]; let blankRun=0;
-  for(const raw of String(text).split(/\r?\n/)){
+  /* Long lines wrap in the forum and leave the tiebreak stranded below. Joining
+     those back on is simpler than teaching every rule about it. */
+  const joined=[];
+  String(text).split(/\r?\n/).forEach(l=>{
+    const prev=joined[joined.length-1];
+    if(prev && /^\s*[-,]?\s*#?SRs?\s*:?\s*\d/i.test(l) && /\bvs\.?\s/i.test(prev)
+       && !/#?SRs?\s*:?\s*\d+\s*[-:]\s*\d/i.test(prev)){
+      joined[joined.length-1] = prev + " " + l.trim();
+      return;
+    }
+    joined.push(l);
+  });
+
+  for(const raw of joined){
     const line = raw.trim();
     if(!line){ blankRun++; continue; }
 
@@ -237,7 +277,7 @@ function parseDraw(text, forcedStage, defaultDisc){
       cur.matches.push({
         score:[+m[1],+m[2]], sr:[+m[5],+m[6]],
         sets: sets ? [+sets[1],+sets[2]] : null,
-        pts1: /PTS1/i.test(rest),
+        pts1: /PTS\d/i.test(rest),
         sides:[parseSide(m[3]), parseSide(m[4])],
         raw: line
       });
@@ -302,7 +342,7 @@ function inferGroupsFromShape(orphan, defaultDisc, forcedStage){
     const rest=m[7]||"", sets=rest.match(SETS_RE);
     return {blank:o.blank, raw:o.line,
       mt:{score:[+m[1],+m[2]], sr:[+m[5],+m[6]],
-          sets: sets?[+sets[1],+sets[2]]:null, pts1:/PTS1/i.test(rest),
+          sets: sets?[+sets[1],+sets[2]]:null, pts1:/PTS\d/i.test(rest),
           sides:[parseSide(m[3]), parseSide(m[4])], raw:o.line}};
   });
 
@@ -573,7 +613,7 @@ const EDIT = document.body.dataset.mode === "edit";
 /* index.html, desk.html and app.js are uploaded together. Updating only some
    of them leaves a page whose markup and code disagree, which shows up as a
    blank tab rather than an error, so they carry a matching stamp. */
-const APP_VERSION = "2026-08-29c";
+const APP_VERSION = "2026-08-29e";
 const esc = s => String(s).replace(/[&<>"']/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
@@ -957,6 +997,44 @@ function applyAcceptedCountry(key){
   e.country = set.has(latest) ? latest : [...set][set.size-1];
 }
 const acceptedCountries = key => COUNTRY_OK.get(key) || new Set();
+
+/* Accepting a code says "this is genuine". The other answer is "this one is
+   simply wrong" \u2014 a placeholder like XXX, or a mistyped code \u2014 which needs the
+   data corrected rather than another exception recorded. This rewrites that
+   player's country wherever it appears, in matches and in ranking rows alike,
+   so the conflict goes away because the cause has gone. */
+function replaceCountry(key, from, to){
+  if(!from || !to || from===to) return 0;
+  let hits=0;
+
+  const fixSide=(nameStr, countryStr, isD)=>{
+    if(!isD){
+      if(keyOf(nameStr)===key && countryStr===from){ hits++; return to; }
+      return countryStr;
+    }
+    const names=String(nameStr).split("/");
+    const codes=String(countryStr||"").split("/");
+    names.forEach((nm,i)=>{
+      if(keyOf(nm.trim())===key && (codes[i]||"").trim()===from){ codes[i]=to; hits++; }
+    });
+    return codes.join("/");
+  };
+
+  for(const r of MATCHES){
+    const isD = r.disc==="Doubles";
+    r.winnerCountry = fixSide(r.winner, r.winnerCountry, isD);
+    r.loserCountry  = fixSide(r.loser,  r.loserCountry,  isD);
+  }
+  for(const w of WEEKS)
+    for(const row of (w.list||[]))
+      if(keyOf(row.name)===key && row.country===from){ row.country=to; hits++; }
+
+  const set=COUNTRY_OK.get(key);
+  if(set){ set.delete(from); if(!set.size) COUNTRY_OK.delete(key); }
+  WEEKS.forEach(w=>SEASON_DIRTY.add(w.season||"unknown"));
+  reindex();
+  return hits;
+}
 
 /* Pairs you've said aren't the same person, so they stop coming back. */
 const RENAME_NO = new Set();
@@ -2638,6 +2716,31 @@ function renderIssues(){
         options.forEach(o=>acceptCountry(e.key,o.c)); markDirty(); refreshAll(); });
       okWrap.appendChild(all);
       q.appendChild(okWrap);
+
+      if(options.length>1){
+        const fixWrap=document.createElement("span");
+        fixWrap.style.cssText="display:block;width:100%;margin-top:6px";
+        fixWrap.innerHTML=`<span class="dim" style="font-size:11px;margin-right:6px">or correct</span>`;
+        const from=selectOf(options.map(o=>[o.c,o.c]), options[options.length-1].c, ()=>{});
+        const to  =selectOf(options.map(o=>[o.c,o.c]), options[0].c, ()=>{});
+        [from,to].forEach(sel=>{ sel.style.cssText="width:auto;display:inline-block;margin:0 4px;padding:4px 6px;font-size:12px"; });
+        const arrow=document.createElement("span"); arrow.className="dim";
+        arrow.style.fontSize="12px"; arrow.textContent="should be";
+        const go=document.createElement("button"); go.className="btn sm"; go.textContent="Correct";
+        go.title="Rewrite this player's country wherever the wrong code appears";
+        go.addEventListener("click",()=>{
+          if(from.value===to.value) return;
+          if(!confirm(`Change ${e.name}'s country from ${from.value} to ${to.value} everywhere it appears?\n\n`
+            + `This edits the stored data rather than recording an exception, so save afterwards.`)) return;
+          snapshot("country correction");
+          const hits=replaceCountry(e.key, from.value, to.value);
+          markDirty(); refreshAll();
+          saveMsg(`Changed ${hits} occurrence${hits===1?"":"s"} of ${from.value} to ${to.value} for ${e.name}.`);
+        });
+        fixWrap.appendChild(from); fixWrap.appendChild(arrow); fixWrap.appendChild(to);
+        fixWrap.appendChild(go);
+        q.appendChild(fixWrap);
+      }
       s.appendChild(q);
     });
     box.appendChild(s);

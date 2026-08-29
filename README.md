@@ -157,7 +157,7 @@ different people; dismissed pairs never come back.
   two tours run the same calendar, so a week on one and not the other is nearly
   always a post that didn't get pasted.
 
-A country conflict offers two different answers. If one code is a typo, **use**
+A country conflict offers three answers. If one code is a typo, **use**
 the correct one. If the player genuinely holds several — they moved, or a code
 like XXX is meaningful — **accept** each that's right, or **all** at once. There's
 no limit on how many, so three or four countries over a career is fine. The
@@ -208,9 +208,18 @@ main draw. With **Discipline** and **Stage** on *Auto*:
 - The stage comes from the round itself: `QR1`–`QR3` and `QFR` can only be
   qualifying, everything else is main draw. No dropdown needed.
 
+Match lines are read in whatever shape the thread uses: `|` or a lowercase `l`
+between the score and the players, `vs` with or without a full stop, and the
+tiebreak written `#SRs:`, `#SR:`, `SR:` or bare `SR`, optionally after a dash,
+with its pair joined by `-` or `:`. A seed can come before the name, `(1) Anny
+(BLR)`, or after it, `Anny (BLR) (1)`. A line whose tiebreak has wrapped onto
+the next line is joined back up before parsing.
+
 Round headings are read in whatever shape the thread uses — `R32`,
 `Singles R32 Results`, `Singles - QF Round`, `Doubles - Round 3`,
-`Singles Qualifying Round 2 Draw` — and BBCode leftovers like `[/B]` are ignored.
+`Singles Qualifying Round 2 Draw`, `QFR Singles`, `Final Singles` — with the
+discipline before or after the round, rounds spelled out or abbreviated, and
+BBCode leftovers like `[/B]` ignored.
 Set either dropdown explicitly to override the detection for a paste that
 doesn't say.
 
