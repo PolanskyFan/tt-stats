@@ -321,7 +321,7 @@ function parseDraw(text, forcedStage, defaultDisc){
       const meta = {disc:g.disc, isDoubles:isD, level:g.level,
         round:g.round, stage:g.stage, match:mt};
       const d = decideWinner(mt, next, isD, g.level, g.disc, g.stage, mdHere.get(g.disc));
-      if(d === null){ pending.push(meta); continue; }
+      if(d === null){ meta.noResult = noResult(mt); pending.push(meta); continue; }
       out.push(makeRow(meta, d.idx, d.method));
     }
   }
@@ -450,6 +450,14 @@ function resolveNumberedRounds(groups, unknownRounds){
       g.round = stage==="Qualifying" ? g.qualLabel : MAIN_LABEL[level];
     });
   });
+}
+
+/* Neither player sent picks, so there is no result to record. These read as a
+   dead heat on every measure, which is indistinguishable from a genuine tie
+   until you notice every number is zero. */
+function noResult(mt){
+  return mt.score[0]===0 && mt.score[1]===0 && mt.sr[0]===0 && mt.sr[1]===0
+      && !mt.pts1 && (!mt.sets || (mt.sets[0]===0 && mt.sets[1]===0));
 }
 
 function decideWinner(mt, next, isD, level, disc, stage, mdInPaste){
@@ -613,7 +621,7 @@ const EDIT = document.body.dataset.mode === "edit";
 /* index.html, desk.html and app.js are uploaded together. Updating only some
    of them leaves a page whose markup and code disagree, which shows up as a
    blank tab rather than an error, so they carry a matching stamp. */
-const APP_VERSION = "2026-08-29e";
+const APP_VERSION = "2026-08-29f";
 const esc = s => String(s).replace(/[&<>"']/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
@@ -821,6 +829,7 @@ function deriveIssues(){
   return {countryConflicts, nameVariants, resolved,
           tourGaps:deriveTourGaps(), eventProblems:deriveEventProblems(),
           dateProblems:deriveDateProblems(), renames:deriveRenameCandidates(),
+          unknowns:deriveUnknownPlayers(),
           dupes:DUPES, pending:PENDING};
 }
 
@@ -1099,6 +1108,87 @@ function deriveRenameCandidates(){
   return out;
 }
 
+/* ------------------------------------------------------------------
+   NAMES THAT NEVER APPEAR IN A RANKING
+   Everyone in a draw is ranked at some point, so a name that turns up in
+   matches and never in a ranking list is almost always a typo. The nearest
+   ranked spellings are offered, closest first.
+   ------------------------------------------------------------------ */
+const UNKNOWN_OK = new Set();       // names you've confirmed are fine as they are
+
+function editDistance(a,b){
+  a=String(a); b=String(b);
+  if(a===b) return 0;
+  if(Math.abs(a.length-b.length)>4) return 99;
+  const prev=new Array(b.length+1);
+  for(let j=0;j<=b.length;j++) prev[j]=j;
+  for(let i=1;i<=a.length;i++){
+    let last=prev[0]; prev[0]=i;
+    for(let j=1;j<=b.length;j++){
+      const tmp=prev[j];
+      prev[j]=Math.min(prev[j]+1, prev[j-1]+1, last+(a[i-1]===b[j-1]?0:1));
+      last=tmp;
+    }
+  }
+  return prev[b.length];
+}
+
+function rankedKeys(){
+  const set=new Set();
+  for(const w of WEEKS) for(const r of (w.list||[])) set.add(keyOf(r.name));
+  return set;
+}
+
+function deriveUnknownPlayers(){
+  const ranked=rankedKeys();
+  if(!ranked.size) return [];                 // no rankings loaded, so nothing to check against
+
+  const seen=new Map();                       // key -> {matches, events}
+  const note=(nm, r)=>{
+    const k=keyOf(nm);
+    if(!k || k==="bye" || ranked.has(k) || UNKNOWN_OK.has(k)) return;
+    if(!seen.has(k)) seen.set(k,{key:k, name:canonName(nm), matches:0, events:new Set()});
+    const e=seen.get(k); e.matches++; e.events.add(`${r.event} ${r.season||""}`.trim());
+  };
+  for(const r of MATCHES){
+    if(r.disc==="Doubles"){
+      r.winner.split("/").forEach(x=>note(x.trim(), r));
+      r.loser .split("/").forEach(x=>note(x.trim(), r));
+    } else { note(r.winner, r); note(r.loser, r); }
+  }
+  if(!seen.size) return [];
+
+  /* Candidates are every ranked name, but the ones already in this player's own
+     events come first \u2014 a misspelling usually sits beside its correct form in
+     the same draw. */
+  const rankedList=[...ranked].map(k=>({key:k, name:canonName(k)}));
+  const inEvent=new Map();
+  for(const r of MATCHES){
+    const ev=`${r.event} ${r.season||""}`.trim();
+    const add=nm=>{ const k=keyOf(nm);
+      if(!ranked.has(k)) return;
+      if(!inEvent.has(ev)) inEvent.set(ev,new Set());
+      inEvent.get(ev).add(k); };
+    if(r.disc==="Doubles"){ r.winner.split("/").forEach(x=>add(x.trim())); r.loser.split("/").forEach(x=>add(x.trim())); }
+    else { add(r.winner); add(r.loser); }
+  }
+
+  return [...seen.values()].map(e=>{
+    const near=new Set();
+    e.events.forEach(ev=>(inEvent.get(ev)||new Set()).forEach(k=>near.add(k)));
+    const score=c=>{
+      const d=editDistance(e.key, c.key);
+      return d + (near.has(c.key) ? -0.5 : 0);      // same event breaks a tie
+    };
+    const picks=rankedList
+      .map(c=>({...c, d:editDistance(e.key,c.key), s:score(c)}))
+      .filter(c=>c.d<=Math.max(2, Math.round(e.key.length*0.34)))
+      .sort((a,b)=>a.s-b.s)
+      .slice(0,3);
+    return {...e, events:[...e.events], suggestions:picks};
+  }).sort((a,b)=>b.matches-a.matches);
+}
+
 function deriveTourGaps(){
   const by=new Map();
   for(const w of WEEKS){
@@ -1130,7 +1220,7 @@ function issueCount(){
   const i = deriveIssues();
   return i.countryConflicts.length + i.nameVariants.length + i.tourGaps.length
        + i.eventProblems.length + i.dateProblems.length + i.renames.length
-       + i.dupes.length + i.pending.length;
+       + i.unknowns.length + i.dupes.length + i.pending.length;
 }
 
 /* ==================================================================
@@ -2273,7 +2363,9 @@ function renderPreview(){
     const d=document.createElement("details"); d.open=true; d.style.margin="2px 0 6px";
     const sum=document.createElement("summary");
     sum.style.cssText="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--warn)";
-    sum.textContent=`${res.pending.length} match${res.pending.length===1?"":"es"} with no winner yet \u2014 you'll be asked after adding`;
+    const nores=res.pending.filter(p=>noResult(p.match)).length;
+    sum.textContent=`${res.pending.length} match${res.pending.length===1?"":"es"} with no winner yet \u2014 you'll be asked after adding`
+      + (nores?` (${nores} with no result at all, which you can leave out in one go)`:"");
     d.appendChild(sum);
     const ul=document.createElement("div");
     ul.style.cssText="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--slate);padding:6px 0 2px 14px;line-height:1.7";
@@ -2471,6 +2563,7 @@ function renderReview(){
     const [L,R]=p.match.sides;
     const q=document.createElement("div"); q.className="rq";
     q.innerHTML=`<span class="tag">${esc(p.event||"?")} \u00b7 ${esc(p.disc)} ${esc(p.round)}</span>
+      ${p.noResult?'<span class="tag">no result</span>':""}
       <span class="ctx">${esc(p.match.raw)}</span>`;
     [L,R].forEach((side,idx)=>{
       const b=document.createElement("button"); b.className="btn sm";
@@ -2486,8 +2579,23 @@ function renderReview(){
       });
       q.appendChild(b);
     });
+    const skip=document.createElement("button"); skip.className="btn sm";
+    skip.textContent = p.noResult ? "Neither \u2014 leave it out" : "Leave it out";
+    skip.title="Not a real result; don't record it at all";
+    skip.addEventListener("click",()=>{
+      PENDING.splice(PENDING.indexOf(p),1); markDirty(); refreshAll(); });
+    q.appendChild(skip);
     el.appendChild(q);
   });
+  if(PENDING.some(p=>p.noResult)){
+    const all=document.createElement("div"); all.className="btnrow";
+    const b=document.createElement("button"); b.className="btn sm";
+    const n=PENDING.filter(p=>p.noResult).length;
+    b.textContent=`Leave out all ${n} with no result`;
+    b.addEventListener("click",()=>{
+      PENDING=PENDING.filter(p=>!p.noResult); markDirty(); refreshAll(); });
+    all.appendChild(b); el.appendChild(all);
+  }
   wrap.innerHTML=""; wrap.appendChild(el);
 }
 /* ==================================================================
@@ -2563,11 +2671,11 @@ function renderMergePanel(box){
 function renderIssues(){
   const box=$("issuesBody"); if(!box) return;
   const {countryConflicts,nameVariants,resolved,tourGaps,eventProblems,
-         dateProblems,renames,dupes,pending}=deriveIssues();
+         dateProblems,renames,unknowns,dupes,pending}=deriveIssues();
   box.innerHTML="";
   renderMergePanel(box);
   const total=countryConflicts.length+nameVariants.length+tourGaps.length+eventProblems.length
-    +dateProblems.length+renames.length+dupes.length+pending.length;
+    +dateProblems.length+renames.length+unknowns.length+dupes.length+pending.length;
 
   if(!total){
     const ok=document.createElement("div"); ok.className="ok";
@@ -2620,6 +2728,46 @@ function renderIssues(){
       const m=document.createElement("p"); m.className="hint";
       m.textContent=`\u2026and ${dateProblems.length-80} more.`; s.appendChild(m);
     }
+    box.appendChild(s);
+  }
+
+  if(unknowns.length){
+    const s=document.createElement("section"); s.className="review";
+    s.innerHTML=`<p class="blockhead">Names that never appear in a ranking \u2014 ${unknowns.length}</p>
+      <p class="lede" style="margin-bottom:6px">Everyone in a draw is ranked at some point, so these are
+      almost certainly misspellings. The nearest ranked spellings are offered, ones from the same event
+      first. Merging rewrites every match they appear in.</p>`;
+    unknowns.forEach(u=>{
+      const q=document.createElement("div"); q.className="rq";
+      q.innerHTML=`<span class="tag">${u.matches} match${u.matches===1?"":"es"}</span>
+        <span class="ctx"><b>${esc(u.name)}</b>
+        <span class="dim">${esc(u.events.slice(0,2).join(", "))}${u.events.length>2?"\u2026":""}</span></span>`;
+      u.suggestions.forEach(c=>{
+        const b=document.createElement("button"); b.className="btn sm";
+        b.textContent=c.name;
+        b.title=`Merge into ${c.name}`;
+        b.addEventListener("click",()=>{
+          try{ snapshot("player merge"); mergePlayers(u.name, c.name); markDirty(); refreshAll(); }
+          catch(err){ alert(err.message); }
+        });
+        q.appendChild(b);
+      });
+      const other=document.createElement("button"); other.className="btn sm"; other.textContent="Other\u2026";
+      other.addEventListener("click",()=>{
+        const v=prompt(`Who is "${u.name}" really?\nType the correct username as it appears in the rankings.`, "");
+        if(v===null) return;
+        const nm=v.trim(); if(!nm) return;
+        try{ snapshot("player merge"); mergePlayers(u.name, nm); markDirty(); refreshAll(); }
+        catch(err){ alert(err.message); }
+      });
+      q.appendChild(other);
+      const fine=document.createElement("button"); fine.className="btn sm"; fine.textContent="Spelling is right";
+      fine.title="Genuinely never ranked \u2014 stop flagging this name";
+      fine.addEventListener("click",()=>{
+        snapshot("name accepted"); UNKNOWN_OK.add(u.key); markDirty(); refreshAll(); });
+      q.appendChild(fine);
+      s.appendChild(q);
+    });
     box.appendChild(s);
   }
 
@@ -2797,7 +2945,7 @@ function renderIssues(){
 
 /* Settled conflicts, kept out of the way but reversible. */
 function renderResolved(box, resolved){
-  const extras = RENAME_NO.size + DATE_OK.size;
+  const extras = RENAME_NO.size + DATE_OK.size + UNKNOWN_OK.size;
   if(!resolved.length && !extras) return;
   const d=document.createElement("details");
   d.className="panel"; d.style.marginTop="20px";
@@ -2840,6 +2988,16 @@ function renderResolved(box, resolved){
       <span class="dim">${esc(tour)} \u2014 marked as different people</span></span>`;
     const u=document.createElement("button"); u.className="btn sm"; u.textContent="Undo";
     u.addEventListener("click",()=>{ RENAME_NO.delete(k); markDirty(); refreshAll(); });
+    q.appendChild(u); d.appendChild(q);
+  });
+
+  UNKNOWN_OK.forEach(k=>{
+    const q=document.createElement("div"); q.className="wkrow";
+    q.innerHTML=`<span class="nm"><span class="tag">never ranked</span>
+      <b style="margin-left:8px">${esc(canonName(k))}</b>
+      <span class="dim">confirmed as spelt</span></span>`;
+    const u=document.createElement("button"); u.className="btn sm"; u.textContent="Undo";
+    u.addEventListener("click",()=>{ UNKNOWN_OK.delete(k); markDirty(); refreshAll(); });
     q.appendChild(u); d.appendChild(q);
   });
 
@@ -3256,6 +3414,7 @@ function serialise(){
     countryAccepted: [...COUNTRY_OK.entries()].map(([key,set])=>({key, codes:[...set]})),
     datesAccepted: [...DATE_OK],
     renameRejected: [...RENAME_NO],
+    unknownAccepted: [...UNKNOWN_OK],
     pinned
   };
 }
@@ -3267,7 +3426,7 @@ function deserialise(data){
     throw new Error(`That file says it's format "${data.format}", which this page doesn't read.`);
 
   MATCHES=[]; PENDING=[]; WEEKS=[]; DUPES=[]; SEEN.clear(); REG.clear();
-  ALIAS.clear(); PINS.clear(); COUNTRY_OK.clear(); RENAME_NO.clear(); DATE_OK.clear();
+  ALIAS.clear(); PINS.clear(); COUNTRY_OK.clear(); RENAME_NO.clear(); DATE_OK.clear(); UNKNOWN_OK.clear();
   SEASON_DIRTY.clear(); KNOWN_SEASONS.clear();
   LEGACY_INLINE=false; ROW_ID=0;
   (data.rankingFiles||[]).forEach(f=>{
@@ -3292,6 +3451,7 @@ function deserialise(data){
     const [tour,from,to]=String(k).split("|");
     RENAME_NO.add(to===undefined ? k : [tour, keyOf(from), keyOf(to)].join("|")); });
   (data.datesAccepted||[]).forEach(k=>DATE_OK.add(k));
+  (data.unknownAccepted||[]).forEach(k=>UNKNOWN_OK.add(keyOf(k)));
 
   /* Older files kept the weeks inline; newer ones list separate season files
      that the caller loads. Both are accepted so nothing has to be converted

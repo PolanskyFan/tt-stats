@@ -136,7 +136,15 @@ Everything questionable lands on the **Issues** tab instead of into the data.
   code appeared. The most frequent one is used until you pin a different one.
 - **Spelling variants** are already treated as one player; you choose which
   spelling is displayed and exported.
-- **Undecidable matches** wait for you to pick a winner.
+- **Undecidable matches** wait for you to pick a winner. Where every number is
+  zero — neither player sent picks, so there's no result — the row is marked
+  *no result* and offers **Neither — leave it out**, with a button to drop all
+  of them at once. Anything left out is never recorded.
+- **Names that never appear in a ranking.** Everyone in a draw is ranked at some
+  point, so a name in the matches and in no ranking list is almost certainly a
+  misspelling. The nearest ranked spellings are offered, ones from the same event
+  first, with **Other…** to type the right name and **Spelling is right** for a
+  genuine case. Merging rewrites every match the name appears in.
 - **Events needing attention** — a group of matches with no season set, or one
   event using more than one ranking week. Events repeat year on year, so this
   compares within an event *and* season, never by name alone.
