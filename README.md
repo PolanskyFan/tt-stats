@@ -227,9 +227,12 @@ against the main draw in the same paste rather than needing it loaded first.
 ### Nothing is added until you say so
 
 **Read draw** shows what it found before anything is written: the event, the
-season, the ranking week, and every round with its match count, plus warnings
-about byes, duplicates, undecided matches and lines that didn't parse. **Add**
-commits it, **Cancel** discards it. A paste that half-works is worse than one
+season, the ranking week, and every round with its match count. A main-draw
+round has a known size — the last sixty-four holds thirty-two matches — so a
+short round reads *R64 ×30 of 32* in amber and opens itself up automatically.
+Every round can be expanded to list the matches actually read, and any line that
+couldn't be read is shown in full, which is normally where the missing ones went.
+**Add** commits it, **Cancel** discards it. A paste that half-works is worse than one
 that fails outright, because the wrong rows go in quietly.
 
 ### When the headings can't be read
@@ -274,7 +277,7 @@ different years collide.
 | Stage | Rounds |
 |---|---|
 | Main | `F` `SF` `QF` `R16` `R32` `R64` `R128` `R256` `R512` |
-| Qualifying | `QFR` `QR3` `QR2` `QR1` |
+| Qualifying | `QFR` (or `FQR`) `QR3` `QR2` `QR1` |
 
 Set **Stage** before adding a draw. If the round names don't match the stage,
 the page says so instead of dropping the rows.

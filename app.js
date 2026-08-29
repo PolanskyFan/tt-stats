@@ -9,7 +9,7 @@
 const MAIN_LEVELS = {"F":0,"FINAL":0,"FINALS":0,"SF":1,"SEMIFINAL":1,"SEMIFINALS":1,
   "QF":2,"QUARTERFINAL":2,"QUARTERFINALS":2,
   "R16":3,"R32":4,"R64":5,"R128":6,"R256":7,"R512":8};
-const QUAL_LEVELS = {"QFR":0,"QF R":0,"QR3":1,"QR2":2,"QR1":3};
+const QUAL_LEVELS = {"QFR":0,"FQR":0,"QF R":0,"QR3":1,"QR2":2,"QR1":3};
 const MAIN_LABEL = {0:"F",1:"SF",2:"QF",3:"R16",4:"R32",5:"R64",6:"R128",7:"R256",8:"R512"};
 const QUAL_LABEL = {0:"QFR",1:"QR3",2:"QR2",3:"QR1"};
 
@@ -40,7 +40,7 @@ function parseHeaderLine(line){
 
   if(!t) return disc ? {disc, banner:true} : null;
 
-  if(/^(F|SF|QF|QFR|R\d{1,3}|QR\d)$/i.test(t))
+  if(/^(F|SF|QF|QFR|FQR|R\d{1,3}|QR\d)$/i.test(t))
     return {disc, qual, label:t.toUpperCase()};
 
   const num = t.match(/^round\s*(\d{1,2})$/i);
@@ -360,7 +360,7 @@ function normaliseQualifyingLevels(groups){
   byDisc.forEach(list=>{
     const depth=g=>{
       const r=String(g.round||"").toUpperCase();
-      if(r==="QFR") return -1;                 // the final round comes first
+      if(r==="QFR" || r==="FQR") return -1;    // the final round comes first
       const m=r.match(/^QR(\d+)$/);
       return m ? -(+m[1]) : 0;
     };
@@ -573,7 +573,7 @@ const EDIT = document.body.dataset.mode === "edit";
 /* index.html, desk.html and app.js are uploaded together. Updating only some
    of them leaves a page whose markup and code disagree, which shows up as a
    blank tab rather than an error, so they carry a matching stamp. */
-const APP_VERSION = "2026-08-29a";
+const APP_VERSION = "2026-08-29c";
 const esc = s => String(s).replace(/[&<>"']/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
@@ -2103,6 +2103,18 @@ on("btnDraw", "click", ()=>{
   msg.textContent="";
 });
 
+/* A full round of the last sixty-four holds thirty-two matches, and so on down.
+   Comparing against that turns "30 matches" into "30 of 32", which is the
+   difference between a number and a warning. */
+function expectedMatches(round){
+  const r=String(round).toUpperCase();
+  if(r==="F")  return 1;
+  if(r==="SF") return 2;
+  if(r==="QF") return 4;
+  const m=r.match(/^R(\d+)$/);
+  return m ? (+m[1])/2 : null;      // qualifying draws vary, so no expectation
+}
+
 function renderPreview(){
   const box=$("previewBox"); if(!box) return;
   box.innerHTML="";
@@ -2141,9 +2153,67 @@ function renderPreview(){
     const total=list.reduce((n,[,v])=>n+v,0);
     const row=document.createElement("div"); row.className="rq";
     row.innerHTML=`<span class="tag">${esc(group)}</span>
-      <span class="ctx"><b>${total}</b> \u2014 ${list.map(([r,v])=>`${esc(r)} \u00d7${v}`).join(", ")}</span>`;
+      <span class="ctx"><b>${total}</b> \u2014 ${list.map(([r,v])=>{
+        const want=expectedMatches(r);
+        const short = want!==null && v!==want;
+        return short
+          ? `<span style="color:var(--warn)">${esc(r)} \u00d7${v} of ${want}</span>`
+          : `${esc(r)} \u00d7${v}`;
+      }).join(", ")}</span>`;
     sec.appendChild(row);
+
+    /* Counts alone don't say which matches are there, so each round opens up
+       to the actual list. A round short of its full size is the usual reason
+       to look. */
+    list.forEach(([rnd,v])=>{
+      const want=expectedMatches(rnd);
+      const d=document.createElement("details");
+      d.style.cssText="margin:2px 0 6px 0";
+      if(want!==null && v!==want) d.open=true;
+      const sum=document.createElement("summary");
+      sum.style.cssText="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--slate)";
+      sum.textContent = want!==null && v!==want
+        ? `${group} ${rnd} \u2014 ${v} read, ${want} expected in a full round`
+        : `${group} ${rnd} \u2014 list the ${v} matches read`;
+      d.appendChild(sum);
+      const ul=document.createElement("div");
+      ul.style.cssText="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--slate);"
+        +"padding:6px 0 2px 14px;line-height:1.7";
+      res.rows.filter(r=>`${r.disc} ${r.stage.toLowerCase()}`===group && r.round===rnd
+                         && (keepByes || !r.isBye))
+        .forEach(r=>{
+          const line=document.createElement("div");
+          line.textContent=`${canonName(r.winner)}  def  ${canonName(r.loser)}   ${r.winnerScore}\u2013${r.loserScore}`;
+          ul.appendChild(line);
+        });
+      d.appendChild(ul);
+      sec.appendChild(d);
+    });
   });
+
+  if(res.pending.length){
+    const d=document.createElement("details"); d.open=true; d.style.margin="2px 0 6px";
+    const sum=document.createElement("summary");
+    sum.style.cssText="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--warn)";
+    sum.textContent=`${res.pending.length} match${res.pending.length===1?"":"es"} with no winner yet \u2014 you'll be asked after adding`;
+    d.appendChild(sum);
+    const ul=document.createElement("div");
+    ul.style.cssText="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--slate);padding:6px 0 2px 14px;line-height:1.7";
+    res.pending.forEach(p=>{ const l=document.createElement("div"); l.textContent=p.match.raw; ul.appendChild(l); });
+    d.appendChild(ul); sec.appendChild(d);
+  }
+
+  if(res.bad.length){
+    const d=document.createElement("details"); d.open=true; d.style.margin="2px 0 6px";
+    const sum=document.createElement("summary");
+    sum.style.cssText="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--bad)";
+    sum.textContent=`${res.bad.length} line${res.bad.length===1?"":"s"} couldn't be read \u2014 these are the ones missing`;
+    d.appendChild(sum);
+    const ul=document.createElement("div");
+    ul.style.cssText="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#F5B8B2;padding:6px 0 2px 14px;line-height:1.7";
+    res.bad.forEach(b=>{ const l=document.createElement("div"); l.textContent=b; ul.appendChild(l); });
+    d.appendChild(ul); sec.appendChild(d);
+  }
 
   const notes=[];
   if(byes) notes.push(`${byes} bye${byes===1?"":"s"} will be skipped`);
@@ -3101,16 +3171,23 @@ function deserialise(data){
     const m=String(f).match(/^rankings-(.+)\.json$/i);
     if(m) KNOWN_SEASONS.add(m[1]);
   });
-  (data.aliases||[]).forEach(a=>{ if(a && a.from && a.to) ALIAS.set(a.from, a.to); });
+  /* Keys in a saved file were made by whatever rules applied at the time. An
+     underscore used to be its own character, so a pin recorded against
+     "p_varna" no longer finds the player now keyed "p varna" \u2014 the decision
+     survives in the file but attaches to nobody. Re-keying on load fixes that
+     for good, since the file is rewritten with the current form. */
+  (data.aliases||[]).forEach(a=>{ if(a && a.from && a.to) ALIAS.set(rawKey(a.from), rawKey(a.to)); });
   (data.countryAccepted||[]).forEach(m=>{
-    if(m && m.key && Array.isArray(m.codes)) COUNTRY_OK.set(m.key, new Set(m.codes)); });
+    if(m && m.key && Array.isArray(m.codes)) COUNTRY_OK.set(keyOf(m.key), new Set(m.codes)); });
   /* files written by an earlier build recorded a single move instead */
   (data.countryMoves||[]).forEach(m=>{
     if(!m || !m.key || !Array.isArray(m.list)) return;
-    const set=COUNTRY_OK.get(m.key) || new Set();
+    const set=COUNTRY_OK.get(keyOf(m.key)) || new Set();
     m.list.forEach(x=>{ if(x.from) set.add(x.from); if(x.to) set.add(x.to); });
-    COUNTRY_OK.set(m.key, set); });
-  (data.renameRejected||[]).forEach(k=>RENAME_NO.add(k));
+    COUNTRY_OK.set(keyOf(m.key), set); });
+  (data.renameRejected||[]).forEach(k=>{
+    const [tour,from,to]=String(k).split("|");
+    RENAME_NO.add(to===undefined ? k : [tour, keyOf(from), keyOf(to)].join("|")); });
   (data.datesAccepted||[]).forEach(k=>DATE_OK.add(k));
 
   /* Older files kept the weeks inline; newer ones list separate season files
@@ -3144,8 +3221,9 @@ function deserialise(data){
 
   (data.pinned||[]).forEach(p=>{
     const rec={}; if(p.name) rec.name=p.name; if(p.country) rec.country=p.country;
-    PINS.set(p.key, rec);
-    const e=REG.get(p.key);
+    const k=keyOf(p.key);
+    PINS.set(k, rec);
+    const e=REG.get(k);
     if(e){ Object.assign(e, rec); e.pinned=true; }
   });
 
@@ -3350,6 +3428,7 @@ async function loadFiles(files){
     catch(err){ bad.push(`${p.f.name} (${err.message})`); }
   });
   sortWeeks();
+  reindex();
   ["Singles","Doubles"].forEach(t=>{ RANK_UI[t].week=null; RANK_UI[t].player=null; });
   DIRTY=false;
   refreshAll();
@@ -3431,6 +3510,11 @@ async function autoload(){
         }catch(e){ return {f, err:e.message}; }
       }));
       sortWeeks();
+      /* Loading the seasons adds players the index never saw, so the registry
+         has to be rebuilt \u2014 and rebuilding is what re-applies the pins and the
+         accepted countries. Without this a settled choice loads but doesn't
+         show. */
+      reindex();
       ["Singles","Doubles"].forEach(t=>{ RANK_UI[t].week=null; RANK_UI[t].player=null; });
       refreshAll();
       const failed = results.filter(x=>x.err);
