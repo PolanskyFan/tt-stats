@@ -16,8 +16,38 @@ const QUAL_LABEL = {0:"QFR",1:"QR3",2:"QR2",3:"QR1"};
 /* Round headers come in two shapes: the long form "Singles R32 Results" and
    the bare form "R32" used in the draw threads. The discipline is optional in
    the bare form and falls back to the one chosen on the Add data tab. */
-const HEADER_RE = /^(?:(Singles|Doubles)\s+)?(F|SF|QF|R\d{1,3}|QR\d|QFR)(?:\s+Results)?\s*:?\s*$/i;
-const HEADER_LONG_RE = /^(Singles|Doubles)\s+(\S+)\s+Results/i;
+/* Round headings are written half a dozen ways across the draw threads:
+     R32                      Singles R32 Results
+     Singles - QF Round[/B]   Doubles - Round 3
+     Singles Qualifying Round 2 Draw
+   Rather than one regex per shape, the line is peeled apart in order:
+   BBCode, discipline, a qualifying marker, then the round itself. */
+function parseHeaderLine(line){
+  let t = String(line).replace(/\[\/?[A-Za-z]+\]/g, "").trim();
+  if(!t || t.length>60) return null;
+
+  let disc = null;
+  let m = t.match(/^(singles|doubles)\b/i);
+  if(m){ disc = m[1][0].toUpperCase()+m[1].slice(1).toLowerCase(); t = t.slice(m[0].length); }
+  t = t.replace(/^[\s\-\u2013\u2014:]+/, "").trim();
+
+  let qual = false;
+  m = t.match(/^(qualifying|qualifier|qualifiers|qual)\b/i);
+  if(m){ qual = true; t = t.slice(m[0].length).trim(); }
+
+  t = t.replace(/\b(round|results?|draw)\b\s*$/i, "").trim();
+  t = t.replace(/[\s:]+$/, "");
+
+  if(!t) return disc ? {disc, banner:true} : null;
+
+  if(/^(F|SF|QF|QFR|R\d{1,3}|QR\d)$/i.test(t))
+    return {disc, qual, label:t.toUpperCase()};
+
+  const num = t.match(/^round\s*(\d{1,2})$/i);
+  if(num) return {disc, qual, numbered:+num[1]};
+
+  return null;
+}
 /* The tag is written "#SRs:" in main-draw posts and "#SR:" in some qualifying
    ones, so the "s" is optional. */
 const MATCH_RE  = /^\s*(\d+):(\d+)\s*\|\s*(.+?)\s+vs\.\s*(.+?)\s*#SRs?:\s*(\d+)-(\d+)\s*(.*)$/;
@@ -125,7 +155,8 @@ function parseSide(token){
 
   let country="";
   const c = token.match(/\(([^()]*)\)\s*$/);
-  if(c){ country = c[1].trim(); token = token.slice(0,c.index).trim(); }
+  /* "CAN /BRA" turns up often enough to be worth tidying here */
+  if(c){ country = c[1].split("/").map(x=>x.trim()).join("/"); token = token.slice(0,c.index).trim(); }
   return {bye:false, seed, name:token, country};
 }
 
@@ -135,29 +166,71 @@ function sideKey(side, isDoubles){
   return isDoubles ? teamKeyOf(side.name) : keyOf(side.name);
 }
 
-function parseDraw(text, stage, defaultDisc){
-  defaultDisc = defaultDisc || "Singles";
-  const qual = stage === "Qualifying";
-  const LEVELS = qual ? QUAL_LEVELS : MAIN_LEVELS;
-  const LABEL  = qual ? QUAL_LABEL  : MAIN_LABEL;
-  const groups = [], bad = [], unknownRounds = [];
-  let cur = null;
+/* A banner line like "DOUBLES DRAW AND RESULTS" switches discipline partway
+   through a paste. "Results" or "draw" has to appear too, so an ordinary
+   sentence mentioning doubles doesn't flip it. */
+const DISC_BANNER_RE = /^\W*(singles|doubles)\b(?=.*\b(draw|results?)\b)/i;
 
+/* Round labels are unambiguous about which ladder they belong to: QR1..QR3 and
+   QFR are qualifying, everything else is main draw. So a post holding all four
+   sections needs no dropdowns at all. */
+function roundInfo(label, forcedStage){
+  const lbl=String(label).toUpperCase();
+  if(forcedStage==="Qualifying"){
+    const l=QUAL_LEVELS[lbl];
+    return l===undefined ? null : {stage:"Qualifying", level:l, name:QUAL_LABEL[l]};
+  }
+  if(forcedStage==="Main"){
+    const l=MAIN_LEVELS[lbl];
+    return l===undefined ? null : {stage:"Main", level:l, name:MAIN_LABEL[l]};
+  }
+  if(QUAL_LEVELS[lbl]!==undefined)
+    return {stage:"Qualifying", level:QUAL_LEVELS[lbl], name:QUAL_LABEL[QUAL_LEVELS[lbl]]};
+  if(MAIN_LEVELS[lbl]!==undefined)
+    return {stage:"Main", level:MAIN_LEVELS[lbl], name:MAIN_LABEL[MAIN_LEVELS[lbl]]};
+  return null;
+}
+
+function parseDraw(text, forcedStage, defaultDisc){
+  defaultDisc = defaultDisc || "Singles";
+  const groups = [], bad = [], unknownRounds = [];
+  let cur = null, disc = defaultDisc;
+
+  const orphan=[]; let blankRun=0;
   for(const raw of String(text).split(/\r?\n/)){
     const line = raw.trim();
-    if(!line) continue;
-    const h = line.match(HEADER_LONG_RE) || line.match(HEADER_RE);
+    if(!line){ blankRun++; continue; }
+
+    const h = parseHeaderLine(line);
+    if(h && h.banner){ disc = h.disc; cur = null; continue; }
     if(h){
-      const lbl = h[2].toUpperCase();
-      const level = LEVELS[lbl];
-      if(level === undefined){ unknownRounds.push(h[2]); cur = null; continue; }
-      const named = h[1] ? h[1][0].toUpperCase()+h[1].slice(1).toLowerCase() : defaultDisc;
-      cur = {disc: named, level, matches:[]};
-      groups.push(cur);
+      if(h.disc) disc = h.disc;
+      const stage = forcedStage || (h.qual ? "Qualifying" : null);
+      if(h.numbered!==undefined){
+        cur = {disc, stage, numbered:h.numbered, qual:!!h.qual, matches:[]};
+        groups.push(cur); continue;
+      }
+      const info = roundInfo(h.label, stage || (h.qual ? "Qualifying" : ""));
+      if(!info){ unknownRounds.push(h.label); cur = null; continue; }
+      cur = {disc, stage:info.stage, level:info.level, round:info.name, matches:[]};
+      groups.push(cur); continue;
+    }
+
+    const banner = line.match(DISC_BANNER_RE);
+    if(banner){ disc = banner[1][0].toUpperCase()+banner[1].slice(1).toLowerCase(); cur=null; continue; }
+
+    if(/^Matches (Counted|Remaining)/i.test(line)) continue;
+
+    const m = line.match(MATCH_RE);
+    if(m && !cur){
+      /* Match lines with no heading above them still carry the structure: the
+         blocks are separated by blank lines, and nobody plays twice in a round,
+         so a block sharing a player with the round being built must be a later
+         round. That reconstructs the ladder from the draw itself. */
+      orphan.push({line, blank:blankRun});
+      blankRun=0;
       continue;
     }
-    if(/^Matches (Counted|Remaining)/i.test(line)) continue;
-    const m = line.match(MATCH_RE);
     if(m && cur){
       const rest = m[7] || "";
       const sets = rest.match(SETS_RE);
@@ -173,33 +246,173 @@ function parseDraw(text, stage, defaultDisc){
     }
   }
 
-  // Who appears in each round.
+  if(orphan.length) groups.push(...inferGroupsFromShape(orphan, defaultDisc, forcedStage));
+  resolveNumberedRounds(groups, unknownRounds);
+  normaliseQualifyingLevels(groups);
+
+  const live = groups.filter(g=>g.level!==undefined && g.stage);
   const members = new Map();
-  for(const g of groups){
+  const key = g => `${g.disc}|${g.stage}|${g.level}`;
+  for(const g of live){
     const isD = g.disc === "Doubles";
-    const set = new Set();
-    for(const mt of g.matches) for(const s of mt.sides){
-      const k = sideKey(s, isD); if(k) set.add(k);
+    const set = members.get(key(g)) || new Set();
+    for(const mt of g.matches) for(const sd of mt.sides){
+      const k = sideKey(sd, isD); if(k) set.add(k);
     }
-    members.set(g.disc+"|"+g.level, set);
+    members.set(key(g), set);
+  }
+
+  const mdHere = new Map();
+  for(const g of live){
+    if(g.stage!=="Main") continue;
+    const isD = g.disc==="Doubles";
+    const set = mdHere.get(g.disc) || new Set();
+    for(const mt of g.matches) for(const sd of mt.sides){
+      const k = sideKey(sd, isD); if(k) set.add(k);
+    }
+    mdHere.set(g.disc, set);
   }
 
   const out = [], pending = [];
-  for(const g of groups){
+  for(const g of live){
     const isD = g.disc === "Doubles";
-    const next = members.get(g.disc+"|"+(g.level-1)) || new Set();
+    const next = members.get(`${g.disc}|${g.stage}|${g.level-1}`) || new Set();
     for(const mt of g.matches){
       const meta = {disc:g.disc, isDoubles:isD, level:g.level,
-        round: LABEL[g.level] ?? String(g.level), stage, match:mt};
-      const d = decideWinner(mt, next, isD, g.level, g.disc, stage);
+        round:g.round, stage:g.stage, match:mt};
+      const d = decideWinner(mt, next, isD, g.level, g.disc, g.stage, mdHere.get(g.disc));
       if(d === null){ pending.push(meta); continue; }
       out.push(makeRow(meta, d.idx, d.method));
     }
   }
-  return {rows:out, pending, bad, unknownRounds, groupCount:groups.length};
+  return {rows:out, pending, bad, unknownRounds, groupCount:live.length, groups:live,
+    inferred: live.some(g=>g.inferred)};
 }
 
-function decideWinner(mt, next, isD, level, disc, stage){
+/* ------------------------------------------------------------------
+   READING A DRAW WITH NO USABLE HEADINGS
+   Blocks are split on blank lines, then merged while no player repeats:
+   within a round nobody plays twice, so the first repeat marks the start
+   of the next round. Sizes then give the rounds their names, which works
+   the same for a 32, 64 or 128 draw.
+   ------------------------------------------------------------------ */
+function inferGroupsFromShape(orphan, defaultDisc, forcedStage){
+  const parsed=orphan.map(o=>{
+    const m=o.line.match(MATCH_RE);
+    const rest=m[7]||"", sets=rest.match(SETS_RE);
+    return {blank:o.blank, raw:o.line,
+      mt:{score:[+m[1],+m[2]], sr:[+m[5],+m[6]],
+          sets: sets?[+sets[1],+sets[2]]:null, pts1:/PTS1/i.test(rest),
+          sides:[parseSide(m[3]), parseSide(m[4])], raw:o.line}};
+  });
+
+  const byDisc=new Map();
+  parsed.forEach(p=>{
+    const d = /\//.test(p.mt.sides[0].name) || /\//.test(p.mt.sides[1].name) ? "Doubles" : defaultDisc;
+    if(!byDisc.has(d)) byDisc.set(d,[]);
+    byDisc.get(d).push(p);
+  });
+
+  const out=[];
+  byDisc.forEach((items, disc)=>{
+    const isD = disc==="Doubles";
+    const rounds=[]; let curRound=null, seen=null;
+    items.forEach(p=>{
+      const keys=p.mt.sides.map(sd=>sideKey(sd,isD)).filter(Boolean);
+      const clash = curRound && keys.some(k=>seen.has(k));
+      if(!curRound || clash){
+        curRound=[]; seen=new Set(); rounds.push(curRound);
+      }
+      keys.forEach(k=>seen.add(k));
+      curRound.push(p);
+    });
+
+    /* Biggest round first means the post runs first round to final; smallest
+       first means it runs final backwards. Either way the final is the end
+       with one match. */
+    const sizes=rounds.map(r=>r.length);
+    const ascending = sizes.length<2 ? true : sizes[0] >= sizes[sizes.length-1];
+    const ordered = ascending ? rounds.slice().reverse() : rounds.slice();
+
+    ordered.forEach((r,i)=>{
+      const level = i;                       // 0 is the last round in the chain
+      const label = MAIN_LABEL[level];
+      if(label===undefined) return;
+      out.push({disc, stage: forcedStage || "Main", level, round:label,
+        matches:r.map(p=>p.mt), inferred:true});
+    });
+  });
+  return out;
+}
+
+/* Qualifying draws vary in length, so the labels alone don't give a usable
+   ladder: a two-round qualifying has QR1 then the final round, and QUAL_LEVELS
+   would put those three levels apart with nothing in between \u2014 the winner of
+   QR1 could then never be found in the next round. Renumbering them 0,1,2\u2026
+   from the final backwards makes the ladder continuous whatever its depth. */
+function normaliseQualifyingLevels(groups){
+  const byDisc=new Map();
+  groups.forEach(g=>{
+    if(g.stage!=="Qualifying" || g.level===undefined) return;
+    if(!byDisc.has(g.disc)) byDisc.set(g.disc,[]);
+    byDisc.get(g.disc).push(g);
+  });
+  byDisc.forEach(list=>{
+    const depth=g=>{
+      const r=String(g.round||"").toUpperCase();
+      if(r==="QFR") return -1;                 // the final round comes first
+      const m=r.match(/^QR(\d+)$/);
+      return m ? -(+m[1]) : 0;
+    };
+    list.sort((a,b)=>depth(b)-depth(a));       // QFR, then QR3, QR2, QR1
+    list.forEach((g,i)=>{ g.level=i; });
+  });
+}
+
+/* "Round 3" means R32 in a 128 draw and R16 in a 64 draw, so the number alone
+   says nothing. Within a discipline the numbered rounds run consecutively up to
+   the quarter-final, so the highest-numbered one sits directly before it. Where
+   no QF/SF/F is named, fall back to the size of the round: a round of sixteen
+   matches is the last thirty-two. */
+function resolveNumberedRounds(groups, unknownRounds){
+  const buckets=new Map();
+  groups.forEach(g=>{
+    if(g.numbered===undefined) return;
+    const stage = g.stage || (g.qual ? "Qualifying" : "Main");
+    g.stage = stage;
+    const k=`${g.disc}|${stage}`;
+    if(!buckets.has(k)) buckets.set(k,[]);
+    buckets.get(k).push(g);
+  });
+
+  buckets.forEach((list,k)=>{
+    const [disc,stage]=k.split("|");
+    const maxN=Math.max(...list.map(g=>g.numbered));
+    const named=groups.some(g=>g.disc===disc && g.stage===stage &&
+      g.level!==undefined && g.level<=2);
+
+    list.forEach(g=>{
+      let level;
+      if(stage==="Qualifying"){
+        level = maxN - g.numbered;                       // the last one is the final round
+        g.qualLabel = g.numbered===maxN ? "QFR" : `QR${g.numbered}`;
+      } else if(named){
+        level = 2 + (maxN - g.numbered) + 1;             // the highest sits just before the QF
+      } else {
+        const n=g.matches.length;
+        level = n>0 ? Math.round(Math.log2(n)) : null;    // a round of 16 is R32
+      }
+      if(level===null || level<0 || (stage!=="Qualifying" && MAIN_LABEL[level]===undefined)){
+        unknownRounds.push(`Round ${g.numbered}`);
+        g.level=undefined; g.stage=null; return;
+      }
+      g.level=level;
+      g.round = stage==="Qualifying" ? g.qualLabel : MAIN_LABEL[level];
+    });
+  });
+}
+
+function decideWinner(mt, next, isD, level, disc, stage, mdInPaste){
   const [L,R] = mt.sides;
   if(L.bye && !R.bye) return {idx:1, method:"bye"};
   if(R.bye && !L.bye) return {idx:0, method:"bye"};
@@ -212,7 +425,7 @@ function decideWinner(mt, next, isD, level, disc, stage){
   // 1b. A qualifying final has no next round here, but its winner walks into
   //     the main draw. If that draw is already loaded, use it.
   if(stage === "Qualifying" && level === 0 && !lAdv && !rAdv){
-    const md = mainDrawEntrants(disc);
+    const md = mdInPaste && mdInPaste.size ? mdInPaste : mainDrawEntrants(disc);
     lAdv = md.has(lk); rAdv = md.has(rk);
   }
   if(lAdv && !rAdv) return {idx:0, method:"bracket"};
@@ -360,7 +573,7 @@ const EDIT = document.body.dataset.mode === "edit";
 /* index.html, desk.html and app.js are uploaded together. Updating only some
    of them leaves a page whose markup and code disagree, which shows up as a
    blank tab rather than an error, so they carry a matching stamp. */
-const APP_VERSION = "2026-08-28j";
+const APP_VERSION = "2026-08-29a";
 const esc = s => String(s).replace(/[&<>"']/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
@@ -1859,6 +2072,11 @@ function swapRow(r){
 /* ==================================================================
    ADDING A DRAW
    ================================================================== */
+/* Nothing is written until you've seen what was read. A paste that half-works
+   is worse than one that fails outright, because the wrong rows go in quietly \u2014
+   which is exactly how a doubles draw once ended up filed as singles. */
+let PREVIEW = null;
+
 on("btnDraw", "click", ()=>{
   const msg=$("drawMsg"); msg.className="msg";
   const text=val("drawIn");
@@ -1866,45 +2084,129 @@ on("btnDraw", "click", ()=>{
   const event=val("tourn").trim();
   if(!event){ msg.className="msg err"; msg.textContent="Give the event a name first \u2014 without one these matches can't be grouped or filtered."; return; }
 
-  snapshot(`draw for ${event}`);
   PENDING_EVENT = event;
   const stage=val("stage");
-  const {rows,pending,bad,unknownRounds,groupCount}=parseDraw(text,stage,val("drawDisc")||"Singles");
+  const res=parseDraw(text, stage==="Auto" ? "" : stage,
+                      val("drawDisc")==="Auto" ? "" : val("drawDisc"));
 
-  if(groupCount===0){
+  if(res.groupCount===0){
     msg.className="msg err";
-    msg.textContent = unknownRounds.length
-      ? `Round "${unknownRounds[0]}" isn't one this stage uses. Main draw expects F, SF, QF, R16\u2026R256; qualifying expects QR1\u2013QR3 and QFR. Is the Stage set correctly?`
-      : 'No round headers found. Each round needs its own line above its matches \u2014 either "R32" on its own or "Singles R32 Results".';
+    msg.textContent = res.unknownRounds.length
+      ? `Round "${res.unknownRounds[0]}" isn't one this stage uses. Main draw expects F, SF, QF, R16\u2026R256; qualifying expects QR1\u2013QR3 and QFR. Is the Stage set correctly?`
+      : "No matches found. Lines should read like: 12:11 | Player (GBR) vs. Other (USA) #SRs: 5-7";
     return;
   }
 
-  const season=val("season").trim(), week=val("rankWeek"), keepByes=$("optByes").checked;
+  PREVIEW = {res, event, season:val("season").trim(), week:val("rankWeek"),
+             keepByes:$("optByes").checked};
+  renderPreview();
+  msg.textContent="";
+});
+
+function renderPreview(){
+  const box=$("previewBox"); if(!box) return;
+  box.innerHTML="";
+  if(!PREVIEW){ box.style.display="none"; return; }
+  box.style.display="";
+  const {res, event, season, week, keepByes}=PREVIEW;
+
+  const counts=new Map();
+  let byes=0, dup=0;
+  const provisional=new Set();
+  res.rows.forEach(r=>{
+    if(r.isBye && !keepByes){ byes++; return; }
+    const k=`${r.disc} ${r.stage.toLowerCase()}`;
+    if(!counts.has(k)) counts.set(k,new Map());
+    const c=counts.get(k);
+    c.set(r.round,(c.get(r.round)||0)+1);
+    r.event=event; r.season=season;
+    if(SEEN.has(matchKey(r))) dup++;
+    r.event=""; r.season="";
+  });
+
+  const sec=document.createElement("section");
+  sec.className="review";
+  sec.style.borderColor = res.inferred ? "var(--warn)" : "var(--ball)";
+  sec.style.background  = res.inferred ? "rgba(242,169,59,.06)" : "rgba(221,240,75,.05)";
+  sec.innerHTML=`<p class="blockhead" style="color:${res.inferred?"var(--warn)":"var(--ball)"}">
+      Ready to add \u2014 check this first</p>
+    <p class="lede" style="margin-bottom:10px">
+      <b>${esc(event)}</b> ${esc(season||"(no season)")} \u00b7 ranks from ${esc(week||"none")}
+      ${res.inferred?"<br><b>No usable round headings, so the rounds were worked out from the draw itself.</b> Check the round names below before adding.":""}
+    </p>`;
+
+  [...counts.entries()].sort().forEach(([group,rounds])=>{
+    const order=["R512","R256","R128","R64","R32","R16","QF","SF","F","QR1","QR2","QR3","QFR"];
+    const list=[...rounds.entries()].sort((a,b)=>order.indexOf(a[0])-order.indexOf(b[0]));
+    const total=list.reduce((n,[,v])=>n+v,0);
+    const row=document.createElement("div"); row.className="rq";
+    row.innerHTML=`<span class="tag">${esc(group)}</span>
+      <span class="ctx"><b>${total}</b> \u2014 ${list.map(([r,v])=>`${esc(r)} \u00d7${v}`).join(", ")}</span>`;
+    sec.appendChild(row);
+  });
+
+  const notes=[];
+  if(byes) notes.push(`${byes} bye${byes===1?"":"s"} will be skipped`);
+  if(dup)  notes.push(`${dup} already in the table and will be held back`);
+  if(res.pending.length) notes.push(`${res.pending.length} need a winner and will be listed below`);
+  if(res.bad.length)     notes.push(`${res.bad.length} line${res.bad.length===1?"":"s"} didn't parse`);
+  if(res.unknownRounds.length) notes.push(`unrecognised headings: ${[...new Set(res.unknownRounds)].join(", ")}`);
+  if(!season) notes.push("no season set \u2014 events repeat year on year, so this is worth filling in");
+  if(notes.length){
+    const p=document.createElement("p"); p.className="hint";
+    p.style.color="var(--warn)"; p.textContent=notes.join(" \u00b7 ");
+    sec.appendChild(p);
+  }
+
+  const bar=document.createElement("div"); bar.className="btnrow";
+  const go=document.createElement("button"); go.className="btn primary";
+  go.textContent=`Add ${res.rows.length-byes} matches`;
+  go.addEventListener("click", commitPreview);
+  const no=document.createElement("button"); no.className="btn"; no.textContent="Cancel";
+  no.addEventListener("click",()=>{ PREVIEW=null; renderPreview(); });
+  bar.appendChild(go); bar.appendChild(no);
+  sec.appendChild(bar);
+  box.appendChild(sec);
+}
+
+function commitPreview(){
+  if(!PREVIEW) return;
+  const {res, event, season, week, keepByes}=PREVIEW;
+  const msg=$("drawMsg");
+  snapshot(`draw for ${event}`);
+
   const wk = tourWeeks("Singles").find(w=>w.name===week && (w.season||"")===season);
   let added=0, dup=0, byes=0, ranked=0;
+  const breakdown={};
 
-  for(const r of rows){
+  for(const r of res.rows){
     if(r.isBye && !keepByes){ byes++; continue; }
     r.event=event; r.season=season; r.week=week;
-    if(wk){ const a=applyRanks(r,wk); ranked+=a; }
+    const bk=`${r.disc} ${r.stage.toLowerCase()}`;
+    breakdown[bk]=(breakdown[bk]||0)+1;
+    if(wk) ranked+=applyRanks(r,wk);
     const k=matchKey(r);
     if(SEEN.has(k)){ dup++; DUPES.push(r); continue; }
     SEEN.add(k); MATCHES.push(r); added++;
   }
-  pending.forEach(p=>{ p.event=event; p.season=season; p.week=week; });
-  PENDING=PENDING.concat(pending);
+  res.pending.forEach(p=>{ p.event=event; p.season=season; p.week=week; });
+  PENDING=PENDING.concat(res.pending);
 
-  const bits=[`Added ${added} ${added===1?"match":"matches"} from ${groupCount} ${groupCount===1?"round":"rounds"}.`];
+  const parts=Object.entries(breakdown).sort().map(([k,v])=>`${v} ${k}`);
+  const bits=[`Added ${added} ${added===1?"match":"matches"}`
+    + (parts.length>1 ? ` \u2014 ${parts.join(", ")}.` : ".")];
   if(ranked) bits.push(`${ranked} rank ${ranked===1?"value":"values"} filled from ${week}.`);
   if(byes)   bits.push(`${byes} ${byes===1?"bye":"byes"} skipped.`);
   if(dup)    bits.push(`${dup} already in the table \u2014 skipped, listed under Issues.`);
-  if(pending.length) bits.push(`${pending.length} need${pending.length===1?"s":""} a winner \u2014 see below.`);
-  if(bad.length) bits.push(`${bad.length} line${bad.length===1?"":"s"} didn't match the expected format.`);
-  msg.className = (dup||pending.length||bad.length) ? "msg warn" : "msg";
+  if(res.pending.length) bits.push(`${res.pending.length} need${res.pending.length===1?"s":""} a winner \u2014 see below.`);
+  if(res.bad.length) bits.push(`${res.bad.length} line${res.bad.length===1?"":"s"} didn't match the expected format.`);
+  msg.className = (dup||res.pending.length||res.bad.length) ? "msg warn" : "msg";
   msg.textContent = bits.join(" ");
-  setVal("drawIn", "");
+
+  PREVIEW=null;
+  setVal("drawIn","");
   markDirty(); refreshAll();
-});
+}
 
 function applyRanks(r, wk){
   let n=0;
@@ -2553,6 +2855,7 @@ function refreshAll(){
   syncFilters();
   tMatches.render(); tPlayers.render(); tTeams.render();
   tTitles.render(); renderRankings();
+  renderPreview();
   renderReview(); renderIssues(); renderSummary(); renderWeekManager();
   renderFileManager(); renderMatchManager(); renderUndo();
   setText("sbMatches", MATCHES.length);
@@ -2752,6 +3055,10 @@ function decodeSeason(data){
   if(!data || data.format !== RANKINGS_FORMAT)
     throw new Error(`Expected a ${RANKINGS_FORMAT} file.`);
   const P=data.players||[], C=data.countries||[];
+  /* Loading a season that's already open replaces it, so picking the same
+     folder twice doesn't end up with every week duplicated. */
+  const sea = data.season==="unknown" ? "" : data.season;
+  for(let i=WEEKS.length-1;i>=0;i--) if((WEEKS[i].season||"")===(sea||"")) WEEKS.splice(i,1);
   (data.weeks||[]).forEach(w=>{
     const list=(w.r||[]).map(row=>({
       rank:row[0], prev: row[1]===-1 ? "" : row[1],
@@ -2994,34 +3301,74 @@ on("btnSave", "click", ()=>{
 });
 
 on("btnLoad", "click", ()=>{
-  if(DIRTY && !confirm("Loading a file replaces what's on screen, and you have unsaved changes. Continue?")) return;
+  if(DIRTY && !confirm("Loading replaces what's on screen, and you have unsaved changes. Continue?")) return;
   $("fileIn").click();
 });
-on("fileIn", "change", e=>{
-  const f=e.target.files[0]; if(!f) return;
-  const rd=new FileReader();
-  rd.onload=()=>{
+/* A folder or a multiple selection arrives in no particular order, so the
+   index is read first and the season files after it \u2014 loading the index is
+   what clears the board, so doing it second would wipe the seasons. */
+function readFileText(f){
+  return new Promise((res,rej)=>{
+    const rd=new FileReader();
+    rd.onload=()=>res(rd.result);
+    rd.onerror=()=>rej(new Error(`couldn't read ${f.name}`));
+    rd.readAsText(f);
+  });
+}
+
+async function loadFiles(files){
+  const list=[...files].filter(f=>/\.json$/i.test(f.name));
+  if(!list.length){ saveMsg("No .json files in that selection.","err"); return; }
+
+  const parsed=[], bad=[];
+  for(const f of list){
+    try{ parsed.push({f, data:JSON.parse(await readFileText(f))}); }
+    catch(err){ bad.push(`${f.name} (${err.message})`); }
+  }
+  const index   = parsed.filter(p=>p.data && Array.isArray(p.data.matches));
+  const seasons = parsed.filter(p=>p.data && p.data.format===RANKINGS_FORMAT);
+  const unknown = parsed.filter(p=>!index.includes(p) && !seasons.includes(p));
+
+  if(index.length>1){
+    saveMsg(`That selection has ${index.length} index files (${index.map(p=>p.f.name).join(", ")}). `
+      + "Pick one folder at a time.","err");
+    return;
+  }
+
+  snapshot("file load");
+  const notes=[];
+  if(index.length){
     try{
-      const parsed=JSON.parse(rd.result);
-      if(parsed && parsed.format===RANKINGS_FORMAT){     // a season file on its own
-        decodeSeason(parsed); KNOWN_SEASONS.add(parsed.season); sortWeeks();
-        ["Singles","Doubles"].forEach(t=>{ RANK_UI[t].week=null; RANK_UI[t].player=null; });
-        refreshAll();
-        saveMsg(`Added ${parsed.season} from ${f.name}. ${WEEKS.length} ranking weeks loaded in total.`);
-        return;
-      }
-      const r=deserialise(parsed);
-      if((parsed.rankingFiles||[]).length)
-        saveMsg(`Loaded ${r.matches} matches from ${f.name}. Now load each season file `
-          + `(${parsed.rankingFiles.join(", ")}) with the same button.`, "warn");
-      else saveMsg(`Loaded ${r.matches} matches and ${r.weeks} ranking weeks from ${f.name}.`
-        + (r.dupes?` ${r.dupes} repeated ${r.dupes===1?"match":"matches"} held back \u2014 see Issues.`:""),
-        r.dupes?"warn":"");
-    }catch(err){ saveMsg("Couldn't read that file: "+err.message,"err"); }
-  };
-  rd.onerror=()=>saveMsg("Couldn't read that file.","err");
-  rd.readAsText(f);
-  e.target.value="";
+      const r=deserialise(index[0].data);
+      notes.push(`${r.matches} matches from ${index[0].f.name}`);
+    }catch(err){ saveMsg(`Couldn't read ${index[0].f.name}: ${err.message}`,"err"); return; }
+  }
+  let weeks=0;
+  seasons.sort((a,b)=>String(a.data.season).localeCompare(String(b.data.season)));
+  seasons.forEach(p=>{
+    try{ decodeSeason(p.data); KNOWN_SEASONS.add(p.data.season); weeks+=(p.data.weeks||[]).length; }
+    catch(err){ bad.push(`${p.f.name} (${err.message})`); }
+  });
+  sortWeeks();
+  ["Singles","Doubles"].forEach(t=>{ RANK_UI[t].week=null; RANK_UI[t].player=null; });
+  DIRTY=false;
+  refreshAll();
+
+  if(seasons.length) notes.push(`${weeks.toLocaleString()} ranking weeks across `
+    + `${seasons.length} season file${seasons.length===1?"":"s"} (${seasons.map(p=>p.data.season).join(", ")})`);
+  if(!index.length && seasons.length) notes.push("no index file in that selection, so matches were left as they are");
+  if(unknown.length) notes.push(`${unknown.length} file${unknown.length===1?"":"s"} skipped, not recognised `
+    + `(${unknown.map(p=>p.f.name).slice(0,3).join(", ")})`);
+  if(bad.length) notes.push(`${bad.length} failed: ${bad.slice(0,3).join(", ")}`);
+
+  saveMsg("Loaded " + notes.join("; ") + ".", (bad.length||unknown.length) ? "warn" : "");
+}
+
+on("fileIn", "change", e=>{ const f=e.target.files; if(f&&f.length) loadFiles(f); e.target.value=""; });
+on("folderIn", "change", e=>{ const f=e.target.files; if(f&&f.length) loadFiles(f); e.target.value=""; });
+on("btnLoadFolder", "click", ()=>{
+  if(DIRTY && !confirm("Loading replaces what's on screen, and you have unsaved changes. Continue?")) return;
+  $("folderIn").click();
 });
 
 /* Pick up data.json sitting beside this page. Anything that goes wrong is

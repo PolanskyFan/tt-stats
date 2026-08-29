@@ -197,7 +197,7 @@ h3.sec{font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:22px;
 }
 </style>
 </head>
-<body data-mode="edit" data-app-version="2026-08-28j">
+<body data-mode="edit" data-app-version="2026-08-29a">
 <div class="wrap">
 
   <header class="masthead">
@@ -231,8 +231,10 @@ h3.sec{font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:22px;
     <div class="deck">
       <div class="panel">
         <h2>Paste a draw</h2>
-        <p class="lede">Round headers and match lines, exactly as they come off the forum. Singles and
-          doubles can go in together. Winners are read from the bracket.</p>
+        <p class="lede">Paste the whole tournament post if you like — singles and doubles, qualifying and
+          main draw, in one go. On <b>Auto</b> the discipline comes from headings like "DOUBLES DRAW AND
+          RESULTS" and the stage from the round itself, since QR1 and QFR can only be qualifying. Winners
+          are read from the bracket.</p>
         <textarea id="drawIn" spellcheck="false" placeholder="Singles R32 Results
 Matches Counted: 32
 Matches Remaining: 0
@@ -247,18 +249,19 @@ Matches Remaining: 0
         </div>
         <div class="row2">
           <div class="field"><label for="stage">Stage</label>
-            <select id="stage"><option>Main</option><option>Qualifying</option></select></div>
+            <select id="stage"><option>Auto</option><option>Main</option><option>Qualifying</option></select></div>
           <div class="field"><label for="drawDisc">Discipline</label>
-            <select id="drawDisc"><option>Singles</option><option>Doubles</option></select></div>
+            <select id="drawDisc"><option>Auto</option><option>Singles</option><option>Doubles</option></select></div>
           <div class="field"><label for="rankWeek">Ranking week</label>
             <select id="rankWeek"><option value="">None loaded</option></select></div>
         </div>
         <label class="check"><input type="checkbox" id="optByes"><span>Keep byes as rows</span></label>
         <div class="btnrow">
-          <button class="btn primary" id="btnDraw">Add draw</button>
+          <button class="btn primary" id="btnDraw">Read draw</button>
           <button class="btn" id="btnDrawSample">Load sample</button>
         </div>
         <div class="msg" id="drawMsg"></div>
+        <div id="previewBox" style="margin-top:14px;display:none"></div>
       </div>
 
       <div class="panel">
@@ -309,12 +312,16 @@ Matches Remaining: 0
       <div id="loadSummary" class="dim" style="font-size:13.5px">Nothing loaded yet.</div>
       <p class="lede" style="margin:14px 0 0">Rankings are split into one file per season, so a week's
         entry only rewrites that year rather than the whole archive. <b>Save all files</b> downloads the
-        index and every season; the list below lets you take just the ones that changed.</p>
+        index and every season; the list below lets you take just the ones that changed.
+        To load, point <b>Load a whole folder</b> at the folder holding them — the index and every
+        season go in together, in the right order.</p>
       <div id="fileManager" style="margin:14px 0 4px"></div>
       <div class="btnrow">
         <button class="btn primary" id="btnSave">Save all files</button>
-        <button class="btn" id="btnLoad">Load a data file</button>
-        <input type="file" id="fileIn" accept=".json,application/json" style="display:none">
+        <button class="btn" id="btnLoadFolder">Load a whole folder</button>
+        <button class="btn" id="btnLoad">Load files…</button>
+        <input type="file" id="fileIn" accept=".json,application/json" multiple style="display:none">
+        <input type="file" id="folderIn" webkitdirectory directory style="display:none">
         <button class="btn" id="btnWipe">Clear everything</button>
       </div>
       <div class="msg" id="saveMsg"></div>
@@ -398,6 +405,6 @@ Matches Remaining: 0
   </section>
 
 </div>
-<script src="app.js?v=2026-08-28j"></script>
+<script src="app.js?v=2026-08-29a"></script>
 </body>
 </html>

@@ -43,10 +43,12 @@ how safe the data is.
 
 ## Day-to-day use
 
-1. Open `desk.html`, then **Load a data file** and pick `data.json`. Load the
-   season files you're going to touch the same way — for 2025 that's
-   `rankings-2025.json`. Seasons you don't load are left alone; the index keeps
-   listing them and their files are never rewritten.
+1. Open `desk.html` and click **Load a whole folder**, pointing it at the folder
+   holding your files. The index and every season go in together, in the right
+   order. **Load files…** does the same for a hand-picked selection — hold Ctrl
+   or Cmd to choose several — which is how you open just the seasons you plan to
+   touch. Seasons you don't load are left alone; the index keeps listing them and
+   their files are never rewritten.
 2. Paste the week's ranking post into the right-hand box. Add rankings.
 3. For each tournament: name the event, pick the ranking week, paste the draw. Add draw.
 4. Check the **Issues** tab if the counter is showing anything.
@@ -197,9 +199,47 @@ Since it's JSON in Git, every commit is a restore point. If an entry goes wrong,
 
 ## Pasting draws
 
-Round headers work in either shape: `R32` on its own, as the draw threads write
-them, or the longer `Singles R32 Results`. When the header doesn't say which
-discipline it is, the **Discipline** dropdown decides.
+Paste the whole tournament post at once — singles and doubles, qualifying and
+main draw. With **Discipline** and **Stage** on *Auto*:
+
+- The discipline comes from a heading such as `DOUBLES DRAW AND RESULTS`, and
+  applies until the next such heading. It has to say *draw* or *results* too, so
+  an ordinary sentence mentioning doubles won't switch it.
+- The stage comes from the round itself: `QR1`–`QR3` and `QFR` can only be
+  qualifying, everything else is main draw. No dropdown needed.
+
+Round headings are read in whatever shape the thread uses — `R32`,
+`Singles R32 Results`, `Singles - QF Round`, `Doubles - Round 3`,
+`Singles Qualifying Round 2 Draw` — and BBCode leftovers like `[/B]` are ignored.
+Set either dropdown explicitly to override the detection for a paste that
+doesn't say.
+
+Rounds numbered `Round 1`, `Round 2` and so on are worked out from context
+rather than the number, because "Round 3" is the last thirty-two in a 128 draw
+and the last sixteen in a 64 draw. The numbered rounds run up to the
+quarter-final, so the highest-numbered one sits directly before it; where no
+quarter-final is named, the size of the round decides. Numbered qualifying
+rounds work the same way, with the highest as the final qualifying round.
+
+Because the whole post goes in together, a qualifying final can be settled
+against the main draw in the same paste rather than needing it loaded first.
+
+### Nothing is added until you say so
+
+**Read draw** shows what it found before anything is written: the event, the
+season, the ranking week, and every round with its match count, plus warnings
+about byes, duplicates, undecided matches and lines that didn't parse. **Add**
+commits it, **Cancel** discards it. A paste that half-works is worse than one
+that fails outright, because the wrong rows go in quietly.
+
+### When the headings can't be read
+
+If match lines appear with no heading above them, the rounds are worked out from
+the draw itself: blocks split on blank lines, then merged while no player
+repeats — nobody plays twice in a round, so the first repeat marks the next one.
+The sizes then name the rounds, which works the same for a 32, 64 or 128 draw.
+The preview says plainly when rounds were inferred rather than read, so you can
+check the names before committing.
 
 ## Pasting rankings
 
@@ -316,6 +356,10 @@ Then each `rankings-<year>.json` you actually need.
   file appears when you save.
 - **Adding to a season already on the site?** Load that year's file first, or
   you'll save a version containing only the weeks you just pasted.
+Loading a folder is the usual way in. Files that aren't recognised are skipped
+and named, and loading the same folder twice replaces what's open rather than
+stacking a second copy of every week.
+
 - **Seasons you don't load** appear as *not loaded* in the file list and are
   never rewritten. Leave those files in the repository — `data.json` keeps
   listing them, so the site still loads them.
