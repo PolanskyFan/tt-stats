@@ -50,10 +50,24 @@ function parseHeaderLine(line){
     quarters:"QF", quarterfinal:"QF", quarterfinals:"QF",
     "quarter-final":"QF", "quarter-finals":"QF"};
   const w=WORDS[t.toLowerCase()];
-  if(w) return {disc, qual, label:w};
+  if(w){
+    /* A qualifying draw has its own final, so "Qualifying Final Round" means
+       the last qualifying round, not the tournament final. */
+    if(qual){
+      const asQual={F:"QFR", SF:"QR2", QF:"QR1"}[w];
+      return {disc, qual, label:asQual||w};
+    }
+    return {disc, qual, label:w};
+  }
 
   if(/^(F|SF|QF|QFR|FQR|R\d{1,3}|QR\d)$/i.test(t))
     return {disc, qual, label:t.toUpperCase()};
+
+  /* "Round of 16" and "Last 32" give the size of the round rather than its
+     position, which is the R-number directly. Stripping the word "round"
+     earlier leaves "of 16" behind, so it's matched here. */
+  const sized = t.match(/^(?:of|last)\s*(\d{1,3})$/i);
+  if(sized) return {disc, qual, label:"R"+sized[1]};
 
   const num = t.match(/^(?:round\s*)?(\d{1,2})$/i);
   if(num) return {disc, qual, numbered:+num[1]};
@@ -398,13 +412,17 @@ function normaliseQualifyingLevels(groups){
     byDisc.get(g.disc).push(g);
   });
   byDisc.forEach(list=>{
+    /* Ordered from the last qualifying round backwards: QFR, then the highest
+       numbered qualifying round down to QR1, which is the earliest. QR1 used to
+       score the same as QFR here, so a three-round qualifying could be laddered
+       in the wrong order. */
     const depth=g=>{
       const r=String(g.round||"").toUpperCase();
-      if(r==="QFR" || r==="FQR") return -1;    // the final round comes first
+      if(r==="QFR" || r==="FQR") return 1000;
       const m=r.match(/^QR(\d+)$/);
-      return m ? -(+m[1]) : 0;
+      return m ? +m[1] : 0;
     };
-    list.sort((a,b)=>depth(b)-depth(a));       // QFR, then QR3, QR2, QR1
+    list.sort((a,b)=>depth(b)-depth(a));
     list.forEach((g,i)=>{ g.level=i; });
   });
 }
@@ -621,7 +639,7 @@ const EDIT = document.body.dataset.mode === "edit";
 /* index.html, desk.html and app.js are uploaded together. Updating only some
    of them leaves a page whose markup and code disagree, which shows up as a
    blank tab rather than an error, so they carry a matching stamp. */
-const APP_VERSION = "2026-08-29f";
+const APP_VERSION = "2026-08-29g";
 const esc = s => String(s).replace(/[&<>"']/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 

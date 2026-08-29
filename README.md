@@ -226,8 +226,10 @@ the next line is joined back up before parsing.
 Round headings are read in whatever shape the thread uses — `R32`,
 `Singles R32 Results`, `Singles - QF Round`, `Doubles - Round 3`,
 `Singles Qualifying Round 2 Draw`, `QFR Singles`, `Final Singles` — with the
-discipline before or after the round, rounds spelled out or abbreviated, and
-BBCode leftovers like `[/B]` ignored.
+discipline before or after the round, and BBCode leftovers like `[/B]` ignored.
+Rounds can be abbreviated (`SF`), spelled out (`Semifinals`) or given by size
+(`Round of 16`, `Last 32`). `Qualifying Final Round` is read as the last
+qualifying round rather than the tournament final.
 Set either dropdown explicitly to override the detection for a paste that
 doesn't say.
 
