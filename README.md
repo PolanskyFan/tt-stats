@@ -228,7 +228,10 @@ Round headings are read in whatever shape the thread uses — `R32`,
 `Singles Qualifying Round 2 Draw`, `QFR Singles`, `Final Singles` — with the
 discipline before or after the round, and BBCode leftovers like `[/B]` ignored.
 Rounds can be abbreviated (`SF`), spelled out (`Semifinals`) or given by size
-(`Round of 16`, `Last 32`). `Qualifying Final Round` is read as the last
+(`Round of 16`, `Last 32`). `R16` and `R32` name the size of the round, while
+`R1` and `R2` mean round one and round two — a draw size is a power of two and at
+least sixteen, anything smaller is a round number and is resolved from its
+position. `Qualifying Final Round` is read as the last
 qualifying round rather than the tournament final.
 Set either dropdown explicitly to override the detection for a paste that
 doesn't say.
@@ -253,6 +256,23 @@ Every round can be expanded to list the matches actually read, and any line that
 couldn't be read is shown in full, which is normally where the missing ones went.
 **Add** commits it, **Cancel** discards it. A paste that half-works is worse than one
 that fails outright, because the wrong rows go in quietly.
+
+### Checks on the shape of a draw
+
+A draw has a fixed shape, and that's used to catch a misread heading rather than
+trusting the words:
+
+- **A slash between two names means doubles.** That's a property of the match,
+  so it outranks the heading and the Discipline dropdown, and a heading covering
+  both is split in two.
+- **A round can't hold more than its size.** The final is one match, the semis
+  two, the quarters four, the last sixteen eight. A round holding more has been
+  mislabelled, and the count says what it really is; the preview reports the
+  correction. Rounds *short* of their size are left alone, since a post can
+  simply be incomplete.
+- **Every player in a round played in the round before it.** Anyone who didn't
+  is counted and reported — *"SF: 1 of 4 players didn't play the round before"* —
+  which is the sharpest sign that the rounds haven't lined up.
 
 ### When the headings can't be read
 

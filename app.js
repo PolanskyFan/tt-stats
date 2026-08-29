@@ -60,7 +60,18 @@ function parseHeaderLine(line){
     return {disc, qual, label:w};
   }
 
-  if(/^(F|SF|QF|QFR|FQR|R\d{1,3}|QR\d)$/i.test(t))
+  /* "R16" and "R32" name the size of the round \u2014 the last sixteen, the last
+     thirty-two \u2014 but "R1" and "R2" mean round one and round two. A draw size is
+     a power of two and at least sixteen; anything smaller is a round number,
+     resolved from its position like "Round 1" is. */
+  const rnum = t.match(/^R(\d{1,3})$/i);
+  if(rnum){
+    const v=+rnum[1];
+    const isDrawSize = v>=16 && (v & (v-1))===0;
+    return isDrawSize ? {disc, qual, label:"R"+v} : {disc, qual, numbered:v};
+  }
+
+  if(/^(F|SF|QF|QFR|FQR|QR\d)$/i.test(t))
     return {disc, qual, label:t.toUpperCase()};
 
   /* "Round of 16" and "Last 32" give the size of the round rather than its
@@ -273,7 +284,7 @@ function parseDraw(text, forcedStage, defaultDisc){
     const banner = line.match(DISC_BANNER_RE);
     if(banner){ disc = banner[1][0].toUpperCase()+banner[1].slice(1).toLowerCase(); cur=null; continue; }
 
-    if(/^Matches (Counted|Remaining)/i.test(line)) continue;
+    if(/^(Matches|Finished|Remaining|Played)\s+(matches|counted|remaining)?\s*:?\s*\d*$/i.test(line)) continue;
 
     const m = line.match(MATCH_RE);
     if(m && !cur){
@@ -304,7 +315,29 @@ function parseDraw(text, forcedStage, defaultDisc){
   resolveNumberedRounds(groups, unknownRounds);
   normaliseQualifyingLevels(groups);
 
-  const live = groups.filter(g=>g.level!==undefined && g.stage);
+  let live = groups.filter(g=>g.level!==undefined && g.stage);
+
+  /* A slash between two names is a doubles pair. That's a property of the match
+     itself, so it outranks whatever the heading or the dropdown claimed \u2014 which
+     is how a doubles draw once ended up filed as singles. A heading covering
+     both splits into two groups. */
+  const split=[];
+  live.forEach(g=>{
+    const dbl=g.matches.filter(mt=>mt.sides.some(sd=>!sd.bye && /\//.test(sd.name)));
+    const sgl=g.matches.filter(mt=>!mt.sides.some(sd=>!sd.bye && /\//.test(sd.name)));
+    if(dbl.length && sgl.length){
+      split.push({...g, disc:"Doubles", matches:dbl});
+      split.push({...g, disc:"Singles", matches:sgl});
+    } else if(dbl.length){
+      split.push({...g, disc:"Doubles"});
+    } else {
+      split.push(g);
+    }
+  });
+  live = split.filter(g=>g.matches.length);
+
+  checkRoundSizes(live, unknownRounds);
+
   const members = new Map();
   const key = g => `${g.disc}|${g.stage}|${g.level}`;
   for(const g of live){
@@ -339,7 +372,24 @@ function parseDraw(text, forcedStage, defaultDisc){
       out.push(makeRow(meta, d.idx, d.method));
     }
   }
+  /* Every player in a round played in the round before it. Counting those who
+     didn't is the sharpest check that the rounds have been read correctly. */
+  const chain=[];
+  live.forEach(g=>{
+    const prev = members.get(`${g.disc}|${g.stage}|${g.level+1}`);
+    if(!prev || !prev.size) return;
+    const isD = g.disc==="Doubles";
+    let strangers=0;
+    g.matches.forEach(mt=>mt.sides.forEach(sd=>{
+      const k=sideKey(sd,isD);
+      if(k && !prev.has(k)) strangers++;
+    }));
+    if(strangers) chain.push({disc:g.disc, stage:g.stage, round:g.round, strangers,
+      total:g.matches.length*2});
+  });
+
   return {rows:out, pending, bad, unknownRounds, groupCount:live.length, groups:live,
+    chain, relabelled: live.some(g=>g.relabelled),
     inferred: live.some(g=>g.inferred)};
 }
 
@@ -350,6 +400,25 @@ function parseDraw(text, forcedStage, defaultDisc){
    of the next round. Sizes then give the rounds their names, which works
    the same for a 32, 64 or 128 draw.
    ------------------------------------------------------------------ */
+/* The shape of a draw is fixed: the final is one match, the semis two, the
+   quarters four, the last sixteen eight. A round holding more than its size
+   allows has been mislabelled, and the count says what it really is. Rounds
+   short of their size are left alone, since a post can simply be incomplete. */
+function checkRoundSizes(live, unknownRounds){
+  live.forEach(g=>{
+    if(g.stage!=="Main" || g.level===undefined) return;
+    const capacity = Math.pow(2, g.level);
+    const got = g.matches.length;
+    if(got<=capacity) return;
+    const level = Math.round(Math.log2(got));
+    if(MAIN_LABEL[level]===undefined) return;
+    unknownRounds.push(`${g.round} held ${got} matches, too many for that round \u2014 read as ${MAIN_LABEL[level]}`);
+    g.level = level;
+    g.round = MAIN_LABEL[level];
+    g.relabelled = true;
+  });
+}
+
 function inferGroupsFromShape(orphan, defaultDisc, forcedStage){
   const parsed=orphan.map(o=>{
     const m=o.line.match(MATCH_RE);
@@ -639,7 +708,7 @@ const EDIT = document.body.dataset.mode === "edit";
 /* index.html, desk.html and app.js are uploaded together. Updating only some
    of them leaves a page whose markup and code disagree, which shows up as a
    blank tab rather than an error, so they carry a matching stamp. */
-const APP_VERSION = "2026-08-29g";
+const APP_VERSION = "2026-08-29i";
 const esc = s => String(s).replace(/[&<>"']/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
@@ -2408,7 +2477,9 @@ function renderPreview(){
   if(dup)  notes.push(`${dup} already in the table and will be held back`);
   if(res.pending.length) notes.push(`${res.pending.length} need a winner and will be listed below`);
   if(res.bad.length)     notes.push(`${res.bad.length} line${res.bad.length===1?"":"s"} didn't parse`);
-  if(res.unknownRounds.length) notes.push(`unrecognised headings: ${[...new Set(res.unknownRounds)].join(", ")}`);
+  if(res.unknownRounds.length) notes.push(`${[...new Set(res.unknownRounds)].join("; ")}`);
+  res.chain.forEach(c=>notes.push(
+    `${c.disc} ${c.round}: ${c.strangers} of ${c.total} players didn't play the round before \u2014 check the rounds line up`));
   if(!season) notes.push("no season set \u2014 events repeat year on year, so this is worth filling in");
   if(notes.length){
     const p=document.createElement("p"); p.className="hint";
