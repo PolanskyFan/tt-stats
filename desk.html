@@ -221,7 +221,7 @@ h3.sec{font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:22px;
 }
 </style>
 </head>
-<body data-mode="edit" data-app-version="2026-08-30c">
+<body data-mode="edit" data-app-version="2026-08-30f">
 <div class="wrap">
 
   <header class="masthead">
@@ -271,7 +271,8 @@ Matches Remaining: 0
 ..."></textarea>
         <div class="row2" style="margin-top:13px">
           <div class="field"><label for="tourn">Event</label>
-            <input type="text" id="tourn" placeholder="e.g. Brisbane"></div>
+            <input type="text" id="tourn" placeholder="e.g. Brisbane" list="eventList">
+            <datalist id="eventList"></datalist></div>
           <div class="field"><label for="season">Season</label>
             <input type="text" id="season" placeholder="2026"></div>
         </div>
@@ -323,6 +324,22 @@ Matches Remaining: 0
 
     <div id="reviewWrap" style="margin-top:24px"></div>
 
+    <h3 class="sec">Tournament calendar</h3>
+    <div class="panel">
+      <p class="lede">Paste a season's calendar straight from the sheet — tab separated, month headings and
+        repeated header rows are skipped. It gives every tournament its date, country, surface, draw size and
+        manager, which in turn drives the calendar page, manager credits, surface records and the draw-size
+        check. Pasting a season again replaces it.</p>
+      <textarea id="calIn" spellcheck="false" style="height:150px" placeholder="1a&#9;05/01/2026&#9;22/12/2025&#9;Brisbane&#9;AUS&#9;H&#9;32/16/16/8&#9;Fogmeister"></textarea>
+      <div class="row2" style="margin-top:12px">
+        <div class="field"><label for="calSeason">Season (override)</label>
+          <input type="text" id="calSeason" placeholder="From the dates"></div>
+        <div class="field"></div>
+      </div>
+      <div class="btnrow"><button class="btn primary" id="btnCal">Add calendar</button></div>
+      <div class="msg" id="calMsg"></div>
+    </div>
+
     <div id="undoBar" style="margin:18px 0 0;display:none"></div>
 
     <h3 class="sec">Matches loaded</h3>
@@ -358,6 +375,9 @@ Matches Remaining: 0
 
   <!-- CALENDAR ------------------------------------------------------- -->
   <section class="view on" id="v-calendar"><div id="calMount"></div></section>
+
+  <!-- PLAYER --------------------------------------------------------- -->
+  <section class="view" id="v-player"><div id="playerMount"></div></section>
 
   <!-- HEAD TO HEAD --------------------------------------------------- -->
   <section class="view" id="v-h2h"><div id="h2hMount"></div></section>
@@ -452,6 +472,6 @@ Matches Remaining: 0
   </section>
 
 </div>
-<script src="app.js?v=2026-08-30c"></script>
+<script src="app.js?v=2026-08-30f"></script>
 </body>
 </html>
