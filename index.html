@@ -188,6 +188,30 @@ h3.sec{font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:22px;
 .wkrow{display:flex;gap:10px;align-items:center;padding:7px 0;border-top:1px solid var(--rule)}
 .wkrow:first-child{border-top:0}
 .wkrow .nm{flex:1;min-width:150px}
+.calrow{display:grid;grid-template-columns:52px 92px 1fr 54px 46px 96px 132px;gap:10px;align-items:center;
+  padding:8px 9px;border-bottom:1px solid var(--rule);font-size:13.5px}
+.calrow:hover{background:var(--panel)}
+.calrow .wk,.calrow .dt{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--slate)}
+.calhead{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--slate);border-bottom:1px solid var(--rule-strong)}
+.calhead:hover{background:transparent}
+.surf{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:10px;padding:1px 6px;
+  border:1px solid var(--rule-strong);color:var(--slate)}
+.surf.CL{color:#E08A5A;border-color:rgba(224,138,90,.4)}
+.surf.G{color:#7FD48A;border-color:rgba(127,212,138,.4)}
+.surf.H{color:#6FC3E8;border-color:rgba(111,195,232,.4)}
+.surf.IH{color:#9C8BE8;border-color:rgba(156,139,232,.4)}
+.notrack{opacity:.5}
+@media(max-width:900px){.calrow{grid-template-columns:1fr 1fr;gap:4px}}
+.bracket{display:flex;gap:26px;overflow-x:auto;padding-bottom:8px}
+.bcol{min-width:210px}
+.bcol h4{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--slate);margin:0 0 8px;font-weight:500}
+.bm{border-left:2px solid var(--rule);padding:5px 0 5px 9px;margin-bottom:7px;font-size:12.5px}
+.bm .w{font-weight:600}
+.bm .l{color:var(--slate)}
+.bm .sc{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--slate);margin-left:6px}
+.bm.champ{border-left-color:var(--ball)}
 .pairgrid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
 @media(max-width:900px){.pairgrid{grid-template-columns:1fr}}
 .pairgrid .blockhead{margin-bottom:8px}
@@ -197,7 +221,7 @@ h3.sec{font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:22px;
 }
 </style>
 </head>
-<body data-mode="view" data-app-version="2026-08-29i">
+<body data-mode="view" data-app-version="2026-08-30c">
 <div class="wrap">
 
   <header class="masthead">
@@ -214,9 +238,13 @@ h3.sec{font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:22px;
   </header>
 
   <nav id="nav">
-    <button data-view="matches" aria-selected="true">Matches</button>
+    <button data-view="calendar" aria-selected="true">Calendar</button>
+    <button data-view="matches" aria-selected="false">Matches</button>
     <button data-view="players" aria-selected="false">Players</button>
     <button data-view="teams" aria-selected="false">Teams</button>
+    <button data-view="managers">Managers</button>
+    <button data-view="h2h">Head to Head</button>
+    <button data-view="luck">Draw Luck</button>
     <button data-view="titles" aria-selected="false">Titles</button>
     <button data-view="rankings" aria-selected="false">Singles Rankings</button>
     <button data-view="drankings" aria-selected="false">Doubles Rankings</button>
@@ -224,8 +252,23 @@ h3.sec{font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:22px;
 
   
 
+  <!-- CALENDAR ------------------------------------------------------- -->
+  <section class="view on" id="v-calendar"><div id="calMount"></div></section>
+
+  <!-- HEAD TO HEAD --------------------------------------------------- -->
+  <section class="view" id="v-h2h"><div id="h2hMount"></div></section>
+
+  <!-- DRAW LUCK ------------------------------------------------------ -->
+  <section class="view" id="v-luck"><div id="luckMount"></div></section>
+
+  <!-- MANAGERS ------------------------------------------------------- -->
+  <section class="view" id="v-managers"><div id="mgrMount"></div></section>
+
+  <!-- TOURNAMENT ----------------------------------------------------- -->
+  <section class="view" id="v-event"><div id="eventMount"></div></section>
+
   <!-- MATCHES ---------------------------------------------------------- -->
-  <section class="view on" id="v-matches">
+  <section class="view" id="v-matches">
     <div class="controls">
       <div class="field grow"><label for="mQ">Search</label>
         <input type="text" id="mQ" placeholder="Player, country, event…"></div>
@@ -253,6 +296,8 @@ h3.sec{font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:22px;
         <input type="text" id="pQ" placeholder="Player or country…"></div>
       <div class="field sm"><label for="pCtry">Country</label>
         <select id="pCtry"><option value="">All</option></select></div>
+      <div class="field sm"><label for="pSurf">Surface</label>
+        <select id="pSurf"><option value="">All surfaces</option></select></div>
       <div class="field"><label>&nbsp;</label>
         <button class="btn" id="btnPcsv">Download CSV</button></div>
     </div>
@@ -267,6 +312,8 @@ h3.sec{font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:22px;
     <div class="controls">
       <div class="field grow"><label for="tQ">Search</label>
         <input type="text" id="tQ" placeholder="Team or player…"></div>
+      <div class="field sm"><label for="tSurf">Surface</label>
+        <select id="tSurf"><option value="">All surfaces</option></select></div>
       <div class="field"><label>&nbsp;</label>
         <button class="btn" id="btnTcsv">Download CSV</button></div>
     </div>
@@ -296,6 +343,6 @@ h3.sec{font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:22px;
   
 
 </div>
-<script src="app.js?v=2026-08-29i"></script>
+<script src="app.js?v=2026-08-30c"></script>
 </body>
 </html>
