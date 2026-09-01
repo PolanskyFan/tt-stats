@@ -708,7 +708,7 @@ const EDIT = document.body.dataset.mode === "edit";
 /* index.html, desk.html and app.js are uploaded together. Updating only some
    of them leaves a page whose markup and code disagree, which shows up as a
    blank tab rather than an error, so they carry a matching stamp. */
-const APP_VERSION = "2026-08-30f";
+const APP_VERSION = "2026-08-31a";
 const esc = s => String(s).replace(/[&<>"']/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
@@ -2446,34 +2446,91 @@ function eventMatchCount(event, season){
 const MONTH_WORDS=new Set(["january","february","march","april","may","june","july",
   "august","september","october","november","december"]);
 
+/* Every season's sheet is laid out a little differently \u2014 seven columns one
+   year, eight the next, dots or slashes in the dates, tier numbers appended to
+   names. Rather than learn each shape, each cell is identified by what it
+   contains: a week code, a date, a draw size, a surface, a country code. What's
+   left is the tournament, and the last cell standing is the manager. */
+const SURF_MAP={H:"H",HARD:"H",IH:"IH",INDOOR:"IH",CL:"CL",CLAY:"CL",
+  G:"G",GR:"G",GRASS:"G",ICL:"ICL"};
+const RE_WEEK=/^\d{1,2}[a-z]?$/i;
+const RE_DATE=/^(\d{1,2})[.\/-](\d{1,2})[.\/-](\d{2,4})$/;
+const RE_DRAW=/^\d{1,3}(\s*\/\s*\d{1,4})*$/;
+const RE_CTRY=/^[A-Z]{2,4}(\s*\/\s*[A-Z]{2,4})*$/;
+const RE_SURF=/^[A-Za-z]{1,5}(\s*\/\s*[A-Za-z]{1,5})*$/;
+
+function normSurface(v){
+  const first=String(v||"").split("/")[0].trim().toUpperCase();
+  return SURF_MAP[first] || "";
+}
+/* "Dallas 500" and "Dallas" are the same tournament; the tier and the
+   challenger marker belong to the row, not the name. */
+function baseEventName(name){
+  return String(name)
+    .replace(/\s*\bCH\*?(?=\s|$)/gi,"")
+    .replace(/\s*\b(250|500|1000|ITF|Finals)\b\s*$/i,"")
+    .replace(/\s{2,}/g," ").trim();
+}
+
 function parseCalendar(text, seasonOverride){
-  const out=[], bad=[];
+  const out=[], bad=[], notes=[];
   String(text).split(/\r?\n/).forEach(line=>{
-    const raw=line.replace(/\r/g,"");
-    if(!raw.trim()) return;
-    if(MONTH_WORDS.has(raw.trim().toLowerCase())) return;
-    const p=raw.split("\t").map(x=>x.trim());
-    if(p.length<8){ if(/\S/.test(raw) && !/^week\b/i.test(raw.trim())) bad.push(raw.trim()); return; }
-    if(/^week$/i.test(p[0]) || /opened by/i.test(raw) || /\bmanager\b/i.test(raw)) return;
-    const dm=p[1].match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
-    if(!dm){ bad.push(raw.trim()); return; }
-    const season=seasonOverride || dm[3];
-    const date=`${dm[3]}-${String(+dm[2]).padStart(2,"0")}-${String(+dm[1]).padStart(2,"0")}`;
-    const name=p[3];
-    if(!name) { bad.push(raw.trim()); return; }
-    const draw=p[6].split("/").map(x=>parseInt(x,10)).filter(x=>!isNaN(x));
-    out.push({season, code:p[0], date, opened:p[2], name, event:name,
-      country:p[4], surface:(p[5]||"").toUpperCase(), draw,
-      manager:p[7]||"", challenger:/\bCH\*?$/.test(name)});
+    const cells=line.split("\t").map(x=>x.trim());
+    const live=cells.filter(Boolean);
+    if(live.length<4) return;                       // month headings and blanks
+    if(/\btournament\b/i.test(line) && /\bmanager\b/i.test(line)) return;
+    if(/^week\b/i.test(live[0]) || /opened by/i.test(line)) return;
+
+    let week="", dates=[], draw=null, surface="", country="", rest=[];
+    live.forEach(c=>{
+      if(!week && RE_WEEK.test(c)){ week=c; return; }
+      const dm=c.match(RE_DATE);
+      if(dm){ dates.push(dm); return; }
+      if(!draw && RE_DRAW.test(c) && c.includes("/")){ draw=c; return; }
+      if(!country && RE_CTRY.test(c) && c===c.toUpperCase() && !/^\d/.test(c)
+         && !normSurface(c)){ country=c; return; }
+      if(!surface && RE_SURF.test(c) && normSurface(c)){ surface=normSurface(c); return; }
+      rest.push(c);
+    });
+    if(!rest.length){ bad.push(line.trim()); return; }
+    const manager = rest.length>1 ? rest[rest.length-1] : "";
+    const name    = rest.length>1 ? rest.slice(0,-1).join(" ") : rest[0];
+    if(!name){ bad.push(line.trim()); return; }
+
+    const d0=dates[0];
+    const yr = d0 ? (d0[3].length===2 ? "20"+d0[3] : d0[3]) : "";
+    const date = d0 ? `${yr}-${String(+d0[2]).padStart(2,"0")}-${String(+d0[1]).padStart(2,"0")}` : "";
+    const opened = dates[1] ? `${dates[1][1]}/${dates[1][2]}/${dates[1][3]}` : "";
+    const sizes=(draw||"").split("/").map(x=>parseInt(x,10)).filter(x=>!isNaN(x));
+    if(draw && sizes.some(x=>x>512)) notes.push(`draw size "${draw}" for ${name} looks mistyped`);
+    if(!surface) notes.push(`no surface read for ${name}`);
+
+    out.push({season:"", code:week, date, opened, name, event:baseEventName(name),
+      country, surface, draw:sizes, manager,
+      challenger:/\bCH\*?\b/i.test(name) || /\bITF\b/i.test(name),
+      _year:yr});
   });
-  return {rows:out, bad};
+
+  /* Dates can be mistyped a year out, so the season is whichever year most of
+     them agree on unless one is given. */
+  let season=seasonOverride;
+  if(!season){
+    const c={};
+    out.forEach(r=>{ if(r._year) c[r._year]=(c[r._year]||0)+1; });
+    season=Object.keys(c).sort((a,b)=>c[b]-c[a])[0]||"";
+  }
+  out.forEach(r=>{
+    if(r._year && r._year!==season) notes.push(`${r.name} is dated ${r._year}, filed under ${season}`);
+    r.season=season; delete r._year;
+  });
+  return {rows:out, bad, notes};
 }
 
 on("btnCal","click",()=>{
   const msg=$("calMsg"); msg.className="msg";
   const text=val("calIn");
   if(!text.trim()){ msg.className="msg err"; msg.textContent="Nothing to add \u2014 the calendar box is empty."; return; }
-  const {rows,bad}=parseCalendar(text, val("calSeason").trim());
+  const {rows,bad,notes}=parseCalendar(text, val("calSeason").trim());
   if(!rows.length){
     msg.className="msg err";
     msg.textContent="No calendar rows recognised. Each needs eight tab-separated columns: week, date, thread opened, tournament, country, surface, draw size, manager.";
@@ -2502,7 +2559,9 @@ on("btnCal","click",()=>{
   if(orphanEvents.length) bits.push(`These events have matches but no calendar row: ${orphanEvents.join(", ")}.`);
   if(orphanCal.length && orphanCal.length<=12) bits.push(`No matches entered yet for: ${orphanCal.join(", ")}.`);
   if(bad.length) bits.push(`${bad.length} line${bad.length===1?"":"s"} skipped.`);
-  msg.className=(orphanEvents.length||bad.length)?"msg warn":"msg";
+  if(notes.length) bits.push(`Worth a look: ${[...new Set(notes)].slice(0,6).join("; ")}`
+    + (notes.length>6?` and ${notes.length-6} more.`:"."));
+  msg.className=(orphanEvents.length||bad.length||notes.length)?"msg warn":"msg";
   msg.textContent=bits.join(" ");
   setVal("calIn",""); markDirty(); refreshAll();
 });
@@ -2941,8 +3000,13 @@ function renderH2HDraw(mount){
 const ORDER_MAIN = ["R512","R256","R128","R64","R32","R16","QF","SF","F"];
 
 function drawTree(event, season, disc){
+  /* A bye recorded as a 0:0 match isn't a contest. Left in, it seats the
+     player in the opening round with a score of nothing, so relocating them
+     anywhere real would lose every time. */
+  const isByeRow = m => m.isBye || /^bye(\/bye)?$/i.test(String(m.winner).trim())
+                     || /^bye(\/bye)?$/i.test(String(m.loser).trim());
   const ms=MATCHES.filter(m=>m.event===event && (!season||m.season===season)
-                            && m.disc===disc && m.stage==="Main");
+                            && m.disc===disc && m.stage==="Main" && !isByeRow(m));
   if(!ms.length) return null;
   const rounds=ORDER_MAIN.filter(r=>ms.some(m=>m.round===r));
   const fin=ms.find(m=>m.round===rounds[rounds.length-1]);
@@ -2970,23 +3034,34 @@ function drawTree(event, season, disc){
   });
 
   let slots=[];
-  const leaf=(player, round)=>{ const slot={player}; slots.push(slot); return {leaf:true, slot, round}; };
+  /* entryIdx is the round the player actually joined at, which is not the same
+     as the round the search was looking at: a player with no match at round i
+     sat that round out and came in at i+1. */
+  const leaf=(player, round, entryIdx)=>{
+    const slot={player, entryIdx}; slots.push(slot); return {leaf:true, slot, round}; };
 
   function node(player, roundIdx){
     const round=rounds[roundIdx];
     const feeder=wonAt.get(idOf(player,disc)+"|"+round);
-    /* No match won at this round means they entered later \u2014 a bye \u2014 so this
-       is where they start. */
-    if(!feeder) return leaf(player, round);
+    if(!feeder) return leaf(player, round, roundIdx+1);      // sat this round out
     const other = idOf(feeder.winner,disc)===idOf(player,disc) ? feeder.loser : feeder.winner;
     /* At the opening round both players are seats in the draw. Treating only
        the winner as a seat halved every count: a 32-draw reported 16. */
-    if(roundIdx===0) return {leaf:false, round, kids:[leaf(player, round), leaf(other, round)]};
+    if(roundIdx===0)
+      return {leaf:false, round, kids:[leaf(player, round, 0), leaf(other, round, 0)]};
     return {leaf:false, round, kids:[node(player, roundIdx-1), node(other, roundIdx-1)]};
   }
   const root={leaf:false, round:"F",
     kids:[node(fin.winner, rounds.length-2), node(fin.loser, rounds.length-2)]};
-  return {root, rounds, score, played, champion:sideOf(fin,"winner"), disc, ms, slots};
+  /* Where the champion joined the draw. A seed who sat out the opening round
+     would have done so from any seat, so they carry that bye with them rather
+     than being asked to play a round they never played. */
+  const ck=idOf(fin.winner, disc);
+  const champSeat=slots.find(s=>idOf(s.player,disc)===ck);
+  const champEntry = champSeat ? champSeat.entryIdx : 0;
+
+  return {root, rounds, score, played, champEntry,
+          champion:sideOf(fin,"winner"), disc, ms, slots};
 }
 
 function beats(A, B, round, score, disc, played){
@@ -3007,12 +3082,19 @@ function beats(A, B, round, score, disc, played){
 }
 
 function playOut(tree, swapA, swapB){
-  const {score, disc, played}=tree;
+  const {score, disc, played, rounds, champEntry, champion}=tree;
   const sub = p => p===swapA ? swapB : p===swapB ? swapA : p;
+  const ck = champion ? idOf(champion, disc) : null;
   function run(n){
     if(n.leaf) return sub(n.slot.player);
     const A=run(n.kids[0]), B=run(n.kids[1]);
     if(A===B) return A;
+    /* Rounds the champion sat out originally are sat out here too. */
+    const idx = rounds.indexOf(n.round);
+    if(idx >= 0 && idx < champEntry){
+      if(A && idOf(A,disc)===ck) return A;
+      if(B && idOf(B,disc)===ck) return B;
+    }
     if(beats(A,B,n.round,score,disc,played)) return A;
     if(beats(B,A,n.round,score,disc,played)) return B;
     return null;
@@ -3710,7 +3792,7 @@ function commitPreview(){
     if(wk) ranked+=applyRanks(r,wk);
     const k=matchKey(r);
     if(SEEN.has(k)){ dup++; DUPES.push(r); continue; }
-    SEEN.add(k); MATCHES.push(r); added++;
+    SEEN.add(k); MATCHES.push(r); MATCH_DIRTY.add(season||"unknown"); MATCH_SEASONS.add(season||"unknown"); added++;
   }
   res.pending.forEach(p=>{ p.event=event; p.season=season; p.week=week; });
   PENDING=PENDING.concat(res.pending);
@@ -4418,6 +4500,26 @@ function renderFileManager(){
     const b=document.createElement("button"); b.className="btn sm"; b.textContent="Download";
     b.addEventListener("click",go); row.appendChild(b); el.appendChild(row);
   });
+  loadedMatchSeasons().forEach(sea=>{
+    const rows2=MATCHES.filter(m=>(m.season||"unknown")===sea).length;
+    const row=document.createElement("div"); row.className="wkrow";
+    row.innerHTML=`<span class="nm"><code>${esc(matchFile(sea))}</code>
+      <span class="dim">${rows2.toLocaleString()} matches</span>
+      ${MATCH_DIRTY.has(sea)||LEGACY_INLINE?'<span class="tag" style="margin-left:6px">changed</span>':""}</span>`;
+    const b=document.createElement("button"); b.className="btn sm"; b.textContent="Download";
+    b.addEventListener("click",()=>{ const n2=saveMatchSeason(sea);
+      saveMsg(`Saved ${matchFile(sea)} (${(n2/1024).toFixed(0)} KB).`); renderFileManager(); });
+    row.appendChild(b); el.appendChild(row);
+  });
+  unloadedMatchSeasons().forEach(sea=>{
+    const row=document.createElement("div"); row.className="wkrow";
+    row.innerHTML=`<span class="nm"><code>${esc(matchFile(sea))}</code>
+      <span class="dim">listed in data.json, not open in this session</span>
+      <span class="tag" style="margin-left:6px">not loaded</span></span>
+      <span class="dim" style="font-size:12px">left untouched</span>`;
+    el.appendChild(row);
+  });
+
   missing.forEach(sea=>{
     const row=document.createElement("div"); row.className="wkrow";
     row.innerHTML=`<span class="nm"><code>${esc(seasonFile(sea))}</code>
@@ -4648,6 +4750,65 @@ const markDirty = () => { DIRTY = true; renderSummary(); };
    instead of named fields. Together that's about a sixth of the plain form.
    ------------------------------------------------------------------ */
 const RANKINGS_FORMAT = "tt-rankings/1";
+const MATCHES_FORMAT  = "tt-matches/1";
+const matchFile = s => `matches-${s}.json`;
+const MATCH_SEASONS = new Set();      // seasons named by the index
+const MATCH_DIRTY   = new Set();
+
+/* Matches are the bulk of everything \u2014 a season runs to well over a megabyte
+   written plainly \u2014 so they get the same treatment as the rankings: one file
+   per season, names held once in a dictionary, rows as plain arrays. That's
+   about an eighth of the size, and entering a week rewrites one year rather
+   than the whole archive. */
+const MATCH_FIELDS = ["round","disc","stage","week","winnerSeed","winner","winnerCountry",
+  "loserSeed","loser","loserCountry","winnerScore","loserScore","winnerSC","loserSC",
+  "winnerRank","loserRank","method","isBye","tied"];
+
+function encodeMatches(season){
+  const words=[], wi=new Map();
+  const w = v => { v = (v===undefined||v===null) ? "" : String(v);
+    if(!wi.has(v)){ wi.set(v, words.length); words.push(v); } return wi.get(v); };
+  const rows = MATCHES.filter(m=>(m.season||"")===(season==="unknown"?"":season)).map(m=>[
+    w(m.event), w(m.round), w(m.disc), w(m.stage), w(m.week),
+    w(m.winnerSeed), w(m.winner), w(m.winnerCountry),
+    w(m.loserSeed),  w(m.loser),  w(m.loserCountry),
+    Number(m.winnerScore)||0, Number(m.loserScore)||0,
+    Number(m.winnerSC)||0,    Number(m.loserSC)||0,
+    m.winnerRank===""||m.winnerRank==null ? -1 : Number(m.winnerRank),
+    m.loserRank===""||m.loserRank==null   ? -1 : Number(m.loserRank),
+    w(m.method), m.isBye?1:0, m.tied?1:0
+  ]);
+  return {format:MATCHES_FORMAT, season, savedAt:new Date().toISOString(), words, rows};
+}
+
+function decodeMatches(data){
+  if(!data || data.format!==MATCHES_FORMAT) throw new Error(`Expected a ${MATCHES_FORMAT} file.`);
+  const W=data.words||[];
+  const season = data.season==="unknown" ? "" : data.season;
+  for(let i=MATCHES.length-1;i>=0;i--) if((MATCHES[i].season||"")===season) MATCHES.splice(i,1);
+  (data.rows||[]).forEach(r=>{
+    const m={id:++ROW_ID, season,
+      event:W[r[0]], round:W[r[1]], disc:W[r[2]], stage:W[r[3]], week:W[r[4]],
+      winnerSeed:W[r[5]], winner:W[r[6]], winnerCountry:W[r[7]],
+      loserSeed:W[r[8]],  loser:W[r[9]],  loserCountry:W[r[10]],
+      winnerScore:r[11], loserScore:r[12], winnerSC:r[13], loserSC:r[14],
+      winnerRank:r[15]===-1?"":r[15], loserRank:r[16]===-1?"":r[16],
+      method:W[r[17]], isBye:!!r[18], tied:!!r[19]};
+    m.level = (MAIN_LEVELS[m.round]!==undefined) ? MAIN_LEVELS[m.round]
+            : (QUAL_LEVELS[m.round]!==undefined ? QUAL_LEVELS[m.round] : 0);
+    MATCHES.push(m);
+  });
+  MATCH_SEASONS.add(data.season);
+}
+
+function matchSeasons(){
+  return [...new Set([...MATCH_SEASONS, ...MATCHES.map(m=>m.season||"unknown")])]
+    .filter(Boolean).sort((a,b)=>b.localeCompare(a));
+}
+const loadedMatchSeasons = () =>
+  [...new Set(MATCHES.map(m=>m.season||"unknown"))].sort((a,b)=>b.localeCompare(a));
+const unloadedMatchSeasons = () =>
+  matchSeasons().filter(s=>!loadedMatchSeasons().includes(s));
 const seasonKey  = w => (w.season || "unknown");
 const seasonFile = s => `rankings-${s}.json`;
 const SEASON_DIRTY = new Set();
@@ -4708,7 +4869,7 @@ function serialise(){
   return {
     format: FORMAT,
     savedAt: new Date().toISOString(),
-    matches: MATCHES.map(m=>{ const {raw, ...rest}=m; return rest; }),
+    matchFiles: matchSeasons().map(matchFile),
     rankingFiles: allSeasons().map(seasonFile),
     calendar: CALENDAR,
     aliases: [...ALIAS.entries()].map(([from,to])=>({from,to})),
@@ -4722,13 +4883,18 @@ function serialise(){
 
 function deserialise(data){
   if(!data || typeof data!=="object") throw new Error("That file isn't a data file.");
-  if(!Array.isArray(data.matches)) throw new Error("No matches found in that file.");
+  if(!Array.isArray(data.matches) && !Array.isArray(data.matchFiles) && !Array.isArray(data.rankingFiles))
+    throw new Error("That doesn't look like a data file.");
   if(data.format && data.format!==FORMAT)
     throw new Error(`That file says it's format "${data.format}", which this page doesn't read.`);
 
   MATCHES=[]; PENDING=[]; WEEKS=[]; DUPES=[]; SEEN.clear(); REG.clear();
   ALIAS.clear(); PINS.clear(); COUNTRY_OK.clear(); RENAME_NO.clear(); DATE_OK.clear(); UNKNOWN_OK.clear();
-  CALENDAR=[];
+  CALENDAR=[]; MATCH_SEASONS.clear(); MATCH_DIRTY.clear();
+  (data.matchFiles||[]).forEach(f=>{
+    const m=String(f).match(/^matches-(.+)\.json$/i);
+    if(m) MATCH_SEASONS.add(m[1]);
+  });
   SEASON_DIRTY.clear(); KNOWN_SEASONS.clear();
   LEGACY_INLINE=false; ROW_ID=0;
   (data.rankingFiles||[]).forEach(f=>{
@@ -4766,9 +4932,12 @@ function deserialise(data){
                 list:w.list||[], index, date:weekDate(w.name, w.season)});
   });
   if(data.weeks && data.weeks.length){ LEGACY_INLINE = true; loadedSeasons().forEach(x=>SEASON_DIRTY.add(x)); }
+  if(data.matches && data.matches.length){
+    LEGACY_INLINE = true; loadedMatchSeasons().forEach(x=>MATCH_DIRTY.add(x));
+  }
   sortWeeks();
 
-  data.matches.forEach(m=>{
+  (data.matches||[]).forEach(m=>{
     const r = Object.assign({}, m);
     r.id = ++ROW_ID;
     r.winnerSeed = normSeed(r.winnerSeed);
@@ -4884,6 +5053,7 @@ function matchGroups(){
     a.disc.localeCompare(b.disc) || a.stage.localeCompare(b.stage));
 }
 function removeMatches(rows){
+  rows.forEach(r=>MATCH_DIRTY.add(r.season||"unknown"));
   const kill=new Set(rows.map(r=>r.id));
   MATCHES = MATCHES.filter(r=>!kill.has(r.id));
   SEEN.clear(); MATCHES.forEach(r=>SEEN.add(matchKey(r)));
@@ -4921,19 +5091,28 @@ function saveSeason(season){
   SEASON_DIRTY.delete(season);
   return n;
 }
+function saveMatchSeason(season){
+  const n = saveJson(encodeMatches(season), matchFile(season), false);
+  MATCH_DIRTY.delete(season);
+  return n;
+}
 
 /* Browsers queue downloads rather than firing them at once, so they're spaced
    out; without the gap most of them are silently dropped. */
 async function saveAll(){
-  const seasons = loadedSeasons();
+  const seasons = loadedSeasons(), msea = loadedMatchSeasons();
   let bytes = saveIndex();
   for(const s of seasons){
     await new Promise(r=>setTimeout(r,450));
     bytes += saveSeason(s);
   }
+  for(const s of msea){
+    await new Promise(r=>setTimeout(r,450));
+    bytes += saveMatchSeason(s);
+  }
   DIRTY=false; LEGACY_INLINE=false; renderSummary(); renderFileManager();
-  const missing=unloadedSeasons();
-  saveMsg(`Saved data.json and ${seasons.length} season file${seasons.length===1?"":"s"} `
+  const missing=unloadedSeasons().concat(unloadedMatchSeasons());
+  saveMsg(`Saved data.json, ${seasons.length} ranking and ${msea.length} match file${(seasons.length+msea.length)===1?"":"s"} `
     + `(${(bytes/1024).toFixed(0)} KB in total). Put them all in the same folder.`
     + (missing.length ? ` ${missing.length} other season${missing.length===1?"":"s"} `
         + `(${missing.join(", ")}) weren't open and haven't been rewritten \u2014 leave those files where they are.` : ""),
@@ -4969,9 +5148,11 @@ async function loadFiles(files){
     try{ parsed.push({f, data:JSON.parse(await readFileText(f))}); }
     catch(err){ bad.push(`${f.name} (${err.message})`); }
   }
-  const index   = parsed.filter(p=>p.data && Array.isArray(p.data.matches));
+  const index   = parsed.filter(p=>p.data && (Array.isArray(p.data.matches)
+                    || Array.isArray(p.data.matchFiles) || Array.isArray(p.data.rankingFiles)));
   const seasons = parsed.filter(p=>p.data && p.data.format===RANKINGS_FORMAT);
-  const unknown = parsed.filter(p=>!index.includes(p) && !seasons.includes(p));
+  const matchF  = parsed.filter(p=>p.data && p.data.format===MATCHES_FORMAT);
+  const unknown = parsed.filter(p=>!index.includes(p) && !seasons.includes(p) && !matchF.includes(p));
 
   if(index.length>1){
     saveMsg(`That selection has ${index.length} index files (${index.map(p=>p.f.name).join(", ")}). `
@@ -4993,12 +5174,21 @@ async function loadFiles(files){
     try{ decodeSeason(p.data); KNOWN_SEASONS.add(p.data.season); weeks+=(p.data.weeks||[]).length; }
     catch(err){ bad.push(`${p.f.name} (${err.message})`); }
   });
+  let mrows=0;
+  matchF.sort((a,b)=>String(a.data.season).localeCompare(String(b.data.season)));
+  matchF.forEach(p=>{
+    try{ decodeMatches(p.data); mrows+=(p.data.rows||[]).length; }
+    catch(err){ bad.push(`${p.f.name} (${err.message})`); }
+  });
   sortWeeks();
+  SEEN.clear(); MATCHES.forEach(r=>SEEN.add(matchKey(r)));
   reindex();
   ["Singles","Doubles"].forEach(t=>{ RANK_UI[t].week=null; RANK_UI[t].player=null; });
   DIRTY=false;
   refreshAll();
 
+  if(matchF.length) notes.push(`${mrows.toLocaleString()} matches across `
+    + `${matchF.length} season file${matchF.length===1?"":"s"} (${matchF.map(p=>p.data.season).join(", ")})`);
   if(seasons.length) notes.push(`${weeks.toLocaleString()} ranking weeks across `
     + `${seasons.length} season file${seasons.length===1?"":"s"} (${seasons.map(p=>p.data.season).join(", ")})`);
   if(!index.length && seasons.length) notes.push("no index file in that selection, so matches were left as they are");
@@ -5065,13 +5255,14 @@ async function autoload(){
   }
   try{
     const r = deserialise(json);
-    const files = json.rankingFiles || [];
+    const files = (json.rankingFiles || []).concat(json.matchFiles || []);
     if(files.length){
       const results = await Promise.all(files.map(async f=>{
         try{
           const fr = await fetch(f, {cache:"no-store"});
           if(!fr.ok) return {f, err:`returned ${fr.status}`};
-          decodeSeason(await fr.json());
+          const body = await fr.json();
+          body.format===MATCHES_FORMAT ? decodeMatches(body) : decodeSeason(body);
           return {f, ok:true};
         }catch(e){ return {f, err:e.message}; }
       }));
