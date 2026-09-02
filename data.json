@@ -1,6 +1,6 @@
 {
  "format": "tennis-tipping/1",
- "savedAt": "2026-09-01T10:41:29.512Z",
+ "savedAt": "2026-09-02T01:30:03.022Z",
  "matchFiles": [
   "matches-2026.json"
  ],
@@ -11,7 +11,15 @@
   "rankings-2023.json",
   "rankings-2022.json",
   "rankings-2021.json",
-  "rankings-2020.json"
+  "rankings-2020.json",
+  "rankings-2019.json",
+  "rankings-2018.json",
+  "rankings-2017.json",
+  "rankings-2016.json",
+  "rankings-2015.json",
+  "rankings-2014.json",
+  "rankings-2013.json",
+  "rankings-2012.json"
  ],
  "calendar": [
   {
@@ -19898,6 +19906,3119 @@
    ],
    "manager": "buji",
    "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "1a",
+   "date": "2016-01-04",
+   "opened": "",
+   "name": "Brisbane",
+   "event": "Brisbane",
+   "country": "AUS",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "BMT360",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "1b",
+   "date": "2016-01-04",
+   "opened": "",
+   "name": "Chennai",
+   "event": "Chennai",
+   "country": "IND",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "BobbaBobb",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "1c",
+   "date": "2016-01-04",
+   "opened": "",
+   "name": "Doha",
+   "event": "Doha",
+   "country": "QAT",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "1d",
+   "date": "2016-01-04",
+   "opened": "",
+   "name": "Noumea CH",
+   "event": "Noumea",
+   "country": "NCL",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "BMT360",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "1e",
+   "date": "2016-01-04",
+   "opened": "",
+   "name": "Happy Valley CH",
+   "event": "Happy Valley",
+   "country": "AUS",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Arsenalex",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "1f",
+   "date": "2016-01-03",
+   "opened": "",
+   "name": "Hopman Cup",
+   "event": "Hopman Cup",
+   "country": "AUS",
+   "surface": "H",
+   "draw": [],
+   "manager": "Randy",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "2a",
+   "date": "2016-01-11",
+   "opened": "",
+   "name": "Auckland",
+   "event": "Auckland",
+   "country": "NZL",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "BMT360",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "2b",
+   "date": "2016-01-11",
+   "opened": "",
+   "name": "Sydney",
+   "event": "Sydney",
+   "country": "AUS",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Arsenalex",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "2c",
+   "date": "2016-01-11",
+   "opened": "",
+   "name": "Canberra CH",
+   "event": "Canberra",
+   "country": "AUS",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Randy",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "2d",
+   "date": "2016-01-11",
+   "opened": "",
+   "name": "Bangkok CH",
+   "event": "Bangkok",
+   "country": "THA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "2e",
+   "date": "2016-01-11",
+   "opened": "",
+   "name": "Buenos Aires CH",
+   "event": "Buenos Aires",
+   "country": "ARG",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Normand",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "3a",
+   "date": "2016-01-18",
+   "opened": "",
+   "name": "Australian Open",
+   "event": "Australian Open",
+   "country": "AUS",
+   "surface": "H",
+   "draw": [
+    128,
+    128,
+    64,
+    64
+   ],
+   "manager": "keqtqiadv",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "3b",
+   "date": "2016-01-18",
+   "opened": "",
+   "name": "Manila CH",
+   "event": "Manila",
+   "country": "PHI",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "4a",
+   "date": "2016-01-26",
+   "opened": "",
+   "name": "Bucaramanga CH",
+   "event": "Bucaramanga",
+   "country": "COL",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Litotes",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "4b",
+   "date": "2016-01-26",
+   "opened": "",
+   "name": "Maui CH",
+   "event": "Maui",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Randy",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "4c",
+   "date": "2016-01-26",
+   "opened": "",
+   "name": "Nussloch FUT",
+   "event": "Nussloch",
+   "country": "GER",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "4d",
+   "date": "2016-01-26",
+   "opened": "",
+   "name": "Aktobe FUT",
+   "event": "Aktobe",
+   "country": "KAZ",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "5a",
+   "date": "2016-02-01",
+   "opened": "",
+   "name": "Montpellier",
+   "event": "Montpellier",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "5b",
+   "date": "2016-02-01",
+   "opened": "",
+   "name": "Sofia",
+   "event": "Sofia",
+   "country": "BUL",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "5c",
+   "date": "2016-02-01",
+   "opened": "",
+   "name": "Quito",
+   "event": "Quito",
+   "country": "ECU",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Hidalgo",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "5d",
+   "date": "2016-02-01",
+   "opened": "",
+   "name": "Dallas CH*",
+   "event": "Dallas",
+   "country": "USA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Randy",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "5e",
+   "date": "2016-02-01",
+   "opened": "",
+   "name": "Launceston CH",
+   "event": "Launceston",
+   "country": "AUS",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Darth Revan",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "6a",
+   "date": "2016-02-08",
+   "opened": "",
+   "name": "Rotterdam",
+   "event": "Rotterdam",
+   "country": "NED",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Deathless Mortal",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "6b",
+   "date": "2016-02-08",
+   "opened": "",
+   "name": "Memphis",
+   "event": "Memphis",
+   "country": "USA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Randy",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "6c",
+   "date": "2016-02-08",
+   "opened": "",
+   "name": "Buenos Aires",
+   "event": "Buenos Aires",
+   "country": "ARG",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "supertom",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "6d",
+   "date": "2016-02-08",
+   "opened": "",
+   "name": "Bergamo CH",
+   "event": "Bergamo",
+   "country": "ITA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "6e",
+   "date": "2016-02-08",
+   "opened": "",
+   "name": "Santo Domingo CH",
+   "event": "Santo Domingo",
+   "country": "DOM",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "justafanYYC",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "7a",
+   "date": "2016-02-15",
+   "opened": "",
+   "name": "Rio de Janeiro",
+   "event": "Rio de Janeiro",
+   "country": "BRA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Normand",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "7b",
+   "date": "2016-02-15",
+   "opened": "",
+   "name": "Delray Beach",
+   "event": "Delray Beach",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Randy",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "7c",
+   "date": "2016-02-15",
+   "opened": "",
+   "name": "Marseille",
+   "event": "Marseille",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "7d",
+   "date": "2016-02-15",
+   "opened": "",
+   "name": "Wroclaw CH*",
+   "event": "Wroclaw",
+   "country": "POL",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Kellemanske",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "7e",
+   "date": "2016-02-15",
+   "opened": "",
+   "name": "New Delhi CH",
+   "event": "New Delhi",
+   "country": "IND",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "8a",
+   "date": "2016-02-22",
+   "opened": "",
+   "name": "Acapulco",
+   "event": "Acapulco",
+   "country": "MEX",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Randy",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "8b",
+   "date": "2016-02-22",
+   "opened": "",
+   "name": "Dubai",
+   "event": "Dubai",
+   "country": "UAE",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "8c",
+   "date": "2016-02-22",
+   "opened": "",
+   "name": "Sao Paulo",
+   "event": "Sao Paulo",
+   "country": "BRA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Ertl93",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "8d",
+   "date": "2016-02-22",
+   "opened": "",
+   "name": "Kyoto CH",
+   "event": "Kyoto",
+   "country": "JPN",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "8e",
+   "date": "2016-02-22",
+   "opened": "",
+   "name": "Cherbourg CH",
+   "event": "Cherbourg",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "*Jean*",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "9a",
+   "date": "2016-02-29",
+   "opened": "",
+   "name": "Davis Cup I",
+   "event": "Davis Cup I",
+   "country": "",
+   "surface": "",
+   "draw": [],
+   "manager": "keqtqiadv",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "9b",
+   "date": "2016-02-29",
+   "opened": "",
+   "name": "Quimper CH",
+   "event": "Quimper",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Normand",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "9c",
+   "date": "2016-02-29",
+   "opened": "",
+   "name": "Tarragona FUT",
+   "event": "Tarragona",
+   "country": "ESP",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Ertl93",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "9d",
+   "date": "2016-02-29",
+   "opened": "",
+   "name": "Mildura FUT",
+   "event": "Mildura",
+   "country": "AUS",
+   "surface": "G",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "BMT360",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "10a",
+   "date": "2016-03-07",
+   "opened": "",
+   "name": "Indian Wells",
+   "event": "Indian Wells",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    128,
+    64,
+    64,
+    32
+   ],
+   "manager": "Ibreak4coffee",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "10c",
+   "date": "2016-03-07",
+   "opened": "",
+   "name": "Puebla CH*",
+   "event": "Puebla",
+   "country": "MEX",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "keqtqiadv",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "11a",
+   "date": "2016-03-14",
+   "opened": "",
+   "name": "Irving CH*",
+   "event": "Irving",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "justafanYYC",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "11b",
+   "date": "2016-03-14",
+   "opened": "",
+   "name": "Guadalajara CH*",
+   "event": "Guadalajara",
+   "country": "MEX",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "11c",
+   "date": "2016-03-14",
+   "opened": "",
+   "name": "Kazan CH",
+   "event": "Kazan",
+   "country": "RUS",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "12a",
+   "date": "2016-03-23",
+   "opened": "",
+   "name": "Miami",
+   "event": "Miami",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    128,
+    64,
+    64,
+    32
+   ],
+   "manager": "dinkulpus",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "12c",
+   "date": "2016-03-21",
+   "opened": "",
+   "name": "Shenzhen CH",
+   "event": "Shenzhen",
+   "country": "CHN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AussieAdz",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "13a",
+   "date": "2016-03-28",
+   "opened": "",
+   "name": "Raanana CH*",
+   "event": "Raanana",
+   "country": "ISR",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Normand",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "13b",
+   "date": "2016-03-28",
+   "opened": "",
+   "name": "Leon CH",
+   "event": "Leon",
+   "country": "MEX",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Ibreak4coffee",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "13c",
+   "date": "2016-03-28",
+   "opened": "",
+   "name": "Saint-Brieuc CH",
+   "event": "Saint-Brieuc",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "14a",
+   "date": "2016-04-04",
+   "opened": "",
+   "name": "Houston",
+   "event": "Houston",
+   "country": "USA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Randy",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "14b",
+   "date": "2016-04-04",
+   "opened": "",
+   "name": "Marrakech",
+   "event": "Marrakech",
+   "country": "MOR",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "BobbaBobb",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "14c",
+   "date": "2016-04-04",
+   "opened": "",
+   "name": "Le Gosier CH*",
+   "event": "Le Gosier",
+   "country": "FRA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Kellemanske",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "14d",
+   "date": "2016-04-04",
+   "opened": "",
+   "name": "Naples CH",
+   "event": "Naples",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "keqtqiadv",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "14e",
+   "date": "2016-04-04",
+   "opened": "",
+   "name": "Karshi FUT",
+   "event": "Karshi",
+   "country": "UZB",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "15a",
+   "date": "2016-04-10",
+   "opened": "",
+   "name": "Monte Carlo",
+   "event": "Monte Carlo",
+   "country": "MON",
+   "surface": "CL",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "keqtqiadv",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "15b",
+   "date": "2016-04-11",
+   "opened": "",
+   "name": "Sarasota CH*",
+   "event": "Sarasota",
+   "country": "USA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Kellemanske",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "15c",
+   "date": "2016-04-11",
+   "opened": "",
+   "name": "Barletta CH",
+   "event": "Barletta",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "15d",
+   "date": "2016-04-11",
+   "opened": "",
+   "name": "Gwangju CH",
+   "event": "Gwangju",
+   "country": "KOR",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "16a",
+   "date": "2016-04-18",
+   "opened": "",
+   "name": "Barcelona",
+   "event": "Barcelona",
+   "country": "ESP",
+   "surface": "CL",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "Arsenalex",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "16b",
+   "date": "2016-04-18",
+   "opened": "",
+   "name": "Bucharest",
+   "event": "Bucharest",
+   "country": "ROU",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "16c",
+   "date": "2016-04-18",
+   "opened": "",
+   "name": "Savannah CH",
+   "event": "Savannah",
+   "country": "USA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "chowdahead25",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "16d",
+   "date": "2016-04-18",
+   "opened": "",
+   "name": "Turin CH",
+   "event": "Turin",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Normand",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "17a",
+   "date": "2016-04-25",
+   "opened": "",
+   "name": "Munich",
+   "event": "Munich",
+   "country": "GER",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Normand",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "17b",
+   "date": "2016-04-25",
+   "opened": "",
+   "name": "Istanbul",
+   "event": "Istanbul",
+   "country": "TUR",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Randy",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "17c",
+   "date": "2016-04-25",
+   "opened": "",
+   "name": "Estoril",
+   "event": "Estoril",
+   "country": "POR",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Kellemanske",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "17d",
+   "date": "2016-04-25",
+   "opened": "",
+   "name": "Anning CH*",
+   "event": "Anning",
+   "country": "CHN",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AussieAdz",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "17e",
+   "date": "2016-04-25",
+   "opened": "",
+   "name": "Ostrava CH",
+   "event": "Ostrava",
+   "country": "CZE",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Litotes",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "18a",
+   "date": "2016-05-01",
+   "opened": "",
+   "name": "Madrid",
+   "event": "Madrid",
+   "country": "ESP",
+   "surface": "CL",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "Randy",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "18b",
+   "date": "2016-05-02",
+   "opened": "",
+   "name": "Busan CH*",
+   "event": "Busan",
+   "country": "KOR",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AussieAdz",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "18c",
+   "date": "2016-05-02",
+   "opened": "",
+   "name": "Aix en Provence CH*",
+   "event": "Aix en Provence",
+   "country": "FRA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Kellemanske",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "18d",
+   "date": "2016-05-02",
+   "opened": "",
+   "name": "Karshi CH",
+   "event": "Karshi",
+   "country": "UZB",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "19a",
+   "date": "2016-05-08",
+   "opened": "",
+   "name": "Rome",
+   "event": "Rome",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "Normand",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "19b",
+   "date": "2016-05-09",
+   "opened": "",
+   "name": "Seoul CH*",
+   "event": "Seoul",
+   "country": "KOR",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AussieAdz",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "19c",
+   "date": "2016-05-09",
+   "opened": "",
+   "name": "Bordeaux CH*",
+   "event": "Bordeaux",
+   "country": "FRA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Kellemanske",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "19d",
+   "date": "2016-05-09",
+   "opened": "",
+   "name": "Heilbronn CH",
+   "event": "Heilbronn",
+   "country": "GER",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Walsall",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "20a",
+   "date": "2016-05-15",
+   "opened": "",
+   "name": "Geneva",
+   "event": "Geneva",
+   "country": "SUI",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "20b",
+   "date": "2016-05-15",
+   "opened": "",
+   "name": "Nice",
+   "event": "Nice",
+   "country": "FRA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "BobbaBobb",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "20c",
+   "date": "2016-05-16",
+   "opened": "",
+   "name": "Mestre CH",
+   "event": "Mestre",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "20d",
+   "date": "2016-05-16",
+   "opened": "",
+   "name": "Bangkok CH",
+   "event": "Bangkok",
+   "country": "THA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AussieAdz",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "20e",
+   "date": "2016-05-16",
+   "opened": "",
+   "name": "Frascati FUT",
+   "event": "Frascati",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "21a",
+   "date": "2016-05-22",
+   "opened": "",
+   "name": "Roland Garros",
+   "event": "Roland Garros",
+   "country": "FRA",
+   "surface": "CL",
+   "draw": [
+    128,
+    128,
+    64,
+    64
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "21b",
+   "date": "2016-05-23",
+   "opened": "",
+   "name": "Vicenza CH",
+   "event": "Vicenza",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "rvugt",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "22a",
+   "date": "2016-05-30",
+   "opened": "",
+   "name": "Prostejov CH*",
+   "event": "Prostejov",
+   "country": "CZE",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "22b",
+   "date": "2016-05-30",
+   "opened": "",
+   "name": "Manchester CH",
+   "event": "Manchester",
+   "country": "GBR",
+   "surface": "G",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "rvugt",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "22c",
+   "date": "2016-05-30",
+   "opened": "",
+   "name": "Furth CH",
+   "event": "Furth",
+   "country": "GER",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Normand",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "22d",
+   "date": "2016-05-30",
+   "opened": "",
+   "name": "Karuizawa FUT",
+   "event": "Karuizawa",
+   "country": "JPN",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "23a",
+   "date": "2016-06-06",
+   "opened": "",
+   "name": "Stuttgart",
+   "event": "Stuttgart",
+   "country": "GER",
+   "surface": "G",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "23b",
+   "date": "2016-06-06",
+   "opened": "",
+   "name": "s-Hertogenbosch",
+   "event": "s-Hertogenbosch",
+   "country": "NED",
+   "surface": "G",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "rvugt",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "23c",
+   "date": "2016-06-06",
+   "opened": "",
+   "name": "Caltanissetta CH*",
+   "event": "Caltanissetta",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Normand",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "23d",
+   "date": "2016-06-06",
+   "opened": "",
+   "name": "Moscow CH",
+   "event": "Moscow",
+   "country": "RUS",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "23e",
+   "date": "2016-06-06",
+   "opened": "",
+   "name": "Surbiton CH",
+   "event": "Surbiton",
+   "country": "GBR",
+   "surface": "G",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Kellemanske",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "24a",
+   "date": "2016-06-13",
+   "opened": "",
+   "name": "Halle",
+   "event": "Halle",
+   "country": "GER",
+   "surface": "G",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Normand",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "24b",
+   "date": "2016-06-13",
+   "opened": "",
+   "name": "Queen's",
+   "event": "Queen's",
+   "country": "GBR",
+   "surface": "G",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Litotes",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "24c",
+   "date": "2016-06-13",
+   "opened": "",
+   "name": "Poprad Tatry CH",
+   "event": "Poprad Tatry",
+   "country": "SVK",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "24d",
+   "date": "2016-06-13",
+   "opened": "",
+   "name": "Perugia CH",
+   "event": "Perugia",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Walsall",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "24e",
+   "date": "2016-06-13",
+   "opened": "",
+   "name": "Ilkley CH",
+   "event": "Ilkley",
+   "country": "GBR",
+   "surface": "G",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "rvugt",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "25a",
+   "date": "2016-06-19",
+   "opened": "",
+   "name": "Nottingham",
+   "event": "Nottingham",
+   "country": "GBR",
+   "surface": "G",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "rvugt",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "25b",
+   "date": "2016-06-20",
+   "opened": "",
+   "name": "Milan CH",
+   "event": "Milan",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Walsall",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "25c",
+   "date": "2016-06-20",
+   "opened": "",
+   "name": "Tulsa FUT",
+   "event": "Tulsa",
+   "country": "USA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Randy",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "26a",
+   "date": "2016-06-27",
+   "opened": "",
+   "name": "Wimbledon",
+   "event": "Wimbledon",
+   "country": "GBR",
+   "surface": "G",
+   "draw": [
+    128,
+    128,
+    64,
+    64
+   ],
+   "manager": "dinkulpus",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "26c",
+   "date": "2016-06-27",
+   "opened": "",
+   "name": "Marburg CH",
+   "event": "Marburg",
+   "country": "GER",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Diadochi",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "27a",
+   "date": "2016-07-04",
+   "opened": "",
+   "name": "Braunschweig CH*",
+   "event": "Braunschweig",
+   "country": "GER",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Kellemanske",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "27b",
+   "date": "2016-07-04",
+   "opened": "",
+   "name": "Todi CH",
+   "event": "Todi",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "BobbaBobb",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "27c",
+   "date": "2016-07-04",
+   "opened": "",
+   "name": "Winnetka CH",
+   "event": "Winnetka",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Randy",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "28a",
+   "date": "2016-07-11",
+   "opened": "",
+   "name": "Davis Cup II",
+   "event": "Davis Cup II",
+   "country": "",
+   "surface": "",
+   "draw": [],
+   "manager": "keqtqiadv",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "28b",
+   "date": "2016-07-11",
+   "opened": "",
+   "name": "Hamburg",
+   "event": "Hamburg",
+   "country": "GER",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "28c",
+   "date": "2016-07-11",
+   "opened": "",
+   "name": "Newport",
+   "event": "Newport",
+   "country": "USA",
+   "surface": "G",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Randy",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "28d",
+   "date": "2016-07-11",
+   "opened": "",
+   "name": "Bastad",
+   "event": "Bastad",
+   "country": "SWE",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "keqtqiadv",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "28e",
+   "date": "2016-07-11",
+   "opened": "",
+   "name": "Winnipeg CH",
+   "event": "Winnipeg",
+   "country": "CAN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Ibreak4coffee",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "29a",
+   "date": "2016-07-18",
+   "opened": "",
+   "name": "Washington D.C.",
+   "event": "Washington D.C.",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "Randy",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "29b",
+   "date": "2016-07-18",
+   "opened": "",
+   "name": "Umag",
+   "event": "Umag",
+   "country": "CRO",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Normand",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "29c",
+   "date": "2016-07-18",
+   "opened": "",
+   "name": "Kitzb\u00fchel",
+   "event": "Kitzb\u00fchel",
+   "country": "AUT",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Walsall",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "29d",
+   "date": "2016-07-18",
+   "opened": "",
+   "name": "Gstaad",
+   "event": "Gstaad",
+   "country": "SUI",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "30a",
+   "date": "2016-07-25",
+   "opened": "",
+   "name": "Toronto",
+   "event": "Toronto",
+   "country": "CAN",
+   "surface": "H",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "Ibreak4coffee",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "30b",
+   "date": "2016-07-25",
+   "opened": "",
+   "name": "Biella CH*",
+   "event": "Biella",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "supertom",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "30c",
+   "date": "2016-07-25",
+   "opened": "",
+   "name": "Segovia CH",
+   "event": "Segovia",
+   "country": "ESP",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Colt th Magnific",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "31a",
+   "date": "2016-08-01",
+   "opened": "",
+   "name": "Atlanta",
+   "event": "Atlanta",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Litotes",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "31b",
+   "date": "2016-08-01",
+   "opened": "",
+   "name": "Granby CH*",
+   "event": "Granby",
+   "country": "CAN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Ibreak4coffee",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "31c",
+   "date": "2016-08-01",
+   "opened": "",
+   "name": "Chengdu CH*",
+   "event": "Chengdu",
+   "country": "CHN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "32a",
+   "date": "2016-08-06",
+   "opened": "",
+   "name": "Olympic Games",
+   "event": "Olympic Games",
+   "country": "BRA",
+   "surface": "H",
+   "draw": [
+    64,
+    32
+   ],
+   "manager": "Ibreak4coffee",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "32b",
+   "date": "2016-08-08",
+   "opened": "",
+   "name": "Los Cabos",
+   "event": "Los Cabos",
+   "country": "MEX",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Randy",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "32c",
+   "date": "2016-08-08",
+   "opened": "",
+   "name": "Aptos CH*",
+   "event": "Aptos",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Ibreak4coffee",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "32d",
+   "date": "2016-08-08",
+   "opened": "",
+   "name": "Trnava CH",
+   "event": "Trnava",
+   "country": "SVK",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Mahqz",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "33a",
+   "date": "2016-08-15",
+   "opened": "",
+   "name": "Cincinnati",
+   "event": "Cincinnati",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "Randy",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "33b",
+   "date": "2016-08-15",
+   "opened": "",
+   "name": "Meerbusch CH",
+   "event": "Meerbusch",
+   "country": "GER",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "BobbaBobb",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "33c",
+   "date": "2016-08-15",
+   "opened": "",
+   "name": "Cordenons CH",
+   "event": "Cordenons",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Walsall",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "34a",
+   "date": "2016-08-22",
+   "opened": "",
+   "name": "Winston-Salem",
+   "event": "Winston-Salem",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "BMT360",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "34b",
+   "date": "2016-08-22",
+   "opened": "",
+   "name": "Manerbio CH",
+   "event": "Manerbio",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Normand",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "35a",
+   "date": "2016-08-29",
+   "opened": "",
+   "name": "U.S. Open",
+   "event": "U.S. Open",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    128,
+    128,
+    64,
+    64
+   ],
+   "manager": "BobbaBobb",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "35c",
+   "date": "2016-08-29",
+   "opened": "",
+   "name": "Como CH",
+   "event": "Como",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "36a",
+   "date": "2016-09-05",
+   "opened": "",
+   "name": "Genoa CH*",
+   "event": "Genoa",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "36b",
+   "date": "2016-09-05",
+   "opened": "",
+   "name": "Saint-Remy CH",
+   "event": "Saint-Remy",
+   "country": "FRA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Kellemanske",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "36c",
+   "date": "2016-09-05",
+   "opened": "",
+   "name": "Barranquilla CH",
+   "event": "Barranquilla",
+   "country": "COL",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Randy",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "37a",
+   "date": "2016-09-12",
+   "opened": "",
+   "name": "Davis Cup III",
+   "event": "Davis Cup III",
+   "country": "",
+   "surface": "",
+   "draw": [],
+   "manager": "keqtqiadv",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "37b",
+   "date": "2016-09-12",
+   "opened": "",
+   "name": "Szczecin CH*",
+   "event": "Szczecin",
+   "country": "POL",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "BobbaBobb",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "37c",
+   "date": "2016-09-12",
+   "opened": "",
+   "name": "Istanbul CH",
+   "event": "Istanbul",
+   "country": "TUR",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Randy",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "37d",
+   "date": "2016-09-12",
+   "opened": "",
+   "name": "Banja Luka CH",
+   "event": "Banja Luka",
+   "country": "BIH",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "38a",
+   "date": "2016-09-19",
+   "opened": "",
+   "name": "Metz",
+   "event": "Metz",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Normand",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "38b",
+   "date": "2016-09-19",
+   "opened": "",
+   "name": "St. Petersburg",
+   "event": "St. Petersburg",
+   "country": "RUS",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "38c",
+   "date": "2016-09-19",
+   "opened": "",
+   "name": "Kaohsiung CH*",
+   "event": "Kaohsiung",
+   "country": "TPE",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Walsall",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "39a",
+   "date": "2016-09-26",
+   "opened": "",
+   "name": "Shenzhen",
+   "event": "Shenzhen",
+   "country": "CHN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Randy",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "39b",
+   "date": "2016-09-26",
+   "opened": "",
+   "name": "Chengdu",
+   "event": "Chengdu",
+   "country": "CHN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Walsall",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "39c",
+   "date": "2016-09-26",
+   "opened": "",
+   "name": "Orleans CH*",
+   "event": "Orleans",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "40a",
+   "date": "2016-10-03",
+   "opened": "",
+   "name": "Beijing",
+   "event": "Beijing",
+   "country": "CHN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Randy",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "40b",
+   "date": "2016-10-03",
+   "opened": "",
+   "name": "Tokyo",
+   "event": "Tokyo",
+   "country": "JPN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "BMT360",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "40c",
+   "date": "2016-10-03",
+   "opened": "",
+   "name": "Mons CH*",
+   "event": "Mons",
+   "country": "BEL",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Kellemanske",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "41a",
+   "date": "2016-10-10",
+   "opened": "",
+   "name": "Shanghai",
+   "event": "Shanghai",
+   "country": "CHN",
+   "surface": "H",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "dinkulpus",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "41b",
+   "date": "2016-10-10",
+   "opened": "",
+   "name": "Monterrey CH*",
+   "event": "Monterrey",
+   "country": "MEX",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "BMT360",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "41c",
+   "date": "2016-10-10",
+   "opened": "",
+   "name": "Ho Chi Minh CH",
+   "event": "Ho Chi Minh",
+   "country": "VNM",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "42a",
+   "date": "2016-10-17",
+   "opened": "",
+   "name": "Stockholm",
+   "event": "Stockholm",
+   "country": "SWE",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Normand",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "42b",
+   "date": "2016-10-17",
+   "opened": "",
+   "name": "Antwerp",
+   "event": "Antwerp",
+   "country": "BEL",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Litotes",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "42c",
+   "date": "2016-10-17",
+   "opened": "",
+   "name": "Moscow",
+   "event": "Moscow",
+   "country": "RUS",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "lukela85",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "42d",
+   "date": "2016-10-17",
+   "opened": "",
+   "name": "Brest CH*",
+   "event": "Brest",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Walsall",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "43a",
+   "date": "2016-10-24",
+   "opened": "",
+   "name": "Basel",
+   "event": "Basel",
+   "country": "SUI",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "43b",
+   "date": "2016-10-24",
+   "opened": "",
+   "name": "Vienna",
+   "event": "Vienna",
+   "country": "AUT",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Randy",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "43c",
+   "date": "2016-10-24",
+   "opened": "",
+   "name": "Budapest CH",
+   "event": "Budapest",
+   "country": "HUN",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "43d",
+   "date": "2016-10-24",
+   "opened": "",
+   "name": "Lima CH",
+   "event": "Lima",
+   "country": "PER",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Ibreak4coffee",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "44a",
+   "date": "2016-10-31",
+   "opened": "",
+   "name": "Paris",
+   "event": "Paris",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "44b",
+   "date": "2016-10-31",
+   "opened": "",
+   "name": "Eckental CH",
+   "event": "Eckental",
+   "country": "GER",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Normand",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "44c",
+   "date": "2016-10-31",
+   "opened": "",
+   "name": "Canberra CH",
+   "event": "Canberra",
+   "country": "AUS",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "45a",
+   "date": "2016-11-07",
+   "opened": "",
+   "name": "Bratislava CH*",
+   "event": "Bratislava",
+   "country": "SVK",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Normand",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "45b",
+   "date": "2016-11-07",
+   "opened": "",
+   "name": "Mouilleron Le Captif CH*",
+   "event": "Mouilleron Le Captif",
+   "country": "FRA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Kellemanske",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "45c",
+   "date": "2016-11-07",
+   "opened": "",
+   "name": "Kobe CH",
+   "event": "Kobe",
+   "country": "JPN",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Walsall",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "46a",
+   "date": "2016-11-13",
+   "opened": "",
+   "name": "ATP Finals",
+   "event": "ATP Finals",
+   "country": "GBR",
+   "surface": "IH",
+   "draw": [],
+   "manager": "Randy",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "46b",
+   "date": "2016-11-14",
+   "opened": "",
+   "name": "Brescia CH",
+   "event": "Brescia",
+   "country": "ITA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "46c",
+   "date": "2016-11-14",
+   "opened": "",
+   "name": "Champaign CH",
+   "event": "Champaign",
+   "country": "USA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Randy",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "46d",
+   "date": "2016-11-14",
+   "opened": "",
+   "name": "Toyota CH",
+   "event": "Toyota",
+   "country": "JPN",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Walsall",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "47a",
+   "date": "2016-11-25",
+   "opened": "",
+   "name": "Davis Cup Final",
+   "event": "Davis Cup Final",
+   "country": "",
+   "surface": "",
+   "draw": [],
+   "manager": "keqtqiadv",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "47b",
+   "date": "2016-11-21",
+   "opened": "",
+   "name": "Challenger Tour Finals",
+   "event": "Challenger Tour Finals",
+   "country": "KAZ",
+   "surface": "IH",
+   "draw": [],
+   "manager": "dinkulpus",
+   "challenger": false
+  },
+  {
+   "season": "2016",
+   "code": "47c",
+   "date": "2016-11-21",
+   "opened": "",
+   "name": "Andria CH",
+   "event": "Andria",
+   "country": "ITA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Normand",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "47d",
+   "date": "2016-11-21",
+   "opened": "",
+   "name": "Columbus CH",
+   "event": "Columbus",
+   "country": "USA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Walsall",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "48a",
+   "date": "2016-11-28",
+   "opened": "",
+   "name": "Jakarta FUT",
+   "event": "Jakarta",
+   "country": "IDN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Walsall",
+   "challenger": true
+  },
+  {
+   "season": "2016",
+   "code": "48b",
+   "date": "2016-11-28",
+   "opened": "",
+   "name": "Waco FUT",
+   "event": "Waco",
+   "country": "USA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Randy",
+   "challenger": true
   }
  ],
  "aliases": [
@@ -20050,10 +23171,6 @@
    "to": "murata-br"
   },
   {
-   "from": "hidalgo (rus) (",
-   "to": "hidalgo"
-  },
-  {
    "from": "mr.schumaher",
    "to": "mr.schumacher"
   },
@@ -20068,14 +23185,6 @@
   {
    "from": "fernanocordeir",
    "to": "fernando cordeir"
-  },
-  {
-   "from": "victor haas (bra) (",
-   "to": "victorhaas"
-  },
-  {
-   "from": "victor haas (bra",
-   "to": "victorhaas"
   },
   {
    "from": "sapfosakkelaridifan",
@@ -20102,14 +23211,6 @@
    "to": "lucassilva"
   },
   {
-   "from": "p varna (chi",
-   "to": "p varna"
-  },
-  {
-   "from": "vitor bm (lit",
-   "to": "vitor bm"
-  },
-  {
    "from": "fernado cordeir",
    "to": "fernando cordeir"
   },
@@ -20122,20 +23223,8 @@
    "to": "sapfosakellaridifan"
   },
   {
-   "from": "guga rodrigues (bra) (",
-   "to": "guga rodrigues"
-  },
-  {
-   "from": "shaddad (rus",
-   "to": "shaddad"
-  },
-  {
    "from": "michael",
    "to": "michael!"
-  },
-  {
-   "from": "lisandro (bra) (",
-   "to": "lisandro"
   },
   {
    "from": "michale!",
@@ -20250,40 +23339,8 @@
    "to": "victorhaas"
   },
   {
-   "from": "pdk (ned",
-   "to": "pdk"
-  },
-  {
-   "from": "taz warrior (gbr) (",
-   "to": "taz warrior"
-  },
-  {
-   "from": "himalaya (ned",
-   "to": "himalaya"
-  },
-  {
-   "from": "mr. schumacher (bra) (",
-   "to": "mr.schumacher"
-  },
-  {
-   "from": "herzeleid (ger) (",
-   "to": "herzeleid"
-  },
-  {
-   "from": "taas (por)",
-   "to": "taas"
-  },
-  {
-   "from": "fogmeister (bra) (",
-   "to": "fogmeister"
-  },
-  {
    "from": "phill=)",
    "to": "phiil"
-  },
-  {
-   "from": "taas (por) (",
-   "to": "taas"
   },
   {
    "from": "fogmesiter",
@@ -20298,28 +23355,164 @@
    "to": "han fei-tzu"
   },
   {
-   "from": "guga rodrigues (bra",
-   "to": "guga rodrigues"
-  },
-  {
-   "from": "kirilenko-fan (ger",
-   "to": "kirilenko-fan"
-  },
-  {
-   "from": "rodrigol 87 (rou",
-   "to": "rodrigol 87"
-  },
-  {
-   "from": "mr. schumaher (bra) (",
-   "to": "mr.schumacher"
-  },
-  {
    "from": "colt the magnific",
    "to": "colt th magnific"
   },
   {
    "from": "mr. schumacher",
    "to": "mr.schumacher"
+  },
+  {
+   "from": "bastilliano",
+   "to": "bastillano"
+  },
+  {
+   "from": "enlightendth",
+   "to": "enlightenedth"
+  },
+  {
+   "from": "crvena zvezda",
+   "to": "\u043d\u0435\u043f\u043e\u0437\u043d\u0430\u0442\u0438"
+  },
+  {
+   "from": "le vautour!",
+   "to": "le vautour"
+  },
+  {
+   "from": "*jean*",
+   "to": "walsall"
+  },
+  {
+   "from": "auntyjuju",
+   "to": "isawchalk"
+  },
+  {
+   "from": "gio123",
+   "to": "slaypov"
+  },
+  {
+   "from": "cristy rvd",
+   "to": "cristyrvd"
+  },
+  {
+   "from": "sham kay",
+   "to": "sham kay adams"
+  },
+  {
+   "from": "j99",
+   "to": "transcender"
+  },
+  {
+   "from": "elirj70",
+   "to": "hndiamond"
+  },
+  {
+   "from": "rewan",
+   "to": "darth revan"
+  },
+  {
+   "from": "randy72391",
+   "to": "randy"
+  },
+  {
+   "from": "dr.pils",
+   "to": "dr. pils"
+  },
+  {
+   "from": "srbteen",
+   "to": "proudserb"
+  },
+  {
+   "from": "gavnich77",
+   "to": "taz warrior"
+  },
+  {
+   "from": "limitless",
+   "to": "infinite"
+  },
+  {
+   "from": "machinegun",
+   "to": "ace pounder"
+  },
+  {
+   "from": "machado & gil",
+   "to": "sauletekis"
+  },
+  {
+   "from": "supertom93",
+   "to": "supertom"
+  },
+  {
+   "from": "delicfan",
+   "to": "the rocket"
+  },
+  {
+   "from": "prodigy.",
+   "to": "howmanytimes"
+  },
+  {
+   "from": "the bulldog",
+   "to": "the prince"
+  },
+  {
+   "from": "luis santos",
+   "to": "lu\u00eds santos"
+  },
+  {
+   "from": "eurofighter",
+   "to": "michael!"
+  },
+  {
+   "from": "marto",
+   "to": "dinkulpus"
+  },
+  {
+   "from": "flying pancake",
+   "to": "ajde!"
+  },
+  {
+   "from": "finkalamano",
+   "to": "redkop"
+  },
+  {
+   "from": "shambritfan",
+   "to": "sham kay adams"
+  },
+  {
+   "from": "\u0430\u043d\u0434\u0440\u0435\u0430\u0441",
+   "to": "andreas"
+  },
+  {
+   "from": "j-m-del-potro",
+   "to": "jm-del-potro"
+  },
+  {
+   "from": "tennisbabe999",
+   "to": "anin"
+  },
+  {
+   "from": "tenis.chile",
+   "to": "chilenaitor"
+  },
+  {
+   "from": "herbal",
+   "to": "chris."
+  },
+  {
+   "from": "cheekychick",
+   "to": "cheeky chick"
+  },
+  {
+   "from": "capriatirules",
+   "to": "capriati rules"
+  },
+  {
+   "from": "chrono",
+   "to": "tealeaves"
+  },
+  {
+   "from": "rafarta&grigorior\u2665",
+   "to": "naudio spanlatine"
   }
  ],
  "countryAccepted": [
@@ -20348,7 +23541,8 @@
    "key": "transcender",
    "codes": [
     "CHI",
-    "SVK"
+    "SVK",
+    "CAN"
    ]
   },
   {
@@ -20399,7 +23593,8 @@
    "key": "chenhw",
    "codes": [
     "CHN",
-    "LEB"
+    "LEB",
+    "FIN"
    ]
   },
   {
@@ -20422,6 +23617,119 @@
     "TUR",
     "POR"
    ]
+  },
+  {
+   "key": "^bibi^",
+   "codes": [
+    "KOR",
+    "BEL"
+   ]
+  },
+  {
+   "key": "digor",
+   "codes": [
+    "RUS",
+    "UKR"
+   ]
+  },
+  {
+   "key": "hooraybeer",
+   "codes": [
+    "SRI",
+    "QAT"
+   ]
+  },
+  {
+   "key": "diadochi",
+   "codes": [
+    "BEL",
+    "GBR"
+   ]
+  },
+  {
+   "key": "redkop",
+   "codes": [
+    "GBR",
+    "SVK",
+    "BRA"
+   ]
+  },
+  {
+   "key": "tealeaves",
+   "codes": [
+    "SUI",
+    "HKG"
+   ]
+  },
+  {
+   "key": "dannyrafter",
+   "codes": [
+    "CHI",
+    "BRA"
+   ]
+  },
+  {
+   "key": "mota2803",
+   "codes": [
+    "PNG",
+    "BRA"
+   ]
+  },
+  {
+   "key": "dangermouse",
+   "codes": [
+    "SVK",
+    "GBR"
+   ]
+  },
+  {
+   "key": "wolfy",
+   "codes": [
+    "CHN",
+    "GBR"
+   ]
+  },
+  {
+   "key": "netin!",
+   "codes": [
+    "SUI",
+    "BRA"
+   ]
+  },
+  {
+   "key": "wolmas",
+   "codes": [
+    "SVK",
+    "USA"
+   ]
+  },
+  {
+   "key": "belludal",
+   "codes": [
+    "GRE",
+    "BRA"
+   ]
+  },
+  {
+   "key": "harmless",
+   "codes": [
+    "CUB",
+    "CRO"
+   ]
+  },
+  {
+   "key": "august",
+   "codes": [
+    "FIN",
+    "BRA"
+   ]
+  },
+  {
+   "key": "samanosuke",
+   "codes": [
+    "CZE",
+    "CRO"
+   ]
   }
  ],
  "datesAccepted": [
@@ -20432,7 +23740,40 @@
   "Doubles|2021|November 22nd"
  ],
  "renameRejected": [
-  "Doubles|guitarra|alex baumann"
+  "Doubles|guitarra|alex baumann",
+  "Singles|litotes| aa ",
+  "Singles|cah | aa ",
+  "Singles|gaston ignacio|vocelov",
+  "Singles|hugocnamaral|jaker",
+  "Doubles|lazar.|anny",
+  "Singles|equalizer|alejan milos",
+  "Singles|felipe abe|alejan milos",
+  "Singles|felipe abe|mishka logvi",
+  "Singles|aussietennis|mishka logvi",
+  "Singles|equalizer|mishka logvi",
+  "Singles|jmjhb|awesomnity",
+  "Singles|dexter|andrepeixe",
+  "Doubles|fzanor|chris.",
+  "Singles|ekin|goldenbrown",
+  "Singles|lollorafael|wazza",
+  "Singles|kwiklimey|bandtree",
+  "Singles|nickels|martinator",
+  "Singles|vetor0123|med.nico",
+  "Singles|vetor0123|ali",
+  "Singles|kery|fznaor",
+  "Doubles|emrys|finch",
+  "Singles|maldini|rus59",
+  "Singles|maldini|luinir",
+  "Singles|matt121|hawk aussie",
+  "Singles|papillon.|lb5425",
+  "Singles|gabrielchile|torochico",
+  "Doubles|vikislietuva| a ",
+  "Singles|familiagil|aussie fan",
+  "Singles|hesse|trmooney888",
+  "Singles|maru angi|tennisninjalove",
+  "Doubles|karo em9|svk",
+  "Singles|jupiterlover|cswab22",
+  "Singles|vini federer|mreleganza"
  ],
  "unknownAccepted": [
   "toomuchraquet"
@@ -20440,7 +23781,6 @@
  "pinned": [
   {
    "key": "pierre.",
-   "name": null,
    "country": "FRA"
   },
   {
@@ -20450,13 +23790,11 @@
   },
   {
    "key": "applegate",
-   "name": "applegate",
-   "country": null
+   "name": "applegate"
   },
   {
    "key": "p varna",
-   "name": "p_varna",
-   "country": null
+   "name": "p_varna"
   },
   {
    "key": "starluk",
@@ -20465,13 +23803,11 @@
   },
   {
    "key": "slice and dice",
-   "name": null,
    "country": "USA"
   },
   {
    "key": "alejan milos",
-   "name": "alejan_Milos",
-   "country": null
+   "name": "alejan_Milos"
   },
   {
    "key": "egiorazz",
@@ -20490,13 +23826,12 @@
   },
   {
    "key": "^bibi^",
-   "name": "^bibi^",
-   "country": null
+   "name": "^bibi^"
   },
   {
    "key": "sapfosakellaridifan",
    "name": "SapfoSakkelaridiFan",
-   "country": null
+   "country": "POL"
   },
   {
    "key": "scher",
@@ -20515,18 +23850,15 @@
   },
   {
    "key": "vjatceslav",
-   "name": "vjatceslav",
-   "country": null
+   "name": "vjatceslav"
   },
   {
    "key": "chowdahead25",
-   "name": "Chowdahead25",
-   "country": null
+   "name": "Chowdahead25"
   },
   {
    "key": "lucian iasi",
-   "name": "lucian_iasi",
-   "country": null
+   "name": "lucian_iasi"
   },
   {
    "key": "alwaysfan",
@@ -20540,18 +23872,15 @@
   },
   {
    "key": "danieln1",
-   "name": "danieln1",
-   "country": null
+   "name": "danieln1"
   },
   {
    "key": "ozone",
-   "name": "Ozone",
-   "country": null
+   "name": "Ozone"
   },
   {
    "key": "supertom",
-   "name": "supertom",
-   "country": null
+   "name": "supertom"
   },
   {
    "key": "bry17may",
@@ -20565,23 +23894,19 @@
   },
   {
    "key": "a1canada",
-   "name": "a1canada",
-   "country": null
+   "name": "a1canada"
   },
   {
    "key": "thomiek",
-   "name": "ThomieK",
-   "country": null
+   "name": "ThomieK"
   },
   {
    "key": "delic",
-   "name": null,
    "country": "BIH"
   },
   {
    "key": "jervisjames",
-   "name": "JervisJames",
-   "country": null
+   "name": "JervisJames"
   },
   {
    "key": "crux squall",
@@ -20595,13 +23920,11 @@
   },
   {
    "key": "rneves",
-   "name": "rneves",
-   "country": null
+   "name": "rneves"
   },
   {
    "key": "crnojaje",
-   "name": "CrnoJaje",
-   "country": null
+   "name": "CrnoJaje"
   },
   {
    "key": "latvian",
@@ -20610,28 +23933,23 @@
   },
   {
    "key": "\u043d\u0435\u043f\u043e\u0437\u043d\u0430\u0442\u0438",
-   "name": "\u041d\u0435\u043f\u043e\u0437\u043d\u0430\u0442\u0438",
-   "country": null
+   "name": "\u041d\u0435\u043f\u043e\u0437\u043d\u0430\u0442\u0438"
   },
   {
    "key": "michael!",
-   "name": "Michael!",
-   "country": null
+   "name": "Michael!"
   },
   {
    "key": "outback croc",
-   "name": "Outback Croc",
-   "country": null
+   "name": "Outback Croc"
   },
   {
    "key": "aurafarmer",
-   "name": "AuraFarmer",
-   "country": null
+   "name": "AuraFarmer"
   },
   {
    "key": "fabrice bahrami",
-   "name": "Fabrice Bahrami",
-   "country": null
+   "name": "Fabrice Bahrami"
   },
   {
    "key": "rorschach",
@@ -20640,32 +23958,26 @@
   },
   {
    "key": "goulpuffe",
-   "name": null,
    "country": "BEL"
   },
   {
    "key": "jessacol21",
-   "name": null,
    "country": "SUI"
   },
   {
    "key": "mataro blue",
-   "name": null,
    "country": "CHI"
   },
   {
    "key": "fargif",
-   "name": null,
    "country": "POR"
   },
   {
    "key": "broseghini",
-   "name": null,
    "country": "BRA"
   },
   {
    "key": "mr dev87",
-   "name": null,
    "country": "USA"
   },
   {
@@ -20675,63 +23987,51 @@
   },
   {
    "key": "djagerman",
-   "name": null,
    "country": "NED"
   },
   {
    "key": "jarl 02",
-   "name": null,
    "country": "VEN"
   },
   {
    "key": "slazlo",
-   "name": "Slazlo",
-   "country": null
+   "name": "Slazlo"
   },
   {
    "key": "chenhw",
-   "name": "Chenhw",
-   "country": null
+   "name": "Chenhw"
   },
   {
    "key": "sergiodmm",
-   "name": "Sergiodmm",
-   "country": null
+   "name": "Sergiodmm"
   },
   {
    "key": "gux",
-   "name": "Gux",
-   "country": null
+   "name": "Gux"
   },
   {
    "key": "jpaulo1610",
-   "name": "jpaulo1610",
-   "country": null
+   "name": "jpaulo1610"
   },
   {
    "key": "kondrashov",
-   "name": "kondrashov",
-   "country": null
+   "name": "kondrashov"
   },
   {
    "key": "nachotuerto",
-   "name": "nachotuerto",
-   "country": null
+   "name": "nachotuerto"
   },
   {
    "key": "manu86",
-   "name": "manu86",
-   "country": null
+   "name": "manu86"
   },
   {
    "key": "wtatourfan",
-   "name": "wtatourfan",
-   "country": null
+   "name": "wtatourfan"
   },
   {
    "key": "han fei-tzu",
-   "name": "Han Fei-Tzu",
-   "country": null
+   "name": "Han Fei-Tzu"
   },
   {
    "key": "buji",
@@ -20740,53 +24040,43 @@
   },
   {
    "key": "supertec",
-   "name": "supertec",
-   "country": null
+   "name": "supertec"
   },
   {
    "key": "randy",
-   "name": "Randy",
-   "country": null
+   "name": "Randy"
   },
   {
    "key": "ibreak4coffee",
-   "name": "ibreak4coffee",
-   "country": null
+   "name": "ibreak4coffee"
   },
   {
    "key": "colt th magnific",
-   "name": "Colt th Magnific",
-   "country": null
+   "name": "Colt th Magnific"
   },
   {
    "key": "dinkulpus",
-   "name": "dinkulpus",
-   "country": null
+   "name": "dinkulpus"
   },
   {
    "key": "ostm89",
-   "name": "ostm89",
-   "country": null
+   "name": "ostm89"
   },
   {
    "key": "digor",
-   "name": "digor",
-   "country": null
+   "name": "digor"
   },
   {
    "key": "flynn25",
-   "name": "flynn25",
-   "country": null
+   "name": "flynn25"
   },
   {
    "key": "catgamer",
-   "name": "catgamer",
-   "country": null
+   "name": "catgamer"
   },
   {
    "key": "tedi",
-   "name": "tedi",
-   "country": null
+   "name": "tedi"
   },
   {
    "key": "lovro7777777",
@@ -20800,33 +24090,27 @@
   },
   {
    "key": "cazorla",
-   "name": "Cazorla",
-   "country": null
+   "name": "Cazorla"
   },
   {
    "key": "sapfosakellaridfan",
-   "name": "SapfoSakellaridFan",
-   "country": null
+   "name": "SapfoSakellaridFan"
   },
   {
    "key": "tommyboy0515",
-   "name": "tommyboy0515",
-   "country": null
+   "name": "tommyboy0515"
   },
   {
    "key": "rik.",
-   "name": "Rik.",
-   "country": null
+   "name": "Rik."
   },
   {
    "key": "anny",
-   "name": "anny",
-   "country": null
+   "name": "anny"
   },
   {
    "key": "vitor bm",
-   "name": "Vitor BM",
-   "country": null
+   "name": "Vitor BM"
   },
   {
    "key": "filiposvk",
@@ -20840,28 +24124,23 @@
   },
   {
    "key": "shahrastani1986",
-   "name": "Shahrastani1986",
-   "country": null
+   "name": "Shahrastani1986"
   },
   {
    "key": "rugsal25",
-   "name": "Rugsal25",
-   "country": null
+   "name": "Rugsal25"
   },
   {
    "key": "szymon",
-   "name": "Szymon",
-   "country": null
+   "name": "Szymon"
   },
   {
    "key": "dupuis2006",
-   "name": "Dupuis2006",
-   "country": null
+   "name": "Dupuis2006"
   },
   {
    "key": "chilenaitor",
-   "name": "Chilenaitor",
-   "country": null
+   "name": "Chilenaitor"
   },
   {
    "key": "victorhaas",
@@ -20890,8 +24169,7 @@
   },
   {
    "key": "hidalgo",
-   "name": "Hidalgo",
-   "country": null
+   "name": "Hidalgo"
   },
   {
    "key": "fernando cordeir",
@@ -20900,42 +24178,34 @@
   },
   {
    "key": "sander.",
-   "name": null,
    "country": "NED"
   },
   {
    "key": "champion88276",
-   "name": null,
    "country": "MEX"
   },
   {
    "key": "matty1",
-   "name": null,
    "country": "CZE"
   },
   {
    "key": "sergiopoker6",
-   "name": "Sergiopoker6",
-   "country": null
+   "name": "Sergiopoker6"
   },
   {
    "key": "guga rodrigues",
-   "name": "Guga_Rodrigues",
-   "country": null
+   "name": "Guga_Rodrigues"
   },
   {
    "key": "fabiok29",
-   "name": "FabioK29",
-   "country": null
+   "name": "FabioK29"
   },
   {
    "key": "ripwtaworld",
-   "name": "RIPwtaworld",
-   "country": null
+   "name": "RIPwtaworld"
   },
   {
    "key": "shankitova",
-   "name": null,
    "country": "GBR"
   },
   {
@@ -20950,18 +24220,15 @@
   },
   {
    "key": "ndee",
-   "name": "NDee",
-   "country": null
+   "name": "NDee"
   },
   {
    "key": "tori1234",
-   "name": "Tori1234",
-   "country": null
+   "name": "Tori1234"
   },
   {
    "key": "kingroger",
-   "name": "Kingroger",
-   "country": null
+   "name": "Kingroger"
   },
   {
    "key": "kirilenko-fan",
@@ -20975,8 +24242,7 @@
   },
   {
    "key": "shaddad",
-   "name": "Shaddad",
-   "country": null
+   "name": "Shaddad"
   },
   {
    "key": "lisandro",
@@ -20985,27 +24251,23 @@
   },
   {
    "key": "zack-busner",
-   "name": "Zack-Busner",
-   "country": null
+   "name": "Zack-Busner"
   },
   {
    "key": "hndiamond",
-   "name": null,
+   "name": "HNDiamond",
    "country": "RSA"
   },
   {
    "key": "156mphserve",
-   "name": null,
    "country": "CAN"
   },
   {
    "key": "tennis-engineer",
-   "name": null,
    "country": "IRN"
   },
   {
    "key": "poltergeist",
-   "name": null,
    "country": "SRB"
   },
   {
@@ -21015,38 +24277,31 @@
   },
   {
    "key": "andrepeixe",
-   "name": null,
    "country": "POR"
   },
   {
    "key": "rhinog",
-   "name": null,
    "country": "GBR"
   },
   {
    "key": "normand",
-   "name": "Normand",
-   "country": null
+   "name": "Normand"
   },
   {
    "key": "southend aussies",
-   "name": "Southend Aussies",
-   "country": null
+   "name": "Southend Aussies"
   },
   {
    "key": "goblakego2",
-   "name": "GoBlakeGo2",
-   "country": null
+   "name": "GoBlakeGo2"
   },
   {
    "key": "bublike",
-   "name": "Bublike",
-   "country": null
+   "name": "Bublike"
   },
   {
    "key": "snowwy",
-   "name": "Snowwy",
-   "country": null
+   "name": "Snowwy"
   },
   {
    "key": "pdk",
@@ -21055,18 +24310,15 @@
   },
   {
    "key": "taz warrior",
-   "name": "Taz Warrior",
-   "country": null
+   "name": "Taz Warrior"
   },
   {
    "key": "himalaya",
-   "name": "Himalaya",
-   "country": null
+   "name": "Himalaya"
   },
   {
    "key": "herzeleid",
-   "name": "Herzeleid",
-   "country": null
+   "name": "Herzeleid"
   },
   {
    "key": "taas",
@@ -21075,8 +24327,694 @@
   },
   {
    "key": "rnw",
-   "name": null,
    "country": "SUI"
+  },
+  {
+   "key": "bastillano",
+   "name": "Bastillano"
+  },
+  {
+   "key": "enlightenedth",
+   "name": "Enlightenedth"
+  },
+  {
+   "key": "vonano",
+   "country": "EST"
+  },
+  {
+   "key": "bhaseagull",
+   "country": "GBR"
+  },
+  {
+   "key": "la vie en rose",
+   "name": "La Vie en Rose",
+   "country": "KIR"
+  },
+  {
+   "key": "rubikkon",
+   "name": "Rubikkon"
+  },
+  {
+   "key": "crip",
+   "name": "Crip"
+  },
+  {
+   "key": "danya",
+   "name": "DanYA"
+  },
+  {
+   "key": "thekshe",
+   "name": "theKSHe"
+  },
+  {
+   "key": "horselicker98",
+   "country": "AUS"
+  },
+  {
+   "key": "ligasanjoanense",
+   "country": "BRA"
+  },
+  {
+   "key": "hugocnamaral",
+   "name": "hugocnamaral"
+  },
+  {
+   "key": "le vautour",
+   "name": "Le Vautour"
+  },
+  {
+   "key": "isawchalk",
+   "name": "ISawChalk"
+  },
+  {
+   "key": "rusca djokerfan",
+   "country": "CRO"
+  },
+  {
+   "key": "ali",
+   "name": "ali"
+  },
+  {
+   "key": "julio thome",
+   "name": "Julio_Thome"
+  },
+  {
+   "key": "ajde!",
+   "name": "Ajde!",
+   "country": "SRB"
+  },
+  {
+   "key": "slaypov",
+   "name": "Slaypov"
+  },
+  {
+   "key": "cristyrvd",
+   "name": "CristyRVD"
+  },
+  {
+   "key": "sham kay adams",
+   "name": "Sham Kay Adams"
+  },
+  {
+   "key": "transcender",
+   "name": "Transcender"
+  },
+  {
+   "key": "darth revan",
+   "name": "Darth Revan"
+  },
+  {
+   "key": "dr. pils",
+   "name": "Dr. Pils"
+  },
+  {
+   "key": "proudserb",
+   "name": "ProudSerb"
+  },
+  {
+   "key": "goffan",
+   "country": "BEL"
+  },
+  {
+   "key": "bulio lfc",
+   "country": "GRE"
+  },
+  {
+   "key": "stbanchile",
+   "name": "StbanChile"
+  },
+  {
+   "key": "silverwhite",
+   "name": "silverwhite"
+  },
+  {
+   "key": "infinite",
+   "name": "Infinite"
+  },
+  {
+   "key": "ace pounder",
+   "name": "Ace Pounder"
+  },
+  {
+   "key": "jahrastaman br",
+   "name": "jahrastaman_BR",
+   "country": "BRA"
+  },
+  {
+   "key": "tennisfan26",
+   "country": "NZL"
+  },
+  {
+   "key": "hdza",
+   "country": "CAN"
+  },
+  {
+   "key": "leric4nole",
+   "name": "Leric4nole"
+  },
+  {
+   "key": "australian dream2009",
+   "name": "Australian_dream2009"
+  },
+  {
+   "key": "half-a-cat",
+   "name": "half-a-cat"
+  },
+  {
+   "key": "radugamer356",
+   "name": "Radugamer356"
+  },
+  {
+   "key": "rus59",
+   "name": "rus59"
+  },
+  {
+   "key": "sauletekis",
+   "name": "Sauletekis"
+  },
+  {
+   "key": "the rocket",
+   "name": "The Rocket"
+  },
+  {
+   "key": "howmanytimes",
+   "name": "HowManyTimes"
+  },
+  {
+   "key": "the prince",
+   "name": "The Prince"
+  },
+  {
+   "key": "lu\u00eds santos",
+   "name": "Lu\u00eds Santos"
+  },
+  {
+   "key": "redkop",
+   "name": "Redkop"
+  },
+  {
+   "key": "daniel amr",
+   "country": "PER"
+  },
+  {
+   "key": "mcarvalho",
+   "name": "MCarvalho"
+  },
+  {
+   "key": "savesthedizzle",
+   "name": "Savesthedizzle"
+  },
+  {
+   "key": "diego36arg",
+   "name": "diego36arg"
+  },
+  {
+   "key": "balloon",
+   "name": "balloon"
+  },
+  {
+   "key": "rvugt",
+   "name": "rvugt"
+  },
+  {
+   "key": "slokid",
+   "name": "SloKid"
+  },
+  {
+   "key": "coolfish1103",
+   "name": "coolfish1103"
+  },
+  {
+   "key": "mateusz2904",
+   "name": "mateusz2904"
+  },
+  {
+   "key": "orangehat",
+   "name": "orangehat"
+  },
+  {
+   "key": "keqtqiadv",
+   "name": "keqtqiadv"
+  },
+  {
+   "key": "fernet",
+   "name": "FERNET"
+  },
+  {
+   "key": "tennismaster882001",
+   "name": "tennismaster882001"
+  },
+  {
+   "key": "abollo",
+   "name": "abollo"
+  },
+  {
+   "key": "extremaduratenis",
+   "name": "extremaduratenis"
+  },
+  {
+   "key": "kr1s71an",
+   "name": "kr1s71an"
+  },
+  {
+   "key": "acionescu",
+   "name": "acionescu"
+  },
+  {
+   "key": "hallso",
+   "name": "hallso"
+  },
+  {
+   "key": "rogeda",
+   "name": "rogeda"
+  },
+  {
+   "key": "petesampras 1",
+   "name": "petesampras_1"
+  },
+  {
+   "key": "applegirl",
+   "name": "appleGirl"
+  },
+  {
+   "key": "dannyrafter",
+   "name": "dannyrafter"
+  },
+  {
+   "key": "sfar",
+   "name": "sfar"
+  },
+  {
+   "key": "justafanyyc",
+   "name": "justafanYYC"
+  },
+  {
+   "key": "jackjones",
+   "name": "jackjones"
+  },
+  {
+   "key": "fsilva",
+   "name": "fsilva",
+   "country": "POR"
+  },
+  {
+   "key": "nickels",
+   "name": "nickelS"
+  },
+  {
+   "key": "volc0mizado",
+   "name": "volc0mizado"
+  },
+  {
+   "key": "esimp",
+   "name": "ESimp"
+  },
+  {
+   "key": "bavaria100",
+   "name": "bavaria100"
+  },
+  {
+   "key": "nicksimioni",
+   "name": "nicksimioni",
+   "country": "SWE"
+  },
+  {
+   "key": "andyroddlick",
+   "name": "andyroddlick"
+  },
+  {
+   "key": "igralec33",
+   "name": "igralec33"
+  },
+  {
+   "key": "traddles",
+   "name": "traddles"
+  },
+  {
+   "key": "brimoz",
+   "name": "brimoz"
+  },
+  {
+   "key": "jmjhb",
+   "name": "jmjhb"
+  },
+  {
+   "key": "lolada 4",
+   "name": "lolada_4"
+  },
+  {
+   "key": "geangr",
+   "name": "geangr"
+  },
+  {
+   "key": "maldini",
+   "name": "maldini"
+  },
+  {
+   "key": "lizzard11120",
+   "name": "lizzard11120"
+  },
+  {
+   "key": "doctorlopes",
+   "name": "doctorlopes"
+  },
+  {
+   "key": "reznik",
+   "name": "RezNik"
+  },
+  {
+   "key": "joe87",
+   "name": "joe87"
+  },
+  {
+   "key": "guibrugnara",
+   "name": "guibrugnara"
+  },
+  {
+   "key": "cswab22",
+   "name": "cswab22"
+  },
+  {
+   "key": "vexxx",
+   "name": "vexxx"
+  },
+  {
+   "key": "duducardoso",
+   "name": "duducardoso"
+  },
+  {
+   "key": "andrijagajic",
+   "name": "andrijagajic"
+  },
+  {
+   "key": "raft89",
+   "name": "raft89"
+  },
+  {
+   "key": "zeli15",
+   "name": "zeli15"
+  },
+  {
+   "key": "molosztash",
+   "name": "molosztash"
+  },
+  {
+   "key": "mariagsc1",
+   "name": "mariagsc1"
+  },
+  {
+   "key": "braziltbfan",
+   "name": "BrazilTBfan"
+  },
+  {
+   "key": "lee3132",
+   "name": "lee3132"
+  },
+  {
+   "key": "portinzin",
+   "name": "portinzin"
+  },
+  {
+   "key": "mathmul",
+   "name": "MathMul"
+  },
+  {
+   "key": "germah",
+   "name": "germah"
+  },
+  {
+   "key": "cah ",
+   "name": "cah_"
+  },
+  {
+   "key": "tal20",
+   "name": "tal20"
+  },
+  {
+   "key": "procarvalho",
+   "name": "procarvalho",
+   "country": "BRA"
+  },
+  {
+   "key": "erickmartins",
+   "name": "erickmartins"
+  },
+  {
+   "key": "bandtree",
+   "name": "bandtree"
+  },
+  {
+   "key": "jazar",
+   "name": "jazar"
+  },
+  {
+   "key": "guyha4",
+   "name": "guyha4"
+  },
+  {
+   "key": "rajknier",
+   "name": "rajknier"
+  },
+  {
+   "key": "stillreal",
+   "name": "stillreal"
+  },
+  {
+   "key": "thales de mileto",
+   "name": "Thales De Mileto"
+  },
+  {
+   "key": "karo em9",
+   "name": "karo_em9"
+  },
+  {
+   "key": "spain07",
+   "name": "spain07"
+  },
+  {
+   "key": "cserkinho",
+   "name": "cserkinho"
+  },
+  {
+   "key": "jfed90",
+   "name": "jfed90"
+  },
+  {
+   "key": "angela",
+   "name": "angela"
+  },
+  {
+   "key": "antofalila",
+   "name": "antofalila"
+  },
+  {
+   "key": "gulzhan",
+   "name": "gulzhan"
+  },
+  {
+   "key": "batates",
+   "name": "batates"
+  },
+  {
+   "key": "hat boy",
+   "name": "Hat__boy"
+  },
+  {
+   "key": "ramos",
+   "name": "ramos"
+  },
+  {
+   "key": "wildegirl05",
+   "name": "wildegirl05"
+  },
+  {
+   "key": "indiegor",
+   "name": "indiegor"
+  },
+  {
+   "key": "tealeaves",
+   "name": "tealeaves"
+  },
+  {
+   "key": "stripes",
+   "name": "stripes"
+  },
+  {
+   "key": "l mac",
+   "name": "l_mac"
+  },
+  {
+   "key": "frici",
+   "name": "frici"
+  },
+  {
+   "key": "samanosuke",
+   "name": "samanosuke"
+  },
+  {
+   "key": "nole no1",
+   "name": "nole_no1"
+  },
+  {
+   "key": "tenistasmex",
+   "name": "tenistasmex"
+  },
+  {
+   "key": "joao parana",
+   "name": "joao parana"
+  },
+  {
+   "key": "juddy96",
+   "name": "juddy96"
+  },
+  {
+   "key": "maru angi",
+   "name": "maru_angi",
+   "country": "IND"
+  },
+  {
+   "key": "meninosantos",
+   "name": "meninosantos"
+  },
+  {
+   "key": "save ausdecline",
+   "name": "Save_ausdecline"
+  },
+  {
+   "key": "jmf07",
+   "name": "jmf07"
+  },
+  {
+   "key": "haazaard23",
+   "name": "haazaard23"
+  },
+  {
+   "key": "jrm",
+   "name": "jrm"
+  },
+  {
+   "key": "szalik",
+   "name": "szalik"
+  },
+  {
+   "key": "pedrogalvao",
+   "name": "pedrogalvao"
+  },
+  {
+   "key": "djadjakone",
+   "name": "djadjakone"
+  },
+  {
+   "key": "hahaha7",
+   "name": "hahaha7"
+  },
+  {
+   "key": "larry stefanki",
+   "name": "larry_stefanki"
+  },
+  {
+   "key": "nix da",
+   "name": "Nix Da"
+  },
+  {
+   "key": "leozanelatto",
+   "name": "leozanelatto"
+  },
+  {
+   "key": "duarteln",
+   "name": "duarteln"
+  },
+  {
+   "key": "duda6060",
+   "name": "duda6060"
+  },
+  {
+   "key": "aussie fan",
+   "name": "aussie_fan"
+  },
+  {
+   "key": "leoneo",
+   "name": "LEONEO"
+  },
+  {
+   "key": "gak3",
+   "name": "gak3"
+  },
+  {
+   "key": "gabrieltufao",
+   "name": "gabrieltufao"
+  },
+  {
+   "key": "mota2803",
+   "name": "mota2803"
+  },
+  {
+   "key": "dudsblue",
+   "name": "dudsblue"
+  },
+  {
+   "key": "sexyboy",
+   "name": "sexyboy"
+  },
+  {
+   "key": "igor0123",
+   "name": "igor0123"
+  },
+  {
+   "key": "alex k",
+   "name": "alex_k"
+  },
+  {
+   "key": "ethomaz",
+   "name": "ethomaz"
+  },
+  {
+   "key": "juliano1210",
+   "name": "juliano1210"
+  },
+  {
+   "key": "andreas",
+   "name": "Andreas"
+  },
+  {
+   "key": "jm-del-potro",
+   "name": "JM-Del-Potro"
+  },
+  {
+   "key": "anin",
+   "name": "Anin"
+  },
+  {
+   "key": "mreleganza",
+   "name": "MrEleganza"
+  },
+  {
+   "key": "cheeky chick",
+   "name": "Cheeky Chick"
+  },
+  {
+   "key": "capriati rules",
+   "name": "Capriati Rules"
+  },
+  {
+   "key": "naudio spanlatine",
+   "name": "Naudio Spanlatine"
+  },
+  {
+   "key": "thetsman",
+   "name": "TheTSMan"
+  },
+  {
+   "key": "jbdv",
+   "name": "JBdV"
+  },
+  {
+   "key": "demonsky",
+   "country": "SVK"
+  },
+  {
+   "key": "pinarodrigues",
+   "country": "POR"
   }
  ]
 }

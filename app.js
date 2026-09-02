@@ -708,7 +708,7 @@ const EDIT = document.body.dataset.mode === "edit";
 /* index.html, desk.html and app.js are uploaded together. Updating only some
    of them leaves a page whose markup and code disagree, which shows up as a
    blank tab rather than an error, so they carry a matching stamp. */
-const APP_VERSION = "2026-08-31a";
+const APP_VERSION = "2026-09-02a";
 const esc = s => String(s).replace(/[&<>"']/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
@@ -1457,7 +1457,10 @@ function renderManagers(){
     mount.innerHTML=`<div class="empty"><strong>No calendar loaded</strong>Manager credits come from the calendar.</div>`;
     return;
   }
-  if(!seasons.includes(CAL_UI.mgrSeason)) CAL_UI.mgrSeason=seasons[0];
+  /* "" means every season and is a valid choice, so it mustn't be treated as
+     an unknown one and snapped back to the newest year. */
+  if(CAL_UI.mgrSeason===undefined) CAL_UI.mgrSeason=seasons[0];
+  if(CAL_UI.mgrSeason && !seasons.includes(CAL_UI.mgrSeason)) CAL_UI.mgrSeason=seasons[0];
   const bar=document.createElement("div"); bar.className="controls";
   bar.appendChild(field("Season", selectOf([["","All seasons"]].concat(seasons.map(s=>[s,s])),
     CAL_UI.mgrSeason, v=>{CAL_UI.mgrSeason=v; renderManagers();}), "sm"));
@@ -1466,12 +1469,20 @@ function renderManagers(){
   mount.appendChild(bar);
   const rows=managerRows(CAL_UI.mgrSeason);
   const COLS=[{k:"manager",h:"Manager"},{k:"events",h:"Tournaments run",cls:"num",desc:true},
-    {k:"tracked",h:"With results",cls:"num"},{k:"challengers",h:"Challengers",cls:"num"},
+    {k:"seasons",h:"Seasons",cls:"num",desc:true},
+    {k:"span",h:"Active",cls:"mono",sortAs:"first"},
+    {k:"perSeason",h:"Per season",cls:"num",desc:true},
+    {k:"challengers",h:"Challengers",cls:"num"},
     {k:"majors",h:"128 draws",cls:"num"},{k:"surfaces",h:"Surfaces"},{k:"run",h:"Including"}];
   dl.addEventListener("click",()=>downloadCsv(COLS, rows, "managers.csv"));
   mount.appendChild(tableOf(COLS, rows));
   const p=document.createElement("p"); p.className="hint";
-  p.textContent=`${rows.length} managers \u00b7 ${rows.reduce((n,r)=>n+r.events,0)} tournaments.`;
+  const oneYear=rows.filter(r=>r.seasons===1).length;
+  const sea=CAL_UI.mgrSeason;
+  const cancelled=CALENDAR.filter(c=>(!sea||c.season===sea) && !c.manager).length;
+  p.textContent=`${rows.length} managers \u00b7 ${rows.reduce((n,r)=>n+r.events,0)} tournaments`
+    + (oneYear?` \u00b7 ${oneYear} ran events in a single season`:"")
+    + (cancelled?` \u00b7 ${cancelled} cancelled events have no manager`:"") + ".";
   mount.appendChild(p);
 }
 
@@ -2814,19 +2825,29 @@ function renderEvent(){
 function managerRows(season){
   const by=new Map();
   CALENDAR.filter(c=>!season || c.season===season).forEach(c=>{
-    const k=c.manager||"\u2014";
-    if(!by.has(k)) by.set(k,{manager:k, events:0, tracked:0, challengers:0,
-      surfaces:new Set(), majors:0, list:[]});
+    if(!c.manager) return;                       // cancelled events have nobody
+    const k=c.manager;
+    if(!by.has(k)) by.set(k,{manager:k, events:0, challengers:0,
+      surfaces:new Set(), majors:0, seasons:new Set(), list:[]});
     const e=by.get(k);
     e.events++;
     if(c.challenger) e.challengers++;
-    if(eventMatchCount(c.event,c.season)) e.tracked++;
     if((c.draw||[])[0]>=128) e.majors++;
-    e.surfaces.add(c.surface); e.list.push(c.name);
+    e.surfaces.add(c.surface); e.seasons.add(c.season); e.list.push(c.name);
   });
-  return [...by.values()].map(e=>({...e,
-    surfaces:[...e.surfaces].sort().join(" "), run:e.list.slice(0,4).join(", ")+(e.list.length>4?"\u2026":"")}))
-    .sort((a,b)=>b.events-a.events || a.manager.localeCompare(b.manager));
+  /* A flat count only measures how long somebody has been around. Seasons
+     active and the span say whether 40 events was a long steady run or one
+     very heavy year. */
+  return [...by.values()].map(e=>{
+    const yrs=[...e.seasons].sort();
+    return {...e,
+      seasons:yrs.length,
+      span: yrs.length>1 ? `${yrs[0]}\u2013${yrs[yrs.length-1]}` : yrs[0],
+      first: yrs[0], last: yrs[yrs.length-1],
+      perSeason: Math.round(e.events/yrs.length*10)/10,
+      surfaces:[...e.surfaces].filter(Boolean).sort().join(" "),
+      run:e.list.slice(0,4).join(", ")+(e.list.length>4?"\u2026":"")};
+  }).sort((a,b)=>b.events-a.events || a.manager.localeCompare(b.manager));
 }
 
 /* ==================================================================
