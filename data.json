@@ -1,6 +1,6 @@
 {
  "format": "tennis-tipping/1",
- "savedAt": "2026-09-01T18:24:43.110Z",
+ "savedAt": "2026-09-02T01:30:03.022Z",
  "matchFiles": [
   "matches-2026.json"
  ],
@@ -15,7 +15,11 @@
   "rankings-2019.json",
   "rankings-2018.json",
   "rankings-2017.json",
-  "rankings-2016.json"
+  "rankings-2016.json",
+  "rankings-2015.json",
+  "rankings-2014.json",
+  "rankings-2013.json",
+  "rankings-2012.json"
  ],
  "calendar": [
   {
@@ -3997,6 +4001,134 @@
   {
    "from": "auntyjuju",
    "to": "isawchalk"
+  },
+  {
+   "from": "gio123",
+   "to": "slaypov"
+  },
+  {
+   "from": "cristy rvd",
+   "to": "cristyrvd"
+  },
+  {
+   "from": "sham kay",
+   "to": "sham kay adams"
+  },
+  {
+   "from": "j99",
+   "to": "transcender"
+  },
+  {
+   "from": "elirj70",
+   "to": "hndiamond"
+  },
+  {
+   "from": "rewan",
+   "to": "darth revan"
+  },
+  {
+   "from": "randy72391",
+   "to": "randy"
+  },
+  {
+   "from": "dr.pils",
+   "to": "dr. pils"
+  },
+  {
+   "from": "srbteen",
+   "to": "proudserb"
+  },
+  {
+   "from": "gavnich77",
+   "to": "taz warrior"
+  },
+  {
+   "from": "limitless",
+   "to": "infinite"
+  },
+  {
+   "from": "machinegun",
+   "to": "ace pounder"
+  },
+  {
+   "from": "machado & gil",
+   "to": "sauletekis"
+  },
+  {
+   "from": "supertom93",
+   "to": "supertom"
+  },
+  {
+   "from": "delicfan",
+   "to": "the rocket"
+  },
+  {
+   "from": "prodigy.",
+   "to": "howmanytimes"
+  },
+  {
+   "from": "the bulldog",
+   "to": "the prince"
+  },
+  {
+   "from": "luis santos",
+   "to": "luís santos"
+  },
+  {
+   "from": "eurofighter",
+   "to": "michael!"
+  },
+  {
+   "from": "marto",
+   "to": "dinkulpus"
+  },
+  {
+   "from": "flying pancake",
+   "to": "ajde!"
+  },
+  {
+   "from": "finkalamano",
+   "to": "redkop"
+  },
+  {
+   "from": "shambritfan",
+   "to": "sham kay adams"
+  },
+  {
+   "from": "андреас",
+   "to": "andreas"
+  },
+  {
+   "from": "j-m-del-potro",
+   "to": "jm-del-potro"
+  },
+  {
+   "from": "tennisbabe999",
+   "to": "anin"
+  },
+  {
+   "from": "tenis.chile",
+   "to": "chilenaitor"
+  },
+  {
+   "from": "herbal",
+   "to": "chris."
+  },
+  {
+   "from": "cheekychick",
+   "to": "cheeky chick"
+  },
+  {
+   "from": "capriatirules",
+   "to": "capriati rules"
+  },
+  {
+   "from": "chrono",
+   "to": "tealeaves"
+  },
+  {
+   "from": "rafarta&grigorior♥",
+   "to": "naudio spanlatine"
   }
  ],
  "countryAccepted": [
@@ -4025,7 +4157,8 @@
    "key": "transcender",
    "codes": [
     "CHI",
-    "SVK"
+    "SVK",
+    "CAN"
    ]
   },
   {
@@ -4114,6 +4247,105 @@
     "RUS",
     "UKR"
    ]
+  },
+  {
+   "key": "hooraybeer",
+   "codes": [
+    "SRI",
+    "QAT"
+   ]
+  },
+  {
+   "key": "diadochi",
+   "codes": [
+    "BEL",
+    "GBR"
+   ]
+  },
+  {
+   "key": "redkop",
+   "codes": [
+    "GBR",
+    "SVK",
+    "BRA"
+   ]
+  },
+  {
+   "key": "tealeaves",
+   "codes": [
+    "SUI",
+    "HKG"
+   ]
+  },
+  {
+   "key": "dannyrafter",
+   "codes": [
+    "CHI",
+    "BRA"
+   ]
+  },
+  {
+   "key": "mota2803",
+   "codes": [
+    "PNG",
+    "BRA"
+   ]
+  },
+  {
+   "key": "dangermouse",
+   "codes": [
+    "SVK",
+    "GBR"
+   ]
+  },
+  {
+   "key": "wolfy",
+   "codes": [
+    "CHN",
+    "GBR"
+   ]
+  },
+  {
+   "key": "netin!",
+   "codes": [
+    "SUI",
+    "BRA"
+   ]
+  },
+  {
+   "key": "wolmas",
+   "codes": [
+    "SVK",
+    "USA"
+   ]
+  },
+  {
+   "key": "belludal",
+   "codes": [
+    "GRE",
+    "BRA"
+   ]
+  },
+  {
+   "key": "harmless",
+   "codes": [
+    "CUB",
+    "CRO"
+   ]
+  },
+  {
+   "key": "august",
+   "codes": [
+    "FIN",
+    "BRA"
+   ]
+  },
+  {
+   "key": "samanosuke",
+   "codes": [
+    "CZE",
+    "CRO"
+   ]
   }
  ],
  "datesAccepted": [
@@ -4139,7 +4371,25 @@
   "Singles|dexter|andrepeixe",
   "Doubles|fzanor|chris.",
   "Singles|ekin|goldenbrown",
-  "Singles|lollorafael|wazza"
+  "Singles|lollorafael|wazza",
+  "Singles|kwiklimey|bandtree",
+  "Singles|nickels|martinator",
+  "Singles|vetor0123|med.nico",
+  "Singles|vetor0123|ali",
+  "Singles|kery|fznaor",
+  "Doubles|emrys|finch",
+  "Singles|maldini|rus59",
+  "Singles|maldini|luinir",
+  "Singles|matt121|hawk aussie",
+  "Singles|papillon.|lb5425",
+  "Singles|gabrielchile|torochico",
+  "Doubles|vikislietuva| a ",
+  "Singles|familiagil|aussie fan",
+  "Singles|hesse|trmooney888",
+  "Singles|maru angi|tennisninjalove",
+  "Doubles|karo em9|svk",
+  "Singles|jupiterlover|cswab22",
+  "Singles|vini federer|mreleganza"
  ],
  "unknownAccepted": [
   "toomuchraquet"
@@ -4621,6 +4871,7 @@
   },
   {
    "key": "hndiamond",
+   "name": "HNDiamond",
    "country": "RSA"
   },
   {
@@ -4765,7 +5016,621 @@
   },
   {
    "key": "ajde!",
-   "name": "Ajde!"
+   "name": "Ajde!",
+   "country": "SRB"
+  },
+  {
+   "key": "slaypov",
+   "name": "Slaypov"
+  },
+  {
+   "key": "cristyrvd",
+   "name": "CristyRVD"
+  },
+  {
+   "key": "sham kay adams",
+   "name": "Sham Kay Adams"
+  },
+  {
+   "key": "transcender",
+   "name": "Transcender"
+  },
+  {
+   "key": "darth revan",
+   "name": "Darth Revan"
+  },
+  {
+   "key": "dr. pils",
+   "name": "Dr. Pils"
+  },
+  {
+   "key": "proudserb",
+   "name": "ProudSerb"
+  },
+  {
+   "key": "goffan",
+   "country": "BEL"
+  },
+  {
+   "key": "bulio lfc",
+   "country": "GRE"
+  },
+  {
+   "key": "stbanchile",
+   "name": "StbanChile"
+  },
+  {
+   "key": "silverwhite",
+   "name": "silverwhite"
+  },
+  {
+   "key": "infinite",
+   "name": "Infinite"
+  },
+  {
+   "key": "ace pounder",
+   "name": "Ace Pounder"
+  },
+  {
+   "key": "jahrastaman br",
+   "name": "jahrastaman_BR",
+   "country": "BRA"
+  },
+  {
+   "key": "tennisfan26",
+   "country": "NZL"
+  },
+  {
+   "key": "hdza",
+   "country": "CAN"
+  },
+  {
+   "key": "leric4nole",
+   "name": "Leric4nole"
+  },
+  {
+   "key": "australian dream2009",
+   "name": "Australian_dream2009"
+  },
+  {
+   "key": "half-a-cat",
+   "name": "half-a-cat"
+  },
+  {
+   "key": "radugamer356",
+   "name": "Radugamer356"
+  },
+  {
+   "key": "rus59",
+   "name": "rus59"
+  },
+  {
+   "key": "sauletekis",
+   "name": "Sauletekis"
+  },
+  {
+   "key": "the rocket",
+   "name": "The Rocket"
+  },
+  {
+   "key": "howmanytimes",
+   "name": "HowManyTimes"
+  },
+  {
+   "key": "the prince",
+   "name": "The Prince"
+  },
+  {
+   "key": "luís santos",
+   "name": "Luís Santos"
+  },
+  {
+   "key": "redkop",
+   "name": "Redkop"
+  },
+  {
+   "key": "daniel amr",
+   "country": "PER"
+  },
+  {
+   "key": "mcarvalho",
+   "name": "MCarvalho"
+  },
+  {
+   "key": "savesthedizzle",
+   "name": "Savesthedizzle"
+  },
+  {
+   "key": "diego36arg",
+   "name": "diego36arg"
+  },
+  {
+   "key": "balloon",
+   "name": "balloon"
+  },
+  {
+   "key": "rvugt",
+   "name": "rvugt"
+  },
+  {
+   "key": "slokid",
+   "name": "SloKid"
+  },
+  {
+   "key": "coolfish1103",
+   "name": "coolfish1103"
+  },
+  {
+   "key": "mateusz2904",
+   "name": "mateusz2904"
+  },
+  {
+   "key": "orangehat",
+   "name": "orangehat"
+  },
+  {
+   "key": "keqtqiadv",
+   "name": "keqtqiadv"
+  },
+  {
+   "key": "fernet",
+   "name": "FERNET"
+  },
+  {
+   "key": "tennismaster882001",
+   "name": "tennismaster882001"
+  },
+  {
+   "key": "abollo",
+   "name": "abollo"
+  },
+  {
+   "key": "extremaduratenis",
+   "name": "extremaduratenis"
+  },
+  {
+   "key": "kr1s71an",
+   "name": "kr1s71an"
+  },
+  {
+   "key": "acionescu",
+   "name": "acionescu"
+  },
+  {
+   "key": "hallso",
+   "name": "hallso"
+  },
+  {
+   "key": "rogeda",
+   "name": "rogeda"
+  },
+  {
+   "key": "petesampras 1",
+   "name": "petesampras_1"
+  },
+  {
+   "key": "applegirl",
+   "name": "appleGirl"
+  },
+  {
+   "key": "dannyrafter",
+   "name": "dannyrafter"
+  },
+  {
+   "key": "sfar",
+   "name": "sfar"
+  },
+  {
+   "key": "justafanyyc",
+   "name": "justafanYYC"
+  },
+  {
+   "key": "jackjones",
+   "name": "jackjones"
+  },
+  {
+   "key": "fsilva",
+   "name": "fsilva",
+   "country": "POR"
+  },
+  {
+   "key": "nickels",
+   "name": "nickelS"
+  },
+  {
+   "key": "volc0mizado",
+   "name": "volc0mizado"
+  },
+  {
+   "key": "esimp",
+   "name": "ESimp"
+  },
+  {
+   "key": "bavaria100",
+   "name": "bavaria100"
+  },
+  {
+   "key": "nicksimioni",
+   "name": "nicksimioni",
+   "country": "SWE"
+  },
+  {
+   "key": "andyroddlick",
+   "name": "andyroddlick"
+  },
+  {
+   "key": "igralec33",
+   "name": "igralec33"
+  },
+  {
+   "key": "traddles",
+   "name": "traddles"
+  },
+  {
+   "key": "brimoz",
+   "name": "brimoz"
+  },
+  {
+   "key": "jmjhb",
+   "name": "jmjhb"
+  },
+  {
+   "key": "lolada 4",
+   "name": "lolada_4"
+  },
+  {
+   "key": "geangr",
+   "name": "geangr"
+  },
+  {
+   "key": "maldini",
+   "name": "maldini"
+  },
+  {
+   "key": "lizzard11120",
+   "name": "lizzard11120"
+  },
+  {
+   "key": "doctorlopes",
+   "name": "doctorlopes"
+  },
+  {
+   "key": "reznik",
+   "name": "RezNik"
+  },
+  {
+   "key": "joe87",
+   "name": "joe87"
+  },
+  {
+   "key": "guibrugnara",
+   "name": "guibrugnara"
+  },
+  {
+   "key": "cswab22",
+   "name": "cswab22"
+  },
+  {
+   "key": "vexxx",
+   "name": "vexxx"
+  },
+  {
+   "key": "duducardoso",
+   "name": "duducardoso"
+  },
+  {
+   "key": "andrijagajic",
+   "name": "andrijagajic"
+  },
+  {
+   "key": "raft89",
+   "name": "raft89"
+  },
+  {
+   "key": "zeli15",
+   "name": "zeli15"
+  },
+  {
+   "key": "molosztash",
+   "name": "molosztash"
+  },
+  {
+   "key": "mariagsc1",
+   "name": "mariagsc1"
+  },
+  {
+   "key": "braziltbfan",
+   "name": "BrazilTBfan"
+  },
+  {
+   "key": "lee3132",
+   "name": "lee3132"
+  },
+  {
+   "key": "portinzin",
+   "name": "portinzin"
+  },
+  {
+   "key": "mathmul",
+   "name": "MathMul"
+  },
+  {
+   "key": "germah",
+   "name": "germah"
+  },
+  {
+   "key": "cah ",
+   "name": "cah_"
+  },
+  {
+   "key": "tal20",
+   "name": "tal20"
+  },
+  {
+   "key": "procarvalho",
+   "name": "procarvalho",
+   "country": "BRA"
+  },
+  {
+   "key": "erickmartins",
+   "name": "erickmartins"
+  },
+  {
+   "key": "bandtree",
+   "name": "bandtree"
+  },
+  {
+   "key": "jazar",
+   "name": "jazar"
+  },
+  {
+   "key": "guyha4",
+   "name": "guyha4"
+  },
+  {
+   "key": "rajknier",
+   "name": "rajknier"
+  },
+  {
+   "key": "stillreal",
+   "name": "stillreal"
+  },
+  {
+   "key": "thales de mileto",
+   "name": "Thales De Mileto"
+  },
+  {
+   "key": "karo em9",
+   "name": "karo_em9"
+  },
+  {
+   "key": "spain07",
+   "name": "spain07"
+  },
+  {
+   "key": "cserkinho",
+   "name": "cserkinho"
+  },
+  {
+   "key": "jfed90",
+   "name": "jfed90"
+  },
+  {
+   "key": "angela",
+   "name": "angela"
+  },
+  {
+   "key": "antofalila",
+   "name": "antofalila"
+  },
+  {
+   "key": "gulzhan",
+   "name": "gulzhan"
+  },
+  {
+   "key": "batates",
+   "name": "batates"
+  },
+  {
+   "key": "hat boy",
+   "name": "Hat__boy"
+  },
+  {
+   "key": "ramos",
+   "name": "ramos"
+  },
+  {
+   "key": "wildegirl05",
+   "name": "wildegirl05"
+  },
+  {
+   "key": "indiegor",
+   "name": "indiegor"
+  },
+  {
+   "key": "tealeaves",
+   "name": "tealeaves"
+  },
+  {
+   "key": "stripes",
+   "name": "stripes"
+  },
+  {
+   "key": "l mac",
+   "name": "l_mac"
+  },
+  {
+   "key": "frici",
+   "name": "frici"
+  },
+  {
+   "key": "samanosuke",
+   "name": "samanosuke"
+  },
+  {
+   "key": "nole no1",
+   "name": "nole_no1"
+  },
+  {
+   "key": "tenistasmex",
+   "name": "tenistasmex"
+  },
+  {
+   "key": "joao parana",
+   "name": "joao parana"
+  },
+  {
+   "key": "juddy96",
+   "name": "juddy96"
+  },
+  {
+   "key": "maru angi",
+   "name": "maru_angi",
+   "country": "IND"
+  },
+  {
+   "key": "meninosantos",
+   "name": "meninosantos"
+  },
+  {
+   "key": "save ausdecline",
+   "name": "Save_ausdecline"
+  },
+  {
+   "key": "jmf07",
+   "name": "jmf07"
+  },
+  {
+   "key": "haazaard23",
+   "name": "haazaard23"
+  },
+  {
+   "key": "jrm",
+   "name": "jrm"
+  },
+  {
+   "key": "szalik",
+   "name": "szalik"
+  },
+  {
+   "key": "pedrogalvao",
+   "name": "pedrogalvao"
+  },
+  {
+   "key": "djadjakone",
+   "name": "djadjakone"
+  },
+  {
+   "key": "hahaha7",
+   "name": "hahaha7"
+  },
+  {
+   "key": "larry stefanki",
+   "name": "larry_stefanki"
+  },
+  {
+   "key": "nix da",
+   "name": "Nix Da"
+  },
+  {
+   "key": "leozanelatto",
+   "name": "leozanelatto"
+  },
+  {
+   "key": "duarteln",
+   "name": "duarteln"
+  },
+  {
+   "key": "duda6060",
+   "name": "duda6060"
+  },
+  {
+   "key": "aussie fan",
+   "name": "aussie_fan"
+  },
+  {
+   "key": "leoneo",
+   "name": "LEONEO"
+  },
+  {
+   "key": "gak3",
+   "name": "gak3"
+  },
+  {
+   "key": "gabrieltufao",
+   "name": "gabrieltufao"
+  },
+  {
+   "key": "mota2803",
+   "name": "mota2803"
+  },
+  {
+   "key": "dudsblue",
+   "name": "dudsblue"
+  },
+  {
+   "key": "sexyboy",
+   "name": "sexyboy"
+  },
+  {
+   "key": "igor0123",
+   "name": "igor0123"
+  },
+  {
+   "key": "alex k",
+   "name": "alex_k"
+  },
+  {
+   "key": "ethomaz",
+   "name": "ethomaz"
+  },
+  {
+   "key": "juliano1210",
+   "name": "juliano1210"
+  },
+  {
+   "key": "andreas",
+   "name": "Andreas"
+  },
+  {
+   "key": "jm-del-potro",
+   "name": "JM-Del-Potro"
+  },
+  {
+   "key": "anin",
+   "name": "Anin"
+  },
+  {
+   "key": "mreleganza",
+   "name": "MrEleganza"
+  },
+  {
+   "key": "cheeky chick",
+   "name": "Cheeky Chick"
+  },
+  {
+   "key": "capriati rules",
+   "name": "Capriati Rules"
+  },
+  {
+   "key": "naudio spanlatine",
+   "name": "Naudio Spanlatine"
+  },
+  {
+   "key": "thetsman",
+   "name": "TheTSMan"
+  },
+  {
+   "key": "jbdv",
+   "name": "JBdV"
+  },
+  {
+   "key": "demonsky",
+   "country": "SVK"
+  },
+  {
+   "key": "pinarodrigues",
+   "country": "POR"
   }
  ]
 }
