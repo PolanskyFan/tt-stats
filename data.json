@@ -23019,6 +23019,10723 @@
    ],
    "manager": "Randy",
    "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "1a",
+   "date": "2015-01-05",
+   "opened": "",
+   "name": "Brisbane",
+   "event": "Brisbane",
+   "country": "AUS",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Thunderfish8",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "1b",
+   "date": "2015-01-05",
+   "opened": "",
+   "name": "Chennai",
+   "event": "Chennai",
+   "country": "IND",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "ESimp",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "1c",
+   "date": "2015-01-05",
+   "opened": "",
+   "name": "Doha",
+   "event": "Doha",
+   "country": "QAT",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "valac222",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "1d",
+   "date": "2015-01-05",
+   "opened": "",
+   "name": "Noumea CH",
+   "event": "Noumea",
+   "country": "NCL",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "1e",
+   "date": "2015-01-05",
+   "opened": "",
+   "name": "Happy Valley CH",
+   "event": "Happy Valley",
+   "country": "AUS",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "1f",
+   "date": "2015-01-04",
+   "opened": "",
+   "name": "Hopman Cup",
+   "event": "Hopman Cup",
+   "country": "AUS",
+   "surface": "H",
+   "draw": [],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "2a",
+   "date": "2015-01-12",
+   "opened": "",
+   "name": "Auckland",
+   "event": "Auckland",
+   "country": "NZL",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "keqtqiadv",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "2b",
+   "date": "2015-01-12",
+   "opened": "",
+   "name": "Sydney",
+   "event": "Sydney",
+   "country": "AUS",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Daniel_amr",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "2c",
+   "date": "2015-01-12",
+   "opened": "",
+   "name": "Casablanca CH",
+   "event": "Casablanca",
+   "country": "MOR",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "2d",
+   "date": "2015-01-12",
+   "opened": "",
+   "name": "Stuttgart FUT",
+   "event": "Stuttgart",
+   "country": "GER",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "2e",
+   "date": "2015-01-12",
+   "opened": "",
+   "name": "Kish FUT",
+   "event": "Kish",
+   "country": "IRN",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "3a",
+   "date": "2015-01-19",
+   "opened": "",
+   "name": "Australian Open",
+   "event": "Australian Open",
+   "country": "AUS",
+   "surface": "H",
+   "draw": [
+    128,
+    128,
+    64,
+    64
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "3b",
+   "date": "2015-01-19",
+   "opened": "",
+   "name": "Weston FUT",
+   "event": "Weston",
+   "country": "USA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Crustaceok",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "4a",
+   "date": "2015-01-26",
+   "opened": "",
+   "name": "Bucaramanga CH",
+   "event": "Bucaramanga",
+   "country": "COL",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "CoolyBri",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "4b",
+   "date": "2015-01-26",
+   "opened": "",
+   "name": "Maui CH",
+   "event": "Maui",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AussieAdz",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "4c",
+   "date": "2015-01-26",
+   "opened": "",
+   "name": "Hong Kong CH",
+   "event": "Hong Kong",
+   "country": "HKG",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "goOudinUSA",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "4d",
+   "date": "2015-01-26",
+   "opened": "",
+   "name": "Nussloch FUT",
+   "event": "Nussloch",
+   "country": "GER",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Litotes",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "5a",
+   "date": "2015-02-02",
+   "opened": "",
+   "name": "Montpellier",
+   "event": "Montpellier",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "ESimp",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "5b",
+   "date": "2015-02-02",
+   "opened": "",
+   "name": "Quito",
+   "event": "Quito",
+   "country": "ECU",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "5c",
+   "date": "2015-02-02",
+   "opened": "",
+   "name": "Zagreb",
+   "event": "Zagreb",
+   "country": "CRO",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "The Rocket",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "5d",
+   "date": "2015-02-02",
+   "opened": "",
+   "name": "Dallas CH*",
+   "event": "Dallas",
+   "country": "USA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Snowwy",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "5e",
+   "date": "2015-02-02",
+   "opened": "",
+   "name": "Burnie CH",
+   "event": "Burnie",
+   "country": "AUS",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AussieAdz",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "6a",
+   "date": "2015-02-09",
+   "opened": "",
+   "name": "Rotterdam",
+   "event": "Rotterdam",
+   "country": "NED",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "6b",
+   "date": "2015-02-09",
+   "opened": "",
+   "name": "Memphis",
+   "event": "Memphis",
+   "country": "USA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "6c",
+   "date": "2015-02-09",
+   "opened": "",
+   "name": "Sao Paulo",
+   "event": "Sao Paulo",
+   "country": "BRA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "6d",
+   "date": "2015-02-09",
+   "opened": "",
+   "name": "Launceston CH",
+   "event": "Launceston",
+   "country": "AUS",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AussieAdz",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "6e",
+   "date": "2015-02-09",
+   "opened": "",
+   "name": "Santo Domingo CH",
+   "event": "Santo Domingo",
+   "country": "DOM",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "CoolyBri",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "7a",
+   "date": "2015-02-16",
+   "opened": "",
+   "name": "Rio de Janeiro",
+   "event": "Rio de Janeiro",
+   "country": "BRA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Ibreak4coffee",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "7b",
+   "date": "2015-02-16",
+   "opened": "",
+   "name": "Delray Beach",
+   "event": "Delray Beach",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "BMT360",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "7c",
+   "date": "2015-02-16",
+   "opened": "",
+   "name": "Marseille",
+   "event": "Marseille",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Litotes",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "7d",
+   "date": "2015-02-16",
+   "opened": "",
+   "name": "New Delhi CH*",
+   "event": "New Delhi",
+   "country": "IND",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "7e",
+   "date": "2015-02-16",
+   "opened": "",
+   "name": "Wroclaw CH*",
+   "event": "Wroclaw",
+   "country": "POL",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "rvugt",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "8a",
+   "date": "2015-02-23",
+   "opened": "",
+   "name": "Acapulco",
+   "event": "Acapulco",
+   "country": "MEX",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "CoolyBri",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "8b",
+   "date": "2015-02-23",
+   "opened": "",
+   "name": "Dubai",
+   "event": "Dubai",
+   "country": "UAE",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "valac222",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "8c",
+   "date": "2015-02-23",
+   "opened": "",
+   "name": "Buenos Aires",
+   "event": "Buenos Aires",
+   "country": "ARG",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "8d",
+   "date": "2015-02-23",
+   "opened": "",
+   "name": "Kyoto CH",
+   "event": "Kyoto",
+   "country": "JPN",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AussieAdz",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "8e",
+   "date": "2015-02-23",
+   "opened": "",
+   "name": "Kolkata CH",
+   "event": "Kolkata",
+   "country": "IND",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "9a",
+   "date": "2015-03-02",
+   "opened": "",
+   "name": "Davis Cup I",
+   "event": "Davis Cup I",
+   "country": "",
+   "surface": "",
+   "draw": [],
+   "manager": "keqtqiadv",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "9b",
+   "date": "2015-03-02",
+   "opened": "",
+   "name": "Quimper CH",
+   "event": "Quimper",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "supertom",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "9c",
+   "date": "2015-03-02",
+   "opened": "",
+   "name": "Umag FUT",
+   "event": "Umag",
+   "country": "CRO",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "valac222",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "9d",
+   "date": "2015-03-02",
+   "opened": "",
+   "name": "Faro FUT",
+   "event": "Faro",
+   "country": "POR",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "10a",
+   "date": "2015-03-09",
+   "opened": "",
+   "name": "Indian Wells",
+   "event": "Indian Wells",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    128,
+    64,
+    64,
+    32
+   ],
+   "manager": "RafaCaliente",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "10c",
+   "date": "2015-03-09",
+   "opened": "",
+   "name": "Guangzhou CH",
+   "event": "Guangzhou",
+   "country": "CHN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AussieAdz",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "11a",
+   "date": "2015-03-16",
+   "opened": "",
+   "name": "Irving CH*",
+   "event": "Irving",
+   "country": "USA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "11b",
+   "date": "2015-03-16",
+   "opened": "",
+   "name": "Kazan CH",
+   "event": "Kazan",
+   "country": "RUS",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "valac222",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "11c",
+   "date": "2015-03-16",
+   "opened": "",
+   "name": "Shenzhen CH",
+   "event": "Shenzhen",
+   "country": "CHN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AussieAdz",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "12a",
+   "date": "2015-03-23",
+   "opened": "",
+   "name": "Miami",
+   "event": "Miami",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    128,
+    64,
+    64,
+    32
+   ],
+   "manager": "dinkulpus",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "12c",
+   "date": "2015-03-23",
+   "opened": "",
+   "name": "Rovinj FUT",
+   "event": "Rovinj",
+   "country": "CRO",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "13a",
+   "date": "2015-03-30",
+   "opened": "",
+   "name": "Raanana CH*",
+   "event": "Raanana",
+   "country": "ISR",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "ESimp",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "13b",
+   "date": "2015-03-30",
+   "opened": "",
+   "name": "Le Gosier CH*",
+   "event": "Le Gosier",
+   "country": "FRA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "13c",
+   "date": "2015-03-30",
+   "opened": "",
+   "name": "San Luis Potosi CH",
+   "event": "San Luis Potosi",
+   "country": "MEX",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Snowwy",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "14a",
+   "date": "2015-04-06",
+   "opened": "",
+   "name": "Houston",
+   "event": "Houston",
+   "country": "USA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Ibreak4coffee",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "14b",
+   "date": "2015-04-06",
+   "opened": "",
+   "name": "Casablanca",
+   "event": "Casablanca",
+   "country": "MOR",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "14c",
+   "date": "2015-04-06",
+   "opened": "",
+   "name": "Naples CH*",
+   "event": "Naples",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "14d",
+   "date": "2015-04-06",
+   "opened": "",
+   "name": "Leon CH",
+   "event": "Leon",
+   "country": "MEX",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Spadea TT",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "14e",
+   "date": "2015-04-06",
+   "opened": "",
+   "name": "Batman CH",
+   "event": "Batman",
+   "country": "TUR",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AussieAdz",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "15a",
+   "date": "2015-04-13",
+   "opened": "",
+   "name": "Monte Carlo",
+   "event": "Monte Carlo",
+   "country": "MON",
+   "surface": "CL",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "keqtqiadv",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "15b",
+   "date": "2015-04-13",
+   "opened": "",
+   "name": "Sarasota CH*",
+   "event": "Sarasota",
+   "country": "USA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "supertom",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "15c",
+   "date": "2015-04-13",
+   "opened": "",
+   "name": "Mersin CH",
+   "event": "Mersin",
+   "country": "TUR",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AussieAdz",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "15d",
+   "date": "2015-04-13",
+   "opened": "",
+   "name": "Little Rock FUT",
+   "event": "Little Rock",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Daniel_amr",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "16a",
+   "date": "2015-04-20",
+   "opened": "",
+   "name": "Barcelona",
+   "event": "Barcelona",
+   "country": "ESP",
+   "surface": "CL",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "valac222",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "16b",
+   "date": "2015-04-20",
+   "opened": "",
+   "name": "Bucharest",
+   "event": "Bucharest",
+   "country": "ROU",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "randy72391",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "16c",
+   "date": "2015-04-20",
+   "opened": "",
+   "name": "Vercelli CH",
+   "event": "Vercelli",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "16d",
+   "date": "2015-04-20",
+   "opened": "",
+   "name": "Guadalajara CH*",
+   "event": "Guadalajara",
+   "country": "MEX",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Litotes",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "17a",
+   "date": "2015-04-27",
+   "opened": "",
+   "name": "Munich",
+   "event": "Munich",
+   "country": "GER",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "valac222",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "17b",
+   "date": "2015-04-27",
+   "opened": "",
+   "name": "Istanbul",
+   "event": "Istanbul",
+   "country": "TUR",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AussieAdz",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "17c",
+   "date": "2015-04-27",
+   "opened": "",
+   "name": "Estoril",
+   "event": "Estoril",
+   "country": "POR",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "17d",
+   "date": "2015-04-27",
+   "opened": "",
+   "name": "Ostrava CH",
+   "event": "Ostrava",
+   "country": "CZE",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "17e",
+   "date": "2015-04-27",
+   "opened": "",
+   "name": "Sao Paulo CH",
+   "event": "Sao Paulo",
+   "country": "BRA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Snowwy",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "18a",
+   "date": "2015-05-04",
+   "opened": "",
+   "name": "Madrid",
+   "event": "Madrid",
+   "country": "ESP",
+   "surface": "CL",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "rvugt",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "18b",
+   "date": "2015-05-04",
+   "opened": "",
+   "name": "Busan CH*",
+   "event": "Busan",
+   "country": "KOR",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "18c",
+   "date": "2015-05-04",
+   "opened": "",
+   "name": "Karshi CH",
+   "event": "Karshi",
+   "country": "UZB",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AussieAdz",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "18d",
+   "date": "2015-05-04",
+   "opened": "",
+   "name": "Cali CH",
+   "event": "Cali",
+   "country": "COL",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Litotes",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "19a",
+   "date": "2015-05-11",
+   "opened": "",
+   "name": "Rome",
+   "event": "Rome",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "19b",
+   "date": "2015-05-11",
+   "opened": "",
+   "name": "Bordeaux CH*",
+   "event": "Bordeaux",
+   "country": "FRA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "valac222",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "19c",
+   "date": "2015-05-11",
+   "opened": "",
+   "name": "Seoul CH",
+   "event": "Seoul",
+   "country": "KOR",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AussieAdz",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "19d",
+   "date": "2015-05-11",
+   "opened": "",
+   "name": "Samarkand CH",
+   "event": "Samarkand",
+   "country": "UZB",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "20a",
+   "date": "2015-05-18",
+   "opened": "",
+   "name": "Geneva",
+   "event": "Geneva",
+   "country": "SUI",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "20b",
+   "date": "2015-05-18",
+   "opened": "",
+   "name": "Nice",
+   "event": "Nice",
+   "country": "FRA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "randy72391",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "20c",
+   "date": "2015-05-18",
+   "opened": "",
+   "name": "Eskisehir CH",
+   "event": "Eskisehir",
+   "country": "TUR",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AussieAdz",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "20d",
+   "date": "2015-05-18",
+   "opened": "",
+   "name": "Bucharest FUT",
+   "event": "Bucharest",
+   "country": "ROU",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "20e",
+   "date": "2015-05-18",
+   "opened": "",
+   "name": "Cordoba FUT",
+   "event": "Cordoba",
+   "country": "MEX",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Snowwy",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "21a",
+   "date": "2015-05-25",
+   "opened": "",
+   "name": "Roland Garros",
+   "event": "Roland Garros",
+   "country": "FRA",
+   "surface": "CL",
+   "draw": [
+    128,
+    128,
+    64,
+    64
+   ],
+   "manager": "valac222",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "21b",
+   "date": "2015-05-25",
+   "opened": "",
+   "name": "Vicenza CH",
+   "event": "Vicenza",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "rvugt",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "22a",
+   "date": "2015-06-01",
+   "opened": "",
+   "name": "Prostejov CH*",
+   "event": "Prostejov",
+   "country": "CZE",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "supertom",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "22b",
+   "date": "2015-06-01",
+   "opened": "",
+   "name": "Furth CH",
+   "event": "Furth",
+   "country": "GER",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Litotes",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "22c",
+   "date": "2015-06-01",
+   "opened": "",
+   "name": "Manchester CH",
+   "event": "Manchester",
+   "country": "GBR",
+   "surface": "G",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "22d",
+   "date": "2015-06-01",
+   "opened": "",
+   "name": "Gimcheon CH",
+   "event": "Gimcheon",
+   "country": "KOR",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "23a",
+   "date": "2015-06-08",
+   "opened": "",
+   "name": "Stuttgart",
+   "event": "Stuttgart",
+   "country": "GER",
+   "surface": "G",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "valac222",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "23b",
+   "date": "2015-06-08",
+   "opened": "",
+   "name": "s-Hertogenbosch",
+   "event": "s-Hertogenbosch",
+   "country": "NED",
+   "surface": "G",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "ESimp",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "23c",
+   "date": "2015-06-08",
+   "opened": "",
+   "name": "Caltanissetta CH",
+   "event": "Caltanissetta",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "23d",
+   "date": "2015-06-08",
+   "opened": "",
+   "name": "Moscow CH",
+   "event": "Moscow",
+   "country": "RUS",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "23e",
+   "date": "2015-06-08",
+   "opened": "",
+   "name": "Surbiton CH",
+   "event": "Surbiton",
+   "country": "GBR",
+   "surface": "G",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Prakharulz",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "24a",
+   "date": "2015-06-15",
+   "opened": "",
+   "name": "Halle",
+   "event": "Halle",
+   "country": "GER",
+   "surface": "G",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "valac222",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "24b",
+   "date": "2015-06-15",
+   "opened": "",
+   "name": "Queen's",
+   "event": "Queen's",
+   "country": "GBR",
+   "surface": "G",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Prakharulz",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "24c",
+   "date": "2015-06-15",
+   "opened": "",
+   "name": "Poprad Tatry CH",
+   "event": "Poprad Tatry",
+   "country": "SVK",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Deathless Mortal",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "24d",
+   "date": "2015-06-15",
+   "opened": "",
+   "name": "Fergana CH",
+   "event": "Fergana",
+   "country": "UZB",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "24e",
+   "date": "2015-06-15",
+   "opened": "",
+   "name": "Ilkley CH",
+   "event": "Ilkley",
+   "country": "GBR",
+   "surface": "G",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Spadea TT",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "25a",
+   "date": "2015-06-22",
+   "opened": "",
+   "name": "Nottingham",
+   "event": "Nottingham",
+   "country": "GBR",
+   "surface": "G",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "randy72391",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "25b",
+   "date": "2015-06-22",
+   "opened": "",
+   "name": "Milan CH",
+   "event": "Milan",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "25c",
+   "date": "2015-06-22",
+   "opened": "",
+   "name": "Blagoevgrad FUT",
+   "event": "Blagoevgrad",
+   "country": "BUL",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "25d",
+   "date": "2015-06-22",
+   "opened": "",
+   "name": "Tulsa FUT",
+   "event": "Tulsa",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Snowwy",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "26a",
+   "date": "2015-06-29",
+   "opened": "",
+   "name": "Wimbledon",
+   "event": "Wimbledon",
+   "country": "GBR",
+   "surface": "G",
+   "draw": [
+    128,
+    128,
+    64,
+    64
+   ],
+   "manager": "dinkulpus",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "26c",
+   "date": "2015-06-29",
+   "opened": "",
+   "name": "Marburg CH",
+   "event": "Marburg",
+   "country": "GER",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "27a",
+   "date": "2015-07-06",
+   "opened": "",
+   "name": "Braunschweig CH*",
+   "event": "Braunschweig",
+   "country": "GER",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Garlichead",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "27b",
+   "date": "2015-07-06",
+   "opened": "",
+   "name": "Todi CH",
+   "event": "Todi",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Prakharulz",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "27c",
+   "date": "2015-07-06",
+   "opened": "",
+   "name": "Winnetka CH",
+   "event": "Winnetka",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Prakharulz",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "27d",
+   "date": "2015-07-06",
+   "opened": "",
+   "name": "Bourg-en-Bresse FUT",
+   "event": "Bourg-en-Bresse",
+   "country": "FRA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "28a",
+   "date": "2015-07-13",
+   "opened": "",
+   "name": "Davis Cup II",
+   "event": "Davis Cup II",
+   "country": "",
+   "surface": "",
+   "draw": [],
+   "manager": "keqtqiadv",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "28b",
+   "date": "2015-07-13",
+   "opened": "",
+   "name": "Newport",
+   "event": "Newport",
+   "country": "USA",
+   "surface": "G",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "28c",
+   "date": "2015-07-13",
+   "opened": "",
+   "name": "Poznan CH",
+   "event": "Poznan",
+   "country": "POL",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Dangermouse",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "28d",
+   "date": "2015-07-13",
+   "opened": "",
+   "name": "San Benedetto CH",
+   "event": "San Benedetto",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Mahqz",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "29a",
+   "date": "2015-07-20",
+   "opened": "",
+   "name": "Bastad",
+   "event": "Bastad",
+   "country": "SWE",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Spadea TT",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "29b",
+   "date": "2015-07-20",
+   "opened": "",
+   "name": "Umag",
+   "event": "Umag",
+   "country": "CRO",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Litotes",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "29c",
+   "date": "2015-07-20",
+   "opened": "",
+   "name": "Bogota",
+   "event": "Bogota",
+   "country": "COL",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "29d",
+   "date": "2015-07-20",
+   "opened": "",
+   "name": "Granby CH*",
+   "event": "Granby",
+   "country": "CAN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "29e",
+   "date": "2015-07-20",
+   "opened": "",
+   "name": "Scheveningen CH",
+   "event": "Scheveningen",
+   "country": "NED",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Prakharulz",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "30a",
+   "date": "2015-07-27",
+   "opened": "",
+   "name": "Hamburg",
+   "event": "Hamburg",
+   "country": "GER",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "valac222",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "30b",
+   "date": "2015-07-27",
+   "opened": "",
+   "name": "Gstaad",
+   "event": "Gstaad",
+   "country": "SUI",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "supertom",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "30c",
+   "date": "2015-07-27",
+   "opened": "",
+   "name": "Atlanta",
+   "event": "Atlanta",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "randy72391",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "30d",
+   "date": "2015-07-27",
+   "opened": "",
+   "name": "Astana CH",
+   "event": "Astana",
+   "country": "KAZ",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "30e",
+   "date": "2015-07-27",
+   "opened": "",
+   "name": "Lexington CH",
+   "event": "Lexington",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "31a",
+   "date": "2015-08-03",
+   "opened": "",
+   "name": "Washington D.C.",
+   "event": "Washington D.C.",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "randy72391",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "31b",
+   "date": "2015-08-03",
+   "opened": "",
+   "name": "Kitzb\u00fchel",
+   "event": "Kitzb\u00fchel",
+   "country": "AUT",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Litotes",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "31c",
+   "date": "2015-08-03",
+   "opened": "",
+   "name": "Liberec CH",
+   "event": "Liberec",
+   "country": "CZE",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Normand",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "31d",
+   "date": "2015-08-03",
+   "opened": "",
+   "name": "Segovia CH",
+   "event": "Segovia",
+   "country": "ESP",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Spadea TT",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "32a",
+   "date": "2015-08-10",
+   "opened": "",
+   "name": "Montreal",
+   "event": "Montreal",
+   "country": "CAN",
+   "surface": "H",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "Ibreak4coffee",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "32b",
+   "date": "2015-08-10",
+   "opened": "",
+   "name": "Aptos CH*",
+   "event": "Aptos",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Redkop",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "32c",
+   "date": "2015-08-10",
+   "opened": "",
+   "name": "Prague CH",
+   "event": "Prague",
+   "country": "CZE",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "valac222",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "32d",
+   "date": "2015-08-10",
+   "opened": "",
+   "name": "Portoroz CH",
+   "event": "Portoroz",
+   "country": "SLO",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Arsenalex",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "33a",
+   "date": "2015-08-17",
+   "opened": "",
+   "name": "Cincinnati",
+   "event": "Cincinnati",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "Prakharulz",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "33b",
+   "date": "2015-08-17",
+   "opened": "",
+   "name": "Vancouver CH*",
+   "event": "Vancouver",
+   "country": "CAN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Litotes",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "33c",
+   "date": "2015-08-17",
+   "opened": "",
+   "name": "Cordenons CH",
+   "event": "Cordenons",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "valac222",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "33d",
+   "date": "2015-08-17",
+   "opened": "",
+   "name": "Meerbusch CH",
+   "event": "Meerbusch",
+   "country": "GER",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Spadea TT",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "34a",
+   "date": "2015-08-24",
+   "opened": "",
+   "name": "Winston-Salem",
+   "event": "Winston-Salem",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "randy72391",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "34b",
+   "date": "2015-08-24",
+   "opened": "",
+   "name": "Manerbio CH",
+   "event": "Manerbio",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Garlichead",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "34c",
+   "date": "2015-08-24",
+   "opened": "",
+   "name": "Rotterdam FUT",
+   "event": "Rotterdam",
+   "country": "NED",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Normand",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "34d",
+   "date": "2015-08-24",
+   "opened": "",
+   "name": "Piombino FUT",
+   "event": "Piombino",
+   "country": "ITA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "35a",
+   "date": "2015-08-31",
+   "opened": "",
+   "name": "U.S. Open",
+   "event": "U.S. Open",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    128,
+    128,
+    64,
+    64
+   ],
+   "manager": "dinkulpus",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "35b",
+   "date": "2015-08-31",
+   "opened": "",
+   "name": "Bangkok CH",
+   "event": "Bangkok",
+   "country": "THA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "jervisjames",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "36a",
+   "date": "2015-09-07",
+   "opened": "",
+   "name": "Genoa CH*",
+   "event": "Genoa",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "36b",
+   "date": "2015-09-07",
+   "opened": "",
+   "name": "Seville CH",
+   "event": "Seville",
+   "country": "ESP",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Redkop",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "36c",
+   "date": "2015-09-07",
+   "opened": "",
+   "name": "Shanghai CH",
+   "event": "Shanghai",
+   "country": "CHN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "36d",
+   "date": "2015-09-07",
+   "opened": "",
+   "name": "Barranquilla CH",
+   "event": "Barranquilla",
+   "country": "COL",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Litotes",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "37a",
+   "date": "2015-09-14",
+   "opened": "",
+   "name": "Davis Cup III",
+   "event": "Davis Cup III",
+   "country": "",
+   "surface": "",
+   "draw": [],
+   "manager": "keqtqiadv",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "37b",
+   "date": "2015-09-14",
+   "opened": "",
+   "name": "Szczecin CH*",
+   "event": "Szczecin",
+   "country": "POL",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "37c",
+   "date": "2015-09-14",
+   "opened": "",
+   "name": "Banja Luka CH",
+   "event": "Banja Luka",
+   "country": "BIH",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "valac222",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "37d",
+   "date": "2015-09-14",
+   "opened": "",
+   "name": "Istanbul CH",
+   "event": "Istanbul",
+   "country": "TUR",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Arsenalex",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "38a",
+   "date": "2015-09-21",
+   "opened": "",
+   "name": "St. Petersburg",
+   "event": "St. Petersburg",
+   "country": "RUS",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "supertom",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "38b",
+   "date": "2015-09-21",
+   "opened": "",
+   "name": "Metz",
+   "event": "Metz",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Garlichead",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "38c",
+   "date": "2015-09-21",
+   "opened": "",
+   "name": "Kaohsiung CH*",
+   "event": "Kaohsiung",
+   "country": "TPE",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Daniel_amr",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "38d",
+   "date": "2015-09-21",
+   "opened": "",
+   "name": "Izmir CH",
+   "event": "Izmir",
+   "country": "TUR",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Arsenalex",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "38e",
+   "date": "2015-09-21",
+   "opened": "",
+   "name": "Sibiu CH",
+   "event": "Sibiu",
+   "country": "ROU",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "valac222",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "39a",
+   "date": "2015-09-28",
+   "opened": "",
+   "name": "Kuala Lumpur",
+   "event": "Kuala Lumpur",
+   "country": "MAS",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "randy72391",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "39b",
+   "date": "2015-09-28",
+   "opened": "",
+   "name": "Shenzhen",
+   "event": "Shenzhen",
+   "country": "CHN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Daniel_amr",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "39c",
+   "date": "2015-09-28",
+   "opened": "",
+   "name": "Orleans CH*",
+   "event": "Orleans",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "39d",
+   "date": "2015-09-28",
+   "opened": "",
+   "name": "Tiburon CH*",
+   "event": "Tiburon",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Wolmas",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "39e",
+   "date": "2015-09-28",
+   "opened": "",
+   "name": "Porto Alegre CH",
+   "event": "Porto Alegre",
+   "country": "BRA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Hidalgo",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "40a",
+   "date": "2015-10-05",
+   "opened": "",
+   "name": "Beijing",
+   "event": "Beijing",
+   "country": "CHN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "40b",
+   "date": "2015-10-05",
+   "opened": "",
+   "name": "Tokyo",
+   "event": "Tokyo",
+   "country": "JPN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "BMT360",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "40c",
+   "date": "2015-10-05",
+   "opened": "",
+   "name": "Mons CH*",
+   "event": "Mons",
+   "country": "BEL",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "rewan",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "40d",
+   "date": "2015-10-05",
+   "opened": "",
+   "name": "Mohammedia CH",
+   "event": "Mohammedia",
+   "country": "MOR",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "40e",
+   "date": "2015-10-05",
+   "opened": "",
+   "name": "Sacramento CH*",
+   "event": "Sacramento",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "BMT360",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "41a",
+   "date": "2015-10-12",
+   "opened": "",
+   "name": "Shanghai",
+   "event": "Shanghai",
+   "country": "CHN",
+   "surface": "H",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "41b",
+   "date": "2015-10-12",
+   "opened": "",
+   "name": "Tashkent CH*",
+   "event": "Tashkent",
+   "country": "UZB",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Normand",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "41c",
+   "date": "2015-10-12",
+   "opened": "",
+   "name": "Rennes CH*",
+   "event": "Rennes",
+   "country": "FRA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "BobbaBobb",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "41d",
+   "date": "2015-10-12",
+   "opened": "",
+   "name": "Ho Chi Minh CH",
+   "event": "Ho Chi Minh",
+   "country": "VNM",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "42a",
+   "date": "2015-10-19",
+   "opened": "",
+   "name": "Vienna",
+   "event": "Vienna",
+   "country": "AUT",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Garlichead",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "42b",
+   "date": "2015-10-19",
+   "opened": "",
+   "name": "Moscow",
+   "event": "Moscow",
+   "country": "RUS",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "valac222",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "42c",
+   "date": "2015-10-19",
+   "opened": "",
+   "name": "Stockholm",
+   "event": "Stockholm",
+   "country": "SWE",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "rewan",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "42d",
+   "date": "2015-10-19",
+   "opened": "",
+   "name": "Ningbo CH*",
+   "event": "Ningbo",
+   "country": "CHN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "42e",
+   "date": "2015-10-19",
+   "opened": "",
+   "name": "Brest CH*",
+   "event": "Brest",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "*Jean*",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "43a",
+   "date": "2015-10-26",
+   "opened": "",
+   "name": "Basel",
+   "event": "Basel",
+   "country": "SUI",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "valac222",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "43b",
+   "date": "2015-10-26",
+   "opened": "",
+   "name": "Valencia",
+   "event": "Valencia",
+   "country": "ESP",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "43c",
+   "date": "2015-10-26",
+   "opened": "",
+   "name": "Monterrey CH*",
+   "event": "Monterrey",
+   "country": "MEX",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "BMT360",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "43d",
+   "date": "2015-10-26",
+   "opened": "",
+   "name": "Lima CH",
+   "event": "Lima",
+   "country": "PER",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Redkop",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "43e",
+   "date": "2015-10-26",
+   "opened": "",
+   "name": "Traralgon CH",
+   "event": "Traralgon",
+   "country": "AUS",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "BMT360",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "44a",
+   "date": "2015-11-02",
+   "opened": "",
+   "name": "Paris",
+   "event": "Paris",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "44b",
+   "date": "2015-11-02",
+   "opened": "",
+   "name": "Canberra",
+   "event": "Canberra",
+   "country": "AUS",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "BMT360",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "44c",
+   "date": "2015-11-02",
+   "opened": "",
+   "name": "Charlottesville CH",
+   "event": "Charlottesville",
+   "country": "USA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Litotes",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "44d",
+   "date": "2015-11-02",
+   "opened": "",
+   "name": "Eckental CH",
+   "event": "Eckental",
+   "country": "GER",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Darth Revan",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "45a",
+   "date": "2015-11-09",
+   "opened": "",
+   "name": "Mouilleron Le Captif CH",
+   "event": "Mouilleron Le Captif",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "lukela85",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "45b",
+   "date": "2015-11-09",
+   "opened": "",
+   "name": "Bratislava CH*",
+   "event": "Bratislava",
+   "country": "SVK",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Darth Revan",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "45c",
+   "date": "2015-11-09",
+   "opened": "",
+   "name": "Buenos Aires CH",
+   "event": "Buenos Aires",
+   "country": "ARG",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Normand",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "45d",
+   "date": "2015-11-09",
+   "opened": "",
+   "name": "Knoxville CH",
+   "event": "Knoxville",
+   "country": "USA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Deathless Mortal",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "45e",
+   "date": "2015-11-09",
+   "opened": "",
+   "name": "Ortisei CH",
+   "event": "Ortisei",
+   "country": "ITA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "supertom",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "46a",
+   "date": "2015-11-15",
+   "opened": "",
+   "name": "ATP Finals",
+   "event": "ATP Finals",
+   "country": "GBR",
+   "surface": "IH",
+   "draw": [
+    8,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "46b",
+   "date": "2015-11-16",
+   "opened": "",
+   "name": "Brescia CH",
+   "event": "Brescia",
+   "country": "ITA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "46c",
+   "date": "2015-11-16",
+   "opened": "",
+   "name": "Helsinki CH",
+   "event": "Helsinki",
+   "country": "FIN",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "BobbaBobb",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "46d",
+   "date": "2015-11-16",
+   "opened": "",
+   "name": "Champaign CH",
+   "event": "Champaign",
+   "country": "USA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Sempere",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "46e",
+   "date": "2015-11-16",
+   "opened": "",
+   "name": "Yokohama CH",
+   "event": "Yokohama",
+   "country": "JPN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "keqtqiadv",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "47a",
+   "date": "2015-11-23",
+   "opened": "",
+   "name": "Davis Cup Final",
+   "event": "Davis Cup Final",
+   "country": "",
+   "surface": "",
+   "draw": [],
+   "manager": "keqtqiadv",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "47b",
+   "date": "2015-11-23",
+   "opened": "",
+   "name": "Challenger Tour Finals",
+   "event": "Challenger Tour Finals",
+   "country": "",
+   "surface": "",
+   "draw": [
+    8,
+    8
+   ],
+   "manager": "valac222",
+   "challenger": false
+  },
+  {
+   "season": "2015",
+   "code": "47c",
+   "date": "2015-11-23",
+   "opened": "",
+   "name": "Andria CH",
+   "event": "Andria",
+   "country": "ITA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Normand",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "47d",
+   "date": "2015-11-23",
+   "opened": "",
+   "name": "Toyota CH",
+   "event": "Toyota",
+   "country": "JPN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "BMT360",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "47e",
+   "date": "2015-11-23",
+   "opened": "",
+   "name": "Jablonec nad Nisou FUT",
+   "event": "Jablonec nad Nisou",
+   "country": "CZE",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "48a",
+   "date": "2015-11-30",
+   "opened": "",
+   "name": "Opava FUT",
+   "event": "Opava",
+   "country": "CZE",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "BobbaBobb",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "48b",
+   "date": "2015-11-30",
+   "opened": "",
+   "name": "Santiago FUT",
+   "event": "Santiago",
+   "country": "DOM",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "valac222",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "48c",
+   "date": "2015-11-30",
+   "opened": "",
+   "name": "Bangkok FUT",
+   "event": "Bangkok",
+   "country": "THA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "48d",
+   "date": "2015-11-30",
+   "opened": "",
+   "name": "Tallahassee FUT",
+   "event": "Tallahassee",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Wolmas",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "49a",
+   "date": "2015-12-07",
+   "opened": "",
+   "name": "Lagos FUT",
+   "event": "Lagos",
+   "country": "NGA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Normand",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "49b",
+   "date": "2015-12-07",
+   "opened": "",
+   "name": "Doha FUT",
+   "event": "Doha",
+   "country": "QAT",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "49c",
+   "date": "2015-12-07",
+   "opened": "",
+   "name": "Antalya FUT",
+   "event": "Antalya",
+   "country": "TUR",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Randy",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "50a",
+   "date": "2015-12-14",
+   "opened": "",
+   "name": "Lagos 2 FUT",
+   "event": "Lagos 2",
+   "country": "NGA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "randy72391",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "50b",
+   "date": "2015-12-14",
+   "opened": "",
+   "name": "Doha 2 FUT",
+   "event": "Doha 2",
+   "country": "QAT",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "50c",
+   "date": "2015-12-14",
+   "opened": "",
+   "name": "Antalya 2 FUT",
+   "event": "Antalya 2",
+   "country": "TUR",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "1a",
+   "date": "2013-12-30",
+   "opened": "",
+   "name": "Hopman Cup",
+   "event": "Hopman Cup",
+   "country": "AUS",
+   "surface": "H",
+   "draw": [],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "1b",
+   "date": "2013-12-30",
+   "opened": "",
+   "name": "Doha",
+   "event": "Doha",
+   "country": "QAT",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "abollo",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "1c",
+   "date": "2013-12-30",
+   "opened": "",
+   "name": "Brisbane",
+   "event": "Brisbane",
+   "country": "AUS",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "MathMul",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "1d",
+   "date": "2013-12-30",
+   "opened": "",
+   "name": "Chennai",
+   "event": "Chennai",
+   "country": "IND",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "1e",
+   "date": "2013-12-30",
+   "opened": "",
+   "name": "Noumea",
+   "event": "Noumea",
+   "country": "NCL",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "CoolyBri",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "1f",
+   "date": "2013-12-30",
+   "opened": "",
+   "name": "Sao Paulo*",
+   "event": "Sao Paulo",
+   "country": "BRA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "DJDVD",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "2a",
+   "date": "2014-01-06",
+   "opened": "",
+   "name": "Sydney",
+   "event": "Sydney",
+   "country": "AUS",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "supertom",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "2b",
+   "date": "2014-01-06",
+   "opened": "",
+   "name": "Auckland",
+   "event": "Auckland",
+   "country": "NZL",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "keqtqiadv",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "2c",
+   "date": "2014-01-06",
+   "opened": "",
+   "name": "Schwieberdingen FUT",
+   "event": "Schwieberdingen",
+   "country": "GER",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "2d",
+   "date": "2014-01-06",
+   "opened": "",
+   "name": "Plantation FUT",
+   "event": "Plantation",
+   "country": "USA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "CoolyBri",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "2e",
+   "date": "2014-01-08",
+   "opened": "",
+   "name": "Kooyong",
+   "event": "Kooyong",
+   "country": "AUS",
+   "surface": "H",
+   "draw": [],
+   "manager": "Hidalgo",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "3a",
+   "date": "2014-01-13",
+   "opened": "",
+   "name": "Australian Open",
+   "event": "Australian Open",
+   "country": "AUS",
+   "surface": "H",
+   "draw": [
+    128,
+    128,
+    64,
+    64
+   ],
+   "manager": "abollo",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "3b",
+   "date": "2014-01-13",
+   "opened": "",
+   "name": "Glasgow FUT",
+   "event": "Glasgow",
+   "country": "GBR",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "4a",
+   "date": "2014-01-20",
+   "opened": "",
+   "name": "Heilbronn CH*",
+   "event": "Heilbronn",
+   "country": "GER",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "DJDVD",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "4b",
+   "date": "2014-01-20",
+   "opened": "",
+   "name": "Maui CH",
+   "event": "Maui",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "goOudinUSA",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "4c",
+   "date": "2014-01-20",
+   "opened": "",
+   "name": "Bucaramanga CH",
+   "event": "Bucaramanga",
+   "country": "COL",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Litotes",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "4d",
+   "date": "2014-01-20",
+   "opened": "",
+   "name": "Bressuire FUT",
+   "event": "Bressuire",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "MathMul",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "5a",
+   "date": "2014-01-27",
+   "opened": "",
+   "name": "Davis Cup I",
+   "event": "Davis Cup I",
+   "country": "",
+   "surface": "",
+   "draw": [],
+   "manager": "keqtqiadv",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "5b",
+   "date": "2014-01-27",
+   "opened": "",
+   "name": "Burnie CH",
+   "event": "Burnie",
+   "country": "AUS",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "justafanYYC",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "5c",
+   "date": "2014-01-27",
+   "opened": "",
+   "name": "Chitre CH",
+   "event": "Chitre",
+   "country": "PAN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "DJDVD",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "5d",
+   "date": "2014-01-27",
+   "opened": "",
+   "name": "Nussloch FUT",
+   "event": "Nussloch",
+   "country": "GER",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "MathMul",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "6a",
+   "date": "2014-02-03",
+   "opened": "",
+   "name": "Montpellier",
+   "event": "Montpellier",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "valac222",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "6b",
+   "date": "2014-02-03",
+   "opened": "",
+   "name": "Zagreb",
+   "event": "Zagreb",
+   "country": "CRO",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AdeyC",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "6c",
+   "date": "2014-02-03",
+   "opened": "",
+   "name": "Vina del Mar",
+   "event": "Vina del Mar",
+   "country": "CHI",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "MathMul",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "6d",
+   "date": "2014-02-03",
+   "opened": "",
+   "name": "Dallas CH*",
+   "event": "Dallas",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "justafanYYC",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "6e",
+   "date": "2014-02-03",
+   "opened": "",
+   "name": "West Lakes CH",
+   "event": "West Lakes",
+   "country": "AUS",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Daniel_amr",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "7a",
+   "date": "2014-02-10",
+   "opened": "",
+   "name": "Rotterdam",
+   "event": "Rotterdam",
+   "country": "NED",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "DJDVD",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "7b",
+   "date": "2014-02-10",
+   "opened": "",
+   "name": "Memphis",
+   "event": "Memphis",
+   "country": "USA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "abollo",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "7c",
+   "date": "2014-02-10",
+   "opened": "",
+   "name": "Buenos Aires",
+   "event": "Buenos Aires",
+   "country": "ARG",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "MathMul",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "7d",
+   "date": "2014-02-10",
+   "opened": "",
+   "name": "Quimper CH",
+   "event": "Quimper",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "7e",
+   "date": "2014-02-10",
+   "opened": "",
+   "name": "Bergamo CH",
+   "event": "Bergamo",
+   "country": "ITA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "ESimp",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "8a",
+   "date": "2014-02-17",
+   "opened": "",
+   "name": "Rio de Janeiro",
+   "event": "Rio de Janeiro",
+   "country": "BRA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "DJDVD",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "8b",
+   "date": "2014-02-17",
+   "opened": "",
+   "name": "Marseille",
+   "event": "Marseille",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "MathMul",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "8c",
+   "date": "2014-02-17",
+   "opened": "",
+   "name": "Delray Beach",
+   "event": "Delray Beach",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Litotes",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "8d",
+   "date": "2014-02-17",
+   "opened": "",
+   "name": "New Delhi CH*",
+   "event": "New Delhi",
+   "country": "IND",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "8e",
+   "date": "2014-02-17",
+   "opened": "",
+   "name": "Morelos CH",
+   "event": "Morelos",
+   "country": "MEX",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Daniel_amr",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "9a",
+   "date": "2014-02-24",
+   "opened": "",
+   "name": "Dubai",
+   "event": "Dubai",
+   "country": "UAE",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "valac222",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "9b",
+   "date": "2014-02-24",
+   "opened": "",
+   "name": "Acapulco",
+   "event": "Acapulco",
+   "country": "MEX",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "justafanYYC",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "9c",
+   "date": "2014-02-24",
+   "opened": "",
+   "name": "Sao Paulo",
+   "event": "Sao Paulo",
+   "country": "BRA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "DJDVD",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "9d",
+   "date": "2014-02-24",
+   "opened": "",
+   "name": "Cherbourg CH",
+   "event": "Cherbourg",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "9e",
+   "date": "2014-02-24",
+   "opened": "",
+   "name": "Guangzhou CH",
+   "event": "Guangzhou",
+   "country": "CHN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "ESimp",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "10a",
+   "date": "2014-03-03",
+   "opened": "",
+   "name": "Indian Wells",
+   "event": "Indian Wells",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    128,
+    64,
+    64,
+    32
+   ],
+   "manager": "traddles",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "10b",
+   "date": "2014-03-03",
+   "opened": "",
+   "name": "Kyoto CH",
+   "event": "Kyoto",
+   "country": "JPN",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "11a",
+   "date": "2014-03-10",
+   "opened": "",
+   "name": "Irving CH*",
+   "event": "Irving",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "justafanYYC",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "11b",
+   "date": "2014-03-10",
+   "opened": "",
+   "name": "Kazan CH",
+   "event": "Kazan",
+   "country": "RUS",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "11c",
+   "date": "2014-03-10",
+   "opened": "",
+   "name": "Poitiers FUT",
+   "event": "Poitiers",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Litotes",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "12a",
+   "date": "2014-03-17",
+   "opened": "",
+   "name": "Miami",
+   "event": "Miami",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    128,
+    64,
+    64,
+    32
+   ],
+   "manager": "dinkulpus",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "12b",
+   "date": "2014-03-17",
+   "opened": "",
+   "name": "Rimouski CH",
+   "event": "Rimouski",
+   "country": "CAN",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "justafanYYC",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "13a",
+   "date": "2014-03-24",
+   "opened": "",
+   "name": "Guadalajara CH*",
+   "event": "Guadalajara",
+   "country": "MEX",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "stbanchile",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "13b",
+   "date": "2014-03-24",
+   "opened": "",
+   "name": "Barranquilla",
+   "event": "Barranquilla",
+   "country": "COL",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "peixe15",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "13c",
+   "date": "2014-03-24",
+   "opened": "",
+   "name": "Trimbach FUT",
+   "event": "Trimbach",
+   "country": "SUI",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "valac222",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "14a",
+   "date": "2014-03-31",
+   "opened": "",
+   "name": "Davis Cup II",
+   "event": "Davis Cup II",
+   "country": "",
+   "surface": "",
+   "draw": [],
+   "manager": "keqtqiadv",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "14b",
+   "date": "2014-03-31",
+   "opened": "",
+   "name": "Le Gosier CH*",
+   "event": "Le Gosier",
+   "country": "FRA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "ESimp",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "14c",
+   "date": "2014-03-31",
+   "opened": "",
+   "name": "Leon CH",
+   "event": "Leon",
+   "country": "MEX",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "goOudinUSA",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "14d",
+   "date": "2014-03-31",
+   "opened": "",
+   "name": "Saint-Brieuc CH",
+   "event": "Saint-Brieuc",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "valac222",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "14e",
+   "date": "2014-03-31",
+   "opened": "",
+   "name": "Rovinj FUT",
+   "event": "Rovinj",
+   "country": "CRO",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "15a",
+   "date": "2014-04-07",
+   "opened": "",
+   "name": "Casablanca",
+   "event": "Casablanca",
+   "country": "MOR",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "ESimp",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "15b",
+   "date": "2014-04-07",
+   "opened": "",
+   "name": "Houston",
+   "event": "Houston",
+   "country": "USA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Ibreak4coffee",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "15c",
+   "date": "2014-04-07",
+   "opened": "",
+   "name": "Mersin CH",
+   "event": "Mersin",
+   "country": "TUR",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "15d",
+   "date": "2014-04-07",
+   "opened": "",
+   "name": "Itajai CH",
+   "event": "Itajai",
+   "country": "BRA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "stbanchile",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "15e",
+   "date": "2014-04-07",
+   "opened": "",
+   "name": "Chengdu FUT",
+   "event": "Chengdu",
+   "country": "CHN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "goOudinUSA",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "16a",
+   "date": "2014-04-14",
+   "opened": "",
+   "name": "Monte Carlo",
+   "event": "Monte Carlo",
+   "country": "MON",
+   "surface": "CL",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "16b",
+   "date": "2014-04-14",
+   "opened": "",
+   "name": "Sarasota CH*",
+   "event": "Sarasota",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Thunderfish8",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "16c",
+   "date": "2014-04-14",
+   "opened": "",
+   "name": "Sao Paulo CH",
+   "event": "Sao Paulo",
+   "country": "BRA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Hidalgo",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "16d",
+   "date": "2014-04-14",
+   "opened": "",
+   "name": "San Luis Potosi CH",
+   "event": "San Luis Potosi",
+   "country": "MEX",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "justafanYYC",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "17a",
+   "date": "2014-04-21",
+   "opened": "",
+   "name": "Barcelona",
+   "event": "Barcelona",
+   "country": "ESP",
+   "surface": "CL",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "17b",
+   "date": "2014-04-21",
+   "opened": "",
+   "name": "Bucharest",
+   "event": "Bucharest",
+   "country": "ROU",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "DJDVD",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "17c",
+   "date": "2014-04-21",
+   "opened": "",
+   "name": "Shenzhen CH",
+   "event": "Shenzhen",
+   "country": "CHN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "keqtqiadv",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "17d",
+   "date": "2014-04-21",
+   "opened": "",
+   "name": "Vercelli CH",
+   "event": "Vercelli",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Mahqz",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "18a",
+   "date": "2014-04-28",
+   "opened": "",
+   "name": "Oeiras",
+   "event": "Oeiras",
+   "country": "POR",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "DJDVD",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "18b",
+   "date": "2014-04-28",
+   "opened": "",
+   "name": "Munich",
+   "event": "Munich",
+   "country": "GER",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "ESimp",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "18c",
+   "date": "2014-04-28",
+   "opened": "",
+   "name": "Tunis CH*",
+   "event": "Tunis",
+   "country": "TUN",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Litotes",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "18d",
+   "date": "2014-04-28",
+   "opened": "",
+   "name": "Ostrava CH*",
+   "event": "Ostrava",
+   "country": "CZE",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "valac222",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "18e",
+   "date": "2014-04-28",
+   "opened": "",
+   "name": "Taipei City CH",
+   "event": "Taipei City",
+   "country": "TPE",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "19a",
+   "date": "2014-05-05",
+   "opened": "",
+   "name": "Madrid",
+   "event": "Madrid",
+   "country": "ESP",
+   "surface": "CL",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "MathMul",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "19b",
+   "date": "2014-05-05",
+   "opened": "",
+   "name": "Aix en Provence CH",
+   "event": "Aix en Provence",
+   "country": "FRA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "RafaCaliente",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "19c",
+   "date": "2014-05-05",
+   "opened": "",
+   "name": "Gimcheon CH",
+   "event": "Gimcheon",
+   "country": "KOR",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "stbanchile",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "19d",
+   "date": "2014-05-05",
+   "opened": "",
+   "name": "Rome CH",
+   "event": "Rome",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "20a",
+   "date": "2014-05-12",
+   "opened": "",
+   "name": "Rome",
+   "event": "Rome",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "valac222",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "20b",
+   "date": "2014-05-12",
+   "opened": "",
+   "name": "Bordeaux CH*",
+   "event": "Bordeaux",
+   "country": "FRA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "20c",
+   "date": "2014-05-12",
+   "opened": "",
+   "name": "Busan CH",
+   "event": "Busan",
+   "country": "KOR",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Daniel_amr",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "20d",
+   "date": "2014-05-12",
+   "opened": "",
+   "name": "Samarkand CH",
+   "event": "Samarkand",
+   "country": "UZB",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Thunderfish8",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "21a",
+   "date": "2014-05-19",
+   "opened": "",
+   "name": "Dusseldorf",
+   "event": "Dusseldorf",
+   "country": "GER",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Litotes",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "21b",
+   "date": "2014-05-19",
+   "opened": "",
+   "name": "Nice",
+   "event": "Nice",
+   "country": "FRA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "supertom",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "21c",
+   "date": "2014-05-19",
+   "opened": "",
+   "name": "Karshi CH",
+   "event": "Karshi",
+   "country": "UZB",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "21d",
+   "date": "2014-05-19",
+   "opened": "",
+   "name": "Bergamo FUT",
+   "event": "Bergamo",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Mahqz",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "21e",
+   "date": "2014-05-19",
+   "opened": "",
+   "name": "Bucharest FUT",
+   "event": "Bucharest",
+   "country": "ROU",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "22a",
+   "date": "2014-05-26",
+   "opened": "",
+   "name": "Roland Garros",
+   "event": "Roland Garros",
+   "country": "FRA",
+   "surface": "CL",
+   "draw": [
+    128,
+    128,
+    64,
+    64
+   ],
+   "manager": "keqtqiadv",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "22b",
+   "date": "2014-05-26",
+   "opened": "",
+   "name": "Vicenza CH",
+   "event": "Vicenza",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "23a",
+   "date": "2014-06-02",
+   "opened": "",
+   "name": "Prostejov CH*",
+   "event": "Prostejov",
+   "country": "CZE",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "23b",
+   "date": "2014-06-02",
+   "opened": "",
+   "name": "Nottingham CH",
+   "event": "Nottingham",
+   "country": "GBR",
+   "surface": "G",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "RafaCaliente",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "23c",
+   "date": "2014-06-02",
+   "opened": "",
+   "name": "Arad CH",
+   "event": "Arad",
+   "country": "ROU",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Thunderfish8",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "23d",
+   "date": "2014-06-02",
+   "opened": "",
+   "name": "Mestre CH",
+   "event": "Mestre",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "24a",
+   "date": "2014-06-09",
+   "opened": "",
+   "name": "Halle",
+   "event": "Halle",
+   "country": "GER",
+   "surface": "G",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Litotes",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "24b",
+   "date": "2014-06-09",
+   "opened": "",
+   "name": "Queen's",
+   "event": "Queen's",
+   "country": "GBR",
+   "surface": "G",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "24c",
+   "date": "2014-06-09",
+   "opened": "",
+   "name": "Caltanissetta CH*",
+   "event": "Caltanissetta",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "RafaCaliente",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "24d",
+   "date": "2014-06-09",
+   "opened": "",
+   "name": "Nottingham 2 CH",
+   "event": "Nottingham 2",
+   "country": "GBR",
+   "surface": "G",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "25a",
+   "date": "2014-06-16",
+   "opened": "",
+   "name": "s-Hertogenbosch",
+   "event": "s-Hertogenbosch",
+   "country": "NED",
+   "surface": "G",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "RafaCaliente",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "25b",
+   "date": "2014-06-16",
+   "opened": "",
+   "name": "Eastbourne",
+   "event": "Eastbourne",
+   "country": "GBR",
+   "surface": "G",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Litotes",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "25c",
+   "date": "2014-06-16",
+   "opened": "",
+   "name": "Tianjin CH",
+   "event": "Tianjin",
+   "country": "CHN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "stbanchile",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "25d",
+   "date": "2014-06-16",
+   "opened": "",
+   "name": "Mohammedia CH",
+   "event": "Mohammedia",
+   "country": "MOR",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Mahqz",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "25e",
+   "date": "2014-06-16",
+   "opened": "",
+   "name": "Milan CH",
+   "event": "Milan",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "26a",
+   "date": "2014-06-23",
+   "opened": "",
+   "name": "Wimbledon",
+   "event": "Wimbledon",
+   "country": "GBR",
+   "surface": "G",
+   "draw": [
+    128,
+    64,
+    64,
+    32
+   ],
+   "manager": "valac222",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "26b",
+   "date": "2014-06-23",
+   "opened": "",
+   "name": "Marburg CH",
+   "event": "Marburg",
+   "country": "GER",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Mahqz",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "27a",
+   "date": "2014-06-30",
+   "opened": "",
+   "name": "Braunschweig CH*",
+   "event": "Braunschweig",
+   "country": "GER",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "supertom",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "27b",
+   "date": "2014-06-30",
+   "opened": "",
+   "name": "Winnetka CH",
+   "event": "Winnetka",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "goOudinUSA",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "27c",
+   "date": "2014-06-30",
+   "opened": "",
+   "name": "Manta CH",
+   "event": "Manta",
+   "country": "ECU",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "chowdahead25",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "27d",
+   "date": "2014-06-30",
+   "opened": "",
+   "name": "Todi CH",
+   "event": "Todi",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "28a",
+   "date": "2014-07-07",
+   "opened": "",
+   "name": "Bastad",
+   "event": "Bastad",
+   "country": "SWE",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "28b",
+   "date": "2014-07-07",
+   "opened": "",
+   "name": "Stuttgart",
+   "event": "Stuttgart",
+   "country": "GER",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "RafaCaliente",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "28c",
+   "date": "2014-07-07",
+   "opened": "",
+   "name": "Newport",
+   "event": "Newport",
+   "country": "USA",
+   "surface": "G",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Crustaceok",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "28d",
+   "date": "2014-07-07",
+   "opened": "",
+   "name": "Scheveningen CH",
+   "event": "Scheveningen",
+   "country": "NED",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "valac222",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "28e",
+   "date": "2014-07-07",
+   "opened": "",
+   "name": "Portoroz CH",
+   "event": "Portoroz",
+   "country": "SLO",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AussieAdz",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "29a",
+   "date": "2014-07-14",
+   "opened": "",
+   "name": "Hamburg",
+   "event": "Hamburg",
+   "country": "GER",
+   "surface": "CL",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "Freak3yman84",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "29b",
+   "date": "2014-07-14",
+   "opened": "",
+   "name": "Bogota",
+   "event": "Bogota",
+   "country": "COL",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Mahqz",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "29c",
+   "date": "2014-07-14",
+   "opened": "",
+   "name": "Kaohsiung CH*",
+   "event": "Kaohsiung",
+   "country": "TPE",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AussieAdz",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "29d",
+   "date": "2014-07-14",
+   "opened": "",
+   "name": "Binghamton CH",
+   "event": "Binghamton",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Crustaceok",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "30a",
+   "date": "2014-07-21",
+   "opened": "",
+   "name": "Atlanta",
+   "event": "Atlanta",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "30b",
+   "date": "2014-07-21",
+   "opened": "",
+   "name": "Gstaad",
+   "event": "Gstaad",
+   "country": "SUI",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "valac222",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "30c",
+   "date": "2014-07-21",
+   "opened": "",
+   "name": "Umag",
+   "event": "Umag",
+   "country": "CRO",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Litotes",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "30d",
+   "date": "2014-07-21",
+   "opened": "",
+   "name": "Astana CH*",
+   "event": "Astana",
+   "country": "KAZ",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "stbanchile",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "30e",
+   "date": "2014-07-21",
+   "opened": "",
+   "name": "Oberstaufen CH",
+   "event": "Oberstaufen",
+   "country": "GER",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Mahqz",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "31a",
+   "date": "2014-07-28",
+   "opened": "",
+   "name": "Kitzb\u00fchel",
+   "event": "Kitzb\u00fchel",
+   "country": "AUT",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "31b",
+   "date": "2014-07-28",
+   "opened": "",
+   "name": "Washington D.C.",
+   "event": "Washington D.C.",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "supertom",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "31c",
+   "date": "2014-07-28",
+   "opened": "",
+   "name": "Vancouver CH*",
+   "event": "Vancouver",
+   "country": "CAN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "stbanchile",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "31d",
+   "date": "2014-07-28",
+   "opened": "",
+   "name": "Segovia CH",
+   "event": "Segovia",
+   "country": "ESP",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Freak3yman84",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "32a",
+   "date": "2014-08-04",
+   "opened": "",
+   "name": "Toronto",
+   "event": "Toronto",
+   "country": "CAN",
+   "surface": "H",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "32b",
+   "date": "2014-08-04",
+   "opened": "",
+   "name": "Aptos CH*",
+   "event": "Aptos",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AussieAdz",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "32c",
+   "date": "2014-08-04",
+   "opened": "",
+   "name": "San Marino CH",
+   "event": "San Marino",
+   "country": "SMR",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Lazyking",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "32d",
+   "date": "2014-08-04",
+   "opened": "",
+   "name": "Prague CH",
+   "event": "Prague",
+   "country": "CZE",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "infinite",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "33a",
+   "date": "2014-08-11",
+   "opened": "",
+   "name": "Cincinnati",
+   "event": "Cincinnati",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "randy72391",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "33b",
+   "date": "2014-08-11",
+   "opened": "",
+   "name": "Cordenons CH",
+   "event": "Cordenons",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Litotes",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "33c",
+   "date": "2014-08-11",
+   "opened": "",
+   "name": "Meerbusch CH",
+   "event": "Meerbusch",
+   "country": "GER",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Mahqz",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "33d",
+   "date": "2014-08-11",
+   "opened": "",
+   "name": "Karlsruhe FUT",
+   "event": "Karlsruhe",
+   "country": "GER",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "valac222",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "34a",
+   "date": "2014-08-18",
+   "opened": "",
+   "name": "Winston-Salem",
+   "event": "Winston-Salem",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "RafaCaliente",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "34b",
+   "date": "2014-08-18",
+   "opened": "",
+   "name": "Este FUT",
+   "event": "Este",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "infinite",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "34c",
+   "date": "2014-08-18",
+   "opened": "",
+   "name": "Vigo FUT",
+   "event": "Vigo",
+   "country": "ESP",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "valac222",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "34d",
+   "date": "2014-08-18",
+   "opened": "",
+   "name": "San Juan FUT",
+   "event": "San Juan",
+   "country": "ARG",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AussieAdz",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "35a",
+   "date": "2014-08-25",
+   "opened": "",
+   "name": "U.S. Open",
+   "event": "U.S. Open",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    128,
+    128,
+    64,
+    64
+   ],
+   "manager": "justafanYYC",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "35b",
+   "date": "2014-08-25",
+   "opened": "",
+   "name": "Como CH",
+   "event": "Como",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "36a",
+   "date": "2014-09-01",
+   "opened": "",
+   "name": "Genoa CH*",
+   "event": "Genoa",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Litotes",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "36b",
+   "date": "2014-09-01",
+   "opened": "",
+   "name": "Medellin CH",
+   "event": "Medellin",
+   "country": "COL",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "chowdahead25",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "36c",
+   "date": "2014-09-01",
+   "opened": "",
+   "name": "Shanghai CH",
+   "event": "Shanghai",
+   "country": "CHN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AussieAdz",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "36d",
+   "date": "2014-09-01",
+   "opened": "",
+   "name": "Saint-Remy CH",
+   "event": "Saint-Remy",
+   "country": "FRA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "supertom",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "37a",
+   "date": "2014-09-08",
+   "opened": "",
+   "name": "Davis Cup III",
+   "event": "Davis Cup III",
+   "country": "",
+   "surface": "",
+   "draw": [],
+   "manager": "keqtqiadv",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "37b",
+   "date": "2014-09-08",
+   "opened": "",
+   "name": "Szczecin CH*",
+   "event": "Szczecin",
+   "country": "POL",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "37c",
+   "date": "2014-09-08",
+   "opened": "",
+   "name": "Banja Luka CH",
+   "event": "Banja Luka",
+   "country": "BIH",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "valac222",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "37d",
+   "date": "2014-09-08",
+   "opened": "",
+   "name": "Istanbul CH",
+   "event": "Istanbul",
+   "country": "TUR",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AussieAdz",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "38a",
+   "date": "2014-09-15",
+   "opened": "",
+   "name": "Metz",
+   "event": "Metz",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "valac222",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "38b",
+   "date": "2014-09-15",
+   "opened": "",
+   "name": "Trnava CH",
+   "event": "Trnava",
+   "country": "SVK",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "38c",
+   "date": "2014-09-15",
+   "opened": "",
+   "name": "Izmir CH*",
+   "event": "Izmir",
+   "country": "TUR",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Litotes",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "38d",
+   "date": "2014-09-15",
+   "opened": "",
+   "name": "Quito CH",
+   "event": "Quito",
+   "country": "ECU",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "chowdahead25",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "38e",
+   "date": "2014-09-15",
+   "opened": "",
+   "name": "Meknes CH",
+   "event": "Meknes",
+   "country": "MOR",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "39a",
+   "date": "2014-09-22",
+   "opened": "",
+   "name": "Kuala Lumpur",
+   "event": "Kuala Lumpur",
+   "country": "MAS",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "39b",
+   "date": "2014-09-22",
+   "opened": "",
+   "name": "Shenzhen",
+   "event": "Shenzhen",
+   "country": "CHN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "39c",
+   "date": "2014-09-22",
+   "opened": "",
+   "name": "Orleans CH*",
+   "event": "Orleans",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "valac222",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "39d",
+   "date": "2014-09-22",
+   "opened": "",
+   "name": "Napa CH",
+   "event": "Napa",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "justafanYYC",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "39e",
+   "date": "2014-09-22",
+   "opened": "",
+   "name": "Pereira CH",
+   "event": "Pereira",
+   "country": "COL",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "chowdahead25",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "40a",
+   "date": "2014-09-29",
+   "opened": "",
+   "name": "Beijing",
+   "event": "Beijing",
+   "country": "CHN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "40b",
+   "date": "2014-09-29",
+   "opened": "",
+   "name": "Tokyo",
+   "event": "Tokyo",
+   "country": "JPN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "keqtqiadv",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "40c",
+   "date": "2014-09-29",
+   "opened": "",
+   "name": "Mons CH*",
+   "event": "Mons",
+   "country": "BEL",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "40d",
+   "date": "2014-09-29",
+   "opened": "",
+   "name": "Sacramento CH*",
+   "event": "Sacramento",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Litotes",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "40e",
+   "date": "2014-09-29",
+   "opened": "",
+   "name": "Cali CH",
+   "event": "Cali",
+   "country": "COL",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "goOudinUSA",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "41a",
+   "date": "2014-10-06",
+   "opened": "",
+   "name": "Shanghai",
+   "event": "Shanghai",
+   "country": "CHN",
+   "surface": "H",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "AussieAdz",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "41b",
+   "date": "2014-10-06",
+   "opened": "",
+   "name": "Tashkent CH*",
+   "event": "Tashkent",
+   "country": "UZB",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Daniel_amr",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "41c",
+   "date": "2014-10-06",
+   "opened": "",
+   "name": "Tiburon CH*",
+   "event": "Tiburon",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "BMT360",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "41d",
+   "date": "2014-10-06",
+   "opened": "",
+   "name": "Rennes CH*",
+   "event": "Rennes",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "valac222",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "42a",
+   "date": "2014-10-13",
+   "opened": "",
+   "name": "Moscow",
+   "event": "Moscow",
+   "country": "RUS",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "42b",
+   "date": "2014-10-13",
+   "opened": "",
+   "name": "Stockholm",
+   "event": "Stockholm",
+   "country": "SWE",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "randy72391",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "42c",
+   "date": "2014-10-13",
+   "opened": "",
+   "name": "Vienna",
+   "event": "Vienna",
+   "country": "AUT",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "valac222",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "42d",
+   "date": "2014-10-13",
+   "opened": "",
+   "name": "Indore CH",
+   "event": "Indore",
+   "country": "IND",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "chowdahead25",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "42e",
+   "date": "2014-10-13",
+   "opened": "",
+   "name": "San Juan CH",
+   "event": "San Juan",
+   "country": "ARG",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Litotes",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "43a",
+   "date": "2014-10-20",
+   "opened": "",
+   "name": "Valencia",
+   "event": "Valencia",
+   "country": "ESP",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "randy72391",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "43b",
+   "date": "2014-10-20",
+   "opened": "",
+   "name": "Basel",
+   "event": "Basel",
+   "country": "SUI",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "ESimp",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "43c",
+   "date": "2014-10-20",
+   "opened": "",
+   "name": "Pune CH",
+   "event": "Pune",
+   "country": "IND",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "buji",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "43d",
+   "date": "2014-10-20",
+   "opened": "",
+   "name": "Cordoba CH",
+   "event": "Cordoba",
+   "country": "ARG",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AussieAdz",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "43e",
+   "date": "2014-10-20",
+   "opened": "",
+   "name": "Madrid FUT",
+   "event": "Madrid",
+   "country": "ESP",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "43f",
+   "date": "2014-10-20",
+   "opened": "",
+   "name": "Yemok",
+   "event": "Yemok",
+   "country": "",
+   "surface": "",
+   "draw": [],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "44a",
+   "date": "2014-10-27",
+   "opened": "",
+   "name": "Paris",
+   "event": "Paris",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "valac222",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "44b",
+   "date": "2014-10-27",
+   "opened": "",
+   "name": "Geneva CH",
+   "event": "Geneva",
+   "country": "SUI",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "44c",
+   "date": "2014-10-27",
+   "opened": "",
+   "name": "Traralgon CH",
+   "event": "Traralgon",
+   "country": "AUS",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "stbanchile",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "44d",
+   "date": "2014-10-27",
+   "opened": "",
+   "name": "Reunion Island",
+   "event": "Reunion Island",
+   "country": "FRA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "45a",
+   "date": "2014-11-03",
+   "opened": "",
+   "name": "Bratislava CH*",
+   "event": "Bratislava",
+   "country": "SVK",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "valac222",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "45b",
+   "date": "2014-11-03",
+   "opened": "",
+   "name": "Knoxville CH",
+   "event": "Knoxville",
+   "country": "USA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "stbanchile",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "45c",
+   "date": "2014-11-03",
+   "opened": "",
+   "name": "Mouilleron Le Captif",
+   "event": "Mouilleron Le Captif",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "45d",
+   "date": "2014-11-03",
+   "opened": "",
+   "name": "Ortisei CH",
+   "event": "Ortisei",
+   "country": "ITA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "45e",
+   "date": "2014-11-03",
+   "opened": "",
+   "name": "Traralgon 2",
+   "event": "Traralgon 2",
+   "country": "AUS",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AussieAdz",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "46a",
+   "date": "2014-11-10",
+   "opened": "",
+   "name": "ATP Finals",
+   "event": "ATP Finals",
+   "country": "GBR",
+   "surface": "IH",
+   "draw": [],
+   "manager": "randy72391",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "46b",
+   "date": "2014-11-10",
+   "opened": "",
+   "name": "Brescia CH",
+   "event": "Brescia",
+   "country": "ITA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "46c",
+   "date": "2014-11-10",
+   "opened": "",
+   "name": "Yokohama CH",
+   "event": "Yokohama",
+   "country": "JPN",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AussieAdz",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "46d",
+   "date": "2014-11-10",
+   "opened": "",
+   "name": "Champaign CH",
+   "event": "Champaign",
+   "country": "USA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Thunderfish8",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "46e",
+   "date": "2014-11-10",
+   "opened": "",
+   "name": "Helsinki CH",
+   "event": "Helsinki",
+   "country": "FIN",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "47a",
+   "date": "2014-11-17",
+   "opened": "",
+   "name": "Davis Cup Final",
+   "event": "Davis Cup Final",
+   "country": "",
+   "surface": "CL",
+   "draw": [],
+   "manager": "keqtqiadv",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "47b",
+   "date": "2014-11-17",
+   "opened": "",
+   "name": "Challenger Tour Finals",
+   "event": "Challenger Tour Finals",
+   "country": "BRA",
+   "surface": "CL",
+   "draw": [],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2014",
+   "code": "47c",
+   "date": "2014-11-17",
+   "opened": "",
+   "name": "Lima CH",
+   "event": "Lima",
+   "country": "PER",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Cserkinho",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "47d",
+   "date": "2014-11-17",
+   "opened": "",
+   "name": "Montevideo CH",
+   "event": "Montevideo",
+   "country": "URU",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Litotes",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "47e",
+   "date": "2014-11-17",
+   "opened": "",
+   "name": "Andria CH",
+   "event": "Andria",
+   "country": "ITA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "valac222",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "47f",
+   "date": "2014-11-17",
+   "opened": "",
+   "name": "Toyota CH",
+   "event": "Toyota",
+   "country": "JPN",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "ESimp",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "1a",
+   "date": "2012-12-29",
+   "opened": "",
+   "name": "Hopman Cup",
+   "event": "Hopman Cup",
+   "country": "AUS",
+   "surface": "H",
+   "draw": [],
+   "manager": "abollo",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "1b",
+   "date": "2012-12-31",
+   "opened": "",
+   "name": "Doha",
+   "event": "Doha",
+   "country": "QAT",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AdeyC",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "1c",
+   "date": "2012-12-31",
+   "opened": "",
+   "name": "Brisbane",
+   "event": "Brisbane",
+   "country": "AUS",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "ESimp",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "1d",
+   "date": "2012-12-31",
+   "opened": "",
+   "name": "Chennai",
+   "event": "Chennai",
+   "country": "IND",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "justafanYYC",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "1e",
+   "date": "2012-12-31",
+   "opened": "",
+   "name": "Sao Paulo CH",
+   "event": "Sao Paulo",
+   "country": "BRA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "vmbf",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "1f",
+   "date": "2012-12-31",
+   "opened": "",
+   "name": "Noumea CH",
+   "event": "Noumea",
+   "country": "NCL",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "CoolyBri",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "2a",
+   "date": "2013-01-07",
+   "opened": "",
+   "name": "Sydney",
+   "event": "Sydney",
+   "country": "AUS",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "SUPERTOM93",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "2b",
+   "date": "2013-01-07",
+   "opened": "",
+   "name": "Auckland",
+   "event": "Auckland",
+   "country": "NZL",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "keqtqiadv",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "2c",
+   "date": "2013-01-07",
+   "opened": "",
+   "name": "Schwieberdingen FUT",
+   "event": "Schwieberdingen",
+   "country": "GER",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Marto",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "2d",
+   "date": "2013-01-07",
+   "opened": "",
+   "name": "Plantation FUT",
+   "event": "Plantation",
+   "country": "USA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "CoolyBri",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "2e",
+   "date": "2013-01-07",
+   "opened": "",
+   "name": "Antalya FUT",
+   "event": "Antalya",
+   "country": "TUR",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Vilniete",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "2f",
+   "date": "2013-01-09",
+   "opened": "",
+   "name": "Kooyong",
+   "event": "Kooyong",
+   "country": "AUS",
+   "surface": "H",
+   "draw": [],
+   "manager": "Felipe Abe",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "3a",
+   "date": "2013-01-14",
+   "opened": "",
+   "name": "Australian Open",
+   "event": "Australian Open",
+   "country": "AUS",
+   "surface": "H",
+   "draw": [
+    128,
+    128,
+    64,
+    64
+   ],
+   "manager": "AdeyC",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "3b",
+   "date": "2013-01-14",
+   "opened": "",
+   "name": "Glasgow FUT",
+   "event": "Glasgow",
+   "country": "GBR",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Vilniete",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "4a",
+   "date": "2013-01-21",
+   "opened": "",
+   "name": "Heilbronn CH*",
+   "event": "Heilbronn",
+   "country": "GER",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Marto",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "4b",
+   "date": "2013-01-21",
+   "opened": "",
+   "name": "Maui CH",
+   "event": "Maui",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "SUPERTOM93",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "4c",
+   "date": "2013-01-21",
+   "opened": "",
+   "name": "Bucaramanga CH",
+   "event": "Bucaramanga",
+   "country": "COL",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Direnan",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "4d",
+   "date": "2013-01-21",
+   "opened": "",
+   "name": "Bressuire FUT",
+   "event": "Bressuire",
+   "country": "FRA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "traddles",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "5a",
+   "date": "2013-01-28",
+   "opened": "",
+   "name": "Davis Cup I",
+   "event": "Davis Cup I",
+   "country": "",
+   "surface": "",
+   "draw": [],
+   "manager": "keqtqiadv",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "5b",
+   "date": "2013-01-28",
+   "opened": "",
+   "name": "Burnie CH",
+   "event": "Burnie",
+   "country": "AUS",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "justafanYYC",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "5c",
+   "date": "2013-01-28",
+   "opened": "",
+   "name": "Sheffield FUT",
+   "event": "Sheffield",
+   "country": "GBR",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Daniel_amr",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "5d",
+   "date": "2013-01-28",
+   "opened": "",
+   "name": "Nussloch FUT",
+   "event": "Nussloch",
+   "country": "GER",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Lazyking",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "6a",
+   "date": "2013-02-04",
+   "opened": "",
+   "name": "Montpellier",
+   "event": "Montpellier",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "ESimp",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "6b",
+   "date": "2013-02-04",
+   "opened": "",
+   "name": "Zagreb",
+   "event": "Zagreb",
+   "country": "CRO",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Marto",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "6c",
+   "date": "2013-02-04",
+   "opened": "",
+   "name": "Vina del Mar",
+   "event": "Vina del Mar",
+   "country": "CHI",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Direnan",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "6d",
+   "date": "2013-02-04",
+   "opened": "",
+   "name": "Dallas CH*",
+   "event": "Dallas",
+   "country": "USA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Ibreak4coffee",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "6e",
+   "date": "2013-02-04",
+   "opened": "",
+   "name": "Bergamo CH",
+   "event": "Bergamo",
+   "country": "ITA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "keqtqiadv",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "7a",
+   "date": "2013-02-11",
+   "opened": "",
+   "name": "Rotterdam",
+   "event": "Rotterdam",
+   "country": "NED",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AdeyC",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "7b",
+   "date": "2013-02-11",
+   "opened": "",
+   "name": "San Jose",
+   "event": "San Jose",
+   "country": "USA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "orangehat",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "7c",
+   "date": "2013-02-11",
+   "opened": "",
+   "name": "Sao Paulo",
+   "event": "Sao Paulo",
+   "country": "BRA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Direnan",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "7d",
+   "date": "2013-02-11",
+   "opened": "",
+   "name": "Quimper CH",
+   "event": "Quimper",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "ESimp",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "7e",
+   "date": "2013-02-11",
+   "opened": "",
+   "name": "Zagreb FUT",
+   "event": "Zagreb",
+   "country": "CRO",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Vilniete",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "8a",
+   "date": "2013-02-18",
+   "opened": "",
+   "name": "Memphis",
+   "event": "Memphis",
+   "country": "USA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "SUPERTOM93",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "8b",
+   "date": "2013-02-18",
+   "opened": "",
+   "name": "Marseille",
+   "event": "Marseille",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Marto",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "8c",
+   "date": "2013-02-18",
+   "opened": "",
+   "name": "Buenos Aires",
+   "event": "Buenos Aires",
+   "country": "ARG",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "orangehat",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "8d",
+   "date": "2013-02-18",
+   "opened": "",
+   "name": "Brownsville FUT",
+   "event": "Brownsville",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "justafanYYC",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "8e",
+   "date": "2013-02-18",
+   "opened": "",
+   "name": "Murcia FUT",
+   "event": "Murcia",
+   "country": "ESP",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Vilniete",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "9a",
+   "date": "2013-02-25",
+   "opened": "",
+   "name": "Dubai",
+   "event": "Dubai",
+   "country": "UAE",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "supertec",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "9b",
+   "date": "2013-02-25",
+   "opened": "",
+   "name": "Acapulco",
+   "event": "Acapulco",
+   "country": "MEX",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "SUPERTOM93",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "9c",
+   "date": "2013-02-25",
+   "opened": "",
+   "name": "Delray Beach",
+   "event": "Delray Beach",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "orangehat",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "9d",
+   "date": "2013-02-25",
+   "opened": "",
+   "name": "Cherbourg CH",
+   "event": "Cherbourg",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AdeyC",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "9e",
+   "date": "2013-02-25",
+   "opened": "",
+   "name": "Salinas CH",
+   "event": "Salinas",
+   "country": "ECU",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "traddles",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "10a",
+   "date": "2013-03-04",
+   "opened": "",
+   "name": "Indian Wells",
+   "event": "Indian Wells",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    128,
+    64,
+    64,
+    32
+   ],
+   "manager": "AdeyC",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "10b",
+   "date": "2013-03-04",
+   "opened": "",
+   "name": "Santiago CH",
+   "event": "Santiago",
+   "country": "CHI",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "traddles",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "11a",
+   "date": "2013-03-11",
+   "opened": "",
+   "name": "Dallas 2 CH*",
+   "event": "Dallas 2",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Lazyking",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "11b",
+   "date": "2013-03-11",
+   "opened": "",
+   "name": "Sarajevo CH",
+   "event": "Sarajevo",
+   "country": "BIH",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Marto",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "11c",
+   "date": "2013-03-11",
+   "opened": "",
+   "name": "Poitiers FUT",
+   "event": "Poitiers",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Vilniete",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "12a",
+   "date": "2013-03-18",
+   "opened": "",
+   "name": "Miami",
+   "event": "Miami",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    128,
+    64,
+    64,
+    32
+   ],
+   "manager": "Marto",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "12b",
+   "date": "2013-03-18",
+   "opened": "",
+   "name": "Rimouski CH",
+   "event": "Rimouski",
+   "country": "CAN",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "justafanYYC",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "13a",
+   "date": "2013-03-25",
+   "opened": "",
+   "name": "Le Gosier CH*",
+   "event": "Le Gosier",
+   "country": "FRA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "ESimp",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "13b",
+   "date": "2013-03-25",
+   "opened": "",
+   "name": "Pereira CH",
+   "event": "Pereira",
+   "country": "COL",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Lazyking",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "13c",
+   "date": "2013-03-25",
+   "opened": "",
+   "name": "San Luis Potosi CH",
+   "event": "San Luis Potosi",
+   "country": "MEX",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "traddles",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "14a",
+   "date": "2013-04-01",
+   "opened": "",
+   "name": "Davis Cup II",
+   "event": "Davis Cup II",
+   "country": "",
+   "surface": "",
+   "draw": [],
+   "manager": "keqtqiadv",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "14b",
+   "date": "2013-04-01",
+   "opened": "",
+   "name": "Saint-Brieuc CH",
+   "event": "Saint-Brieuc",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "ESimp",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "14c",
+   "date": "2013-04-01",
+   "opened": "",
+   "name": "Leon CH",
+   "event": "Leon",
+   "country": "MEX",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "justafanYYC",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "14d",
+   "date": "2013-04-01",
+   "opened": "",
+   "name": "Rome FUT",
+   "event": "Rome",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Vilniete",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "14e",
+   "date": "2013-04-01",
+   "opened": "",
+   "name": "Villajoyosa FUT",
+   "event": "Villajoyosa",
+   "country": "ESP",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Marto",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "15a",
+   "date": "2013-04-08",
+   "opened": "",
+   "name": "Casablanca",
+   "event": "Casablanca",
+   "country": "MOR",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Marto",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "15b",
+   "date": "2013-04-08",
+   "opened": "",
+   "name": "Houston",
+   "event": "Houston",
+   "country": "USA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "orangehat",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "15c",
+   "date": "2013-04-08",
+   "opened": "",
+   "name": "Guadalajara CH*",
+   "event": "Guadalajara",
+   "country": "MEX",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "SUPERTOM93",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "15d",
+   "date": "2013-04-08",
+   "opened": "",
+   "name": "Barranquilla CH",
+   "event": "Barranquilla",
+   "country": "COL",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "justafanYYC",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "15e",
+   "date": "2013-04-08",
+   "opened": "",
+   "name": "Mersin CH",
+   "event": "Mersin",
+   "country": "TUR",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AdeyC",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "16a",
+   "date": "2013-04-15",
+   "opened": "",
+   "name": "Monte Carlo",
+   "event": "Monte Carlo",
+   "country": "MON",
+   "surface": "CL",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "AdeyC",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "16b",
+   "date": "2013-04-15",
+   "opened": "",
+   "name": "Sarasota CH*",
+   "event": "Sarasota",
+   "country": "USA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "rvugt",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "16c",
+   "date": "2013-04-15",
+   "opened": "",
+   "name": "Mexico City CH",
+   "event": "Mexico City",
+   "country": "MEX",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "justafanYYC",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "16d",
+   "date": "2013-04-15",
+   "opened": "",
+   "name": "Panama City CH",
+   "event": "Panama City",
+   "country": "PAN",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Lazyking",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "17a",
+   "date": "2013-04-22",
+   "opened": "",
+   "name": "Barcelona",
+   "event": "Barcelona",
+   "country": "ESP",
+   "surface": "CL",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "Marto",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "17b",
+   "date": "2013-04-22",
+   "opened": "",
+   "name": "Bucharest",
+   "event": "Bucharest",
+   "country": "ROU",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "rvugt",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "17c",
+   "date": "2013-04-22",
+   "opened": "",
+   "name": "Savannah CH",
+   "event": "Savannah",
+   "country": "USA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Lazyking",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "17d",
+   "date": "2013-04-22",
+   "opened": "",
+   "name": "Sao Paulo CH",
+   "event": "Sao Paulo",
+   "country": "BRA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "18a",
+   "date": "2013-04-29",
+   "opened": "",
+   "name": "Estoril",
+   "event": "Estoril",
+   "country": "POR",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "ESimp",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "18b",
+   "date": "2013-04-29",
+   "opened": "",
+   "name": "Munich",
+   "event": "Munich",
+   "country": "GER",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Mahqz",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "18c",
+   "date": "2013-04-29",
+   "opened": "",
+   "name": "Tunis CH*",
+   "event": "Tunis",
+   "country": "TUN",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "rvugt",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "18d",
+   "date": "2013-04-29",
+   "opened": "",
+   "name": "Johannesburg CH*",
+   "event": "Johannesburg",
+   "country": "RSA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Felipe Abe",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "18e",
+   "date": "2013-04-29",
+   "opened": "",
+   "name": "Ostrava CH*",
+   "event": "Ostrava",
+   "country": "CZE",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AdeyC",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "19a",
+   "date": "2013-05-06",
+   "opened": "",
+   "name": "Madrid",
+   "event": "Madrid",
+   "country": "ESP",
+   "surface": "CL",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "Mahqz",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "19b",
+   "date": "2013-05-06",
+   "opened": "",
+   "name": "Kunming CH*",
+   "event": "Kunming",
+   "country": "CHN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "ESimp",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "19c",
+   "date": "2013-05-06",
+   "opened": "",
+   "name": "Rome 2 CH",
+   "event": "Rome 2",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "traddles",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "19d",
+   "date": "2013-05-06",
+   "opened": "",
+   "name": "Rio Quente CH",
+   "event": "Rio Quente",
+   "country": "BRA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "traddles",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "20a",
+   "date": "2013-05-13",
+   "opened": "",
+   "name": "Rome",
+   "event": "Rome",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "AdeyC",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "20b",
+   "date": "2013-05-13",
+   "opened": "",
+   "name": "Bordeaux CH*",
+   "event": "Bordeaux",
+   "country": "FRA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Nixer",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "20c",
+   "date": "2013-05-13",
+   "opened": "",
+   "name": "Busan CH",
+   "event": "Busan",
+   "country": "KOR",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "SUPERTOM93",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "20d",
+   "date": "2013-05-13",
+   "opened": "",
+   "name": "Samarkand CH",
+   "event": "Samarkand",
+   "country": "UZB",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Ilovetheblues_86",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "21a",
+   "date": "2013-05-20",
+   "opened": "",
+   "name": "Nice",
+   "event": "Nice",
+   "country": "FRA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AdeyC",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "21b",
+   "date": "2013-05-20",
+   "opened": "",
+   "name": "Dusseldorf",
+   "event": "Dusseldorf",
+   "country": "GER",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Marto",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "21c",
+   "date": "2013-05-20",
+   "opened": "",
+   "name": "Bell Ville FUT",
+   "event": "Bell Ville",
+   "country": "ARG",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "21d",
+   "date": "2013-05-20",
+   "opened": "",
+   "name": "Varna FUT",
+   "event": "Varna",
+   "country": "BUL",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "21e",
+   "date": "2013-05-20",
+   "opened": "",
+   "name": "Bucharest FUT",
+   "event": "Bucharest",
+   "country": "ROU",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "MathMul",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "22a",
+   "date": "2013-05-27",
+   "opened": "",
+   "name": "Roland Garros",
+   "event": "Roland Garros",
+   "country": "FRA",
+   "surface": "CL",
+   "draw": [
+    128,
+    128,
+    64,
+    64
+   ],
+   "manager": "abollo",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "22b",
+   "date": "2013-05-27",
+   "opened": "",
+   "name": "Sofia FUT",
+   "event": "Sofia",
+   "country": "BUL",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Nixer",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "23a",
+   "date": "2013-06-03",
+   "opened": "",
+   "name": "Prostejov CH*",
+   "event": "Prostejov",
+   "country": "CZE",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "rvugt",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "23b",
+   "date": "2013-06-03",
+   "opened": "",
+   "name": "Caltanissetta CH*",
+   "event": "Caltanissetta",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "MathMul",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "23c",
+   "date": "2013-06-03",
+   "opened": "",
+   "name": "Nottingham CH",
+   "event": "Nottingham",
+   "country": "GBR",
+   "surface": "G",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "MathMul",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "23d",
+   "date": "2013-06-03",
+   "opened": "",
+   "name": "Arad CH",
+   "event": "Arad",
+   "country": "ROU",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "24a",
+   "date": "2013-06-10",
+   "opened": "",
+   "name": "Queen's",
+   "event": "Queen's",
+   "country": "GBR",
+   "surface": "G",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "AdeyC",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "24b",
+   "date": "2013-06-10",
+   "opened": "",
+   "name": "Halle",
+   "event": "Halle",
+   "country": "GER",
+   "surface": "G",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "ESimp",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "24c",
+   "date": "2013-06-10",
+   "opened": "",
+   "name": "Nottingham 2 CH",
+   "event": "Nottingham 2",
+   "country": "GBR",
+   "surface": "G",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Freak3yman84",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "24d",
+   "date": "2013-06-10",
+   "opened": "",
+   "name": "Prague CH",
+   "event": "Prague",
+   "country": "CZE",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "rajknier",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "25a",
+   "date": "2013-06-17",
+   "opened": "",
+   "name": "s-Hertogenbosch",
+   "event": "s-Hertogenbosch",
+   "country": "NED",
+   "surface": "G",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "rvugt",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "25b",
+   "date": "2013-06-17",
+   "opened": "",
+   "name": "Eastbourne",
+   "event": "Eastbourne",
+   "country": "GBR",
+   "surface": "G",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "ESimp",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "25c",
+   "date": "2013-06-17",
+   "opened": "",
+   "name": "Milan CH",
+   "event": "Milan",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "25d",
+   "date": "2013-06-17",
+   "opened": "",
+   "name": "Tangier CH",
+   "event": "Tangier",
+   "country": "MOR",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Marto",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "26a",
+   "date": "2013-06-24",
+   "opened": "",
+   "name": "Wimbledon",
+   "event": "Wimbledon",
+   "country": "GBR",
+   "surface": "G",
+   "draw": [
+    128,
+    128,
+    64,
+    64
+   ],
+   "manager": "Marto",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "26b",
+   "date": "2013-06-24",
+   "opened": "",
+   "name": "Marburg CH",
+   "event": "Marburg",
+   "country": "GER",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Nixer",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "27a",
+   "date": "2013-07-01",
+   "opened": "",
+   "name": "Braunschweig CH*",
+   "event": "Braunschweig",
+   "country": "GER",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "supertom",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "27b",
+   "date": "2013-07-01",
+   "opened": "",
+   "name": "Winnetka CH",
+   "event": "Winnetka",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "matt176116",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "27c",
+   "date": "2013-07-01",
+   "opened": "",
+   "name": "Portoroz CH",
+   "event": "Portoroz",
+   "country": "SLO",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "lolada_4",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "27d",
+   "date": "2013-07-01",
+   "opened": "",
+   "name": "Timisoara CH",
+   "event": "Timisoara",
+   "country": "ROU",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "MathMul",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "28a",
+   "date": "2013-07-08",
+   "opened": "",
+   "name": "Bastad",
+   "event": "Bastad",
+   "country": "SWE",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "supertom",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "28b",
+   "date": "2013-07-08",
+   "opened": "",
+   "name": "Stuttgart",
+   "event": "Stuttgart",
+   "country": "GER",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "28c",
+   "date": "2013-07-08",
+   "opened": "",
+   "name": "Newport",
+   "event": "Newport",
+   "country": "USA",
+   "surface": "G",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "justafanYYC",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "28d",
+   "date": "2013-07-08",
+   "opened": "",
+   "name": "Beijing CH",
+   "event": "Beijing",
+   "country": "CHN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Daniel_amr",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "28e",
+   "date": "2013-07-08",
+   "opened": "",
+   "name": "Scheveningen CH",
+   "event": "Scheveningen",
+   "country": "NED",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "rvugt",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "29a",
+   "date": "2013-07-15",
+   "opened": "",
+   "name": "Hamburg",
+   "event": "Hamburg",
+   "country": "GER",
+   "surface": "CL",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "AdeyC",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "29b",
+   "date": "2013-07-15",
+   "opened": "",
+   "name": "Bogota",
+   "event": "Bogota",
+   "country": "COL",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "justafanYYC",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "29c",
+   "date": "2013-07-15",
+   "opened": "",
+   "name": "Binghamton CH",
+   "event": "Binghamton",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "matt176116",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "29d",
+   "date": "2013-07-15",
+   "opened": "",
+   "name": "Poznan CH",
+   "event": "Poznan",
+   "country": "POL",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Nixer",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "30a",
+   "date": "2013-07-22",
+   "opened": "",
+   "name": "Atlanta",
+   "event": "Atlanta",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Freak3yman84",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "30b",
+   "date": "2013-07-22",
+   "opened": "",
+   "name": "Gstaad",
+   "event": "Gstaad",
+   "country": "SUI",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AdeyC",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "30c",
+   "date": "2013-07-22",
+   "opened": "",
+   "name": "Umag",
+   "event": "Umag",
+   "country": "CRO",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "rvugt",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "30d",
+   "date": "2013-07-22",
+   "opened": "",
+   "name": "Astana CH*",
+   "event": "Astana",
+   "country": "KAZ",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "30e",
+   "date": "2013-07-22",
+   "opened": "",
+   "name": "Tampere CH",
+   "event": "Tampere",
+   "country": "FIN",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "MathMul",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "31a",
+   "date": "2013-07-29",
+   "opened": "",
+   "name": "Washington D.C.",
+   "event": "Washington D.C.",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "31b",
+   "date": "2013-07-29",
+   "opened": "",
+   "name": "Kitzb\u00fchel",
+   "event": "Kitzb\u00fchel",
+   "country": "AUT",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AdeyC",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "31c",
+   "date": "2013-07-29",
+   "opened": "",
+   "name": "Vancouver CH*",
+   "event": "Vancouver",
+   "country": "CAN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "justafanYYC",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "31d",
+   "date": "2013-07-29",
+   "opened": "",
+   "name": "Segovia CH",
+   "event": "Segovia",
+   "country": "ESP",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Nixer",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "32a",
+   "date": "2013-08-05",
+   "opened": "",
+   "name": "Montreal",
+   "event": "Montreal",
+   "country": "CAN",
+   "surface": "H",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "traddles",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "32b",
+   "date": "2013-08-05",
+   "opened": "",
+   "name": "Aptos CH*",
+   "event": "Aptos",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "justafanYYC",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "32c",
+   "date": "2013-08-05",
+   "opened": "",
+   "name": "San Marino CH",
+   "event": "San Marino",
+   "country": "SMR",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AdeyC",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "32d",
+   "date": "2013-08-05",
+   "opened": "",
+   "name": "Rio de Janeiro CH",
+   "event": "Rio de Janeiro",
+   "country": "BRA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "DJDVD",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "33a",
+   "date": "2013-08-12",
+   "opened": "",
+   "name": "Cincinnati",
+   "event": "Cincinnati",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "rvugt",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "33b",
+   "date": "2013-08-12",
+   "opened": "",
+   "name": "Cordenons CH",
+   "event": "Cordenons",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AdeyC",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "33c",
+   "date": "2013-08-12",
+   "opened": "",
+   "name": "Meerbusch CH",
+   "event": "Meerbusch",
+   "country": "GER",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Mahqz",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "33d",
+   "date": "2013-08-12",
+   "opened": "",
+   "name": "Kazan CH",
+   "event": "Kazan",
+   "country": "RUS",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "34a",
+   "date": "2013-08-19",
+   "opened": "",
+   "name": "Winston-Salem",
+   "event": "Winston-Salem",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "AdeyC",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "34b",
+   "date": "2013-08-19",
+   "opened": "",
+   "name": "Este FUT",
+   "event": "Este",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Mahqz",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "34c",
+   "date": "2013-08-19",
+   "opened": "",
+   "name": "Poznan FUT",
+   "event": "Poznan",
+   "country": "POL",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "34d",
+   "date": "2013-08-19",
+   "opened": "",
+   "name": "San Juan FUT",
+   "event": "San Juan",
+   "country": "ARG",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "justafanYYC",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "35a",
+   "date": "2013-08-26",
+   "opened": "",
+   "name": "U.S. Open",
+   "event": "U.S. Open",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    128,
+    128,
+    64,
+    64
+   ],
+   "manager": "supertom",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "35b",
+   "date": "2013-08-26",
+   "opened": "",
+   "name": "Como CH",
+   "event": "Como",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Mahqz",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "36a",
+   "date": "2013-09-02",
+   "opened": "",
+   "name": "Genoa CH*",
+   "event": "Genoa",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AdeyC",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "36b",
+   "date": "2013-09-02",
+   "opened": "",
+   "name": "Alphen CH",
+   "event": "Alphen",
+   "country": "NED",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "MathMul",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "36c",
+   "date": "2013-09-02",
+   "opened": "",
+   "name": "Saint-Remy CH",
+   "event": "Saint-Remy",
+   "country": "FRA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Nixer",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "36d",
+   "date": "2013-09-02",
+   "opened": "",
+   "name": "Shanghai CH",
+   "event": "Shanghai",
+   "country": "CHN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "justafanYYC",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "37a",
+   "date": "2013-09-09",
+   "opened": "",
+   "name": "Davis Cup III",
+   "event": "Davis Cup III",
+   "country": "",
+   "surface": "",
+   "draw": [],
+   "manager": "keqtqiadv",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "37b",
+   "date": "2013-09-09",
+   "opened": "",
+   "name": "Istanbul CH",
+   "event": "Istanbul",
+   "country": "TUR",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Sonja1989",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "37c",
+   "date": "2013-09-09",
+   "opened": "",
+   "name": "Petange CH",
+   "event": "Petange",
+   "country": "LUX",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "MathMul",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "37d",
+   "date": "2013-09-09",
+   "opened": "",
+   "name": "Banja Luka CH",
+   "event": "Banja Luka",
+   "country": "BIH",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AdeyC",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "37e",
+   "date": "2013-09-09",
+   "opened": "",
+   "name": "Cali CH",
+   "event": "Cali",
+   "country": "COL",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "traddles",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "38a",
+   "date": "2013-09-16",
+   "opened": "",
+   "name": "Metz",
+   "event": "Metz",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "supertom",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "38b",
+   "date": "2013-09-16",
+   "opened": "",
+   "name": "St. Petersburg",
+   "event": "St. Petersburg",
+   "country": "RUS",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AdeyC",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "38c",
+   "date": "2013-09-16",
+   "opened": "",
+   "name": "Kaohsiung CH*",
+   "event": "Kaohsiung",
+   "country": "TPE",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "ESimp",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "38d",
+   "date": "2013-09-16",
+   "opened": "",
+   "name": "Szczecin CH*",
+   "event": "Szczecin",
+   "country": "POL",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Daniel_amr",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "38e",
+   "date": "2013-09-16",
+   "opened": "",
+   "name": "Campinas CH",
+   "event": "Campinas",
+   "country": "BRA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Hidalgo",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "39a",
+   "date": "2013-09-23",
+   "opened": "",
+   "name": "Kuala Lumpur",
+   "event": "Kuala Lumpur",
+   "country": "MAS",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "ESimp",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "39b",
+   "date": "2013-09-23",
+   "opened": "",
+   "name": "Bangkok",
+   "event": "Bangkok",
+   "country": "THA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "justafanYYC",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "39c",
+   "date": "2013-09-23",
+   "opened": "",
+   "name": "Orleans CH*",
+   "event": "Orleans",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Mahqz",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "39d",
+   "date": "2013-09-23",
+   "opened": "",
+   "name": "Fergana CH",
+   "event": "Fergana",
+   "country": "UZB",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "39e",
+   "date": "2013-09-23",
+   "opened": "",
+   "name": "Napa CH",
+   "event": "Napa",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "traddles",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "40a",
+   "date": "2013-09-30",
+   "opened": "",
+   "name": "Beijing",
+   "event": "Beijing",
+   "country": "CHN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "40b",
+   "date": "2013-09-30",
+   "opened": "",
+   "name": "Tokyo",
+   "event": "Tokyo",
+   "country": "JPN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "keqtqiadv",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "40c",
+   "date": "2013-09-30",
+   "opened": "",
+   "name": "Mons CH*",
+   "event": "Mons",
+   "country": "BEL",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AdeyC",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "40d",
+   "date": "2013-09-30",
+   "opened": "",
+   "name": "Sacramento CH*",
+   "event": "Sacramento",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "justafanYYC",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "40e",
+   "date": "2013-09-30",
+   "opened": "",
+   "name": "Sao Paulo 2 CH",
+   "event": "Sao Paulo 2",
+   "country": "BRA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "CoolyBri",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "41a",
+   "date": "2013-10-07",
+   "opened": "",
+   "name": "Shanghai",
+   "event": "Shanghai",
+   "country": "",
+   "surface": "H",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "Marto",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "41b",
+   "date": "2013-10-07",
+   "opened": "",
+   "name": "Tashkent CH*",
+   "event": "Tashkent",
+   "country": "",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "41c",
+   "date": "2013-10-07",
+   "opened": "",
+   "name": "San Juan",
+   "event": "San Juan",
+   "country": "",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "justafanYYC",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "41d",
+   "date": "2013-10-07",
+   "opened": "",
+   "name": "Rennes CH",
+   "event": "Rennes",
+   "country": "",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AdeyC",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "42a",
+   "date": "2013-10-14",
+   "opened": "",
+   "name": "Moscow",
+   "event": "Moscow",
+   "country": "",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AdeyC",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "42b",
+   "date": "2013-10-14",
+   "opened": "",
+   "name": "Stockholm",
+   "event": "Stockholm",
+   "country": "",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "ESimp",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "42c",
+   "date": "2013-10-14",
+   "opened": "",
+   "name": "Vienna",
+   "event": "Vienna",
+   "country": "",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Marto",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "42d",
+   "date": "2013-10-14",
+   "opened": "",
+   "name": "Mouilleron Le Captif CH",
+   "event": "Mouilleron Le Captif",
+   "country": "",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "MathMul",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "42e",
+   "date": "2013-10-14",
+   "opened": "",
+   "name": "Mansfield FUT",
+   "event": "Mansfield",
+   "country": "",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Sonja1989",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "43a",
+   "date": "2013-10-21",
+   "opened": "",
+   "name": "Valencia",
+   "event": "Valencia",
+   "country": "",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "ESimp",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "43b",
+   "date": "2013-10-21",
+   "opened": "",
+   "name": "Basel",
+   "event": "Basel",
+   "country": "",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Mahqz",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "43c",
+   "date": "2013-10-21",
+   "opened": "",
+   "name": "Buenos Aires CH",
+   "event": "Buenos Aires",
+   "country": "",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "justafanYYC",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "43d",
+   "date": "2013-10-21",
+   "opened": "",
+   "name": "Kazan 2 CH",
+   "event": "Kazan 2",
+   "country": "",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "43e",
+   "date": "2013-10-21",
+   "opened": "",
+   "name": "Melbourne CH",
+   "event": "Melbourne",
+   "country": "",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "keqtqiadv",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "44a",
+   "date": "2013-10-28",
+   "opened": "",
+   "name": "Yemok Cup",
+   "event": "Yemok Cup",
+   "country": "",
+   "surface": "",
+   "draw": [],
+   "manager": "AdeyC",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "44b",
+   "date": "2013-10-28",
+   "opened": "",
+   "name": "Paris",
+   "event": "Paris",
+   "country": "",
+   "surface": "H",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "AdeyC",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "44c",
+   "date": "2013-10-28",
+   "opened": "",
+   "name": "Geneva CH",
+   "event": "Geneva",
+   "country": "",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Marto",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "44d",
+   "date": "2013-10-28",
+   "opened": "",
+   "name": "Charlottesville CH",
+   "event": "Charlottesville",
+   "country": "",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "CoolyBri",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "44e",
+   "date": "2013-10-28",
+   "opened": "",
+   "name": "Seoul CH",
+   "event": "Seoul",
+   "country": "",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "45a",
+   "date": "2013-11-04",
+   "opened": "",
+   "name": "ATP Finals",
+   "event": "ATP Finals",
+   "country": "",
+   "surface": "H",
+   "draw": [],
+   "manager": "Mahqz",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "45b",
+   "date": "2013-11-04",
+   "opened": "",
+   "name": "Bogota CH*",
+   "event": "Bogota",
+   "country": "",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "DJDVD",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "45c",
+   "date": "2013-11-04",
+   "opened": "",
+   "name": "Bratislava CH",
+   "event": "Bratislava",
+   "country": "",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AdeyC",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "45d",
+   "date": "2013-11-04",
+   "opened": "",
+   "name": "Ortisei CH",
+   "event": "Ortisei",
+   "country": "",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Sonja1989",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "45e",
+   "date": "2013-11-04",
+   "opened": "",
+   "name": "Yeongwol CH",
+   "event": "Yeongwol",
+   "country": "",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "46a",
+   "date": "2013-11-11",
+   "opened": "",
+   "name": "Davis Cup Final",
+   "event": "Davis Cup Final",
+   "country": "",
+   "surface": "",
+   "draw": [],
+   "manager": "keqtqiadv",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "46b",
+   "date": "2013-11-11",
+   "opened": "",
+   "name": "Challenger Tour Finals",
+   "event": "Challenger Tour Finals",
+   "country": "",
+   "surface": "IH",
+   "draw": [],
+   "manager": "bry17may",
+   "challenger": false
+  },
+  {
+   "season": "2013",
+   "code": "46c",
+   "date": "2013-11-11",
+   "opened": "",
+   "name": "Helsinki CH*",
+   "event": "Helsinki",
+   "country": "",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "AdeyC",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "46d",
+   "date": "2013-11-11",
+   "opened": "",
+   "name": "Champaign CH",
+   "event": "Champaign",
+   "country": "",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "CoolyBri",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "46e",
+   "date": "2013-11-11",
+   "opened": "",
+   "name": "Yokohama CH",
+   "event": "Yokohama",
+   "country": "",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "46f",
+   "date": "2013-11-11",
+   "opened": "",
+   "name": "Guayaquil CH",
+   "event": "Guayaquil",
+   "country": "",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "MathMul",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "47a",
+   "date": "2013-11-18",
+   "opened": "",
+   "name": "Toyota CH",
+   "event": "Toyota",
+   "country": "",
+   "surface": "H",
+   "draw": [
+    32,
+    32,
+    16,
+    16
+   ],
+   "manager": "ESimp",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "47b",
+   "date": "2013-11-18",
+   "opened": "",
+   "name": "Tyumen CH",
+   "event": "Tyumen",
+   "country": "",
+   "surface": "H",
+   "draw": [
+    32,
+    32,
+    16,
+    16
+   ],
+   "manager": "Cserkinho",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "47c",
+   "date": "2013-11-18",
+   "opened": "",
+   "name": "Andria CH",
+   "event": "Andria",
+   "country": "",
+   "surface": "IH",
+   "draw": [
+    32,
+    32,
+    16,
+    16
+   ],
+   "manager": "Mahqz",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "47d",
+   "date": "2013-11-18",
+   "opened": "",
+   "name": "Bol FUT",
+   "event": "Bol",
+   "country": "",
+   "surface": "CL",
+   "draw": [
+    32,
+    32,
+    16,
+    16
+   ],
+   "manager": "Marto",
+   "challenger": true
   }
  ],
  "aliases": [
