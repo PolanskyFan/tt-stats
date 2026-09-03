@@ -708,7 +708,7 @@ const EDIT = document.body.dataset.mode === "edit";
 /* index.html, desk.html and app.js are uploaded together. Updating only some
    of them leaves a page whose markup and code disagree, which shows up as a
    blank tab rather than an error, so they carry a matching stamp. */
-const APP_VERSION = "2026-09-02a";
+const APP_VERSION = "2026-09-03a";
 const esc = s => String(s).replace(/[&<>"']/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
@@ -1055,6 +1055,10 @@ function deriveDateProblems(){
 
 /* Weeks you've confirmed are correct even though they aren't a Monday. */
 const DATE_OK = new Set();
+/* Weeks you've confirmed really do exist on one tour only \u2014 sometimes a
+   doubles list simply was never posted, and there's nothing to add. */
+const GAP_OK = new Set();
+const gapTag = g => [g.season, g.week, g.missing].join("|");
 const weekTag = w => [(w.tour||"Singles"), (w.season||""), w.name].join("|");
 
 /* A free-text rename, for the dates no rule can guess \u2014 February 31st and
@@ -1332,10 +1336,10 @@ function deriveTourGaps(){
     for(const [name,w] of S) if(!D.has(name)) out.push({season, week:name, has:"Singles", missing:"Doubles", date:w.date});
     for(const [name,w] of D) if(!S.has(name)) out.push({season, week:name, has:"Doubles", missing:"Singles", date:w.date});
   }
-  return out.sort((a,b)=> (b.season||"").localeCompare(a.season||"") ||
-    ((a.date&&b.date) ? a.date-b.date : String(a.week).localeCompare(String(b.week))));
+  return out.filter(g=>!GAP_OK.has(gapTag(g)))
+    .sort((a,b)=> (b.season||"").localeCompare(a.season||"") ||
+      ((a.date&&b.date) ? a.date-b.date : String(a.week).localeCompare(String(b.week))));
 }
-
 function unpin(key, field){
   const p=PINS.get(key); if(!p) return;
   delete p[field];
@@ -1382,7 +1386,7 @@ const MATCH_COLS = [
     }, csv:r=>r.disc==="Doubles"?canonTeam(r.winner):canonName(r.winner)},
   {k:"winnerCountry",h:"Winner Country",cls:"ctry"},
   {k:"loserSeed",h:"Loser Seed",cls:"seed"},
-  {k:"loser",h:"Loser",cls:"lose",render:r=>esc(r.disc==="Doubles"?canonTeam(r.loser):canonName(r.loser)),
+  {k:"loser",h:"Loser",cls:"lose",render:r=>nameLinks(r.loser, r.disc),
     csv:r=>r.disc==="Doubles"?canonTeam(r.loser):canonName(r.loser)},
   {k:"loserCountry",h:"Loser Country",cls:"ctry"},
   {k:"winnerScore",h:"Winner Score",cls:"num"}, {k:"loserScore",h:"Loser Score",cls:"num"},
@@ -1424,7 +1428,7 @@ function renderLuck(){
       const s2=document.createElement("span"); s2.className="wlpct"; s2.textContent=r.pct+"%";
       d.appendChild(b); d.appendChild(s2); return d;}, csv:r=>r.pct+"%"},
     {k:"wins",h:"Slots",cls:"num"},{k:"slots",h:"of",cls:"num"},
-    {k:"champion",h:"Champion"},
+    {k:"champion",h:"Champion",render:r=>nameLinks(r.champion,r.disc), csv:r=>r.champion},
     {k:"event",h:"Tournament",render:r=>{
       const b=document.createElement("button"); b.className="linkish"; b.textContent=r.event;
       b.addEventListener("click",()=>showEvent(r.event, r.season)); return b;}, csv:r=>r.event},
@@ -1449,6 +1453,63 @@ function renderLuck(){
 }
 const LUCK_UI={season:"", disc:""};
 
+/* Manager names come from the calendar rather than the match data, so the
+   player merge doesn't reach them. Renaming rewrites every row, which merges
+   two spellings when the new name already exists. */
+function renameManager(from, to){
+  let n=0;
+  CALENDAR.forEach(c=>{ if(c.manager===from){ c.manager=to; n++; } });
+  return n;
+}
+
+function renderManagerMerge(mount){
+  if(!EDIT) return;
+  const names=[...new Set(CALENDAR.map(c=>c.manager).filter(Boolean))].sort(
+    (a,b)=>a.toLowerCase().localeCompare(b.toLowerCase()));
+  if(names.length<2) return;
+
+  const box=document.createElement("details");
+  box.className="panel"; box.style.margin="0 0 18px";
+  const sum=document.createElement("summary");
+  sum.style.cssText="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:10.5px;"
+    +"letter-spacing:.16em;text-transform:uppercase;color:var(--slate)";
+  sum.textContent="Rename or merge a manager";
+  box.appendChild(sum);
+
+  const p=document.createElement("p"); p.className="lede"; p.style.margin="12px 0 8px";
+  p.textContent="Pick the name to change and type what it should be. If that name already exists "
+    +"the two are merged. This rewrites the calendar, so save afterwards.";
+  box.appendChild(p);
+
+  const bar=document.createElement("div"); bar.className="controls";
+  const from=selectOf(names.map(x=>[x,`${x} (${CALENDAR.filter(c=>c.manager===x).length})`]),
+    names[0], ()=>{});
+  const to=document.createElement("input");
+  to.type="text"; to.placeholder="Correct name\u2026"; to.setAttribute("list","mgrNames");
+  const dl=document.createElement("datalist"); dl.id="mgrNames";
+  names.forEach(x=>{ const o=document.createElement("option"); o.value=x; dl.appendChild(o); });
+  box.appendChild(dl);
+  const go=document.createElement("button"); go.className="btn primary"; go.textContent="Apply";
+  go.addEventListener("click",()=>{
+    const a=from.value, b=to.value.trim();
+    if(!b || a===b) return;
+    const exists=names.includes(b);
+    const count=CALENDAR.filter(c=>c.manager===a).length;
+    if(!confirm(exists
+      ? `Merge ${a} into ${b}? ${count} tournaments will move across, and ${a} will no longer exist.`
+      : `Rename ${a} to ${b} across ${count} tournaments?`)) return;
+    snapshot("manager rename");
+    const moved=renameManager(a,b);
+    markDirty(); refreshAll();
+    saveMsg(`${exists?"Merged":"Renamed"} ${a} \u2192 ${b} across ${moved} tournaments.`);
+  });
+  bar.appendChild(field("Change", from, "md"));
+  bar.appendChild(field("To", to, "md"));
+  bar.appendChild(field("", go));
+  box.appendChild(bar);
+  mount.appendChild(box);
+}
+
 function renderManagers(){
   const mount=$("mgrMount"); if(!mount) return;
   mount.innerHTML="";
@@ -1461,6 +1522,7 @@ function renderManagers(){
      an unknown one and snapped back to the newest year. */
   if(CAL_UI.mgrSeason===undefined) CAL_UI.mgrSeason=seasons[0];
   if(CAL_UI.mgrSeason && !seasons.includes(CAL_UI.mgrSeason)) CAL_UI.mgrSeason=seasons[0];
+  renderManagerMerge(mount);
   const bar=document.createElement("div"); bar.className="controls";
   bar.appendChild(field("Season", selectOf([["","All seasons"]].concat(seasons.map(s=>[s,s])),
     CAL_UI.mgrSeason, v=>{CAL_UI.mgrSeason=v; renderManagers();}), "sm"));
@@ -1514,7 +1576,7 @@ const PLAYER_COLS = [
 ];
 
 const TEAM_COLS = [
-  {k:"team",h:"Team"},
+  {k:"team",h:"Team",render:r=>nameLinks(r.team,"Doubles"), csv:r=>r.team},
   {k:"w",h:"W",cls:"num",desc:true}, {k:"l",h:"L",cls:"num"},
   {k:"pct",h:"Win %",render:r=>wlBar(r.w,r.l),
     csv:r=>(r.w+r.l)?Math.round(r.w/(r.w+r.l)*100)+"%":"",desc:true},
@@ -1540,9 +1602,11 @@ const TITLE_COLS = [
   {k:"surface",h:"Surface",render:r=>r.surface
     ? `<span class="surf ${esc(r.surface)}">${esc(r.surface)}</span> ${esc(SURFACE_NAME[r.surface]||"")}`
     : "\u2014", csv:r=>SURFACE_NAME[r.surface]||""},
-  {k:"sWinner",h:"Singles Winner",cls:"win"}, {k:"sFinalist",h:"Singles Finalist"},
+  {k:"sWinner",h:"Singles Winner",cls:"win",
+    render:r=>r.sWinner?nameLinks(r.sWinner,"Singles"):"\u2014", csv:r=>r.sWinner}, {k:"sFinalist",h:"Singles Finalist"},
   {k:"sSF1",h:"Singles SF",cls:"dim"}, {k:"sSF2",h:"Singles SF",cls:"dim"},
-  {k:"dWinner",h:"Doubles Winner",cls:"win"}, {k:"dFinalist",h:"Doubles Finalist"},
+  {k:"dWinner",h:"Doubles Winner",cls:"win",
+    render:r=>r.dWinner?nameLinks(r.dWinner,"Doubles"):"\u2014", csv:r=>r.dWinner}, {k:"dFinalist",h:"Doubles Finalist"},
   {k:"dSF1",h:"Doubles SF",cls:"dim"}, {k:"dSF2",h:"Doubles SF",cls:"dim"}
 ];
 
@@ -2435,7 +2499,7 @@ function showRanking(tour, name){
    ================================================================== */
 let CALENDAR = [];
 const SURFACE_NAME = {H:"Hard", CL:"Clay", G:"Grass", IH:"Indoor hard"};
-const CAL_UI = {season:"", q:"", surface:"", manager:"", showCH:true};
+const CAL_UI = {season:"", q:"", surface:"", manager:"", showCH:false};
 
 const calFor = (event, season) =>
   CALENDAR.find(c => c.event===event && (!season || c.season===season)) || null;
@@ -2674,13 +2738,7 @@ function showEvent(event, season){
   EVENT_UI.event=event; EVENT_UI.season=season||"";
   EVENT_UI.disc="Singles"; EVENT_UI.stage="Main";
   renderEvent();
-  const btn=document.querySelector('#nav button[data-view="event"]');
-  if(btn) btn.click();
-  else {   /* the tournament view has no tab of its own; switch by hand */
-    document.querySelectorAll(".view").forEach(v=>v.classList.remove("on"));
-    const v=$("v-event"); if(v) v.classList.add("on");
-    document.querySelectorAll("#nav button").forEach(b=>b.setAttribute("aria-selected","false"));
-  }
+  openView("event");
 }
 
 function renderEvent(){
@@ -2946,8 +3004,13 @@ function renderH2HPair(mount){
     e.innerHTML="<strong>Never met</strong>No match between these two in the data.";
     mount.appendChild(e); return;
   }
-  const COLS=[{k:"event",h:"Event"},{k:"season",h:"Season",cls:"mono"},
-    {k:"round",h:"Round",cls:"rnd"},{k:"winner",h:"Won by",cls:"win"},
+  const COLS=[
+    {k:"event",h:"Event",render:r=>{
+      const b=document.createElement("button"); b.className="linkish"; b.textContent=r.event;
+      b.addEventListener("click",()=>showEvent(r.event,r.season)); return b;}, csv:r=>r.event},
+    {k:"season",h:"Season",cls:"mono"},
+    {k:"round",h:"Round",cls:"rnd"},
+    {k:"winner",h:"Won by",cls:"win",render:r=>nameLinks(r.winner,H2H_UI.disc), csv:r=>r.winner},
     {k:"score",h:"Score",cls:"mono"},{k:"sc",h:"SC",cls:"mono"}];
   const rows=matches.map(m=>({event:m.event, season:m.season, round:m.round,
     winner:sideOf(m,"winner"), score:`${m.winnerScore}\u2013${m.loserScore}`,
@@ -3001,7 +3064,9 @@ function renderH2HDraw(mount){
     e.innerHTML="<strong>Nothing read</strong>No match lines recognised in that paste.";
     mount.appendChild(e); return;
   }
-  const COLS=[{k:"round",h:"Round",cls:"rnd"},{k:"a",h:"Player"},{k:"b",h:"Player"},
+  const COLS=[{k:"round",h:"Round",cls:"rnd"},
+    {k:"a",h:"Player",render:r=>nameLinks(r.a,r.disc), csv:r=>r.a},
+    {k:"b",h:"Player",render:r=>nameLinks(r.b,r.disc), csv:r=>r.b},
     {k:"record",h:"Record",cls:"mono"},{k:"lead",h:"Ahead"},{k:"last",h:"Last meeting"}];
   mount.appendChild(tableOf(COLS, H2H_UI.rows));
   const n=H2H_UI.rows.filter(r=>!r.met).length;
@@ -3162,13 +3227,45 @@ function luckTable(season){
    ================================================================== */
 const PROFILE = {name:null, disc:"Singles"};
 
+/* Player and tournament pages have no tab in the nav, so clicking a button
+   that isn't there did nothing at all: the page rendered behind whatever you
+   were already looking at. */
+/* A doubles side is two people, so it links as two names rather than one. */
+function nameLinks(raw, disc){
+  const wrap=document.createElement("span");
+  if(disc!=="Doubles"){
+    const nm=canonName(raw);
+    const b=document.createElement("button"); b.className="linkish"; b.textContent=nm;
+    b.addEventListener("click",()=>showPlayer(nm,"Singles"));
+    wrap.appendChild(b);
+    return wrap;
+  }
+  String(raw).split("/").forEach((p,i)=>{
+    if(i){ const sep=document.createElement("span"); sep.className="dim"; sep.textContent=" / "; wrap.appendChild(sep); }
+    const nm=canonName(p.trim());
+    const b=document.createElement("button"); b.className="linkish"; b.textContent=nm;
+    b.addEventListener("click",()=>showPlayer(nm,"Doubles"));
+    wrap.appendChild(b);
+  });
+  return wrap;
+}
+
+function openView(name){
+  const btn=document.querySelector(`#nav button[data-view="${name}"]`);
+  if(btn){ btn.click(); return; }
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("on"));
+  const v=$("v-"+name);
+  if(v) v.classList.add("on");
+  document.querySelectorAll("#nav button").forEach(b=>b.setAttribute("aria-selected","false"));
+  window.scrollTo(0,0);
+}
+
 function showPlayer(name, disc){
   setHash(`player/${enc(canonName(name))}${disc&&disc!=="Singles"?"/"+enc(disc):""}`);
   PROFILE.name = canonName(name);
   PROFILE.disc = disc || "Singles";
   renderProfile();
-  const btn=document.querySelector('#nav button[data-view="player"]');
-  if(btn) btn.click();
+  openView("player");
 }
 
 /* Every match a player appears in, either alone or as part of a team. */
@@ -3328,7 +3425,8 @@ function renderProfile(){
         const b=document.createElement("button"); b.className="linkish"; b.textContent=r.event;
         b.addEventListener("click",()=>showEvent(r.event,r.season)); return b;}, csv:r=>r.event},
       {k:"season",h:"Season",cls:"mono"},{k:"surface",h:"Surface"},
-      {k:"beat",h:"Beat"},{k:"score",h:"Final",cls:"mono"}],
+      {k:"beat",h:"Beat",render:r=>nameLinks(r.beat,disc), csv:r=>r.beat},
+      {k:"score",h:"Final",cls:"mono"}],
       titles.map(m=>({event:m.event, season:m.season,
         surface:SURFACE_NAME[surfaceOf(m)]||"", beat:sideOf(m,"loser"),
         score:`${m.winnerScore}\u2013${m.loserScore}`})).reverse()));
@@ -3372,7 +3470,8 @@ function renderProfile(){
     {k:"round",h:"Round",cls:"rnd"},
     {k:"result",h:"Result",render:r=>r.result==="won"
       ? '<span style="color:var(--ball)">won</span>' : '<span class="dim">lost</span>', csv:r=>r.result},
-    {k:"other",h:"Against"},{k:"score",h:"Score",cls:"mono"}], rows));
+    {k:"other",h:"Against",render:r=>nameLinks(r.other,disc), csv:r=>r.other},
+    {k:"score",h:"Score",cls:"mono"}], rows));
   if(ms.length>60){
     const p=document.createElement("p"); p.className="hint";
     p.textContent=`Showing the most recent 60 of ${ms.length}.`;
@@ -3405,13 +3504,7 @@ function applyHash(){
   if(!raw) return false;
   const parts = raw.split("/").map(x=>decodeURIComponent(x));
   const [what, a, b] = parts;
-  const go = view => {
-    const btn=document.querySelector(`#nav button[data-view="${view}"]`);
-    if(btn){ btn.click(); return true; }
-    document.querySelectorAll(".view").forEach(v=>v.classList.remove("on"));
-    const v=$("v-"+view); if(v) v.classList.add("on");
-    return !!v;
-  };
+  const go = view => { openView(view); return !!$("v-"+view); };
   switch(what){
     case "player":
       if(!a) return false;
@@ -4197,6 +4290,12 @@ function renderIssues(){
       q.innerHTML=`<span class="tag">${esc(g.season||"no year")}</span>
         <span class="ctx">${esc(g.week)} \u2014 has ${esc(g.has.toLowerCase())},
         <b>no ${esc(g.missing.toLowerCase())}</b></span>`;
+      const ok=document.createElement("button"); ok.className="btn sm";
+      ok.textContent="There isn't one";
+      ok.title="That list was never posted \u2014 stop flagging this week";
+      ok.addEventListener("click",()=>{
+        snapshot("week gap accepted"); GAP_OK.add(gapTag(g)); markDirty(); refreshAll(); });
+      q.appendChild(ok);
       s.appendChild(q);
     });
     if(tourGaps.length>60){
@@ -4331,15 +4430,27 @@ function renderIssues(){
 
 /* Settled conflicts, kept out of the way but reversible. */
 function renderResolved(box, resolved){
-  const extras = RENAME_NO.size + DATE_OK.size + UNKNOWN_OK.size;
+  const extras = RENAME_NO.size + DATE_OK.size + UNKNOWN_OK.size + GAP_OK.size;
   if(!resolved.length && !extras) return;
   const d=document.createElement("details");
   d.className="panel"; d.style.marginTop="20px";
+  /* Hundreds of settled decisions shouldn't stand between you and the ones that
+     still need doing, so the list only builds itself when it's opened. */
+  let built=false;
+  d.addEventListener("toggle",()=>{
+    if(!d.open || built) return;
+    built=true;
+    buildResolvedList(d, resolved);
+  });
   const sum=document.createElement("summary");
   sum.style.cssText="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:10.5px;"
     +"letter-spacing:.16em;text-transform:uppercase;color:var(--slate)";
   sum.textContent=`Settled earlier \u2014 ${resolved.length+extras}`;
   d.appendChild(sum);
+  box.appendChild(d);
+}
+
+function buildResolvedList(d, resolved){
   const p=document.createElement("p"); p.className="lede"; p.style.margin="12px 0 4px";
   p.textContent="Choices you've already made. They stay out of the list above until you undo one.";
   d.appendChild(p);
@@ -4387,6 +4498,17 @@ function renderResolved(box, resolved){
     q.appendChild(u); d.appendChild(q);
   });
 
+  GAP_OK.forEach(k=>{
+    const [season,week,missing]=k.split("|");
+    const q=document.createElement("div"); q.className="wkrow";
+    q.innerHTML=`<span class="nm"><span class="tag">no ${esc((missing||"").toLowerCase())} list</span>
+      <b style="margin-left:8px">${esc(week)} ${esc(season)}</b>
+      <span class="dim">confirmed as never posted</span></span>`;
+    const u=document.createElement("button"); u.className="btn sm"; u.textContent="Undo";
+    u.addEventListener("click",()=>{ GAP_OK.delete(k); markDirty(); refreshAll(); });
+    q.appendChild(u); d.appendChild(q);
+  });
+
   DATE_OK.forEach(k=>{
     const [tour,season,name]=k.split("|");
     const q=document.createElement("div"); q.className="wkrow";
@@ -4397,8 +4519,6 @@ function renderResolved(box, resolved){
     u.addEventListener("click",()=>{ DATE_OK.delete(k); markDirty(); refreshAll(); });
     q.appendChild(u); d.appendChild(q);
   });
-
-  box.appendChild(d);
 }
 
 /* ==================================================================
@@ -4896,6 +5016,7 @@ function serialise(){
     aliases: [...ALIAS.entries()].map(([from,to])=>({from,to})),
     countryAccepted: [...COUNTRY_OK.entries()].map(([key,set])=>({key, codes:[...set]})),
     datesAccepted: [...DATE_OK],
+    gapsAccepted: [...GAP_OK],
     renameRejected: [...RENAME_NO],
     unknownAccepted: [...UNKNOWN_OK],
     pinned
@@ -4910,7 +5031,7 @@ function deserialise(data){
     throw new Error(`That file says it's format "${data.format}", which this page doesn't read.`);
 
   MATCHES=[]; PENDING=[]; WEEKS=[]; DUPES=[]; SEEN.clear(); REG.clear();
-  ALIAS.clear(); PINS.clear(); COUNTRY_OK.clear(); RENAME_NO.clear(); DATE_OK.clear(); UNKNOWN_OK.clear();
+  ALIAS.clear(); PINS.clear(); COUNTRY_OK.clear(); RENAME_NO.clear(); DATE_OK.clear(); GAP_OK.clear(); UNKNOWN_OK.clear();
   CALENDAR=[]; MATCH_SEASONS.clear(); MATCH_DIRTY.clear();
   (data.matchFiles||[]).forEach(f=>{
     const m=String(f).match(/^matches-(.+)\.json$/i);
@@ -4940,6 +5061,7 @@ function deserialise(data){
     const [tour,from,to]=String(k).split("|");
     RENAME_NO.add(to===undefined ? k : [tour, keyOf(from), keyOf(to)].join("|")); });
   (data.datesAccepted||[]).forEach(k=>DATE_OK.add(k));
+  (data.gapsAccepted||[]).forEach(k=>GAP_OK.add(k));
   CALENDAR = Array.isArray(data.calendar) ? data.calendar : [];
   (data.unknownAccepted||[]).forEach(k=>UNKNOWN_OK.add(keyOf(k)));
 
