@@ -3,7 +3,19 @@
  "savedAt": "2026-09-03T01:54:52.225Z",
  "matchFiles": [
   "matches-2026.json",
-  "matches-2025.json"
+  "matches-2025.json",
+  "matches-2018.json",
+  "matches-2017.json",
+  "matches-2016.json",
+  "matches-2015.json",
+  "matches-2014.json",
+  "matches-2013.json",
+  "matches-2012.json",
+  "matches-2011.json",
+  "matches-2010.json",
+  "matches-2009.json",
+  "matches-2008.json",
+  "matches-2007.json"
  ],
  "rankingFiles": [
   "rankings-2026.json",
