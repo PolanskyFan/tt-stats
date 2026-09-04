@@ -3822,7 +3822,7 @@ function renderOverview(){
       {k:"player",h:"Player",render:r=>nameLinks(r.player,tour), csv:r=>r.player},
       {k:"country",h:"",cls:"ctry"},
       {k:"points",h:"Points",cls:"num"}], top.map(r=>({
-        rank:r.rank, player:r.player, country:r.country, points:r.points}))));
+        rank:r.rank, player:r.name, country:r.country, points:r.points}))));
   });
 
   /* the most recent tournaments with results */
