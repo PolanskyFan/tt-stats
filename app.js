@@ -708,7 +708,7 @@ const EDIT = document.body.dataset.mode === "edit";
 /* index.html, desk.html and app.js are uploaded together. Updating only some
    of them leaves a page whose markup and code disagree, which shows up as a
    blank tab rather than an error, so they carry a matching stamp. */
-const APP_VERSION = "2026-09-03a";
+const APP_VERSION = "2026-09-03c";
 const esc = s => String(s).replace(/[&<>"']/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
@@ -750,9 +750,14 @@ function makeTable(cfg){
       return x.localeCompare(y)*state.dir;
     });
   }
+  const CAP = 600;
   function render(){
     head();
-    const rows = sorted(cfg.rows());
+    const all = sorted(cfg.rows());
+    /* Drawing tens of thousands of rows locks the page for the best part of a
+       minute, and nobody reads past the first screen. The rest are one filter
+       or one CSV away. */
+    const rows = all.length>CAP ? all.slice(0,CAP) : all;
     const tb = $(cfg.body); tb.innerHTML = "";
     const cols = cfg.cols();
     const frag = document.createDocumentFragment();
@@ -771,6 +776,15 @@ function makeTable(cfg){
       frag.appendChild(tr);
     });
     tb.appendChild(frag);
+    const host=tb.parentNode.parentNode || tb.parentNode;
+    const prev=host.querySelector(":scope > .rowcap");
+    if(prev) prev.remove();
+    if(all.length>CAP){
+      const p=document.createElement("p"); p.className="hint rowcap";
+      p.textContent=`Showing the first ${CAP.toLocaleString()} of ${all.length.toLocaleString()} rows \u2014 `
+        + `narrow the filters above, or use Download CSV for all of them.`;
+      host.appendChild(p);
+    }
     if(cfg.empty) $(cfg.empty).style.display = rows.length ? "none" : "block";
     cfg.last = rows;
   }
@@ -865,13 +879,25 @@ function derivePlayers(surface){
       mdQw:v.mdQw, mdQl:v.mdQl, mdLLw:v.mdLLw, mdLLl:v.mdLLl,
       lastTitle:v.lastTitle, ...surfaceCols(v)});
   }
-  /* Best win and longest run need the whole match list per player, so they're
-     added once here rather than tracked through the tally above. */
+  /* Best win and longest run used to be worked out per player, each scanning
+     every match \u2014 fine for one season, ten seconds across eighteen. One pass
+     in date order does both for everybody. */
+  const bestR=new Map(), bestRun=new Map(), run=new Map();
+  inOrder(MATCHES.filter(m=>m.disc==="Singles" && !m.isBye)).forEach(m=>{
+    if(surface && surfaceOf(m)!==surface) return;
+    const w=keyOf(m.winner), l=keyOf(m.loser);
+    const r=parseInt(m.loserRank,10);
+    if(!isNaN(r) && (!bestR.has(w) || r<bestR.get(w))) bestR.set(w,r);
+    const k=(run.get(w)||0)+1;
+    run.set(w,k);
+    if(k>(bestRun.get(w)||0)) bestRun.set(w,k);
+    run.set(l,0);
+  });
   out.forEach(p=>{
-    const bw=bestWin(p.player,"Singles");
-    p.best = bw ? "#"+bw.rank : "";
-    p.bestNum = bw ? bw.rank : 9999;
-    p.streak = longestStreak(p.player,"Singles").length;
+    const r=bestR.get(p.key);
+    p.best = r!==undefined ? "#"+r : "";
+    p.bestNum = r!==undefined ? r : 9999;
+    p.streak = bestRun.get(p.key) || 0;
   });
   return out;
 }
@@ -938,7 +964,18 @@ function deriveTitles(){
 /* A conflict counts as settled once you've pinned a choice for that field, and
    settled ones drop off the list. Without that, every spelling you'd already
    decided on came back on every load and buried whatever was actually new. */
+/* Scanning for issues costs a couple of seconds across a full archive, and it
+   was running on every refresh just to put a number on the tab. The answer only
+   changes when the data does, so it's worked out once and kept. */
+let ISSUE_CACHE=null;
+function invalidateIssues(){ ISSUE_CACHE=null; }
+
 function deriveIssues(){
+  if(ISSUE_CACHE) return ISSUE_CACHE;
+  return (ISSUE_CACHE = deriveIssuesNow());
+}
+
+function deriveIssuesNow(){
   const countryConflicts=[], nameVariants=[], resolved=[];
   for(const e of REG.values()){
     const p = PINS.get(e.key) || {};
@@ -1395,8 +1432,11 @@ const MATCH_COLS = [
 ];
 
 function renderLuck(){
+  if(!viewOn("v-luck")) return;
   const mount=$("luckMount"); if(!mount) return;
   mount.innerHTML="";
+  const allSeasons=[...new Set(MATCHES.map(m=>m.season).filter(Boolean))].sort((a,b)=>b.localeCompare(a));
+  if(LUCK_UI.season===null) LUCK_UI.season = allSeasons[0] || "";
   const rows=luckTable(LUCK_UI.season);
   if(!rows.length){
     mount.innerHTML=`<div class="empty"><strong>Nothing to measure</strong>Draw luck needs completed draws.</div>`;
@@ -1408,11 +1448,11 @@ function renderLuck(){
     +"one means they would have won it from almost anywhere.";
   mount.appendChild(p);
 
-  const seasons=[...new Set(MATCHES.map(m=>m.season).filter(Boolean))].sort((a,b)=>b.localeCompare(a));
+  const seasons=allSeasons;
   const bar=document.createElement("div"); bar.className="controls";
   if(seasons.length>1)
-    bar.appendChild(field("Season", selectOf([["","All"]].concat(seasons.map(x=>[x,x])),
-      LUCK_UI.season, v=>{LUCK_UI.season=v; renderLuck();}), "xs"));
+    bar.appendChild(field("Season", selectOf([["","All seasons"]].concat(seasons.map(x=>[x,x])),
+      LUCK_UI.season, v=>{LUCK_UI.season=v; renderLuck();}), "sm"));
   bar.appendChild(field("Discipline", selectOf([["","Both"],["Singles","Singles"],["Doubles","Doubles"]],
     LUCK_UI.disc, v=>{LUCK_UI.disc=v; renderLuck();}), "sm"));
   const dl=document.createElement("button"); dl.className="btn"; dl.textContent="Download CSV";
@@ -1451,12 +1491,15 @@ function renderLuck(){
     {k:"w",h:"W",cls:"num"},{k:"l",h:"L",cls:"num"},{k:"pct",h:"Win rate",cls:"num"},
     {k:"titles",h:"Titles",cls:"num"},{k:"finals",h:"Finals lost",cls:"num"}], seedRowsNow));
 }
-const LUCK_UI={season:"", disc:""};
+/* Replaying every draw in the archive takes a few seconds, so the tab opens on
+   the newest season and All is a click away. */
+const LUCK_UI={season:null, disc:""};
 
 /* Manager names come from the calendar rather than the match data, so the
    player merge doesn't reach them. Renaming rewrites every row, which merges
    two spellings when the new name already exists. */
 function renameManager(from, to){
+  CAL_INDEX=null;
   let n=0;
   CALENDAR.forEach(c=>{ if(c.manager===from){ c.manager=to; n++; } });
   return n;
@@ -1511,6 +1554,7 @@ function renderManagerMerge(mount){
 }
 
 function renderManagers(){
+  if(!viewOn("v-managers")) return;
   const mount=$("mgrMount"); if(!mount) return;
   mount.innerHTML="";
   const seasons=calSeasons();
@@ -2501,8 +2545,24 @@ let CALENDAR = [];
 const SURFACE_NAME = {H:"Hard", CL:"Clay", G:"Grass", IH:"Indoor hard"};
 const CAL_UI = {season:"", q:"", surface:"", manager:"", showCH:false};
 
-const calFor = (event, season) =>
-  CALENDAR.find(c => c.event===event && (!season || c.season===season)) || null;
+/* This is called once per match by surfaceOf and the date ordering, so a linear
+   scan of three thousand calendar rows each time turned into hundreds of
+   millions of comparisons across a full archive. */
+let CAL_INDEX = null;
+function calIndex(){
+  if(CAL_INDEX) return CAL_INDEX;
+  CAL_INDEX = new Map();
+  CALENDAR.forEach(c=>{
+    const k=c.event+"|"+(c.season||"");
+    if(!CAL_INDEX.has(k)) CAL_INDEX.set(k, c);
+    if(!CAL_INDEX.has(c.event)) CAL_INDEX.set(c.event, c);
+  });
+  return CAL_INDEX;
+}
+const calFor = (event, season) => {
+  const ix=calIndex();
+  return ix.get(event+"|"+(season||"")) || (season ? null : ix.get(event)) || null;
+};
 
 function calSeasons(){
   return [...new Set(CALENDAR.map(c=>c.season))].sort((a,b)=>b.localeCompare(a));
@@ -2618,6 +2678,7 @@ on("btnCal","click",()=>{
   const incoming=new Set(rows.map(r=>r.season+"|"+r.code));
   const before=CALENDAR.length;
   CALENDAR = CALENDAR.filter(c=>!incoming.has(c.season+"|"+c.code)).concat(rows);
+  CAL_INDEX=null;
   const replaced=before + rows.length - CALENDAR.length;
 
   /* An event already in the matches under a different spelling can't be linked
@@ -2642,6 +2703,7 @@ on("btnCal","click",()=>{
 });
 
 function renderCalendar(){
+  if(!viewOn("v-calendar")) return;
   const mount=$("calMount"); if(!mount) return;
   mount.innerHTML="";
   if(!CALENDAR.length){
@@ -2742,6 +2804,7 @@ function showEvent(event, season){
 }
 
 function renderEvent(){
+  if(!viewOn("v-event")) return;
   const mount=$("eventMount"); if(!mount) return;
   mount.innerHTML="";
   const {event, season}=EVENT_UI;
@@ -2944,6 +3007,7 @@ function allSides(disc){
 }
 
 function renderH2H(){
+  if(!viewOn("v-h2h")) return;
   const mount=$("h2hMount"); if(!mount) return;
   mount.innerHTML="";
   if(!MATCHES.length){
@@ -3188,8 +3252,8 @@ function playOut(tree, swapA, swapB){
   return run(tree.root);
 }
 
-function drawLuck(event, season, disc){
-  const tree=drawTree(event, season, disc);
+function drawLuck(event, season, disc, pool){
+  const tree=drawTree(event, season, disc, pool);
   if(!tree) return null;
   const champ=tree.champion;
   const seats=tree.slots.map(s=>s.player);
@@ -3207,11 +3271,20 @@ function drawLuck(event, season, disc){
 
 function luckTable(season){
   const out=[];
-  const events=[...new Set(MATCHES.filter(m=>!season||m.season===season).map(m=>m.event+"||"+(m.season||"")))];
-  events.forEach(k=>{
+  /* Grouping once means each draw is built from its own handful of matches
+     rather than filtering the entire archive per tournament. */
+  const byEvent=new Map();
+  MATCHES.forEach(m=>{
+    if(season && m.season!==season) return;
+    const k=m.event+"||"+(m.season||"");
+    if(!byEvent.has(k)) byEvent.set(k,[]);
+    byEvent.get(k).push(m);
+  });
+  [...byEvent.keys()].forEach(k=>{
     const [ev,se]=k.split("||");
+    const pool=byEvent.get(k);
     ["Singles","Doubles"].forEach(disc=>{
-      const r=drawLuck(ev, se, disc);
+      const r=drawLuck(ev, se, disc, pool);
       if(!r || r.slots<4) return;
       out.push({event:ev, season:se, disc, champion:r.champion,
         slots:r.slots, wins:r.wins, pct:Math.round(r.pct*100)});
@@ -3258,6 +3331,7 @@ function openView(name){
   if(v) v.classList.add("on");
   document.querySelectorAll("#nav button").forEach(b=>b.setAttribute("aria-selected","false"));
   window.scrollTo(0,0);
+  refreshAll();
 }
 
 function showPlayer(name, disc){
@@ -3287,6 +3361,7 @@ const wonBy = (m, name) => {
 };
 
 function renderProfile(){
+  if(!viewOn("v-player")) return;
   const mount=$("playerMount"); if(!mount) return;
   mount.innerHTML="";
   const name=PROFILE.name;
@@ -3759,6 +3834,7 @@ function expectedMatches(round){
 }
 
 function renderPreview(){
+  if(!viewOn("v-add")) return;
   const box=$("previewBox"); if(!box) return;
   box.innerHTML="";
   if(!PREVIEW){ box.style.display="none"; return; }
@@ -4032,6 +4108,7 @@ function checkWeekGaps(tour){
    REVIEW STRIP
    ================================================================== */
 function renderReview(){
+  if(!viewOn("v-add")) return;
   const wrap=$("reviewWrap"); if(!wrap) return;
   if(!PENDING.length){ wrap.innerHTML=""; return; }
   const el=document.createElement("section"); el.className="review";
@@ -4148,6 +4225,7 @@ function renderMergePanel(box){
 }
 
 function renderIssues(){
+  if(!viewOn("v-issues")) return;
   const box=$("issuesBody"); if(!box) return;
   const {countryConflicts,nameVariants,resolved,tourGaps,eventProblems,
          dateProblems,renames,unknowns,dupes,pending}=deriveIssues();
@@ -4572,11 +4650,19 @@ function syncFilters(){
 }
 
 function renderMatchManager(){
+  if(!viewOn("v-add")) return;
   const el=$("matchManager"); if(!el) return;
   const groups=matchGroups();
   if(!groups.length){ el.textContent="No matches loaded."; return; }
   el.innerHTML="";
-  groups.forEach(g=>{
+  const CAP=200;
+  if(groups.length>CAP){
+    const note=document.createElement("p"); note.className="hint";
+    note.textContent=`${groups.length.toLocaleString()} groups of matches loaded \u2014 showing the `
+      + `${CAP} most recent. Load a single season if you need to remove an older one.`;
+    el.appendChild(note);
+  }
+  groups.slice(-CAP).forEach(g=>{
     const weeks=[...g.weeks].map(w=>w||"no week").join(", ");
     const row=document.createElement("div"); row.className="wkrow";
     row.innerHTML=`<span class="nm"><b>${esc(g.event||"unnamed")}</b>
@@ -4611,6 +4697,7 @@ function renderUndo(){
 }
 
 function renderFileManager(){
+  if(!viewOn("v-add")) return;
   const el=$("fileManager"); if(!el) return;
   const seasons=loadedSeasons();
   if(!WEEKS.length && !MATCHES.length){ el.textContent="Nothing to save yet."; return; }
@@ -4677,15 +4764,18 @@ function renderFileManager(){
 }
 
 function renderWeekManager(){
+  if(!viewOn("v-add")) return;
   const el=$("weekManager"); if(!el) return;
   if(!WEEKS.length){ el.textContent="None yet."; return; }
   el.innerHTML="";
   ["Singles","Doubles"].forEach(tour=>{
     const ws=tourWeeks(tour); if(!ws.length) return;
     const h=document.createElement("p"); h.className="blockhead"; h.style.margin="10px 0 4px";
-    h.textContent=`${tour} \u2014 ${ws.length} week${ws.length===1?"":"s"}`;
+    const CAPW=120;
+    h.textContent=`${tour} \u2014 ${ws.length} week${ws.length===1?"":"s"}`
+      + (ws.length>CAPW ? ` (newest ${CAPW} shown)` : "");
     el.appendChild(h);
-    ws.slice().reverse().forEach(w=>{
+    ws.slice().reverse().slice(0,CAPW).forEach(w=>{
       const row=document.createElement("div"); row.className="wkrow";
       const undated = !w.date;
       row.innerHTML=`<span class="nm">${esc(w.name)}
@@ -4722,6 +4812,15 @@ function renderSummary(){
 /* ==================================================================
    REFRESH
    ================================================================== */
+/* Everything used to be redrawn on every change, including the panels behind
+   whichever tab you're on. With a full archive that's a hundred and seventy
+   thousand DOM nodes rebuilt for one edit, so a view now only draws when it's
+   the one you're looking at. */
+function viewOn(id){
+  const v=$(id);
+  return !!v && v.classList.contains("on");
+}
+
 function refreshAll(){
   syncFilters();
   tMatches.render(); tPlayers.render(); tTeams.render();
@@ -4747,6 +4846,7 @@ function refreshAll(){
 $("nav").addEventListener("click", e=>{
   const b=e.target.closest("button[data-view]"); if(!b) return;
   setHash(b.dataset.view);
+  setTimeout(refreshAll, 0);
   [...$("nav").querySelectorAll("button")].forEach(x=>x.setAttribute("aria-selected", x===b));
   document.querySelectorAll(".view").forEach(v=>v.classList.remove("on"));
   $("v-"+b.dataset.view).classList.add("on");
@@ -4850,6 +4950,7 @@ let LEGACY_INLINE = false;
    needs its array copied, since weeks are replaced rather than edited. */
 let UNDO = null;
 function snapshot(label){
+  invalidateIssues();
   UNDO = {
     label,
     matches: MATCHES.map(m=>Object.assign({},m)),
@@ -4880,7 +4981,7 @@ function undoLast(){
   refreshAll();
   return true;
 }
-const markDirty = () => { DIRTY = true; renderSummary(); };
+const markDirty = () => { DIRTY = true; invalidateIssues(); renderSummary(); };
 
 /* ------------------------------------------------------------------
    FILE LAYOUT
@@ -5033,6 +5134,7 @@ function deserialise(data){
   MATCHES=[]; PENDING=[]; WEEKS=[]; DUPES=[]; SEEN.clear(); REG.clear();
   ALIAS.clear(); PINS.clear(); COUNTRY_OK.clear(); RENAME_NO.clear(); DATE_OK.clear(); GAP_OK.clear(); UNKNOWN_OK.clear();
   CALENDAR=[]; MATCH_SEASONS.clear(); MATCH_DIRTY.clear();
+  CAL_INDEX=null;
   (data.matchFiles||[]).forEach(f=>{
     const m=String(f).match(/^matches-(.+)\.json$/i);
     if(m) MATCH_SEASONS.add(m[1]);
@@ -5063,6 +5165,7 @@ function deserialise(data){
   (data.datesAccepted||[]).forEach(k=>DATE_OK.add(k));
   (data.gapsAccepted||[]).forEach(k=>GAP_OK.add(k));
   CALENDAR = Array.isArray(data.calendar) ? data.calendar : [];
+  CAL_INDEX=null;
   (data.unknownAccepted||[]).forEach(k=>UNKNOWN_OK.add(keyOf(k)));
 
   /* Older files kept the weeks inline; newer ones list separate season files
@@ -5115,6 +5218,8 @@ function deserialise(data){
    built on keys has to be laid down again. Matches themselves are untouched;
    only the lookups are rebuilt. */
 function reindex(){
+  invalidateIssues();
+  CAL_INDEX=null;
   REG.clear(); SEEN.clear();
   for(const w of WEEKS){
     w.index = new Map();
@@ -5326,6 +5431,7 @@ async function loadFiles(files){
   sortWeeks();
   SEEN.clear(); MATCHES.forEach(r=>SEEN.add(matchKey(r)));
   reindex();
+  invalidateIssues();
   ["Singles","Doubles"].forEach(t=>{ RANK_UI[t].week=null; RANK_UI[t].player=null; });
   DIRTY=false;
   refreshAll();
