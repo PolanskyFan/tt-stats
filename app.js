@@ -49,7 +49,34 @@ function parseHeaderLine(line){
     semifinals:"SF", "semi-final":"SF", "semi-finals":"SF", quarter:"QF",
     quarters:"QF", quarterfinal:"QF", quarterfinals:"QF",
     "quarter-final":"QF", "quarter-finals":"QF"};
-  const w=WORDS[t.toLowerCase()];
+  let w=WORDS[t.toLowerCase()];
+
+  /* Eighteen years of hand-typed headings means "Quaterfinals", "Semi Finals"
+     and "Quarter-Final" all turn up. Anything ending in "final" is split into
+     its prefix and matched loosely, so a slip of one or two letters still
+     lands on the right round instead of falling through to guesswork. */
+  if(!w){
+    const flat = t.toLowerCase().replace(/[^a-z]/g, "");
+    const fm = flat.match(/^(.*?)fin(?:al)?s?$/);
+    if(fm){
+      const pre = fm[1];
+      const near = (a,b,tol)=>{
+        if(Math.abs(a.length-b.length)>tol) return false;
+        let prev=[...Array(b.length+1).keys()];
+        for(let i=1;i<=a.length;i++){
+          const cur=[i];
+          for(let j=1;j<=b.length;j++)
+            cur.push(Math.min(prev[j]+1, cur[j-1]+1, prev[j-1]+(a[i-1]!==b[j-1]?1:0)));
+          prev=cur;
+        }
+        return prev[b.length]<=tol;
+      };
+      if(!pre)                        w="F";
+      else if(near(pre,"semi",1))     w="SF";
+      else if(near(pre,"quarter",2))  w="QF";   // quater, quartre, qarter
+    }
+  }
+
   if(w){
     /* A qualifying draw has its own final, so "Qualifying Final Round" means
        the last qualifying round, not the tournament final. */
@@ -708,7 +735,7 @@ const EDIT = document.body.dataset.mode === "edit";
 /* index.html, desk.html and app.js are uploaded together. Updating only some
    of them leaves a page whose markup and code disagree, which shows up as a
    blank tab rather than an error, so they carry a matching stamp. */
-const APP_VERSION = "2026-09-03c";
+const APP_VERSION = "2026-09-03e";
 const esc = s => String(s).replace(/[&<>"']/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
@@ -742,9 +769,12 @@ function makeTable(cfg){
     const k = col.sortAs || state.key;
     return rows.slice().sort((a,b)=>{
       let x=a[k], y=b[k];
-      const nx=parseFloat(x), ny=parseFloat(y);
-      const bothNum = !isNaN(nx)&&!isNaN(ny)&&String(x).trim()!==""&&String(y).trim()!=="";
-      if(bothNum) return (nx-ny)*state.dir;
+      /* parseFloat("2018-02-26") is 2018, so a date or a score column used to
+         compare as a number and every row in the same year tied. A value only
+         counts as numeric when the whole of it is a number. */
+      const isNum = v => typeof v==="number" ||
+        (typeof v==="string" && /^-?\d+(\.\d+)?$/.test(v.trim()) && v.trim()!=="");
+      if(isNum(x) && isNum(y)) return (parseFloat(x)-parseFloat(y))*state.dir;
       x=String(x??"").toLowerCase(); y=String(y??"").toLowerCase();
       if(x==="") return 1; if(y==="") return -1;
       return x.localeCompare(y)*state.dir;
@@ -1574,7 +1604,11 @@ function renderManagers(){
   bar.appendChild(field("", dl));
   mount.appendChild(bar);
   const rows=managerRows(CAL_UI.mgrSeason);
-  const COLS=[{k:"manager",h:"Manager"},{k:"events",h:"Tournaments run",cls:"num",desc:true},
+  const COLS=[{k:"manager",h:"Manager",render:r=>{
+      const b=document.createElement("button"); b.className="linkish"; b.textContent=r.manager;
+      b.addEventListener("click",()=>showManager(r.manager)); return b;
+    }, csv:r=>r.manager},
+    {k:"events",h:"Tournaments run",cls:"num",desc:true},
     {k:"seasons",h:"Seasons",cls:"num",desc:true},
     {k:"span",h:"Active",cls:"mono",sortAs:"first"},
     {k:"perSeason",h:"Per season",cls:"num",desc:true},
@@ -3593,6 +3627,9 @@ function applyHash(){
     case "h2h":
       if(a){ H2H_UI.a=a; H2H_UI.b=b||""; H2H_UI.sub="pair"; renderH2H(); }
       return go("h2h");
+    case "manager":
+      if(a){ MANAGER_UI.name=a; renderManagerPage(); }
+      return go("manager");
     case "rank":
       if(a){ RANK_UI[a==="Doubles"?"Doubles":"Singles"].player = b?canonName(b):null;
              renderTour(a==="Doubles"?"Doubles":"Singles"); }
@@ -3724,6 +3761,276 @@ function seedRows(season, disc){
 }
 
 /* ==================================================================
+   SCORE DETAIL
+   Matches taken from the old database carry a single figure a side,
+   with no tiebreak or set detail. Anything counting SRs or sets means
+   something different across that boundary, so it's said plainly
+   rather than left for someone to work out.
+   ================================================================== */
+const DETAIL_FROM = "2019";
+function detailNote(seasons){
+  const old=[...new Set(seasons)].filter(s=>s && s<DETAIL_FROM);
+  if(!old.length) return null;
+  const p=document.createElement("p"); p.className="hint";
+  p.textContent=`Seasons before ${DETAIL_FROM} came from the game's own database, which `
+    + `recorded one figure a side. Tiebreak and set detail begins with ${DETAIL_FROM}.`;
+  return p;
+}
+
+/* ==================================================================
+   OVERVIEW
+   A front door. The calendar is a fine index but a poor first
+   impression of twenty seasons.
+   ================================================================== */
+function renderOverview(){
+  if(!viewOn("v-home")) return;
+  const mount=$("homeMount"); if(!mount) return;
+  mount.innerHTML="";
+  if(!MATCHES.length && !CALENDAR.length){
+    mount.innerHTML=`<div class="empty"><strong>Nothing loaded yet</strong></div>`;
+    return;
+  }
+
+  const seasons=[...new Set(MATCHES.map(m=>m.season).filter(Boolean))].sort();
+  const titles=deriveTitles();
+  const players=derivePlayers();
+  const grid=document.createElement("div"); grid.className="statgrid";
+  [["Seasons", seasons.length ? `${seasons[0]}\u2013${seasons[seasons.length-1]}` : "\u2014",
+      `${CALENDAR.length.toLocaleString()} tournaments`],
+   ["Matches", MATCHES.length.toLocaleString(), `${titles.length.toLocaleString()} finals played`],
+   ["Players", players.length.toLocaleString(), `${deriveTeams().length.toLocaleString()} doubles teams`],
+   ["Managers", String(new Set(CALENDAR.map(c=>c.manager).filter(Boolean)).size),
+      "who have run a tournament"]
+  ].forEach(([k,v,note])=>{
+    const c=document.createElement("div"); c.className="stat";
+    c.innerHTML=`<span class="k">${esc(k)}</span><span class="v">${esc(v)}</span>
+      <span class="note">${esc(note)}</span>`;
+    grid.appendChild(c);
+  });
+  mount.appendChild(grid);
+
+  /* who is on top right now */
+  ["Singles","Doubles"].forEach(tour=>{
+    const wk=latestWeek(tour);
+    if(!wk || !wk.list || !wk.list.length) return;
+    const top=wk.list.slice().sort((a,b)=>a.rank-b.rank).slice(0,5);
+    const h=document.createElement("h3"); h.className="sec";
+    h.textContent=`${tour} top five \u2014 ${histLabel({week:wk.name, season:wk.season})}`;
+    mount.appendChild(h);
+    mount.appendChild(tableOf([
+      {k:"rank",h:"#",cls:"num"},
+      {k:"player",h:"Player",render:r=>nameLinks(r.player,tour), csv:r=>r.player},
+      {k:"country",h:"",cls:"ctry"},
+      {k:"points",h:"Points",cls:"num"}], top.map(r=>({
+        rank:r.rank, player:r.player, country:r.country, points:r.points}))));
+  });
+
+  /* the most recent tournaments with results */
+  const recent=titles.slice().sort((a,b)=>
+    whenOf(b.event,b.season).localeCompare(whenOf(a.event,a.season))).slice(0,8);
+  if(recent.length){
+    const h=document.createElement("h3"); h.className="sec"; h.textContent="Latest champions";
+    mount.appendChild(h);
+    mount.appendChild(tableOf([
+      {k:"event",h:"Tournament",render:r=>{
+        const b=document.createElement("button"); b.className="linkish"; b.textContent=r.event;
+        b.addEventListener("click",()=>showEvent(r.event,r.season)); return b;}, csv:r=>r.event},
+      {k:"season",h:"Season",cls:"mono"},
+      {k:"sWinner",h:"Singles",render:r=>r.sWinner?nameLinks(r.sWinner,"Singles"):"\u2014", csv:r=>r.sWinner},
+      {k:"dWinner",h:"Doubles",render:r=>r.dWinner?nameLinks(r.dWinner,"Doubles"):"\u2014", csv:r=>r.dWinner}
+    ], recent));
+  }
+  const note=detailNote(seasons);
+  if(note) mount.appendChild(note);
+}
+
+/* ==================================================================
+   RECORDS
+   The arguments people actually have in the threads.
+   ================================================================== */
+function renderRecords(){
+  if(!viewOn("v-records")) return;
+  const mount=$("recordsMount"); if(!mount) return;
+  mount.innerHTML="";
+  if(!MATCHES.length){
+    mount.innerHTML=`<div class="empty"><strong>No matches loaded</strong></div>`;
+    return;
+  }
+  const lede=document.createElement("p"); lede.className="lede";
+  lede.textContent="Every season loaded, singles unless stated.";
+  mount.appendChild(lede);
+
+  const section=(title, cols, rows, hint)=>{
+    if(!rows.length) return;
+    const h=document.createElement("h3"); h.className="sec"; h.textContent=title;
+    mount.appendChild(h);
+    if(hint){ const p=document.createElement("p"); p.className="lede"; p.textContent=hint;
+      mount.appendChild(p); }
+    mount.appendChild(tableOf(cols, rows));
+  };
+  const pl = (k,label) => ({k, h:label, render:r=>nameLinks(r[k], r.disc||"Singles"), csv:r=>r[k]});
+
+  /* longest winning run, in tournament order */
+  const runs=[];
+  ["Singles","Doubles"].forEach(disc=>{
+    const run=new Map(), from=new Map(), best=new Map();
+    inOrder(MATCHES.filter(m=>m.disc===disc && !m.isBye)).forEach(m=>{
+      const w=idOf(m.winner,disc), l=idOf(m.loser,disc);
+      if(!run.has(w)){ run.set(w,0); }
+      if(run.get(w)===0) from.set(w, m);
+      run.set(w, run.get(w)+1);
+      const cur=run.get(w);
+      const b=best.get(w);
+      if(!b || cur>b.n) best.set(w, {n:cur, name:sideOf(m,"winner"), disc,
+        from:from.get(w), to:m});
+      run.set(l,0);
+    });
+    [...best.values()].forEach(b=>runs.push(b));
+  });
+  section("Longest winning runs",
+    [pl("name","Player"), {k:"disc",h:"Discipline"}, {k:"n",h:"Wins",cls:"num",desc:true},
+     {k:"span",h:"From \u2014 to"}],
+    runs.sort((a,b)=>b.n-a.n).slice(0,15).map(b=>({
+      name:b.name, disc:b.disc, n:b.n,
+      span:`${b.from.event} ${b.from.season} \u2014 ${b.to.event} ${b.to.season}`})));
+
+  /* most titles in one season */
+  const bySeason=new Map();
+  MATCHES.forEach(m=>{
+    if(m.stage!=="Main" || m.round!=="F" || m.isBye) return;
+    const k=idOf(m.winner,m.disc)+"|"+m.season+"|"+m.disc;
+    if(!bySeason.has(k)) bySeason.set(k,{name:sideOf(m,"winner"), season:m.season,
+      disc:m.disc, n:0, events:[]});
+    const e=bySeason.get(k); e.n++; e.events.push(m.event);
+  });
+  section("Most titles in a season",
+    [pl("name","Player"), {k:"disc",h:"Discipline"}, {k:"season",h:"Season",cls:"mono"},
+     {k:"n",h:"Titles",cls:"num",desc:true}, {k:"list",h:"Including"}],
+    [...bySeason.values()].sort((a,b)=>b.n-a.n).slice(0,15).map(e=>({
+      ...e, list:e.events.slice(0,4).join(", ")+(e.events.length>4?"\u2026":"")})));
+
+  /* career totals */
+  const players=derivePlayers();
+  section("Most titles, all time",
+    [pl("player","Player"), {k:"titles",h:"Titles",cls:"num",desc:true},
+     {k:"w",h:"W",cls:"num"}, {k:"l",h:"L",cls:"num"}, {k:"pctStr",h:"Win rate",cls:"num"}],
+    players.slice().sort((a,b)=>b.titles-a.titles).slice(0,15)
+      .map(p=>({...p, pctStr:Math.round(p.pct*100)+"%"})));
+  section("Best win rate",
+    [pl("player","Player"), {k:"pctStr",h:"Win rate",cls:"num",desc:true},
+     {k:"w",h:"W",cls:"num"}, {k:"l",h:"L",cls:"num"}, {k:"titles",h:"Titles",cls:"num"}],
+    players.filter(p=>p.w+p.l>=100).sort((a,b)=>b.pct-a.pct).slice(0,15)
+      .map(p=>({...p, pctStr:Math.round(p.pct*100)+"%"})),
+    "Minimum one hundred matches.");
+
+  /* ranking records, if any weeks are loaded */
+  ["Singles","Doubles"].forEach(tour=>{
+    /* Counted straight from the loaded weeks so this doesn't depend on the
+       rankings tab having been opened. */
+    const ws=tourWeeks(tour);
+    if(ws.length<2) return;
+    const tally=new Map();
+    ws.forEach(w=>{
+      const top=(w.list||[]).find(r=>r.rank===1);
+      if(!top) return;
+      const k=keyOf(top.name);
+      if(!tally.has(k)) tally.set(k,{player:canonName(top.name), weeks:0});
+      tally.get(k).weeks++;
+    });
+    section(`Most weeks at no. 1 \u2014 ${tour.toLowerCase()}`,
+      [{k:"player",h:"Player",render:r=>nameLinks(r.player,tour), csv:r=>r.player},
+       {k:"weeks",h:"Weeks",cls:"num",desc:true}],
+      [...tally.values()].sort((a,b)=>b.weeks-a.weeks).slice(0,10));
+  });
+
+  const note=detailNote(MATCHES.map(m=>m.season));
+  if(note) mount.appendChild(note);
+}
+
+/* ==================================================================
+   MANAGER PAGE
+   ================================================================== */
+const MANAGER_UI={name:null};
+function showManager(name){
+  MANAGER_UI.name=name;
+  setHash(`manager/${enc(name)}`);
+  renderManagerPage();
+  openView("manager");
+}
+
+function renderManagerPage(){
+  if(!viewOn("v-manager")) return;
+  const mount=$("managerMount"); if(!mount) return;
+  mount.innerHTML="";
+  const name=MANAGER_UI.name;
+  if(!name){
+    mount.innerHTML=`<div class="empty"><strong>No manager chosen</strong>
+      Click a name on the Managers tab.</div>`;
+    return;
+  }
+  const runs=CALENDAR.filter(c=>c.manager===name)
+    .sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+  const h=document.createElement("h3"); h.className="sec"; h.style.margin="0 0 10px";
+  h.textContent=name;
+  mount.appendChild(h);
+  if(!runs.length){
+    mount.innerHTML+=`<div class="empty"><strong>No tournaments</strong></div>`;
+    return;
+  }
+
+  const seasons=[...new Set(runs.map(c=>c.season))].sort();
+  const tracked=runs.filter(c=>eventMatchCount(c.event,c.season)).length;
+  const grid=document.createElement("div"); grid.className="statgrid";
+  [["Tournaments", String(runs.length), `${tracked} with results`],
+   ["Seasons", String(seasons.length), `${seasons[0]}\u2013${seasons[seasons.length-1]}`],
+   ["Per season", String(Math.round(runs.length/seasons.length*10)/10), ""],
+   ["Challengers", String(runs.filter(c=>c.challenger).length), ""],
+   ["128 draws", String(runs.filter(c=>(c.draw||[])[0]>=128).length), ""]
+  ].forEach(([k,v,note])=>{
+    const c=document.createElement("div"); c.className="stat";
+    c.innerHTML=`<span class="k">${esc(k)}</span><span class="v">${esc(v)}</span>
+      <span class="note">${esc(note)}</span>`;
+    grid.appendChild(c);
+  });
+  mount.appendChild(grid);
+
+  /* by season, so a long steady run reads differently from one heavy year */
+  const perSeason=seasons.slice().reverse().map(s=>({
+    season:s, events:runs.filter(c=>c.season===s).length,
+    challengers:runs.filter(c=>c.season===s && c.challenger).length}));
+  const sh=document.createElement("h3"); sh.className="sec"; sh.textContent="By season";
+  mount.appendChild(sh);
+  mount.appendChild(tableOf([{k:"season",h:"Season",cls:"mono"},
+    {k:"events",h:"Tournaments",cls:"num"},{k:"challengers",h:"Challengers",cls:"num"}], perSeason));
+
+  const bySurf=new Map();
+  runs.forEach(c=>{
+    const s=c.surface||"?";
+    bySurf.set(s,(bySurf.get(s)||0)+1);
+  });
+  const sfh=document.createElement("h3"); sfh.className="sec"; sfh.textContent="By surface";
+  mount.appendChild(sfh);
+  mount.appendChild(tableOf([{k:"surface",h:"Surface"},{k:"n",h:"Tournaments",cls:"num"}],
+    [...bySurf.entries()].sort((a,b)=>b[1]-a[1])
+      .map(([s,n])=>({surface:SURFACE_NAME[s]||s||"not recorded", n}))));
+
+  const th=document.createElement("h3"); th.className="sec";
+  th.textContent=`Tournaments \u2014 ${runs.length}`;
+  mount.appendChild(th);
+  mount.appendChild(tableOf([
+    {k:"name",h:"Tournament",render:r=>{
+      const b=document.createElement("button"); b.className="linkish"; b.textContent=r.name;
+      b.addEventListener("click",()=>showEvent(r.event,r.season)); return b;}, csv:r=>r.name},
+    {k:"season",h:"Season",cls:"mono"},{k:"date",h:"Week",cls:"mono"},
+    {k:"country",h:"",cls:"ctry"},
+    {k:"surfaceName",h:"Surface"},
+    {k:"drawStr",h:"Draw",cls:"mono"}],
+    runs.map(c=>({name:c.name, event:c.event, season:c.season, date:c.date,
+      country:c.country, surfaceName:SURFACE_NAME[c.surface]||"",
+      drawStr:(c.draw||[]).join("/")}))));
+}
+
+/* ==================================================================
    FILTERS
    ================================================================== */
 const hay = (...v) => v.join(" ").toLowerCase();
@@ -3736,7 +4043,10 @@ function matchRows(){
   return MATCHES.filter(m =>
     (!d||m.disc===d)&&(!s||m.stage===s)&&(!e||m.event===e)&&(!r||m.round===r)&&
     (!q||hay(m.event,m.season,m.disc,m.stage,m.round,canonName(m.winner),canonName(m.loser),
-            m.winnerCountry,m.loserCountry,m.winnerSeed,m.loserSeed).includes(q)));
+            m.winnerCountry,m.loserCountry,m.winnerSeed,m.loserSeed).includes(q)))
+    .map(m=>({...m,
+      when: whenOf(m.event, m.season) + "|" + m.event +
+            "|" + String(99-roundRank(m.round)).padStart(2,"0")}));
 }
 function playerRows(){
   const q=val("pQ").trim().toLowerCase(), c=val("pCtry"), s=val("pSurf");
@@ -3746,17 +4056,31 @@ function teamRows(){
   const q=val("tQ").trim().toLowerCase(), s=val("tSurf");
   return deriveTeams(s).filter(t=>!q||t.team.toLowerCase().includes(q));
 }
+/* Both tables read best in playing order rather than alphabetically, so each
+   row carries the tournament's calendar date. Rounds sort within a tournament
+   so a final sits above the semi-final it came from. */
+const roundRank = r => {
+  const i = ROUND_ORDER.indexOf(r);
+  return i<0 ? 50 : i;
+};
+function whenOf(event, season){
+  const c=calFor(event, season);
+  if(c && c.date) return c.date;
+  return (season||"0000")+"-99-99";
+}
+
 function titleRows(){
   const q=val("ttQ").trim().toLowerCase();
-  return deriveTitles().filter(t=>!q||hay(t.event,t.season,t.sWinner,t.sFinalist,t.sSF1,t.sSF2,
-    t.dWinner,t.dFinalist,t.dSF1,t.dSF2).includes(q));
+  return deriveTitles().map(t=>({...t, when:whenOf(t.event,t.season)}))
+    .filter(t=>!q||hay(t.event,t.season,t.sWinner,t.sFinalist,t.sSF1,t.sSF2,
+      t.dWinner,t.dFinalist,t.dSF1,t.dSF2).includes(q));
 }
 
 /* ==================================================================
    TABLE INSTANCES
    ================================================================== */
 const tMatches = makeTable({head:"mHead",body:"mBody",empty:"mEmpty",
-  cols:()=>MATCH_COLS, rows:matchRows, rowClass:r=>r.tied?"tied":"",
+  cols:()=>MATCH_COLS, rows:matchRows, defaultSort:"when", defaultDir:-1, rowClass:r=>r.tied?"tied":"",
   extraHead:true, extraCell:r=>{
     const b=document.createElement("button"); b.className="flip"; b.textContent="\u21C5";
     b.title="Swap winner and loser";
@@ -3775,7 +4099,7 @@ const tPlayers = makeTable({head:"pHead",body:"pBody",empty:"pEmpty",
 const tTeams   = makeTable({head:"tHead",body:"tBody",empty:"tEmpty",
   cols:()=>TEAM_COLS, rows:teamRows, defaultSort:"w", defaultDir:-1});
 const tTitles  = makeTable({head:"ttHead",body:"ttBody",empty:"ttEmpty",
-  cols:()=>TITLE_COLS, rows:titleRows});
+  cols:()=>TITLE_COLS, rows:titleRows, defaultSort:"when", defaultDir:-1});
 
 function swapRow(r){
   [r.winnerSeed,r.loserSeed]=[r.loserSeed,r.winnerSeed];
@@ -4826,6 +5150,7 @@ function refreshAll(){
   tMatches.render(); tPlayers.render(); tTeams.render();
   tTitles.render(); renderRankings();
   renderCalendar(); renderEvent(); renderManagers(); renderH2H(); renderLuck(); renderProfile();
+  renderOverview(); renderRecords(); renderManagerPage();
   renderPreview();
   renderReview(); renderIssues(); renderSummary(); renderWeekManager();
   renderFileManager(); renderMatchManager(); renderUndo();
@@ -5504,17 +5829,44 @@ async function autoload(){
   }
   try{
     const r = deserialise(json);
-    const files = (json.rankingFiles || []).concat(json.matchFiles || []);
+    /* Twenty seasons is several megabytes and most visitors want the recent
+       ones. The newest few arrive first so the page is usable in about a
+       second, and the rest follow in the background. */
+    const seasonOf = f => (String(f).match(/-(\d{4})\.json$/) || [,""])[1];
+    const all = (json.rankingFiles || []).concat(json.matchFiles || []);
+    const newest = [...new Set(all.map(seasonOf).filter(Boolean))]
+      .sort((a,b)=>b.localeCompare(a)).slice(0,3);
+    const first = all.filter(f=>!seasonOf(f) || newest.includes(seasonOf(f)));
+    const rest  = all.filter(f=>!first.includes(f));
+
+    const grab = async f => {
+      try{
+        const fr = await fetch(f, {cache:"no-store"});
+        if(!fr.ok) return {f, err:`returned ${fr.status}`};
+        const body = await fr.json();
+        body.format===MATCHES_FORMAT ? decodeMatches(body) : decodeSeason(body);
+        return {f, ok:true};
+      }catch(e){ return {f, err:e.message}; }
+    };
+
+    const files = all;
     if(files.length){
-      const results = await Promise.all(files.map(async f=>{
-        try{
-          const fr = await fetch(f, {cache:"no-store"});
-          if(!fr.ok) return {f, err:`returned ${fr.status}`};
-          const body = await fr.json();
-          body.format===MATCHES_FORMAT ? decodeMatches(body) : decodeSeason(body);
-          return {f, ok:true};
-        }catch(e){ return {f, err:e.message}; }
-      }));
+      const results = await Promise.all(first.map(grab));
+      if(rest.length){
+        sortWeeks(); reindex(); refreshAll();
+        loadBanner("info", `Showing ${newest.slice().reverse().join(", ")} \u2014 `
+          + `loading ${rest.length} earlier file${rest.length===1?"":"s"}\u2026`, "");
+        setTimeout(async ()=>{
+          const more = await Promise.all(rest.map(grab));
+          sortWeeks(); reindex();
+          ["Singles","Doubles"].forEach(t=>{ RANK_UI[t].week=null; RANK_UI[t].player=null; });
+          refreshAll();
+          const bad = more.filter(x=>x.err);
+          if(bad.length) loadBanner("err", `${bad.length} file${bad.length===1?"":"s"} couldn't be loaded`,
+            bad.map(x=>`<code>${esc(x.f)}</code> \u2014 ${esc(x.err)}`).join("<br>"));
+          else loadBanner("", "", "");
+        }, 50);
+      }
       sortWeeks();
       /* Loading the seasons adds players the index never saw, so the registry
          has to be rebuilt \u2014 and rebuilding is what re-applies the pins and the

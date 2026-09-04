@@ -221,7 +221,7 @@ h3.sec{font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:22px;
 }
 </style>
 </head>
-<body data-mode="edit" data-app-version="2026-09-03c">
+<body data-mode="edit" data-app-version="2026-09-03e">
 <div class="wrap">
 
   <header class="masthead">
@@ -240,6 +240,7 @@ h3.sec{font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:22px;
 
   <nav id="nav">
     <button data-view="add" aria-selected="true" data-edit>Add data</button>
+    <button data-view="home" aria-selected="false">Overview</button>
     <button data-view="calendar" aria-selected="true">Calendar</button>
     <button data-view="matches" aria-selected="false">Matches</button>
     <button data-view="players" aria-selected="false">Players</button>
@@ -247,6 +248,7 @@ h3.sec{font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:22px;
     <button data-view="managers">Managers</button>
     <button data-view="h2h">Head to Head</button>
     <button data-view="luck">Draw Luck</button>
+    <button data-view="records">Records</button>
     <button data-view="titles" aria-selected="false">Titles</button>
     <button data-view="rankings" aria-selected="false">Singles Rankings</button>
     <button data-view="drankings" aria-selected="false">Doubles Rankings</button>
@@ -374,6 +376,10 @@ Matches Remaining: 0
   </section>
 
   <!-- CALENDAR ------------------------------------------------------- -->
+  <section class="view" id="v-home"><div id="homeMount"></div></section>
+  <section class="view" id="v-records"><div id="recordsMount"></div></section>
+  <section class="view" id="v-manager"><div id="managerMount"></div></section>
+
   <section class="view on" id="v-calendar"><div id="calMount"></div></section>
 
   <!-- PLAYER --------------------------------------------------------- -->
@@ -472,6 +478,6 @@ Matches Remaining: 0
   </section>
 
 </div>
-<script src="app.js?v=2026-09-03c"></script>
+<script src="app.js?v=2026-09-03e"></script>
 </body>
 </html>
