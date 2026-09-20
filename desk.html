@@ -373,6 +373,48 @@ Matches Remaining: 0
       </div>
       <div class="msg" id="saveMsg"></div>
     </div>
+
+    <h3 class="sec">Publish to GitHub</h3>
+    <div class="panel" id="ghPanel">
+      <style>
+      #ghPanel input[type=password]{width:100%;background:var(--court);color:var(--line);
+        border:1px solid var(--rule-strong);padding:8px 9px;
+        font-family:"IBM Plex Mono",monospace;font-size:13px}
+      #ghLog code{font-family:"IBM Plex Mono",monospace;font-size:12px}
+      #ghLog .st{font-size:12px}
+      #ghLog .st.ok{color:var(--ball)}
+      #ghLog .st.err{color:#F5B8B2}
+      #ghLog .st.warn{color:var(--warn)}
+      </style>
+      <p class="lede">Writes the changed files straight into the repository — the same bytes the
+        Download buttons produce, put in the right place for you. Nothing lands in Downloads and
+        nothing needs moving. The token lives in this browser only; it is never written into this
+        file, so desk.html stays safe to copy or commit.</p>
+      <div class="row2">
+        <div class="field"><label for="ghUser">GitHub username</label>
+          <input type="text" id="ghUser" value="polanskyfan" spellcheck="false"></div>
+        <div class="field"><label for="ghRepo">Repository</label>
+          <input type="text" id="ghRepo" value="tt-stats" spellcheck="false"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label for="ghBranch">Branch</label>
+          <input type="text" id="ghBranch" value="main" spellcheck="false"></div>
+        <div class="field"><label for="ghDir">Folder in the repo (blank means the root)</label>
+          <input type="text" id="ghDir" placeholder="" spellcheck="false"></div>
+      </div>
+      <div class="field"><label for="ghToken">Fine-grained token</label>
+        <input type="password" id="ghToken" placeholder="github_pat_… paste once"
+          autocomplete="off" spellcheck="false"></div>
+      <div class="btnrow">
+        <button class="btn primary" id="ghPubChanged">Publish changed files</button>
+        <button class="btn" id="ghPubAll">Publish everything loaded</button>
+        <button class="btn" id="ghCheck">Check the connection</button>
+        <button class="btn" id="ghSave">Remember these settings</button>
+        <button class="btn" id="ghForget">Forget the token</button>
+      </div>
+      <div class="msg" id="ghMsg"></div>
+      <div id="ghLog" style="margin-top:10px"></div>
+    </div>
   </section>
 
   <!-- CALENDAR ------------------------------------------------------- -->
@@ -479,5 +521,317 @@ Matches Remaining: 0
 
 </div>
 <script src="app.js?v=2026-09-03f"></script>
+
+<script>
+/* ==================================================================
+   PUBLISH TO GITHUB
+   The desk already knows which file it changed and where that file
+   lives in the repository, so it can put it there itself. This reuses
+   the existing save path exactly — serialise(), encodeSeason() and
+   encodeMatches() produce the same bytes the Download buttons write,
+   and those bytes go to the GitHub contents API instead of a Blob.
+   Nothing in app.js is touched.
+   ================================================================== */
+(function(){
+"use strict";
+
+if(typeof EDIT !== "undefined" && !EDIT) return;          // the public page never publishes
+if(typeof serialise !== "function") return;               // app.js didn't load
+
+var LS_CFG="ttpub.cfg", LS_TOK="ttpub.token", LS_SHA="ttpub.shas";
+var busy=false;
+
+var g = function(id){ return document.getElementById(id); };
+var escp = function(s){ return String(s).replace(/[&<>"']/g, function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); };
+
+/* localStorage is per-browser and can throw in a private window, so every
+   read and write is guarded and the panel still works without it. */
+function readLS(key, fallback){
+  try{ var v=localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
+  catch(e){ return fallback; }
+}
+function writeLS(key, val){
+  try{ localStorage.setItem(key, JSON.stringify(val)); return true; }
+  catch(e){ return false; }
+}
+
+function cfg(){
+  return {
+    user:   g("ghUser").value.trim(),
+    repo:   g("ghRepo").value.trim(),
+    branch: g("ghBranch").value.trim() || "main",
+    dir:    g("ghDir").value.trim().replace(/^\/+|\/+$/g,""),
+    token:  g("ghToken").value.trim()
+  };
+}
+
+function msg(html, cls){
+  var m=g("ghMsg"); m.className="msg"+(cls?" "+cls:""); m.innerHTML=html;
+}
+
+/* One row per file, updated in place as it goes. */
+function row(name){
+  var d=document.createElement("div"); d.className="wkrow";
+  d.innerHTML='<span class="nm"><code>'+escp(name)+'</code></span><span class="st dim">waiting</span>';
+  g("ghLog").appendChild(d);
+  return d;
+}
+function setRow(d, text, cls){
+  var s=d.querySelector(".st");
+  s.className="st "+(cls||"dim"); s.textContent=text;
+}
+
+/* btoa only takes Latin-1, and spreading a multi-megabyte byte array into
+   String.fromCharCode overflows the stack, so it goes across in chunks. */
+function b64(str){
+  var bytes=new TextEncoder().encode(str), bin="", CH=0x8000;
+  for(var i=0;i<bytes.length;i+=CH)
+    bin += String.fromCharCode.apply(null, bytes.subarray(i, i+CH));
+  return btoa(bin);
+}
+
+function headers(token){
+  return {"Authorization":"Bearer "+token,
+          "Accept":"application/vnd.github+json",
+          "X-GitHub-Api-Version":"2022-11-28"};
+}
+function contentsUrl(c, name){
+  var full = (c.dir ? c.dir+"/" : "") + name;
+  return "https://api.github.com/repos/"+encodeURIComponent(c.user)+"/"
+       + encodeURIComponent(c.repo)+"/contents/"
+       + full.split("/").map(encodeURIComponent).join("/");
+}
+var shaKey = function(c, name){ return c.user+"/"+c.repo+"/"+c.branch+"/"+(c.dir||"")+"/"+name; };
+
+/* A failed fetch says nothing useful on its own, so every status gets turned
+   into the thing you'd actually do about it. */
+async function explain(r){
+  var detail="";
+  try{ var j=await r.json(); detail=j.message||""; }catch(e){}
+  if(r.status===401) return "401 — the token is wrong or has expired. Generate a new one and paste it in again.";
+  if(r.status===403) return "403 — this token isn't allowed to write here. Check it has Contents set to "
+    + "Read and write, and that this repository is in its list." + (detail?" ("+escp(detail)+")":"");
+  if(r.status===404) return "404 — no repository, branch or folder of that name for this token. "
+    + "Check the username, the repository and the folder field.";
+  if(r.status===409) return "409 — the file moved on GitHub while this was uploading. Try again.";
+  if(r.status===422) return "422 — GitHub refused the contents" + (detail?": "+escp(detail):"")
+    + ". A file over about 40 MB has to go in by hand.";
+  return r.status+" — "+escp(detail||r.statusText);
+}
+
+/* A network-level failure from a file:/// page is nearly always the browser
+   refusing the request rather than anything wrong with the token. */
+async function go(url, opts){
+  try{ return await fetch(url, opts); }
+  catch(e){
+    throw new Error("The browser couldn't reach api.github.com at all. If this page is open "
+      + "straight from your hard drive (an address starting file:///), serve the folder instead: "
+      + "in that folder run <code>python -m http.server 8000</code> and open "
+      + "<code>http://localhost:8000/desk.html</code>. That also makes data.json load on its own.");
+  }
+}
+
+async function remoteSha(c, name){
+  var r = await go(contentsUrl(c,name)+"?ref="+encodeURIComponent(c.branch),
+    {headers:headers(c.token), cache:"no-store"});
+  if(r.status===404) return null;                       // a file that doesn't exist yet
+  if(!r.ok) throw new Error(await explain(r));
+  var j = await r.json();
+  return j.sha;
+}
+
+async function put(c, name, text, message, sha){
+  var body={message:message, content:b64(text), branch:c.branch};
+  if(sha) body.sha=sha;                                 // absent means create
+  var h=headers(c.token); h["Content-Type"]="application/json";
+  var r = await go(contentsUrl(c,name), {method:"PUT", headers:h, body:JSON.stringify(body)});
+  if(!r.ok) throw new Error(await explain(r));
+  var j = await r.json();
+  return j.content && j.content.sha;
+}
+
+/* ------------------------------------------------------------------
+   WHICH FILES
+   The same three producers the Download buttons use, so a published
+   file and a downloaded one are byte for byte identical. data.json is
+   written with the same indent, and it still lists the seasons that
+   weren't open this session.
+   ------------------------------------------------------------------ */
+function fileList(onlyChanged){
+  var all = !onlyChanged, out = [], body = [];
+  loadedSeasons().forEach(function(s){
+    if(all || SEASON_DIRTY.has(s) || LEGACY_INLINE)
+      body.push({name:seasonFile(s), kind:"rank", season:s,
+        make:function(){ return JSON.stringify(encodeSeason(s)); }});
+  });
+  loadedMatchSeasons().forEach(function(s){
+    if(all || MATCH_DIRTY.has(s) || LEGACY_INLINE)
+      body.push({name:matchFile(s), kind:"match", season:s,
+        make:function(){ return JSON.stringify(encodeMatches(s)); }});
+  });
+  /* data.json carries the list of season files and the saved-at stamp, so it
+     goes up whenever any of them does — the same rule saveAll() follows. */
+  if(body.length || all || DIRTY || LEGACY_INLINE)
+    out.push({name:"data.json", kind:"index",
+      make:function(){ return JSON.stringify(serialise(), null, 1); }});
+  return out.concat(body);
+}
+
+function markClean(f){
+  if(f.kind==="index") DIRTY=false;
+  if(f.kind==="rank")  SEASON_DIRTY.delete(f.season);
+  if(f.kind==="match") MATCH_DIRTY.delete(f.season);
+}
+
+function commitMessage(files){
+  var d=new Date(), names=files.map(function(f){ return f.name; });
+  var what = names.length<=3 ? names.join(", ")
+           : names.slice(0,2).join(", ")+" and "+(names.length-2)+" more";
+  return "Results desk: "+what+" ("+d.toISOString().slice(0,10)+")";
+}
+
+async function publish(onlyChanged){
+  if(busy) return;
+  var c=cfg();
+  if(!c.user || !c.repo){ msg("Fill in the username and the repository first.","err"); return; }
+  if(!c.token){ msg("Paste your token first.","err"); return; }
+  if(!MATCHES.length && !WEEKS.length){ msg("Nothing loaded to publish.","err"); return; }
+
+  var files=fileList(onlyChanged);
+  if(!files.length){
+    msg("Nothing has changed since the last publish. Use <b>Publish everything loaded</b> "
+      + "if you want to push the files anyway.","warn");
+    return;
+  }
+
+  busy=true;
+  g("ghLog").innerHTML="";
+  msg("Publishing "+files.length+" file"+(files.length===1?"":"s")+"…");
+  var rows=files.map(function(f){ return row(f.name); });
+  var message=commitMessage(files);
+  var shas=readLS(LS_SHA,{});
+  var ok=0, failed=0, skipped=0;
+
+  for(var i=0;i<files.length;i++){
+    var f=files[i], d=rows[i];
+    try{
+      setRow(d,"building…");
+      var text=f.make();
+      setRow(d,"checking what's there…");
+      var remote=await remoteSha(c, f.name);
+      var known=shas[shaKey(c,f.name)];
+
+      /* If the file on GitHub isn't the one this desk last put there, something
+         else has written to it — another machine, a merged helper file, an edit
+         in the web editor. Overwriting silently is how work disappears. */
+      if(remote && known && remote!==known){
+        if(!confirm(f.name+" has changed on GitHub since this page last published it.\n\n"
+          + "Publishing now replaces whatever is there with what's loaded here.\n\nGo ahead?")){
+          setRow(d,"skipped — left as it is on GitHub","warn"); skipped++; continue;
+        }
+      }
+      setRow(d,"uploading "+(text.length/1024).toFixed(0)+" KB…");
+      var newSha=await put(c, f.name, text, message, remote);
+      if(newSha){ shas[shaKey(c,f.name)]=newSha; writeLS(LS_SHA, shas); }
+      markClean(f);
+      setRow(d, remote ? "published" : "created", "ok");
+      ok++;
+    }catch(err){
+      setRow(d, err.message.replace(/<[^>]+>/g,""), "err");
+      failed++;
+    }
+  }
+
+  if(!failed && !skipped) LEGACY_INLINE=false;
+  renderSummary(); renderFileManager();
+  busy=false;
+
+  var site="https://"+escp(c.user)+".github.io/"+escp(c.repo)+"/";
+  if(failed){
+    msg(ok+" published, "+failed+" failed"+(skipped?", "+skipped+" skipped":"")
+      + ". The reason is on each line above.", "err");
+  } else if(skipped){
+    msg(ok+" published, "+skipped+" left alone. Reload those from the repository before "
+      + "editing them again, or you'll be working from an older copy.", "warn");
+  } else {
+    var missing=unloadedSeasons().concat(unloadedMatchSeasons());
+    msg("Published "+ok+" file"+(ok===1?"":"s")+". Pages usually rebuilds within a minute — "
+      + 'then hard-refresh <a href="'+site+'" target="_blank" rel="noopener">'+site+"</a> "
+      + "with Ctrl-Shift-R."
+      + (missing.length ? " "+missing.length+" season"+(missing.length===1?"":"s")+" ("
+          + escp(missing.join(", "))+") weren't open and haven't been touched — "
+          + "those files are still as they were." : ""),
+      missing.length ? "warn" : "");
+  }
+}
+
+async function check(){
+  var c=cfg();
+  if(!c.user || !c.repo){ msg("Fill in the username and the repository first.","err"); return; }
+  if(!c.token){ msg("Paste your token first.","err"); return; }
+  msg("Checking…");
+  try{
+    var r=await go("https://api.github.com/repos/"+encodeURIComponent(c.user)+"/"
+      + encodeURIComponent(c.repo), {headers:headers(c.token), cache:"no-store"});
+    if(!r.ok){ msg(await explain(r),"err"); return; }
+    var j=await r.json();
+    if(!g("ghBranch").value.trim() && j.default_branch) g("ghBranch").value=j.default_branch;
+    var canWrite = j.permissions && j.permissions.push;
+    var branch = g("ghBranch").value.trim() || j.default_branch;
+    var bits = "Reached <code>"+escp(j.full_name)+"</code> · default branch <code>"
+      + escp(j.default_branch)+"</code> · publishing to <code>"+escp(branch)+"</code>"
+      + (c.dir ? " in <code>"+escp(c.dir)+"/</code>" : " at the root");
+    if(canWrite) msg(bits+" · write access confirmed.");
+    else msg(bits+" · <b>but this token has no write access.</b> Edit the token and set "
+      + "Contents to Read and write.", "err");
+  }catch(err){ msg(err.message,"err"); }
+}
+
+/* ------------------------------------------------------------------
+   WIRING
+   ------------------------------------------------------------------ */
+(function restore(){
+  var c=readLS(LS_CFG,{});
+  /* only override the prefilled values when something was actually saved */
+  if(c.user)   g("ghUser").value   = c.user;
+  if(c.repo)   g("ghRepo").value   = c.repo;
+  if(c.branch) g("ghBranch").value = c.branch;
+  if(c.dir)    g("ghDir").value    = c.dir;
+  g("ghToken").value = readLS(LS_TOK,"") || "";
+  if(c.user && c.repo && g("ghToken").value)
+    msg("Settings remembered on this computer. <b>Check the connection</b> if you want to be sure "
+      + "before publishing.");
+})();
+
+g("ghSave").addEventListener("click", function(){
+  var c=cfg();
+  var a=writeLS(LS_CFG,{user:c.user, repo:c.repo, branch:c.branch, dir:c.dir});
+  var b=writeLS(LS_TOK, c.token);
+  msg(a&&b
+    ? "Saved in this browser. It survives closing the tab, but not clearing site data — "
+      + "keep the token in your password manager too."
+    : "This browser wouldn't store the settings, so they'll need re-entering next time. "
+      + "Publishing still works.", (a&&b)?"":"warn");
+});
+
+g("ghForget").addEventListener("click", function(){
+  try{ localStorage.removeItem(LS_TOK); }catch(e){}
+  g("ghToken").value="";
+  msg("Token cleared from this browser. It's still live on GitHub — delete it there too if you "
+    + "meant to revoke it.","warn");
+});
+
+g("ghCheck").addEventListener("click", check);
+g("ghPubChanged").addEventListener("click", function(){ publish(true); });
+g("ghPubAll").addEventListener("click", function(){
+  var n=fileList(false).length;
+  if(!confirm("Publish all "+n+" loaded file"+(n===1?"":"s")+", changed or not?\n\n"
+    + "Seasons that aren't open in this session are left alone either way.")) return;
+  publish(false);
+});
+
+})();
+</script>
 </body>
 </html>
