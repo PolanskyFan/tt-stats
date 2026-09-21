@@ -4531,19 +4531,36 @@ function renderMergePanel(box){
   row.appendChild(go); row.appendChild(note);
   s.appendChild(row);
 
+  /* Merges already made are settled business, and after a few seasons there
+     are dozens of them. They fold away behind their count rather than pushing
+     the merge box and the real issues off the screen, and the rows are built
+     on first open, like the settled-decisions list below. */
   if(ALIAS.size){
-    const list = document.createElement("div");
-    list.style.marginTop = "6px";
-    [...ALIAS.entries()].forEach(([f,t])=>{
-      const q=document.createElement("div"); q.className="rq";
-      q.innerHTML = `<span class="tag">merged</span>
-        <span class="ctx">${esc(f)} \u2192 ${esc(canonName(t))}</span>`;
-      const u=document.createElement("button");
-      u.className="btn sm"; u.textContent="Undo";
-      u.addEventListener("click", ()=>{ unmerge(f); markDirty(); refreshAll(); });
-      q.appendChild(u); list.appendChild(q);
+    const d = document.createElement("details");
+    d.style.marginTop = "10px";
+    const sum = document.createElement("summary");
+    sum.style.cssText="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:10.5px;"
+      +"letter-spacing:.16em;text-transform:uppercase;color:var(--slate)";
+    sum.textContent = `Merged already \u2014 ${ALIAS.size}`;
+    d.appendChild(sum);
+    let built = false;
+    d.addEventListener("toggle", ()=>{
+      if(!d.open || built) return;
+      built = true;
+      const list = document.createElement("div");
+      list.style.marginTop = "6px";
+      [...ALIAS.entries()].forEach(([f,t])=>{
+        const q=document.createElement("div"); q.className="rq";
+        q.innerHTML = `<span class="tag">merged</span>
+          <span class="ctx">${esc(f)} \u2192 ${esc(canonName(t))}</span>`;
+        const u=document.createElement("button");
+        u.className="btn sm"; u.textContent="Undo";
+        u.addEventListener("click", ()=>{ unmerge(f); markDirty(); refreshAll(); });
+        q.appendChild(u); list.appendChild(q);
+      });
+      d.appendChild(list);
     });
-    s.appendChild(list);
+    s.appendChild(d);
   }
   box.appendChild(s);
 }
