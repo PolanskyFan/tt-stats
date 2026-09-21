@@ -1,6 +1,6 @@
 {
  "format": "tennis-tipping/1",
- "savedAt": "2026-09-03T01:54:52.225Z",
+ "savedAt": "2026-09-21T14:06:41.296Z",
  "matchFiles": [
   "matches-2026.json",
   "matches-2025.json",
@@ -943,7 +943,7 @@
    "date": "2026-06-15",
    "opened": "30/05/2026",
    "name": "Queen's",
-   "event": "Queen\u2019s Club",
+   "event": "Queen’s Club",
    "country": "GBR",
    "surface": "G",
    "draw": [
@@ -1159,7 +1159,7 @@
    "date": "2026-07-20",
    "opened": "03/07/2026",
    "name": "Kitzbuhel",
-   "event": "Kitzb\u00fchel",
+   "event": "Kitzbühel",
    "country": "AUT",
    "surface": "CL",
    "draw": [
@@ -4862,8 +4862,8 @@
    "code": "30b",
    "date": "2024-07-22",
    "opened": "",
-   "name": "Kitzb\u00fchel",
-   "event": "Kitzb\u00fchel",
+   "name": "Kitzbühel",
+   "event": "Kitzbühel",
    "country": "AUT",
    "surface": "CL",
    "draw": [
@@ -6842,8 +6842,8 @@
    "code": "31c",
    "date": "2023-07-31",
    "opened": "",
-   "name": "Kitzb\u00fchel",
-   "event": "Kitzb\u00fchel",
+   "name": "Kitzbühel",
+   "event": "Kitzbühel",
    "country": "AUT",
    "surface": "CL",
    "draw": [
@@ -8707,8 +8707,8 @@
    "code": "30b",
    "date": "2022-07-25",
    "opened": "",
-   "name": "Kitzb\u00fchel",
-   "event": "Kitzb\u00fchel",
+   "name": "Kitzbühel",
+   "event": "Kitzbühel",
    "country": "AUT",
    "surface": "CL",
    "draw": [
@@ -10592,8 +10592,8 @@
    "code": "30b",
    "date": "2021-07-26",
    "opened": "",
-   "name": "Kitzb\u00fchel",
-   "event": "Kitzb\u00fchel",
+   "name": "Kitzbühel",
+   "event": "Kitzbühel",
    "country": "AUT",
    "surface": "CL",
    "draw": [
@@ -11260,8 +11260,8 @@
    "code": "48a",
    "date": "2021-11-29",
    "opened": "",
-   "name": "S\u00e3o Paulo CH",
-   "event": "S\u00e3o Paulo",
+   "name": "São Paulo CH",
+   "event": "São Paulo",
    "country": "BRA",
    "surface": "CL",
    "draw": [
@@ -11834,8 +11834,8 @@
    "code": "36a",
    "date": "2020-09-08",
    "opened": "",
-   "name": "Kitzb\u00fchel",
-   "event": "Kitzb\u00fchel",
+   "name": "Kitzbühel",
+   "event": "Kitzbühel",
    "country": "AUT",
    "surface": "CL",
    "draw": [
@@ -13898,8 +13898,8 @@
    "code": "31b",
    "date": "2019-07-29",
    "opened": "",
-   "name": "Kitzb\u00fchel",
-   "event": "Kitzb\u00fchel",
+   "name": "Kitzbühel",
+   "event": "Kitzbühel",
    "country": "AUT",
    "surface": "CL",
    "draw": [
@@ -16301,8 +16301,8 @@
    "code": "31b",
    "date": "2018-07-30",
    "opened": "",
-   "name": "Kitzb\u00fchel",
-   "event": "Kitzb\u00fchel",
+   "name": "Kitzbühel",
+   "event": "Kitzbühel",
    "country": "AUT",
    "surface": "CL",
    "draw": [
@@ -18101,7 +18101,7 @@
     16,
     8
    ],
-   "manager": "C\u00e9sar Luiz",
+   "manager": "César Luiz",
    "challenger": false
   },
   {
@@ -18775,8 +18775,8 @@
    "code": "31b",
    "date": "2017-07-31",
    "opened": "",
-   "name": "Kitzb\u00fchel",
-   "event": "Kitzb\u00fchel",
+   "name": "Kitzbühel",
+   "event": "Kitzbühel",
    "country": "AUT",
    "surface": "CL",
    "draw": [
@@ -21424,8 +21424,8 @@
    "code": "29c",
    "date": "2016-07-18",
    "opened": "",
-   "name": "Kitzb\u00fchel",
-   "event": "Kitzb\u00fchel",
+   "name": "Kitzbühel",
+   "event": "Kitzbühel",
    "country": "AUT",
    "surface": "CL",
    "draw": [
@@ -24593,8 +24593,8 @@
    "code": "31b",
    "date": "2015-08-03",
    "opened": "",
-   "name": "Kitzb\u00fchel",
-   "event": "Kitzb\u00fchel",
+   "name": "Kitzbühel",
+   "event": "Kitzbühel",
    "country": "AUT",
    "surface": "CL",
    "draw": [
@@ -28179,8 +28179,8 @@
    "code": "31a",
    "date": "2014-07-28",
    "opened": "",
-   "name": "Kitzb\u00fchel",
-   "event": "Kitzb\u00fchel",
+   "name": "Kitzbühel",
+   "event": "Kitzbühel",
    "country": "AUT",
    "surface": "CL",
    "draw": [
@@ -31651,8 +31651,8 @@
    "code": "31b",
    "date": "2013-07-29",
    "opened": "",
-   "name": "Kitzb\u00fchel",
-   "event": "Kitzb\u00fchel",
+   "name": "Kitzbühel",
+   "event": "Kitzbühel",
    "country": "AUT",
    "surface": "CL",
    "draw": [
@@ -35005,8 +35005,8 @@
    "code": "30b",
    "date": "2012-07-23",
    "opened": "",
-   "name": "Kitzb\u00fchel",
-   "event": "Kitzb\u00fchel",
+   "name": "Kitzbühel",
+   "event": "Kitzbühel",
    "country": "AUT",
    "surface": "CL",
    "draw": [
@@ -38398,8 +38398,8 @@
    "code": "31b",
    "date": "2011-08-01",
    "opened": "",
-   "name": "Kitzb\u00fchel",
-   "event": "Kitzb\u00fchel",
+   "name": "Kitzbühel",
+   "event": "Kitzbühel",
    "country": "AUT",
    "surface": "CL",
    "draw": [
@@ -41649,8 +41649,8 @@
    "code": "31d",
    "date": "2010-08-02",
    "opened": "",
-   "name": "Kitzb\u00fchel CH",
-   "event": "Kitzb\u00fchel",
+   "name": "Kitzbühel CH",
+   "event": "Kitzbühel",
    "country": "AUT",
    "surface": "CL",
    "draw": [
@@ -44149,8 +44149,8 @@
    "code": "20b",
    "date": "2009-05-18",
    "opened": "",
-   "name": "Kitzb\u00fchel",
-   "event": "Kitzb\u00fchel",
+   "name": "Kitzbühel",
+   "event": "Kitzbühel",
    "country": "AUT",
    "surface": "CL",
    "draw": [
@@ -47232,7 +47232,7 @@
     16,
     8
    ],
-   "manager": "Toribet\u00e9",
+   "manager": "Toribeté",
    "challenger": true
   },
   {
@@ -47268,7 +47268,7 @@
     16,
     8
    ],
-   "manager": "Toribet\u00e9",
+   "manager": "Toribeté",
    "challenger": true
   },
   {
@@ -47515,7 +47515,7 @@
     16,
     8
    ],
-   "manager": "Toribet\u00e9",
+   "manager": "Toribeté",
    "challenger": true
   },
   {
@@ -47955,8 +47955,8 @@
    "code": "29a",
    "date": "2008-07-14",
    "opened": "",
-   "name": "Kitzb\u00fchel",
-   "event": "Kitzb\u00fchel",
+   "name": "Kitzbühel",
+   "event": "Kitzbühel",
    "country": "AUT",
    "surface": "CL",
    "draw": [
@@ -48323,7 +48323,7 @@
     16,
     8
    ],
-   "manager": "Toribet\u00e9",
+   "manager": "Toribeté",
    "challenger": true
   },
   {
@@ -49205,7 +49205,7 @@
     16,
     8
    ],
-   "manager": "Toribet\u00e9",
+   "manager": "Toribeté",
    "challenger": true
   },
   {
@@ -50869,8 +50869,8 @@
    "code": "30a",
    "date": "2007-07-23",
    "opened": "",
-   "name": "Kitzb\u00fchel",
-   "event": "Kitzb\u00fchel",
+   "name": "Kitzbühel",
+   "event": "Kitzbühel",
    "country": "AUT",
    "surface": "CL",
    "draw": [
@@ -52425,8 +52425,8 @@
    "code": "30c",
    "date": "2006-07-24",
    "opened": "",
-   "name": "Kitzb\u00fchel",
-   "event": "Kitzb\u00fchel",
+   "name": "Kitzbühel",
+   "event": "Kitzbühel",
    "country": "AUT",
    "surface": "CL",
    "draw": [
@@ -52949,7 +52949,7 @@
   },
   {
    "from": "nepoznati knez",
-   "to": "\u043d\u0435\u043f\u043e\u0437\u043d\u0430\u0442\u0438"
+   "to": "непознати"
   },
   {
    "from": "euroquitter",
@@ -53289,7 +53289,7 @@
   },
   {
    "from": "crvena zvezda",
-   "to": "\u043d\u0435\u043f\u043e\u0437\u043d\u0430\u0442\u0438"
+   "to": "непознати"
   },
   {
    "from": "le vautour!",
@@ -53373,7 +53373,7 @@
   },
   {
    "from": "luis santos",
-   "to": "lu\u00eds santos"
+   "to": "luís santos"
   },
   {
    "from": "eurofighter",
@@ -53396,7 +53396,7 @@
    "to": "sham kay adams"
   },
   {
-   "from": "\u0430\u043d\u0434\u0440\u0435\u0430\u0441",
+   "from": "андреас",
    "to": "andreas"
   },
   {
@@ -53428,7 +53428,7 @@
    "to": "tealeaves"
   },
   {
-   "from": "rafarta&grigorior\u2665",
+   "from": "rafarta&grigorior♥",
    "to": "naudio spanlatine"
   },
   {
@@ -53585,7 +53585,7 @@
    ]
   },
   {
-   "key": "\u043d\u0435\u043f\u043e\u0437\u043d\u0430\u0442\u0438",
+   "key": "непознати",
    "codes": [
     "SRB",
     "RUS"
@@ -53702,7 +53702,8 @@
    "key": "netin!",
    "codes": [
     "SUI",
-    "BRA"
+    "BRA",
+    "ZIM"
    ]
   },
   {
@@ -53809,6 +53810,90 @@
     "ESP",
     "SPA"
    ]
+  },
+  {
+   "key": "fernet",
+   "codes": [
+    "ARG",
+    "IND"
+   ]
+  },
+  {
+   "key": "excaliburii",
+   "codes": [
+    "ARG",
+    "MON"
+   ]
+  },
+  {
+   "key": "murilobrasil",
+   "codes": [
+    "BRA",
+    "ARM"
+   ]
+  },
+  {
+   "key": "davidcuervacho",
+   "codes": [
+    "ARG",
+    "IND"
+   ]
+  },
+  {
+   "key": "hartnett",
+   "codes": [
+    "CHN",
+    "HKG"
+   ]
+  },
+  {
+   "key": "torochico",
+   "codes": [
+    "ARG",
+    "CHI"
+   ]
+  },
+  {
+   "key": "fabolous",
+   "codes": [
+    "ARG",
+    "GER"
+   ]
+  },
+  {
+   "key": "nalrodd",
+   "codes": [
+    "BEL",
+    "SLO"
+   ]
+  },
+  {
+   "key": "thekshe",
+   "codes": [
+    "POR",
+    "POL"
+   ]
+  },
+  {
+   "key": "guibrugnara",
+   "codes": [
+    "BRA",
+    "ARG"
+   ]
+  },
+  {
+   "key": "jokerro",
+   "codes": [
+    "AUS",
+    "ROM"
+   ]
+  },
+  {
+   "key": "forehand dtl",
+   "codes": [
+    "SRB",
+    "USA"
+   ]
   }
  ],
  "datesAccepted": [
@@ -53817,6 +53902,9 @@
   "Singles|2021|November 25th",
   "Doubles|2021|March 1st",
   "Doubles|2021|November 22nd"
+ ],
+ "gapsAccepted": [
+  "2019|October 7th|Doubles"
  ],
  "renameRejected": [
   "Doubles|guitarra|alex baumann",
@@ -53853,8 +53941,6 @@
   "Doubles|karo em9|svk",
   "Singles|jupiterlover|cswab22",
   "Singles|vini federer|mreleganza",
-  "Singles|litotes| aa ",
-  "Singles|cah | aa ",
   "Singles|tiptopdaisy|applegirl",
   "Singles|jens|mahqz",
   "Singles|kai.|mahqz",
@@ -53865,7 +53951,9 @@
   "Singles|rafanadal1904|gillouthe best",
   "Doubles|foosimoo|ramos",
   "Doubles|filipo|lee3132",
-  "Singles|malul|calgary flames"
+  "Singles|malul|calgary flames",
+  "Singles|litotes| aa ",
+  "Singles|cah | aa "
  ],
  "unknownAccepted": [
   "toomuchraquet"
@@ -54025,8 +54113,8 @@
    "country": "LAT"
   },
   {
-   "key": "\u043d\u0435\u043f\u043e\u0437\u043d\u0430\u0442\u0438",
-   "name": "\u041d\u0435\u043f\u043e\u0437\u043d\u0430\u0442\u0438"
+   "key": "непознати",
+   "name": "Непознати"
   },
   {
    "key": "michael!",
@@ -54038,7 +54126,8 @@
   },
   {
    "key": "aurafarmer",
-   "name": "AuraFarmer"
+   "name": "AuraFarmer",
+   "country": "SVK"
   },
   {
    "key": "fabrice bahrami",
@@ -54145,11 +54234,12 @@
   },
   {
    "key": "colt th magnific",
-   "name": "Colt th Magnific"
+   "name": "Colt th Magnific",
+   "country": "FRA"
   },
   {
    "key": "dinkulpus",
-   "name": "dinkulpus"
+   "name": "Mmarto193"
   },
   {
    "key": "ostm89",
@@ -54161,7 +54251,8 @@
   },
   {
    "key": "flynn25",
-   "name": "flynn25"
+   "name": "flynn25",
+   "country": "IRL"
   },
   {
    "key": "catgamer",
@@ -54598,8 +54689,8 @@
    "name": "The Prince"
   },
   {
-   "key": "lu\u00eds santos",
-   "name": "Lu\u00eds Santos"
+   "key": "luís santos",
+   "name": "Luís Santos"
   },
   {
    "key": "redkop",
@@ -55112,20 +55203,12 @@
    "country": "POR"
   },
   {
-   "key": "cah ",
-   "name": "cah_"
-  },
-  {
-   "key": "mmarto193",
-   "name": "Mmarto193"
-  },
-  {
    "key": "acemaker",
    "name": "AceMaker"
   },
   {
-   "key": "dmitriy bond",
-   "name": "Dmitriy Bond"
+   "key": "dmitry bond",
+   "name": "Dmitry Bond"
   },
   {
    "key": "jonathancrane",
@@ -55145,8 +55228,8 @@
    "country": "ROU"
   },
   {
-   "key": "<eve>.",
-   "name": "<Eve>."
+   "key": "<eve>",
+   "name": "<EvE>"
   },
   {
    "key": "brunobeidacki",
@@ -55155,10 +55238,6 @@
   {
    "key": "bibberz",
    "name": "Bibberz"
-  },
-  {
-   "key": "dmitry bond",
-   "name": "Dmitry Bond"
   },
   {
    "key": "action jackson",
@@ -55171,10 +55250,6 @@
   {
    "key": "fernandotoshiba",
    "name": "FernandoToshiba"
-  },
-  {
-   "key": "<eve>",
-   "name": "<EvE>"
   },
   {
    "key": "tytta!.",
@@ -55260,6 +55335,10 @@
   {
    "key": "samib 187",
    "name": "samib_187"
+  },
+  {
+   "key": "looch",
+   "country": "CAN"
   }
  ]
 }
