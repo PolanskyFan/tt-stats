@@ -1,6 +1,6 @@
 {
  "format": "tennis-tipping/1",
- "savedAt": "2026-09-21T16:03:25.662Z",
+ "savedAt": "2026-11-09T01:58:58.325Z",
  "matchFiles": [
   "matches-2026.json",
   "matches-2025.json",
@@ -1350,204 +1350,6 @@
    ],
    "manager": "tommyboy0515",
    "challenger": false
-  },
-  {
-   "season": "2026",
-   "code": "36a",
-   "date": "2026-09-07",
-   "opened": "21/08/2026",
-   "name": "Genoa CH*",
-   "event": "Genoa CH*",
-   "country": "ITA",
-   "surface": "CL",
-   "draw": [
-    32,
-    16,
-    16,
-    8
-   ],
-   "manager": "supertom",
-   "challenger": true
-  },
-  {
-   "season": "2026",
-   "code": "36b",
-   "date": "2026-09-07",
-   "opened": "21/08/2026",
-   "name": "Seville CH*",
-   "event": "Seville CH*",
-   "country": "ESP",
-   "surface": "CL",
-   "draw": [
-    32,
-    16,
-    16,
-    8
-   ],
-   "manager": "anny",
-   "challenger": true
-  },
-  {
-   "season": "2026",
-   "code": "37a",
-   "date": "2026-09-14",
-   "opened": "28/08/2026",
-   "name": "Szczecin CH*",
-   "event": "Szczecin CH*",
-   "country": "POL",
-   "surface": "CL",
-   "draw": [
-    32,
-    16,
-    16,
-    8
-   ],
-   "manager": "dinkulpus",
-   "challenger": true
-  },
-  {
-   "season": "2026",
-   "code": "37b",
-   "date": "2026-09-14",
-   "opened": "28/08/2026",
-   "name": "Tiburon CH*",
-   "event": "Tiburon CH*",
-   "country": "USA",
-   "surface": "H",
-   "draw": [
-    32,
-    16,
-    16,
-    8
-   ],
-   "manager": "sergiopoker6",
-   "challenger": true
-  },
-  {
-   "season": "2026",
-   "code": "37c",
-   "date": "2026-09-14",
-   "opened": "28/08/2026",
-   "name": "Guangzhou CH",
-   "event": "Guangzhou CH",
-   "country": "CHN",
-   "surface": "H",
-   "draw": [
-    32,
-    16,
-    16,
-    8
-   ],
-   "manager": "tommyboy0515",
-   "challenger": true
-  },
-  {
-   "season": "2026",
-   "code": "38a",
-   "date": "2026-09-21",
-   "opened": "04/09/2026",
-   "name": "Chengdu",
-   "event": "Chengdu",
-   "country": "CHN",
-   "surface": "H",
-   "draw": [
-    32,
-    16,
-    16,
-    8
-   ],
-   "manager": "tommyboy0515",
-   "challenger": false
-  },
-  {
-   "season": "2026",
-   "code": "38b",
-   "date": "2026-09-21",
-   "opened": "04/09/2026",
-   "name": "Hagnzhou",
-   "event": "Hagnzhou",
-   "country": "CHN",
-   "surface": "H",
-   "draw": [
-    32,
-    16,
-    16,
-    8
-   ],
-   "manager": "Snowwy",
-   "challenger": false
-  },
-  {
-   "season": "2026",
-   "code": "38c",
-   "date": "2026-09-21",
-   "opened": "04/09/2026",
-   "name": "Saint Tropez CH*",
-   "event": "Saint Tropez CH*",
-   "country": "FRA",
-   "surface": "H",
-   "draw": [
-    32,
-    16,
-    16,
-    8
-   ],
-   "manager": "supertom",
-   "challenger": true
-  },
-  {
-   "season": "2026",
-   "code": "39a",
-   "date": "2026-09-28",
-   "opened": "11/09/2026",
-   "name": "Beijing",
-   "event": "Beijing",
-   "country": "CHN",
-   "surface": "H",
-   "draw": [
-    32,
-    16,
-    16,
-    8
-   ],
-   "manager": "tommyboy0515",
-   "challenger": false
-  },
-  {
-   "season": "2026",
-   "code": "39b",
-   "date": "2026-09-28",
-   "opened": "11/09/2026",
-   "name": "Tokyo",
-   "event": "Tokyo",
-   "country": "JPN",
-   "surface": "H",
-   "draw": [
-    32,
-    16,
-    16,
-    8
-   ],
-   "manager": "Fogmeister",
-   "challenger": false
-  },
-  {
-   "season": "2026",
-   "code": "39c",
-   "date": "2026-09-28",
-   "opened": "11/09/2026",
-   "name": "Porto CH*",
-   "event": "Porto CH*",
-   "country": "POR",
-   "surface": "H",
-   "draw": [
-    32,
-    16,
-    16,
-    8
-   ],
-   "manager": "dinkulpus",
-   "challenger": true
   },
   {
    "season": "2025",
@@ -52936,6 +52738,706 @@
    ],
    "manager": "Karim_Vlasic",
    "challenger": true
+  },
+  {
+   "season": "2026",
+   "code": "36a",
+   "date": "2026-09-07",
+   "opened": "21/08/2026",
+   "name": "Genoa CH*",
+   "event": "Genoa",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "supertom",
+   "challenger": true
+  },
+  {
+   "season": "2026",
+   "code": "36b",
+   "date": "2026-09-07",
+   "opened": "21/08/2026",
+   "name": "Seville CH*",
+   "event": "Seville",
+   "country": "ESP",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "anny",
+   "challenger": true
+  },
+  {
+   "season": "2026",
+   "code": "37a",
+   "date": "2026-09-14",
+   "opened": "28/08/2026",
+   "name": "Szczecin CH*",
+   "event": "Szczecin",
+   "country": "POL",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2026",
+   "code": "37b",
+   "date": "2026-09-14",
+   "opened": "28/08/2026",
+   "name": "Tiburon CH*",
+   "event": "Tiburon",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "sergiopoker6",
+   "challenger": true
+  },
+  {
+   "season": "2026",
+   "code": "37c",
+   "date": "2026-09-14",
+   "opened": "28/08/2026",
+   "name": "Guangzhou CH",
+   "event": "Guangzhou",
+   "country": "CHN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "tommyboy0515",
+   "challenger": true
+  },
+  {
+   "season": "2026",
+   "code": "38a",
+   "date": "2026-09-21",
+   "opened": "04/09/2026",
+   "name": "Chengdu",
+   "event": "Chengdu",
+   "country": "CHN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "tommyboy0515",
+   "challenger": false
+  },
+  {
+   "season": "2026",
+   "code": "38b",
+   "date": "2026-09-21",
+   "opened": "04/09/2026",
+   "name": "Hagnzhou",
+   "event": "Hagnzhou",
+   "country": "CHN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Snowwy",
+   "challenger": false
+  },
+  {
+   "season": "2026",
+   "code": "38c",
+   "date": "2026-09-21",
+   "opened": "04/09/2026",
+   "name": "Saint Tropez CH*",
+   "event": "Saint Tropez",
+   "country": "FRA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "supertom",
+   "challenger": true
+  },
+  {
+   "season": "2026",
+   "code": "39a",
+   "date": "2026-09-28",
+   "opened": "11/09/2026",
+   "name": "Beijing",
+   "event": "Beijing",
+   "country": "CHN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "tommyboy0515",
+   "challenger": false
+  },
+  {
+   "season": "2026",
+   "code": "39b",
+   "date": "2026-09-28",
+   "opened": "11/09/2026",
+   "name": "Tokyo",
+   "event": "Tokyo",
+   "country": "JPN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Fogmeister",
+   "challenger": false
+  },
+  {
+   "season": "2026",
+   "code": "39c",
+   "date": "2026-09-28",
+   "opened": "11/09/2026",
+   "name": "Porto CH*",
+   "event": "Porto",
+   "country": "POR",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2026",
+   "code": "40a",
+   "date": "2026-10-05",
+   "opened": "18/09/2026",
+   "name": "Shanghai 1000",
+   "event": "Shanghai",
+   "country": "CHN",
+   "surface": "H",
+   "draw": [
+    128,
+    64,
+    64,
+    32
+   ],
+   "manager": "tommyboy0515",
+   "challenger": false
+  },
+  {
+   "season": "2026",
+   "code": "41a",
+   "date": "2026-10-12",
+   "opened": "25/09/2026",
+   "name": "Jihan CH*",
+   "event": "Jihan",
+   "country": "CHN",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Hidalgo",
+   "challenger": true
+  },
+  {
+   "season": "2026",
+   "code": "41b",
+   "date": "2026-10-12",
+   "opened": "25/09/2026",
+   "name": "Olbia CH*",
+   "event": "Olbia",
+   "country": "ITA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "anny",
+   "challenger": true
+  },
+  {
+   "season": "2026",
+   "code": "42a",
+   "date": "2026-10-19",
+   "opened": "02/10/2026",
+   "name": "Almaty 250",
+   "event": "Almaty",
+   "country": "KAZ",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": false
+  },
+  {
+   "season": "2026",
+   "code": "42b",
+   "date": "2026-10-19",
+   "opened": "02/10/2026",
+   "name": "Lyon 250",
+   "event": "Lyon",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "supertom",
+   "challenger": false
+  },
+  {
+   "season": "2026",
+   "code": "42c",
+   "date": "2026-10-19",
+   "opened": "02/10/2026",
+   "name": "Brussels 250",
+   "event": "Brussels",
+   "country": "BEL",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Fogmeister",
+   "challenger": false
+  },
+  {
+   "season": "2026",
+   "code": "43a",
+   "date": "2026-10-26",
+   "opened": "09/10/2026",
+   "name": "Basel 500",
+   "event": "Basel",
+   "country": "SUI",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Fogmeister",
+   "challenger": false
+  },
+  {
+   "season": "2026",
+   "code": "43b",
+   "date": "2026-10-26",
+   "opened": "09/10/2026",
+   "name": "Wien 500",
+   "event": "Wien",
+   "country": "AUT",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Walsall",
+   "challenger": false
+  },
+  {
+   "season": "2026",
+   "code": "44a",
+   "date": "2026-11-02",
+   "opened": "16/10/2026",
+   "name": "Paris 1000",
+   "event": "Paris",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    64,
+    32,
+    32,
+    16
+   ],
+   "manager": "supertom",
+   "challenger": false
+  },
+  {
+   "season": "2026",
+   "code": "44b",
+   "date": "2026-11-02",
+   "opened": "16/10/2026",
+   "name": "Sauipe CH*",
+   "event": "Sauipe",
+   "country": "BRA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Fogmeister",
+   "challenger": true
+  },
+  {
+   "season": "2026",
+   "code": "45a",
+   "date": "2026-11-09",
+   "opened": "23/10/2026",
+   "name": "Stoclholm 250",
+   "event": "Stoclholm",
+   "country": "SWE",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "anny",
+   "challenger": false
+  },
+  {
+   "season": "2026",
+   "code": "45b",
+   "date": "2026-11-09",
+   "opened": "23/10/2026",
+   "name": "Knoxville CH",
+   "event": "Knoxville",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "tommyboy0515",
+   "challenger": true
+  },
+  {
+   "season": "2026",
+   "code": "45c",
+   "date": "2026-11-09",
+   "opened": "23/10/2026",
+   "name": "Lima CH",
+   "event": "Lima",
+   "country": "PER",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "sergiopoker6",
+   "challenger": true
+  },
+  {
+   "season": "2026",
+   "code": "46a",
+   "date": "2026-11-16",
+   "opened": "30/10/2026",
+   "name": "Turin WTF",
+   "event": "Turin WTF",
+   "country": "ITA",
+   "surface": "IH",
+   "draw": [
+    8,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": false
+  },
+  {
+   "season": "2026",
+   "code": "46b",
+   "date": "2026-11-16",
+   "opened": "30/10/2026",
+   "name": "Champaign CH",
+   "event": "Champaign",
+   "country": "USA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Snowwy",
+   "challenger": true
+  },
+  {
+   "season": "2026",
+   "code": "46c",
+   "date": "2026-11-16",
+   "opened": "30/10/2026",
+   "name": "Metz CH*",
+   "event": "Metz",
+   "country": "FRA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "anny",
+   "challenger": true
+  },
+  {
+   "season": "2026",
+   "code": "47a",
+   "date": "2026-11-23",
+   "opened": "06/11/2026",
+   "name": "Florianopolis CH",
+   "event": "Florianopolis",
+   "country": "BRA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "tommyboy0515",
+   "challenger": true
+  },
+  {
+   "season": "2026",
+   "code": "47b",
+   "date": "2026-11-23",
+   "opened": "06/11/2026",
+   "name": "Yokohama CH",
+   "event": "Yokohama",
+   "country": "JPN",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2026",
+   "code": "47c",
+   "date": "2026-11-23",
+   "opened": "06/11/2026",
+   "name": "Hersonissos CH",
+   "event": "Hersonissos",
+   "country": "GRE",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2026",
+   "code": "48a",
+   "date": "2026-11-30",
+   "opened": "13/11/2026",
+   "name": "Bogota CH",
+   "event": "Bogota",
+   "country": "COL",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2026",
+   "code": "48b",
+   "date": "2026-11-30",
+   "opened": "13/11/2026",
+   "name": "Chisinau CH",
+   "event": "Chisinau",
+   "country": "MOL",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2026",
+   "code": "48c",
+   "date": "2026-11-30",
+   "opened": "13/11/2026",
+   "name": "Temuco CH",
+   "event": "Temuco",
+   "country": "CHI",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Snowwy",
+   "challenger": true
+  },
+  {
+   "season": "2026",
+   "code": "49a",
+   "date": "2026-12-06",
+   "opened": "20/11/2026",
+   "name": "Copenhagen CH*",
+   "event": "Copenhagen",
+   "country": "DEN",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2026",
+   "code": "49b",
+   "date": "2026-12-06",
+   "opened": "20/11/2026",
+   "name": "La Paz CH",
+   "event": "La Paz",
+   "country": "BOL",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2026",
+   "code": "49c",
+   "date": "2026-12-06",
+   "opened": "20/11/2026",
+   "name": "Rio De Janeiro CH",
+   "event": "Rio De Janeiro",
+   "country": "BRA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "sergiopoker6",
+   "challenger": true
+  },
+  {
+   "season": "2026",
+   "code": "50a",
+   "date": "2026-12-13",
+   "opened": "27/11/2026",
+   "name": "Nova Lima CH",
+   "event": "Nova Lima",
+   "country": "BRA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Fogmeister",
+   "challenger": true
+  },
+  {
+   "season": "2026",
+   "code": "50b",
+   "date": "2026-12-13",
+   "opened": "27/11/2026",
+   "name": "Guanzete CH",
+   "event": "Guanzete",
+   "country": "ITA",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "Snowwy",
+   "challenger": true
+  },
+  {
+   "season": "2026",
+   "code": "50c",
+   "date": "2026-12-13",
+   "opened": "27/11/2026",
+   "name": "La Paz CH",
+   "event": "La Paz",
+   "country": "BOL",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "sergiopoker6",
+   "challenger": true
   }
  ],
  "aliases": [
@@ -53951,9 +54453,7 @@
   "Singles|rafanadal1904|gillouthe best",
   "Doubles|foosimoo|ramos",
   "Doubles|filipo|lee3132",
-  "Singles|malul|calgary flames",
-  "Singles|litotes| aa ",
-  "Singles|cah | aa "
+  "Singles|malul|calgary flames"
  ],
  "unknownAccepted": [
   "toomuchraquet"
@@ -55625,10 +56125,6 @@
    "name": "coria_fan"
   },
   {
-   "key": "cah ",
-   "name": "cah_"
-  },
-  {
    "key": "xieergai",
    "name": "xieergai"
   },
@@ -55801,7 +56297,7 @@
    "name": "toxicmango"
   },
   {
-   "key": " aa ",
+   "key": "aa",
    "name": "_AA_"
   },
   {
