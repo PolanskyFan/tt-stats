@@ -739,10 +739,14 @@ const APP_VERSION = "2026-09-03f";
 const esc = s => String(s).replace(/[&<>"']/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
+/* The season is part of what makes a match unique. Without it, the same two
+   players meeting in the same round at the same event in two different years
+   collide, and the second one is rejected as a duplicate and quietly held
+   back — a real result lost to a false positive. */
 function matchKey(r){
   const a = r.disc==="Doubles" ? teamKeyOf(r.winner) : keyOf(r.winner);
   const b = r.disc==="Doubles" ? teamKeyOf(r.loser)  : keyOf(r.loser);
-  return [r.disc, r.stage, keyOf(r.event), r.round, a, b].join("|");
+  return [r.season||"", r.disc, r.stage, keyOf(r.event), r.round, a, b].join("|");
 }
 
 /* ==================================================================
@@ -1054,6 +1058,28 @@ function deriveEventProblems(){
     if(e.weeks.size>1) out.push({kind:"mixed weeks", e,
       text:`${e.event} ${e.season} \u2014 ${e.disc} uses ${e.weeks.size} different ranking weeks: `
         + [...e.weeks].map(([w,c])=>`${w} (${c})`).join(", ")});
+  }
+
+  /* A tournament has one final. Two means two draws have been filed under one
+     name — the Event box keeps whatever was typed last, so pasting a second
+     event's draws without changing it merges them silently. Semis and quarters
+     are capped the same way, so a doubled draw still shows up when the second
+     event hasn't reached its final yet. Byes don't count: they're rows, not
+     played matches. */
+  const ROUND_CAP={F:1, SF:2, QF:4};
+  const byRound=new Map();
+  for(const r of MATCHES){
+    if(r.stage!=="Main" || r.isBye || ROUND_CAP[r.round]===undefined) continue;
+    const k=[r.event, r.season||"", r.disc, r.round].join("|");
+    if(!byRound.has(k)) byRound.set(k,
+      {event:r.event, season:r.season||"", disc:r.disc, round:r.round, n:0});
+    byRound.get(k).n++;
+  }
+  for(const e of byRound.values()){
+    const cap=ROUND_CAP[e.round];
+    if(e.n>cap) out.push({kind:"doubled draw", e,
+      text:`${e.event} ${e.season} \u2014 ${e.disc} has ${e.n} ${e.round==="F"?"finals":e.round+" matches"}, `
+        + `expected ${cap}. Two tournaments are probably filed under this one name.`});
   }
   return out;
 }
