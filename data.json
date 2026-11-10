@@ -1,6 +1,6 @@
 {
  "format": "tennis-tipping/1",
- "savedAt": "2026-11-10T13:53:36.643Z",
+ "savedAt": "2026-11-10T14:15:47.661Z",
  "matchFiles": [
   "matches-2026.json",
   "matches-2025.json",
@@ -54088,6 +54088,26 @@
   {
    "from": "r. ozeger",
    "to": "r. ozgerer"
+  },
+  {
+   "from": "mcaarvalhomc",
+   "to": "mcarvalhomc"
+  },
+  {
+   "from": "bjorki",
+   "to": "björki"
+  },
+  {
+   "from": "roland gro27",
+   "to": "roland gro7"
+  },
+  {
+   "from": "tomek,",
+   "to": "tomek."
+  },
+  {
+   "from": "himalay",
+   "to": "himalaya"
   }
  ],
  "countryAccepted": [
@@ -54517,7 +54537,9 @@
   "Singles|rafanadal1904|gillouthe best",
   "Doubles|foosimoo|ramos",
   "Doubles|filipo|lee3132",
-  "Singles|malul|calgary flames"
+  "Singles|malul|calgary flames",
+  "Singles|litotes| aa ",
+  "Singles|cah | aa "
  ],
  "unknownAccepted": [
   "toomuchraquet"
@@ -54764,7 +54786,8 @@
   },
   {
    "key": "kondrashov",
-   "name": "kondrashov"
+   "name": "kondrashov",
+   "country": "RUS"
   },
   {
    "key": "nachotuerto",
@@ -55054,7 +55077,8 @@
   },
   {
    "key": "goblakego2",
-   "name": "GoBlakeGo2"
+   "name": "GoBlakeGo2",
+   "country": "USA"
   },
   {
    "key": "bublike",
@@ -55473,7 +55497,8 @@
   },
   {
    "key": "andrijagajic",
-   "name": "andrijagajic"
+   "name": "andrijagajic",
+   "country": "SRB"
   },
   {
    "key": "raft89",
@@ -55912,7 +55937,8 @@
   },
   {
    "key": "marksman",
-   "name": "Marksman"
+   "name": "Marksman",
+   "country": "GBR"
   },
   {
    "key": "elmo01",
@@ -56496,6 +56522,60 @@
   {
    "key": "tepasaf",
    "country": "RUS"
+  },
+  {
+   "key": "chris84",
+   "name": "Chris84"
+  },
+  {
+   "key": "mcarvalhomc",
+   "name": "MCarvalhoMC",
+   "country": "POR"
+  },
+  {
+   "key": " aa ",
+   "name": "_AA_"
+  },
+  {
+   "key": "cah ",
+   "name": "cah_"
+  },
+  {
+   "key": "nicky pride",
+   "country": "FRA"
+  },
+  {
+   "key": "rune rules",
+   "country": "BUL"
+  },
+  {
+   "key": "harald bluetooth",
+   "country": "GER"
+  },
+  {
+   "key": "falcone 1205",
+   "country": "BUL"
+  },
+  {
+   "key": "nick96",
+   "country": "AUS"
+  },
+  {
+   "key": "team ukraine",
+   "country": "UKR"
+  },
+  {
+   "key": "björki",
+   "name": "Björki"
+  },
+  {
+   "key": "roland gro7",
+   "name": "Roland_Gro7",
+   "country": "GBR"
+  },
+  {
+   "key": "tomek.",
+   "name": "Tomek."
   }
  ]
 }
