@@ -875,12 +875,13 @@ function surfaceCols(v){
   return o;
 }
 
-function derivePlayers(surface){
+function derivePlayers(surface, season){
   const rec = new Map();
   const get = n => { const k=keyOf(n); if(!rec.has(k)) rec.set(k,blankRec()); return rec.get(k); };
 
   for(const r of MATCHES){
     if(r.disc!=="Singles" || r.isBye) continue;
+    if(season && r.season!==season) continue;
     const surf=surfaceOf(r);
     if(surface && surf!==surface) continue;
     const W=get(r.winner), L=get(r.loser);
@@ -919,6 +920,7 @@ function derivePlayers(surface){
   const bestR=new Map(), bestRun=new Map(), run=new Map();
   inOrder(MATCHES.filter(m=>m.disc==="Singles" && !m.isBye)).forEach(m=>{
     if(surface && surfaceOf(m)!==surface) return;
+    if(season && m.season!==season) return;
     const w=keyOf(m.winner), l=keyOf(m.loser);
     const r=parseInt(m.loserRank,10);
     if(!isNaN(r) && (!bestR.has(w) || r<bestR.get(w))) bestR.set(w,r);
@@ -936,7 +938,7 @@ function derivePlayers(surface){
   return out;
 }
 
-function deriveTeams(surface){
+function deriveTeams(surface, season){
   const rec = new Map(), disp = new Map();
   const get = t => { const k=teamKeyOf(t);
     if(!rec.has(k)){ rec.set(k,blankRec()); disp.set(k,canonTeam(t)); }
@@ -944,6 +946,7 @@ function deriveTeams(surface){
 
   for(const r of MATCHES){
     if(r.disc!=="Doubles" || r.isBye) continue;
+    if(season && r.season!==season) continue;
     const surf=surfaceOf(r);
     if(surface && surf!==surface) continue;
     const W=get(r.winner), L=get(r.loser);
@@ -4075,12 +4078,12 @@ function matchRows(){
             "|" + String(99-roundRank(m.round)).padStart(2,"0")}));
 }
 function playerRows(){
-  const q=val("pQ").trim().toLowerCase(), c=val("pCtry"), s=val("pSurf");
-  return derivePlayers(s).filter(p=>(!c||p.country===c)&&(!q||hay(p.player,p.country).includes(q)));
+  const q=val("pQ").trim().toLowerCase(), c=val("pCtry"), s=val("pSurf"), y=val("pYear");
+  return derivePlayers(s, y).filter(p=>(!c||p.country===c)&&(!q||hay(p.player,p.country).includes(q)));
 }
 function teamRows(){
-  const q=val("tQ").trim().toLowerCase(), s=val("tSurf");
-  return deriveTeams(s).filter(t=>!q||t.team.toLowerCase().includes(q));
+  const q=val("tQ").trim().toLowerCase(), s=val("tSurf"), y=val("tYear");
+  return deriveTeams(s, y).filter(t=>!q||t.team.toLowerCase().includes(q));
 }
 /* Both tables read best in playing order rather than alphabetically, so each
    row carries the tournament's calendar date. Rounds sort within a tournament
@@ -4995,6 +4998,17 @@ function syncFilters(){
     .sort((a,b)=>ROUND_ORDER.indexOf(a)-ROUND_ORDER.indexOf(b)));
   syncCalendarEvents();
   fill("pCtry", uniq(derivePlayers().map(p=>p.country)).sort());
+  /* Year pickers open on All time; each lists only seasons that have matches
+     in that discipline, newest first. */
+  [["pYear","Singles"],["tYear","Doubles"]].forEach(([id,disc])=>{
+    const el=$(id); if(!el) return;
+    const keep=el.value;
+    const yrs=uniq(MATCHES.filter(m=>m.disc===disc && !m.isBye).map(m=>m.season))
+      .sort((a,b)=>b.localeCompare(a));
+    el.innerHTML='<option value="">All time</option>';
+    yrs.forEach(y=>{ const o=document.createElement("option"); o.value=y; o.textContent=y; el.appendChild(o); });
+    el.value = yrs.includes(keep) ? keep : "";
+  });
   ["pSurf","tSurf"].forEach(id=>{
     const el=$(id); if(!el || el.options.length>1) return;
     SURFACES.forEach(sf=>{ const o=document.createElement("option");
@@ -5222,10 +5236,11 @@ $("nav").addEventListener("click", e=>{
 
 ["mQ","mDisc","mStage","mEvent","mRound"].forEach(id=>{
   on(id,"input",()=>tMatches.render()); on(id,"change",()=>tMatches.render()); });
-["pQ","pCtry","pSurf"].forEach(id=>{
+["pQ","pYear","pCtry","pSurf"].forEach(id=>{
   on(id,"input",()=>tPlayers.render()); on(id,"change",()=>tPlayers.render()); });
 on("tQ","input",()=>tTeams.render());
 on("tSurf","change",()=>tTeams.render());
+on("tYear","change",()=>tTeams.render());
 on("ttQ","input",()=>tTitles.render());
 
 on("btnMcsv","click",()=>downloadCsv(MATCH_COLS,matchRows(),"matches.csv"));
