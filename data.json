@@ -1,6 +1,6 @@
 {
  "format": "tennis-tipping/1",
- "savedAt": "2026-11-10T02:19:48.848Z",
+ "savedAt": "2026-11-10T02:25:31.036Z",
  "matchFiles": [
   "matches-2026.json",
   "matches-2025.json",
@@ -54023,6 +54023,38 @@
   {
    "from": "marksmen",
    "to": "marksman"
+  },
+  {
+   "from": "fogmesteister",
+   "to": "fogmeister"
+  },
+  {
+   "from": "rodgigol 87",
+   "to": "rodrigol 87"
+  },
+  {
+   "from": "rodrigor3",
+   "to": "rodrigo r3"
+  },
+  {
+   "from": "tommyoy0515",
+   "to": "tommyboy0515"
+  },
+  {
+   "from": "chnehw",
+   "to": "chenhw"
+  },
+  {
+   "from": "zack.busner",
+   "to": "zackbusner"
+  },
+  {
+   "from": "[alt] kirilenko-fan",
+   "to": "kirilenko-fan"
+  },
+  {
+   "from": "toximango",
+   "to": "toxicmango"
   }
  ],
  "countryAccepted": [
@@ -54471,7 +54503,8 @@
   },
   {
    "key": "applegate",
-   "name": "applegate"
+   "name": "applegate",
+   "country": "USA"
   },
   {
    "key": "p varna",
@@ -54760,7 +54793,8 @@
   },
   {
    "key": "catgamer",
-   "name": "catgamer"
+   "name": "catgamer",
+   "country": "GER"
   },
   {
    "key": "tedi",
@@ -54860,7 +54894,8 @@
   },
   {
    "key": "hidalgo",
-   "name": "Hidalgo"
+   "name": "Hidalgo",
+   "country": "RUS"
   },
   {
    "key": "fernando cordeir",
@@ -54943,7 +54978,8 @@
   },
   {
    "key": "zack-busner",
-   "name": "Zack-Busner"
+   "name": "Zack-Busner",
+   "country": "GER"
   },
   {
    "key": "hndiamond",
@@ -54994,7 +55030,8 @@
   },
   {
    "key": "snowwy",
-   "name": "Snowwy"
+   "name": "Snowwy",
+   "country": "CAN"
   },
   {
    "key": "pdk",
@@ -55008,7 +55045,8 @@
   },
   {
    "key": "himalaya",
-   "name": "Himalaya"
+   "name": "Himalaya",
+   "country": "NED"
   },
   {
    "key": "herzeleid",
@@ -56342,7 +56380,8 @@
   },
   {
    "key": "bebek21",
-   "name": "Bebek21"
+   "name": "Bebek21",
+   "country": "TUR"
   },
   {
    "key": "timismyname",
@@ -56403,6 +56442,26 @@
   {
    "key": "1987518lpf",
    "country": "CHN"
+  },
+  {
+   "key": "jaker",
+   "country": "CAN"
+  },
+  {
+   "key": "r. ozgerer",
+   "country": "TUR"
+  },
+  {
+   "key": "jacob12245",
+   "country": "AUS"
+  },
+  {
+   "key": "rodrigo r3",
+   "name": "Rodrigo R3"
+  },
+  {
+   "key": "zackbusner",
+   "name": "ZackBusner"
   }
  ]
 }
