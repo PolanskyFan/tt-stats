@@ -1,6 +1,6 @@
 {
  "format": "tennis-tipping/1",
- "savedAt": "2026-11-10T02:25:31.036Z",
+ "savedAt": "2026-11-10T02:59:21.884Z",
  "matchFiles": [
   "matches-2026.json",
   "matches-2025.json",
@@ -54055,6 +54055,38 @@
   {
    "from": "toximango",
    "to": "toxicmango"
+  },
+  {
+   "from": "wtaourfan",
+   "to": "wtatourfan"
+  },
+  {
+   "from": "rodgrigol 87",
+   "to": "rodrigol 87"
+  },
+  {
+   "from": "sdoot",
+   "to": "sdtoot"
+  },
+  {
+   "from": "cat gamer",
+   "to": "catgamer"
+  },
+  {
+   "from": "southendaussies",
+   "to": "southend aussies"
+  },
+  {
+   "from": "slarluk",
+   "to": "starluk"
+  },
+  {
+   "from": "sapfosakellaridisfan",
+   "to": "sapfosakellaridifan"
+  },
+  {
+   "from": "r. ozeger",
+   "to": "r. ozgerer"
   }
  ],
  "countryAccepted": [
@@ -54745,7 +54777,8 @@
   },
   {
    "key": "wtatourfan",
-   "name": "wtatourfan"
+   "name": "wtatourfan",
+   "country": "BRA"
   },
   {
    "key": "han fei-tzu",
@@ -56389,6 +56422,7 @@
   },
   {
    "key": "marian3110",
+   "name": "Marian3110",
    "country": "ARG"
   },
   {
@@ -56449,6 +56483,7 @@
   },
   {
    "key": "r. ozgerer",
+   "name": "R. Ozgerer",
    "country": "TUR"
   },
   {
@@ -56462,6 +56497,14 @@
   {
    "key": "zackbusner",
    "name": "ZackBusner"
+  },
+  {
+   "key": "jo95",
+   "country": "POR"
+  },
+  {
+   "key": "tepasaf",
+   "country": "RUS"
   }
  ]
 }
