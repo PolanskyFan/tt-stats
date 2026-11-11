@@ -1,6 +1,6 @@
 {
  "format": "tennis-tipping/1",
- "savedAt": "2026-11-10T23:06:15.233Z",
+ "savedAt": "2026-11-11T18:03:16.050Z",
  "matchFiles": [
   "matches-2026.json",
   "matches-2025.json",
@@ -54116,6 +54116,26 @@
   {
    "from": "vjatcelsalv",
    "to": "vjatceslav"
+  },
+  {
+   "from": "chris84",
+   "to": "chris 84"
+  },
+  {
+   "from": "mcarvalho",
+   "to": "mcarvalhomc"
+  },
+  {
+   "from": "ezequeiel pereyra",
+   "to": "ezequiel pereyra"
+  },
+  {
+   "from": "fabiok",
+   "to": "fabiok29"
+  },
+  {
+   "from": "crux quall",
+   "to": "crux squall"
   }
  ],
  "countryAccepted": [
@@ -54550,6 +54570,7 @@
  "unknownAccepted": [
   "toomuchraquet"
  ],
+ "missingAccepted": [],
  "pinned": [
   {
    "key": "pierre.",
@@ -56575,6 +56596,14 @@
   {
    "key": "tomek.",
    "name": "Tomek."
+  },
+  {
+   "key": "chris 84",
+   "name": "Chris 84"
+  },
+  {
+   "key": "ezequiel pereyra",
+   "name": "Ezequiel Pereyra"
   }
  ]
 }

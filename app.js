@@ -174,8 +174,14 @@ function topOf(counter){
   return keys[0];
 }
 
+/* "Bye", "BYE", "Bye (no match)" and the like are an empty line in a draw,
+   not a player. A doubles side counts only when both names are byes. */
+const isByeName = n => /^bye\b/i.test(String(n||"").trim());
+const isByeSide = s => String(s||"").split("/").every(isByeName);
+const playedCount = () => MATCHES.reduce((n,m)=>n+(m.isBye?0:1),0);
+
 function seePlayer(name, country){
-  if(!name || /^bye$/i.test(name)) return null;
+  if(!name || isByeName(name)) return null;
   const k = keyOf(name);
   let e = REG.get(k);
   if(!e){ e = {key:k, names:{}, countries:{}, name:name, country:country||"", pinned:false}; REG.set(k,e); }
@@ -1033,7 +1039,7 @@ function deriveIssuesNow(){
   return {countryConflicts, nameVariants, resolved,
           tourGaps:deriveTourGaps(), eventProblems:deriveEventProblems(),
           dateProblems:deriveDateProblems(), renames:deriveRenameCandidates(),
-          unknowns:deriveUnknownPlayers(),
+          unknowns:deriveUnknownPlayers(), missing:deriveMissing(),
           dupes:DUPES, pending:PENDING};
 }
 
@@ -1339,6 +1345,300 @@ function deriveRenameCandidates(){
 }
 
 /* ------------------------------------------------------------------
+   WHAT A DRAW IS MISSING
+   The tree a draw sheet is drawn from also shows where it breaks: somebody
+   playing a round with no result from the round before, or winning a round
+   and never being heard of again. Each break is one of a few things, and
+   the commonest can be put right without knowing anything more.
+   ------------------------------------------------------------------ */
+const MISSING_OK = new Set();       // breaks you've said aren't missing matches
+
+/* Near enough to be one player typed two ways. */
+function nearName(a, b){
+  const n=s=>String(s).toLowerCase().replace(/\([a-z]{3}\)/g,"")
+    .replace(/^\s*(ll|q|wc|alt|se|pr)\d*\s+/,"").replace(/[^a-z0-9]/g,"");
+  const x=n(a), y=n(b);
+  if(!x || !y) return false;
+  if(x===y) return true;
+  const sh=x.length<y.length?x:y, lg=x.length<y.length?y:x;
+  if(sh.length>=5 && lg.length-sh.length<=3 && (lg.startsWith(sh)||lg.endsWith(sh))) return true;
+  return editDistance(x,y) <= (sh.length>=8 ? 2 : sh.length>=5 ? 1 : 0);
+}
+
+/* A seed's bye is expected; an unseeded player's isn't. Byes go to the top
+   seeds, so a seed counts as having one only if every seed above them has
+   one too. */
+function expectedByes(inferred){
+  const seeded=inferred.filter(n=>seedNum(n.seed)!==null).length;
+  return nd=>{ const s=seedNum(nd.seed); return s!==null && s<=seeded+1; };
+}
+
+/* Everybody who is in two matches in the same round. In a knockout that
+   can't happen, so one of the two rows has the wrong name on it. */
+function repeatsIn(shown){
+  const once=new Map(), disc=shown[0].disc, out=[];
+  for(const m of shown){
+    if(m.isBye) continue;
+    for(const s of ["winner","loser"]){
+      const k=m.round+"|"+idOf(m[s],disc);
+      if(once.has(k)) out.push({round:m.round, who:m[s], first:once.get(k), second:m});
+      else once.set(k,m);
+    }
+  }
+  return out;
+}
+/* When it happens all over the draw it isn't a mistake: the event is a round
+   robin or a team tie, and a draw sheet makes no sense of it. */
+function playsTwice(shown){
+  const n=repeatsIn(shown).length;
+  return n>=3 && n*5>=shown.filter(m=>!m.isBye).length;
+}
+
+/* Results round by round, for events that aren't a knockout. */
+function roundList(shown){
+  const rounds=[...new Set(shown.map(m=>m.round))]
+    .sort((a,b)=>DRAW_ORDER.indexOf(a)-DRAW_ORDER.indexOf(b));
+  const board=document.createElement("div"); board.className="bracket";
+  rounds.forEach(r=>{
+    const col=document.createElement("div"); col.className="bcol";
+    const h=document.createElement("h4"); h.textContent=ROUND_LABEL[r]||r; col.appendChild(h);
+    shown.filter(m=>m.round===r && !m.isBye).forEach(m=>{
+      const d=document.createElement("div"); d.className="bm";
+      const w=document.createElement("div"); w.className="w";
+      w.appendChild(nameLinks(m.winner,m.disc));
+      const sc=document.createElement("span"); sc.className="sc";
+      sc.textContent=`${m.winnerScore}\u2013${m.loserScore}`; w.appendChild(sc);
+      const l=document.createElement("div"); l.className="l"; l.appendChild(nameLinks(m.loser,m.disc));
+      d.appendChild(w); d.appendChild(l); col.appendChild(d);
+    });
+    board.appendChild(col);
+  });
+  return board;
+}
+
+function drawFindings(shown){
+  const out={variants:[], items:[], doubled:false};
+  const first=shown[0], disc=first.disc, stage=first.stage;
+  if(stage==="Main" && shown.filter(m=>m.round==="F" && !m.isBye).length>1){ out.doubled=true; return out; }
+  const id=n=>idOf(n,disc);
+  if(playsTwice(shown)){ out.roundRobin=true; return out; }
+  const twice=repeatsIn(shown);
+  if(twice.length){
+    /* with a wrong name in the draw nothing else about it can be trusted */
+    const seenTag=new Set();
+    twice.forEach(r=>{
+      const tag=[first.season||"", first.event, disc, stage, r.round, "twice-"+id(r.who)].join("|");
+      if(MISSING_OK.has(tag) || seenTag.has(tag)) return;
+      seenTag.add(tag);
+      out.items.push({season:first.season||"", event:first.event, disc, stage, kind:"twice",
+        round:r.round, player:r.who, first:r.first, second:r.second, tag});
+    });
+    return out;
+  }
+  const d=buildDraw(shown), top=d.rounds.length, last=d.rounds[top-1];
+  const leaves=[], inferred=[], orphans=[], tops=[];
+  const walk=nd=>{
+    if(nd.viaLoose && id(nd.viaLoose)!==id(nd.raw)) out.variants.push([nd.viaLoose, nd.raw]);
+    if(nd.byePair) inferred.push(nd);
+    if(!nd.kids){ if(nd.gap && !nd.bye && !nd.blank) leaves.push(nd); return; }
+    nd.kids.forEach(walk); };
+  d.roots.forEach(function each(r){
+    if(r.blank){ r.kids.forEach(each); return; }
+    (r.col<top ? orphans : tops).push(r); walk(r); });
+  const used=new Set();
+
+  /* the same player under two spellings: no result the round before, and a
+     winner of that round with a near-identical name who goes no further */
+  const parts=s=>String(s).split("/").map(x=>x.trim());
+  const pairUp=(a,b)=>{
+    if(disc!=="Doubles") return nearName(a,b) ? [[a,b]] : null;
+    const pa=parts(a), pb=parts(b);
+    if(pa.length!==2 || pb.length!==2) return null;
+    for(const j of [0,1]){
+      const s1=keyOf(pa[0])===keyOf(pb[j]), s2=keyOf(pa[1])===keyOf(pb[1-j]);
+      if((s1||nearName(pa[0],pb[j])) && (s2||nearName(pa[1],pb[1-j]))){
+        const v=[]; if(!s1) v.push([pa[0],pb[j]]); if(!s2) v.push([pa[1],pb[1-j]]);
+        if(v.length) return v;
+      }
+    }
+    return null; };
+  [...leaves, ...inferred].forEach(P=>{
+    const Q=orphans.find(o=>!used.has(o) && o.col===P.col && pairUp(P.raw,o.raw));
+    if(!Q) return;
+    pairUp(P.raw,Q.raw).forEach(v=>out.variants.push(v));
+    used.add(P); used.add(Q);
+  });
+
+  const base={season:first.season||"", event:first.event, disc, stage};
+  const tag=(round, who)=>[base.season, base.event, disc, stage, round, id(who)].join("|");
+  const push=it=>{ it.tag=tag(it.round, it.winner||it.player||it.a);
+    if(!MISSING_OK.has(it.tag)) out.items.push({...base, ...it}); };
+
+  /* a result the wrong way round: they lost, yet they're the one who plays on,
+     and the player credited with the win is never seen again */
+  [...leaves, ...inferred].forEach(P=>{
+    if(used.has(P)) return;
+    const m=shown.find(x=>x.round===d.rounds[P.col-1] && !x.isBye && id(x.loser)===id(P.raw));
+    if(!m) return;
+    const X=orphans.find(o=>!used.has(o) && o.match===m);
+    if(!X) return;
+    used.add(P); used.add(X);
+    push({kind:"wrongway", round:m.round, winner:P.raw, loser:m.winner, next:d.rounds[P.col],
+      level:m.winnerScore===m.loserScore, match:m});
+  });
+
+  /* a result missing from the middle of the draw */
+  const L=leaves.filter(p=>!used.has(p));
+  const ownOf=new Map();
+  L.forEach(P=>{ const o=orphans.find(x=>!used.has(x) && x.col===P.col-1 && id(x.raw)===id(P.raw));
+    if(o) ownOf.set(P,o); });
+  const taken=new Set(ownOf.values());
+  L.forEach(P=>{
+    const c=P.col, own=ownOf.get(P);
+    const cands=orphans.filter(o=>!used.has(o) && !taken.has(o) && o.col===c-1);
+    const alone=L.filter(x=>x.col===c && !used.has(x)).length===1;
+    /* The opponent is whoever won the match next to theirs the round before.
+       Byes aren't stored, so "next to" can be either side: it only counts
+       when just one neighbour is still unaccounted for. Without that, the
+       opponent is certain only if this is the single result the round lacks. */
+    let B=null;
+    const oneShort = d.counts[c-1]===2*d.counts[c]-1;
+    const room = d.counts[c-1] < 2*d.counts[c];      // the round has a result to spare
+    if(!room){ /* every match of that round is there, so it's a name that's wrong */ }
+    else if(own){
+      const near=cands.filter(o=>Math.abs(o.idx-own.idx)===1);
+      B = near.length===1 ? near[0] : (alone && cands.length===1 ? cands[0] : null);
+    }
+    else if(alone && cands.length===1 && (c-1===1 || oneShort)) B=cands[0];
+    used.add(P); if(own) used.add(own);
+    if(B){ used.add(B); push({kind:"restore", round:d.rounds[c-1], winner:P.raw, loser:B.raw}); }
+    else push({kind:"opponent", round:d.rounds[c-1], winner:P.raw, next:d.rounds[c]});
+  });
+
+  /* first round: no result, and not the sort of player who gets a bye */
+  const isBye=expectedByes(inferred);
+  inferred.filter(p=>!used.has(p) && !isBye(p)).forEach(P=>
+    push({kind:"first", round:d.rounds[0], winner:P.raw, next:d.rounds[1]}));
+
+  /* won a round and then nothing: pair off neighbours, list the rest */
+  const finished = stage!=="Main" || last==="F";
+  const loose=orphans.filter(o=>!used.has(o)).concat(finished ? [] : tops);
+  loose.forEach(A=>{
+    if(used.has(A)) return;
+    const B=loose.find(o=>o!==A && !used.has(o) && o.col===A.col && Math.abs(o.idx-A.idx)===1);
+    const nextRound = A.col<top ? d.rounds[A.col] : DRAW_ORDER[DRAW_ORDER.indexOf(last)+1];
+    used.add(A);
+    if(B){ used.add(B);
+      const [a,b] = A.idx<B.idx ? [A,B] : [B,A];
+      push({kind:"open", round:nextRound, a:a.raw, b:b.raw}); }
+    else push({kind:"stranded", round:nextRound, player:A.raw, won:d.rounds[A.col-1]});
+  });
+
+  /* One or two of these in a draw is a lost result. A whole batch in the same
+     round is how the draw was built — byes nobody marked, or a round filed
+     under the wrong label — so it's said once, or not at all for byes. */
+  const tally=new Map();
+  out.items.forEach(it=>{ const k=it.kind+"|"+it.round; tally.set(k,(tally.get(k)||0)+1); });
+  const said=new Set();
+  out.items=out.items.filter(it=>{
+    const k=it.kind+"|"+it.round, n=tally.get(k);
+    if(it.kind==="first") return n<=2;
+    if((it.kind==="opponent" || it.kind==="stranded") && n>3){
+      if(said.has(k)) return false;
+      said.add(k);
+      it.what=it.kind; it.kind="many"; it.n=n;
+      it.tag=[base.season, base.event, disc, stage, it.round, "many-"+it.what].join("|");
+      return !MISSING_OK.has(it.tag);
+    }
+    return true;
+  });
+  return out;
+}
+
+/* Every draw in the archive. An event from the last fortnight or so is left
+   alone: its later rounds haven't been played yet. */
+function deriveMissing(){
+  const cut=new Date(Date.now()-16*864e5).toISOString().slice(0,10);
+  const items=[], variants=new Map();
+  const over=new Set();                  // draws whose final has been played
+  for(const m of MATCHES) if(m.stage==="Main" && m.round==="F" && !m.isBye)
+    over.add((m.season||"")+"|"+m.event+"|"+m.disc);
+  for(const g of matchGroups()){
+    if(!g.rows.length) continue;
+    const c=calFor(g.event, g.season);
+    if(c && c.date && c.date>cut && !over.has((g.season||"")+"|"+g.event+"|"+g.disc)) continue;
+    let f;
+    try{ f=drawFindings(g.rows); }catch(e){ continue; }
+    f.items.forEach(it=>items.push(it));
+    f.variants.forEach(([a,b])=>{
+      if(keyOf(a)===keyOf(b)) return;
+      const k=[keyOf(a),keyOf(b)].sort().join("|");
+      if(!variants.has(k)) variants.set(k,{a,b,event:g.event,season:g.season,where:`${g.event} ${g.season}`}); });
+  }
+  const order={restore:0, wrongway:1, open:2, twice:3, opponent:4, first:5, stranded:6, many:7};
+  items.sort((x,y)=>order[x.kind]-order[y.kind] || y.season.localeCompare(x.season)
+    || x.event.localeCompare(y.event));
+  return {items, variants:[...variants.values()]};
+}
+
+/* Put a result back. The score isn't known, so it goes in as 1–0 and is
+   marked as restored; seeds, countries and rankings are copied from the
+   same players' other matches at the event. */
+function restoreMatch(it, winner, loser){
+  const group=MATCHES.filter(m=>m.event===it.event && (m.season||"")===it.season
+    && m.disc===it.disc && m.stage===it.stage);
+  if(!group.length) throw new Error("That draw is no longer loaded.");
+  const id=n=>idOf(n,it.disc);
+  if(group.some(m=>m.round===it.round &&
+      [id(m.winner),id(m.loser)].some(k=>k===id(winner)||k===id(loser))))
+    throw new Error("One of those players already has a result in that round.");
+  const seen=nm=>{
+    for(const m of group) for(const s of ["winner","loser"])
+      if(id(m[s])===id(nm)) return {seed:m[s+"Seed"], country:m[s+"Country"], rank:m[s+"Rank"]};
+    return {seed:"", country:it.disc==="Doubles"
+      ? String(nm).split("/").map(p=>canonCountry(p.trim())).join("/") : canonCountry(nm), rank:""}; };
+  const w=seen(winner), l=seen(loser);
+  const row={id:++ROW_ID, season:it.season, event:it.event, round:it.round, disc:it.disc, stage:it.stage,
+    week:group[0].week||"", winnerSeed:w.seed||"", winner, winnerCountry:w.country||"",
+    loserSeed:l.seed||"", loser, loserCountry:l.country||"",
+    winnerScore:1, loserScore:0, winnerSC:0, loserSC:0, winnerRank:w.rank??"", loserRank:l.rank??"",
+    method:"restored", isBye:false, tied:false};
+  row.level = MAIN_LEVELS[row.round]!==undefined ? MAIN_LEVELS[row.round]
+            : (QUAL_LEVELS[row.round]!==undefined ? QUAL_LEVELS[row.round] : 0);
+
+  /* Matches are kept in draw order, so the row goes where the draw puts it:
+     ahead of the first match in its round fed from further down. */
+  const rounds=[...new Set(group.map(m=>m.round).concat(row.round))]
+    .sort((a,b)=>DRAW_ORDER.indexOf(a)-DRAW_ORDER.indexOf(b));
+  const ri=rounds.indexOf(row.round);
+  const same=group.filter(m=>m.round===row.round);
+  const prev=ri>0 ? group.filter(m=>m.round===rounds[ri-1]) : [];
+  const next=ri<rounds.length-1 ? group.filter(m=>m.round===rounds[ri+1]) : [];
+  const fedFrom=m=>{ let k=Infinity;
+    prev.forEach((p,i)=>{ if(id(p.winner)===id(m.winner) || id(p.winner)===id(m.loser)) k=Math.min(k,i); });
+    return k; };
+  const goesTo=m=>next.findIndex(n=>id(n.winner)===id(m.winner) || id(n.loser)===id(m.winner));
+  let before=null, after=null;
+  const mine=fedFrom(row);
+  if(mine<Infinity) before=same.find(m=>fedFrom(m)>mine) || null;
+  else { const to=goesTo(row);
+    if(to>=0) before=same.find(m=>goesTo(m)>to) || null; }
+  if(!before) after=same[same.length-1] || null;
+  let at;
+  if(before) at=MATCHES.indexOf(before);
+  else if(after) at=MATCHES.indexOf(after)+1;
+  else {
+    const pf=prev.length ? MATCHES.indexOf(prev[0]) : -1, pl=prev.length ? MATCHES.indexOf(prev[prev.length-1]) : -1;
+    const nl=next.length ? MATCHES.indexOf(next[next.length-1]) : -1;
+    at = pf<0 ? (nl<0 ? MATCHES.length : nl+1) : (nl>=0 && nl<pf ? pf : pl+1);
+  }
+  MATCHES.splice(at,0,row);
+  MATCH_DIRTY.add(it.season||"unknown");
+  reindex();
+  return row;
+}
+
+/* ------------------------------------------------------------------
    NAMES THAT NEVER APPEAR IN A RANKING
    Everyone in a draw is ranked at some point, so a name that turns up in
    matches and never in a ranking list is almost always a typo. The nearest
@@ -1376,7 +1676,7 @@ function deriveUnknownPlayers(){
   const seen=new Map();                       // key -> {matches, events}
   const note=(nm, r)=>{
     const k=keyOf(nm);
-    if(!k || k==="bye" || ranked.has(k) || UNKNOWN_OK.has(k)) return;
+    if(!k || isByeName(k) || ranked.has(k) || UNKNOWN_OK.has(k)) return;
     if(!seen.has(k)) seen.set(k,{key:k, name:canonName(nm), matches:0, events:new Set()});
     const e=seen.get(k); e.matches++; e.events.add(`${r.event} ${r.season||""}`.trim());
   };
@@ -1450,7 +1750,8 @@ function issueCount(){
   const i = deriveIssues();
   return i.countryConflicts.length + i.nameVariants.length + i.tourGaps.length
        + i.eventProblems.length + i.dateProblems.length + i.renames.length
-       + i.unknowns.length + i.dupes.length + i.pending.length;
+       + i.unknowns.length + i.dupes.length + i.pending.length
+       + i.missing.items.length + i.missing.variants.length;
 }
 
 /* ==================================================================
@@ -2632,7 +2933,7 @@ function calSeasons(){
 }
 
 function eventMatchCount(event, season){
-  return MATCHES.filter(m=>m.event===event && (!season || m.season===season)).length;
+  return MATCHES.filter(m=>m.event===event && (!season || m.season===season) && !m.isBye).length;
 }
 
 /* ------------------------------------------------------------------
@@ -2858,6 +3159,350 @@ function renderCalendar(){
    ------------------------------------------------------------------ */
 const EVENT_UI = {event:null, season:null, disc:"Singles", stage:"Main"};
 
+/* ------------------------------------------------------------------
+   DRAW SHEET
+   A tournament laid out the way an official draw sheet is: every player
+   on a ruled line in the first column, the winner of each pair carried
+   across to a line between them, and the score underneath.
+
+   Matches store who won, not which line each player was drawn on, but
+   they are saved in draw order. So the tree is rebuilt backwards from the
+   last round: whoever is in a match is traced to the match they won the
+   round before. Which of a first-round pair sits on the upper line isn't
+   recorded, so a seed is put where the seeding convention would have it
+   and otherwise the winner goes on top.
+   ------------------------------------------------------------------ */
+const DRAW_ORDER = ["R512","R256","R128","R64","R32","R16","QF","SF","F","QR1","QR2","QR3","QFR"];
+const ROUND_LABEL = {R512:"Round of 512", R256:"Round of 256", R128:"Round of 128", R64:"Round of 64",
+  R32:"Round of 32", R16:"Round of 16", QF:"Quarterfinals", SF:"Semifinals", F:"Final",
+  QR1:"Qualifying R1", QR2:"Qualifying R2", QR3:"Qualifying R3", QFR:"Final round"};
+const ENTRY_LABEL = {Q:"Qualifiers", LL:"Lucky losers", WC:"Wild cards", SE:"Special exempt",
+  ALT:"Alternates", PR:"Protected ranking"};
+const seedNum = s => { const m=/^\s*(\d+)/.exec(String(s||"")); return m ? parseInt(m[1],10) : null; };
+
+function buildDraw(shown){
+  const disc=shown[0].disc, stage=shown[0].stage;
+  let rounds=[...new Set(shown.map(m=>m.round))]
+    .sort((a,b)=>DRAW_ORDER.indexOf(a)-DRAW_ORDER.indexOf(b));
+  /* A main draw can't skip a round, so one with no results at all still gets
+     its column — otherwise the quarter-finalists would be read as having
+     gone straight from the last sixteen to the semis. */
+  if(stage==="Main" && rounds.length>1){
+    const lo=DRAW_ORDER.indexOf(rounds[0]), hi=DRAW_ORDER.indexOf(rounds[rounds.length-1]);
+    if(lo>=0 && hi<=DRAW_ORDER.indexOf("F")) rounds=DRAW_ORDER.slice(lo,hi+1);
+  }
+  const byRound=rounds.map(r=>shown.filter(m=>m.round===r));
+  /* A name is sometimes typed a little differently from one round to the
+     next ("Chris 84" then "Chris84", or with a stray country code). For
+     joining rounds only, spacing, punctuation and that debris are ignored. */
+  const loose = raw => String(raw).split("/").map(p=>p.toLowerCase()
+      .replace(/\([a-z]{3}\)/g,"").replace(/^\s*(ll|q|wc|alt|se|pr)\d*\s+/,"")
+      .replace(/[^a-z0-9]/g,"")).sort().join("/");
+  const index = keyFn => byRound.map(list=>{
+    const mp=new Map();
+    list.forEach((m,i)=>{ const k=keyFn(m.winner);
+      if(!mp.has(k)) mp.set(k,[]); mp.get(k).push(i); });
+    return mp; });
+  const wonIn=index(n=>idOf(n,disc)), wonLoose=index(loose);
+  const claimed=new Set();
+  const side=(m,w)=>({raw:m[w], seed:String(m[w+"Seed"]||"").trim(), country:m[w+"Country"]||"",
+    rank:m[w+"Rank"], bye:isByeSide(m[w])});
+  const BYE={raw:"Bye", seed:"", country:"", rank:"", bye:true};
+
+  /* the line a player stands on in a given column */
+  function slot(p, col, parentIdx){
+    if(col===0 || p.bye) return {...p, col, kids:null};
+    const prev=byRound[col-1];
+    let i=(wonIn[col-1].get(idOf(p.raw,disc))||[]).find(j=>!claimed.has(prev[j]));
+    let viaLoose=false;
+    if(i===undefined){
+      i=(wonLoose[col-1].get(loose(p.raw))||[]).find(j=>!claimed.has(prev[j]));
+      viaLoose = i!==undefined;
+    }
+    if(i===undefined){
+      /* No match the round before. In the first round that's a bye, shown
+         as one; any later and it's a gap in the data, so the name simply
+         starts here. */
+      if(col!==1) return {...p, col, kids:null, gap:true};
+      const up = parentIdx%2===0;
+      const me={...p, col:0, kids:null}, bye={...BYE, col:0, kids:null};
+      return {...p, col, kids: up ? [me,bye] : [bye,me], byePair:true};
+    }
+    const nd=matchNode(prev[i], i, col);
+    if(viaLoose) nd.viaLoose=p.raw;
+    return nd;
+  }
+  function matchNode(m, i, col){
+    claimed.add(m);
+    const a=slot(side(m,"winner"), col-1, i), b=slot(side(m,"loser"), col-1, i);
+    let kids;
+    if(a.idx!==undefined && b.idx!==undefined) kids = a.idx<=b.idx ? [a,b] : [b,a];
+    else if(a.byePair && b.byePair){
+      a.kids.sort((x,y)=>(x.bye?1:0)-(y.bye?1:0));
+      b.kids.sort((x,y)=>(y.bye?1:0)-(x.bye?1:0));
+      kids=[a,b];
+    }
+    else if(a.idx!==undefined || b.idx!==undefined){
+      const played = a.idx!==undefined ? a : b, other = played===a ? b : a;
+      kids = i%2===0 ? [other,played] : [played,other];
+    }
+    else kids=[a,b];
+    return {...side(m,"winner"), col, match:m, idx:i, kids};
+  }
+
+  let roots=[];
+  for(let r=rounds.length-1; r>=0; r--)
+    byRound[r].forEach((m,i)=>{ if(!claimed.has(m)) roots.push(matchNode(m,i,r+1)); });
+
+  /* A main draw still being played has no final to hang everything from.
+     Winners so far are paired off in draw order onto empty lines. */
+  const last=rounds[rounds.length-1];
+  const labels=rounds.map(r=>ROUND_LABEL[r]||r);
+  const n=roots.length;
+  if(stage==="Main" && last!=="F" && n>1 && (n&(n-1))===0 && roots.every(x=>x.col===rounds.length)){
+    let level=roots, col=rounds.length, at=DRAW_ORDER.indexOf(last);
+    while(level.length>1){
+      labels.push(ROUND_LABEL[DRAW_ORDER[++at]]||"");
+      col++;
+      const nx=[];
+      for(let i=0;i<level.length;i+=2)
+        nx.push({raw:"", seed:"", country:"", blank:true, col, kids:[level[i],level[i+1]]});
+      level=nx;
+    }
+    roots=level;
+  }
+  labels.push(stage!=="Main" ? "Qualified" : last==="F" || roots.length===1 ? "Winner"
+    : ROUND_LABEL[DRAW_ORDER[DRAW_ORDER.indexOf(last)+1]] || "");
+  const loose_ends = stage==="Main" && roots.length>1;
+
+  /* first-round pairs: put the seed where the convention has it */
+  let pair=0;
+  (function walk(nd){
+    if(!nd.kids){ if(nd.col>=1) pair+=Math.pow(2,nd.col-1); return; }
+    if(nd.col===1){
+      const [a,b]=nd.kids;
+      if(!nd.byePair){
+        const sa=seedNum(a.seed), sb=seedNum(b.seed);
+        let lead=null;
+        if(b.bye && !a.bye) lead=a; else if(a.bye && !b.bye) lead=b;
+        else if(sa!==null && (sb===null || sa<=sb)) lead=a;
+        else if(sb!==null) lead=b;
+        if(lead){ const other = lead===a ? b : a;
+          nd.kids = pair%4<2 ? [lead,other] : [other,lead]; }
+      }
+      pair++; return;
+    }
+    nd.kids.forEach(walk);
+  })({col:99, kids:roots});
+
+  return {disc, stage, rounds, labels, roots, counts:byRound.map(l=>l.length), looseEnds:loose_ends, finished: stage==="Main" && last==="F" && roots.length>=1};
+}
+
+function drawCss(){
+  if($("drawCss")) return;
+  const st=document.createElement("style"); st.id="drawCss";
+  st.textContent=`
+.dsheet{background:var(--panel);border:1px solid var(--rule-strong);padding:14px 16px 16px;margin-top:4px}
+.dsheet .dcap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--slate);padding-bottom:10px;border-bottom:2px solid var(--rule-strong);margin-bottom:6px}
+.dsheet .dcap b{color:var(--line);font-weight:600}
+.dscroll{overflow-x:auto;padding-bottom:6px}
+.dhead{display:flex;font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--slate)}
+.dhead span{flex:none;padding:7px 8px 7px 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dhead.top{border-bottom:1px solid var(--rule)}
+.dhead.bot{border-top:1px solid var(--rule);margin-top:4px}
+.dgrid{position:relative}
+.dl{position:absolute;display:flex;align-items:flex-end;gap:6px;padding:0 8px 3px 8px;
+  border-bottom:1px solid var(--rule-strong);font-size:12.5px;line-height:1.25;white-space:nowrap}
+.dl.c0{padding-left:0}
+.dl .dpos{flex:none;width:24px;text-align:right;font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--slate);opacity:.75}
+.dl .dsd{flex:none;width:30px;text-align:center;font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ball2)}
+.dl .dnm{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.dl.c0 .dnm{flex:1}
+.dl .dct{flex:none;font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--slate)}
+.dl .dsq{flex:none;font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--ball2)}
+.dl button{background:none;border:0;padding:0;margin:0;color:inherit;font:inherit;cursor:pointer}
+.dl button:hover{color:var(--ball)}
+.dl .sep{color:var(--slate);padding:0 3px}
+.dl.adv{font-weight:600}
+.dl.bye .dnm{color:var(--slate);font-style:italic;font-weight:400}
+.dl.hl{border-bottom-color:var(--ball2)}
+.dl.hl .dnm{color:var(--ball2)}
+.dl.champ .dnm{color:var(--ball)}
+.dl.root{border-bottom-width:2px;font-size:13.5px}
+.dl.root.champ{border-bottom-color:var(--ball)}
+.dsc{position:absolute;font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--slate);
+  white-space:nowrap;padding-left:8px;line-height:1.5}
+.dcn{position:absolute;width:0;border-left:1px solid var(--rule-strong)}
+.dfoot{display:flex;flex-wrap:wrap;gap:8px 34px;margin-top:14px;padding-top:12px;
+  border-top:2px solid var(--rule-strong);font-size:12px}
+.dfoot h5{margin:0 0 5px;font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--slate);font-weight:500}
+.dfoot ol{margin:0;padding:0;list-style:none;columns:2;column-gap:26px}
+.dfoot li{white-space:nowrap;break-inside:avoid;line-height:1.7}
+.dfoot li i{display:inline-block;width:22px;font-style:normal;font-family:"IBM Plex Mono",monospace;
+  font-size:10.5px;color:var(--ball2)}
+.dfoot li em{font-style:normal;font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--slate);margin-left:6px}
+.dfoot .dent ol{columns:1}
+`;
+  document.head.appendChild(st);
+}
+
+function drawSheet(shown, caption, avail){
+  drawCss();
+  const d=buildDraw(shown);
+  const dbl=d.disc==="Doubles";
+  const maxCol=d.labels.length-1;
+  /* columns stretch a little to use a wide screen, never past comfortable */
+  const H=26, GAP=18, W0=dbl?322:236, WMIN=dbl?236:156;
+  const W=Math.round(Math.min(WMIN*1.3, Math.max(WMIN, ((avail||0)-34-W0)/maxCol)));
+  const xOf=c=>c===0 ? 0 : W0+(c-1)*W;
+  const wOf=c=>c===0 ? W0 : W;
+
+  /* vertical positions: one row per leaf, everything else halfway between */
+  let y=0, pos=0, entrants=0;
+  (function lay(list, top){
+    list.forEach((nd,i)=>{
+      if(top && i) y+=GAP;
+      if(!nd.kids){ y+=H; nd.y=y; if(nd.col===0 && !nd.blank) nd.pos=++pos;
+        if(!nd.bye && !nd.blank) entrants++; return; }
+      lay(nd.kids,false);
+      nd.y=(nd.kids[0].y+nd.kids[1].y)/2;
+    });
+  })(d.roots, true);
+  const height=y+20;
+
+  const champKey = d.finished && d.roots[0].col===maxCol ? idOf(d.roots[0].raw,d.disc) : null;
+
+  const sheet=document.createElement("div"); sheet.className="dsheet";
+  const cap=document.createElement("div"); cap.className="dcap";
+  cap.innerHTML=`<span><b>${esc(caption||"")}</b></span>
+    <span>${d.stage==="Main"?"Main draw":"Qualifying"} ${esc(d.disc.toLowerCase())} · ${entrants} ${dbl?"teams":"players"}</span>`;
+  sheet.appendChild(cap);
+
+  const scroll=document.createElement("div"); scroll.className="dscroll";
+  const total=xOf(maxCol)+wOf(maxCol);
+  const head=cls=>{
+    const h=document.createElement("div"); h.className="dhead "+cls; h.style.width=total+"px";
+    d.labels.forEach((t,c)=>{ const s=document.createElement("span");
+      s.style.width=wOf(c)+"px"; if(c===0) s.style.paddingLeft="60px"; s.textContent=t; h.appendChild(s); });
+    return h; };
+  scroll.appendChild(head("top"));
+
+  const grid=document.createElement("div"); grid.className="dgrid";
+  grid.style.width=total+"px"; grid.style.height=height+"px";
+  const frag=document.createDocumentFragment();
+  const names=nd=>{
+    const span=document.createElement("span"); span.className="dnm";
+    if(nd.blank){ span.innerHTML="&nbsp;"; return span; }
+    if(nd.bye){ span.textContent="Bye"; return span; }
+    String(nd.raw).split("/").forEach((p,i)=>{
+      if(i){ const s=document.createElement("span"); s.className="sep"; s.textContent="/"; span.appendChild(s); }
+      const nm=canonName(p.trim());
+      const b=document.createElement("button"); b.type="button"; b.textContent=nm;
+      b.addEventListener("click",()=>showPlayer(nm,d.disc));
+      span.appendChild(b);
+    });
+    span.title=String(nd.raw).split("/").map(p=>canonName(p.trim())).join(" / ");
+    return span;
+  };
+  const paint=(nd, isRoot)=>{
+    const el=document.createElement("div");
+    const key = nd.blank||nd.bye ? "" : idOf(nd.raw,d.disc);
+    el.className="dl"+(nd.col===0?" c0":"")+(nd.kids?" adv":"")+(nd.bye?" bye":"")
+      +(isRoot&&!nd.blank?" root":"")+(champKey&&key===champKey?" champ":"");
+    if(key) el.dataset.k=key;
+    el.style.cssText=`left:${xOf(nd.col)}px;top:${nd.y-H}px;width:${wOf(nd.col)}px;height:${H}px`;
+    if(nd.col===0){
+      const p=document.createElement("span"); p.className="dpos"; p.textContent=nd.pos||""; el.appendChild(p);
+      const s=document.createElement("span"); s.className="dsd"; s.textContent=nd.bye?"":nd.seed; el.appendChild(s);
+      el.appendChild(names(nd));
+      if(nd.country && !nd.bye){ const c=document.createElement("span"); c.className="dct";
+        c.textContent=nd.country; el.appendChild(c); }
+    } else {
+      el.appendChild(names(nd));
+      if(nd.seed && !nd.bye && !nd.blank){ const s=document.createElement("span"); s.className="dsq";
+        s.textContent="["+nd.seed+"]"; el.appendChild(s); }
+    }
+    frag.appendChild(el);
+    if(!nd.kids) return;
+    const cn=document.createElement("div"); cn.className="dcn";
+    cn.style.cssText=`left:${xOf(nd.col)}px;top:${nd.kids[0].y-1}px;height:${nd.kids[1].y-nd.kids[0].y+1}px`;
+    frag.appendChild(cn);
+    const m=nd.match;
+    if(m && !m.isBye && !isByeSide(m.loser) && !isByeSide(m.winner)){
+      let t=`${m.winnerScore}–${m.loserScore}`;
+      if(m.winnerScore===m.loserScore && m.winnerSC!==m.loserSC) t+=` · SC ${m.winnerSC}–${m.loserSC}`;
+      const sc=document.createElement("div"); sc.className="dsc"; sc.textContent=t;
+      sc.style.cssText=`left:${xOf(nd.col)}px;top:${nd.y+1}px`;
+      frag.appendChild(sc);
+    }
+    nd.kids.forEach(k=>paint(k,false));
+  };
+  d.roots.forEach(r=>paint(r,true));
+  grid.appendChild(frag);
+  scroll.appendChild(grid);
+  if(pos>20) scroll.appendChild(head("bot"));
+  sheet.appendChild(scroll);
+
+  /* pointing at a name lights up that player's whole run */
+  let lit="";
+  const light=k=>{
+    if(k===lit) return;
+    if(lit) grid.querySelectorAll(".dl.hl").forEach(e=>e.classList.remove("hl"));
+    lit=k;
+    if(k) grid.querySelectorAll(".dl").forEach(e=>{ if(e.dataset.k===k) e.classList.add("hl"); });
+  };
+  grid.addEventListener("mouseover",e=>{ const l=e.target.closest(".dl"); light(l&&l.dataset.k||""); });
+  grid.addEventListener("mouseleave",()=>light(""));
+
+  /* seeds and other entries, as at the foot of an official sheet */
+  const seen=new Map();
+  (function gather(list){ list.forEach(nd=>{
+    if(nd.kids){ gather(nd.kids); return; }
+    if(nd.bye || nd.blank || !nd.seed) return;
+    const k=idOf(nd.raw,d.disc); if(!seen.has(k)) seen.set(k,nd); }); })(d.roots);
+  const seeds=[...seen.values()].filter(e=>seedNum(e.seed)!==null)
+    .sort((a,b)=>seedNum(a.seed)-seedNum(b.seed));
+  const groups=new Map();
+  [...seen.values()].filter(e=>seedNum(e.seed)===null).forEach(e=>{
+    const tag=e.seed.toUpperCase().split(/[\/\s]/)[0];
+    if(!groups.has(tag)) groups.set(tag,[]); groups.get(tag).push(e); });
+  if(seeds.length || groups.size){
+    const foot=document.createElement("div"); foot.className="dfoot";
+    const block=(title, list, cls, lead)=>{
+      const box=document.createElement("div"); if(cls) box.className=cls;
+      const h=document.createElement("h5"); h.textContent=title; box.appendChild(h);
+      const ol=document.createElement("ol");
+      list.forEach(e=>{
+        const li=document.createElement("li");
+        if(lead){ const n=document.createElement("i"); n.textContent=seedNum(e.seed); li.appendChild(n); }
+        li.appendChild(nameLinks(e.raw,d.disc));
+        const r=parseInt(e.rank,10);
+        if(lead && !isNaN(r) && r>0){ const em=document.createElement("em"); em.textContent="#"+r; li.appendChild(em); }
+        ol.appendChild(li);
+      });
+      box.appendChild(ol); foot.appendChild(box);
+    };
+    if(seeds.length) block(dbl?"Seeded teams":"Seeded players", seeds, "", true);
+    ["Q","LL","WC","SE","ALT","PR"].concat([...groups.keys()].filter(t=>!ENTRY_LABEL[t]))
+      .forEach(t=>{ if(groups.has(t)) block(ENTRY_LABEL[t]||t, groups.get(t), "dent", false); });
+    sheet.appendChild(foot);
+  }
+  if(d.looseEnds){
+    const p=document.createElement("p"); p.className="hint"; p.style.margin="12px 0 0";
+    p.textContent = shown.filter(m=>m.round==="F" && !m.isBye).length>1
+      ? "Two finals are filed under this name, so this is probably two tournaments. They're shown one under the other."
+      : "Some results couldn't be joined to the rest of this draw, so they're shown as separate pieces. "
+        + "That happens when a result is missing or a name is spelled differently from one round to the next.";
+    sheet.appendChild(p);
+  }
+  return sheet;
+}
+
+
 function showEvent(event, season){
   setHash(`event/${enc(event)}${season?"/"+enc(season):""}`);
   EVENT_UI.event=event; EVENT_UI.season=season||"";
@@ -2919,7 +3564,7 @@ function renderEvent(){
   });
   const qual=ms.filter(m=>m.stage==="Qualifying" && m.round==="QFR");
   const card=document.createElement("div"); card.className="stat";
-  card.innerHTML=`<span class="k">Matches</span><span class="v">${ms.length}</span>
+  card.innerHTML=`<span class="k">Matches</span><span class="v">${ms.filter(m=>!m.isBye).length}</span>
     <span class="note">${qual.length} qualified</span>`;
   grid.appendChild(card);
   mount.appendChild(grid);
@@ -2946,61 +3591,53 @@ function renderEvent(){
     return;
   }
 
-  /* rounds run from the first played to the final, side by side */
-  const ORDER=["R512","R256","R128","R64","R32","R16","QF","SF","F","QR1","QR2","QR3","QFR"];
-  const rounds=[...new Set(shown.map(m=>m.round))].sort((a,b)=>ORDER.indexOf(a)-ORDER.indexOf(b));
-  const champ = (shown.find(m=>m.round==="F")||{}).winner;
-  const champKey = champ ? (EVENT_UI.disc==="Doubles"?teamKeyOf(champ):keyOf(champ)) : null;
-
-  /* A player in one round with no match in the round before had a bye. Those
-     aren't stored as results, so they're worked out here and shown in place. */
-  const byesFor={};
-  rounds.forEach((rnd,i)=>{
-    if(i===0) return;
-    const prev=new Set();
-    shown.filter(m=>m.round===rounds[i-1]).forEach(m=>{
-      prev.add(idOf(m.winner,m.disc)); prev.add(idOf(m.loser,m.disc)); });
-    const here=[];
-    shown.filter(m=>m.round===rnd).forEach(m=>{
-      ["winner","loser"].forEach(k=>{
-        if(!prev.has(idOf(m[k],m.disc))) here.push(sideOf(m,k)); });
-    });
-    if(here.length) byesFor[rounds[i-1]]=here;
-  });
-
-  const board=document.createElement("div"); board.className="bracket";
-  rounds.forEach(rnd=>{
-    const col=document.createElement("div"); col.className="bcol";
-    const hh=document.createElement("h4");
-    hh.textContent=`${rnd} \u2014 ${shown.filter(m=>m.round===rnd).length}`;
-    const nb=(byesFor[rnd]||[]).length;
-    if(nb) hh.textContent=`${rnd} \u2014 ${shown.filter(m=>m.round===rnd).length} + ${nb} byes`;
-    col.appendChild(hh);
-    shown.filter(m=>m.round===rnd).forEach(m=>{
-      const isD=m.disc==="Doubles";
-      const w=isD?canonTeam(m.winner):canonName(m.winner);
-      const l=isD?canonTeam(m.loser):canonName(m.loser);
-      const onPath = champKey && (isD?teamKeyOf(m.winner):keyOf(m.winner))===champKey;
-      const el=document.createElement("div");
-      el.className="bm"+(onPath?" champ":"");
-      el.innerHTML=`<div class="w">${m.winnerSeed?`<span class="seed">(${esc(m.winnerSeed)})</span> `:""}${esc(w)}
-          <span class="sc">${m.winnerScore}\u2013${m.loserScore}</span></div>
-        <div class="l">${m.loserSeed?`<span class="seed">(${esc(m.loserSeed)})</span> `:""}${esc(l)}</div>`;
-      col.appendChild(el);
-    });
-    (byesFor[rnd]||[]).forEach(nm=>{
-      const el=document.createElement("div"); el.className="bm";
-      el.style.opacity=".65";
-      el.innerHTML=`<div class="w">${esc(nm)}<span class="sc">bye</span></div>
-        <div class="l">\u2014</div>`;
-      col.appendChild(el);
-    });
-    board.appendChild(col);
-  });
-  mount.appendChild(board);
+  if(playsTwice(shown) && shown.filter(m=>m.round==="F" && !m.isBye).length<=1){
+    mount.appendChild(roundList(shown));
+    const note=document.createElement("p"); note.className="hint";
+    note.textContent="Players meet more than once a round here, so this is a round robin or team event rather than a knockout draw.";
+    mount.appendChild(note);
+    eventYears(mount, event, season);
+    return;
+  }
+  mount.appendChild(drawSheet(shown, `${event}${season?" "+season:""}`, mount.clientWidth));
   const hint=document.createElement("p"); hint.className="hint";
-  hint.textContent="The champion's path is marked down the left of each match.";
+  hint.textContent="Point at a name to follow that player through the draw; click it for their page. "
+    + "Results are kept in draw order, but not which line of a first-round pair each player was on, "
+    + "so seeds are placed by convention and otherwise the winner is shown on top.";
   mount.appendChild(hint);
+  eventYears(mount, event, season);
+}
+
+/* the same tournament in other seasons */
+function eventYears(mount, event, season){
+  const years=new Map();
+  CALENDAR.forEach(k=>{ if(k.event===event && k.season) years.set(k.season,{season:k.season, cal:k}); });
+  MATCHES.forEach(m=>{
+    if(m.event!==event || !m.season) return;
+    if(!years.has(m.season)) years.set(m.season,{season:m.season});
+    if(m.stage==="Main" && m.round==="F" && !m.isBye)
+      years.get(m.season)[m.disc==="Doubles"?"d":"s"]=m;
+  });
+  const others=[...years.values()].filter(r=>r.s||r.d)
+    .sort((a,b)=>b.season.localeCompare(a.season));
+  if(others.length>1){
+    const oh=document.createElement("h3"); oh.className="sec"; oh.textContent=`${event} through the years`;
+    mount.appendChild(oh);
+    const who=(k,disc)=>({k, h:disc+" champion", render:r=>r[k]?nameLinks(r[k].winner,disc):"\u2014",
+      csv:r=>r[k]?sideOf(r[k],"winner"):""});
+    const lost=(k,disc)=>({k:k+"f", h:"Beat", render:r=>{
+      if(!r[k]) return "\u2014";
+      const s=nameLinks(r[k].loser,disc); s.className="dim"; return s; }, csv:r=>r[k]?sideOf(r[k],"loser"):""});
+    mount.appendChild(tableOf([
+      {k:"season",h:"Season",render:r=>{
+        if(r.season===season){ const b=document.createElement("b"); b.textContent=r.season; return b; }
+        const b=document.createElement("button"); b.className="linkish"; b.textContent=r.season;
+        b.addEventListener("click",()=>showEvent(event,r.season)); return b; }, csv:r=>r.season},
+      {k:"surface",h:"Surface",render:r=>r.cal&&r.cal.surface
+        ? `<span class="surf ${esc(r.cal.surface)}">${esc(r.cal.surface)}</span>` : "", csv:r=>r.cal?r.cal.surface:""},
+      who("s","Singles"), lost("s","Singles"),
+      who("d","Doubles"), lost("d","Doubles")], others));
+  }
 }
 
 /* ------------------------------------------------------------------
@@ -3565,9 +4202,9 @@ function renderProfile(){
       {k:"season",h:"Season",cls:"mono"},{k:"surface",h:"Surface"},
       {k:"beat",h:"Beat",render:r=>nameLinks(r.beat,disc), csv:r=>r.beat},
       {k:"score",h:"Final",cls:"mono"}],
-      titles.map(m=>({event:m.event, season:m.season,
+      newestFirst(titles).map(m=>({event:m.event, season:m.season,
         surface:SURFACE_NAME[surfaceOf(m)]||"", beat:sideOf(m,"loser"),
-        score:`${m.winnerScore}\u2013${m.loserScore}`})).reverse()));
+        score:`${m.winnerScore}\u2013${m.loserScore}`}))));
   }
 
   /* who they meet most */
@@ -3595,7 +4232,7 @@ function renderProfile(){
   /* recent matches */
   const mh=document.createElement("h3"); mh.className="sec"; mh.textContent="Matches";
   mount.appendChild(mh);
-  const rows=ms.slice().reverse().slice(0,60).map(m=>({
+  const rows=newestFirst(ms).slice(0,60).map(m=>({
     event:m.event, season:m.season, round:m.round,
     result: wonBy(m,name) ? "won" : "lost",
     other: wonBy(m,name) ? sideOf(m,"loser") : sideOf(m,"winner"),
@@ -3605,6 +4242,7 @@ function renderProfile(){
     {k:"event",h:"Tournament",render:r=>{
       const b=document.createElement("button"); b.className="linkish"; b.textContent=r.event;
       b.addEventListener("click",()=>showEvent(r.event,r.season)); return b;}, csv:r=>r.event},
+    {k:"season",h:"Season",cls:"mono"},
     {k:"round",h:"Round",cls:"rnd"},
     {k:"result",h:"Result",render:r=>r.result==="won"
       ? '<span style="color:var(--ball)">won</span>' : '<span class="dim">lost</span>', csv:r=>r.result},
@@ -3679,6 +4317,18 @@ function matchDate(m){
   const c=calFor(m.event, m.season);
   return c && c.date ? c.date : "";
 }
+/* Latest tournament first; within one tournament the final sits above the
+   rounds that led to it. Files load in no particular order, so the order
+   matches arrived in says nothing about when they were played. */
+function newestFirst(list){
+  return list.slice().sort((x,y)=>{
+    const a=whenOf(x.event,x.season), b=whenOf(y.event,y.season);
+    if(a!==b) return a<b ? 1 : -1;
+    if(x.event!==y.event) return x.event<y.event ? -1 : 1;
+    return roundRank(x.round)-roundRank(y.round) || (x.id||0)-(y.id||0);
+  });
+}
+
 function inOrder(list){
   return list.slice().sort((x,y)=>{
     const a=matchDate(x), b=matchDate(y);
@@ -3826,7 +4476,7 @@ function renderOverview(){
   const grid=document.createElement("div"); grid.className="statgrid";
   [["Seasons", seasons.length ? `${seasons[0]}\u2013${seasons[seasons.length-1]}` : "\u2014",
       `${CALENDAR.length.toLocaleString()} tournaments`],
-   ["Matches", MATCHES.length.toLocaleString(), `${titles.length.toLocaleString()} finals played`],
+   ["Matches", playedCount().toLocaleString(), `${titles.length.toLocaleString()} finals played`],
    ["Players", players.length.toLocaleString(), `${deriveTeams().length.toLocaleString()} doubles teams`],
    ["Managers", String(new Set(CALENDAR.map(c=>c.manager).filter(Boolean)).size),
       "who have run a tournament"]
@@ -4069,7 +4719,7 @@ const setVal = (id,v) => { const el=$(id); if(el) el.value=v; };
 function matchRows(){
   const q=val("mQ").trim().toLowerCase();
   const d=val("mDisc"), s=val("mStage"), e=val("mEvent"), r=val("mRound");
-  return MATCHES.filter(m =>
+  return MATCHES.filter(m => (EDIT || !m.isBye) &&
     (!d||m.disc===d)&&(!s||m.stage===s)&&(!e||m.event===e)&&(!r||m.round===r)&&
     (!q||hay(m.event,m.season,m.disc,m.stage,m.round,canonName(m.winner),canonName(m.loser),
             m.winnerCountry,m.loserCountry,m.winnerSeed,m.loserSeed).includes(q)))
@@ -4138,6 +4788,7 @@ function swapRow(r){
   [r.winnerSC,r.loserSC]=[r.loserSC,r.winnerSC];
   [r.winnerRank,r.loserRank]=[r.loserRank,r.winnerRank];
   r.method="manual";
+  MATCH_DIRTY.add(r.season||"unknown");     // so the season file is saved with it
 }
 
 /* ==================================================================
@@ -4594,15 +5245,114 @@ function renderMergePanel(box){
   box.appendChild(s);
 }
 
+/* ------------------------------------------------------------------
+   MISSING MATCHES
+   ------------------------------------------------------------------ */
+function renderMissing(box, missing){
+  const {items, variants}=missing;
+  const show=(raw,disc)=>disc==="Doubles"
+    ? String(raw).split("/").map(p=>canonName(p.trim())).join(" / ") : canonName(raw);
+  const act=(label, fn, title)=>{
+    const b=document.createElement("button"); b.className="btn sm"; b.textContent=label;
+    if(title) b.title=title;
+    b.addEventListener("click",()=>{ try{ fn(); markDirty(); refreshAll(); }catch(err){ alert(err.message); } });
+    return b; };
+
+  if(variants.length){
+    const s=document.createElement("section"); s.className="review";
+    s.innerHTML=`<p class="blockhead">One player, two spellings — ${variants.length}</p>
+      <p class="lede" style="margin-bottom:6px">A name wins one round and a near-identical one plays the next
+      in the same place in the draw. Merge towards whichever spelling is right.</p>`;
+    variants.forEach(v=>{
+      const q=document.createElement("div"); q.className="rq";
+      q.innerHTML=`<span class="tag">${esc(v.where)}</span>
+        <span class="ctx"><b>${esc(v.a)}</b> and <b>${esc(v.b)}</b></span>`;
+      q.appendChild(act(`Keep ${v.b}`, ()=>{ snapshot("player merge"); mergePlayers(v.a, v.b); }));
+      q.appendChild(act(`Keep ${v.a}`, ()=>{ snapshot("player merge"); mergePlayers(v.b, v.a); }));
+      s.appendChild(q);
+    });
+    box.appendChild(s);
+  }
+
+  if(!items.length) return;
+  const s=document.createElement("section"); s.className="review";
+  s.innerHTML=`<p class="blockhead">Missing matches — ${items.length}</p>
+    <p class="lede" style="margin-bottom:6px">Worked out from the draws: somebody plays a round with no result
+    from the one before, or wins and has nothing after it. A result added here goes in as 1–0, in its
+    place in the draw. An event from the last fortnight isn't checked until its final is in.</p>`;
+  const ask=(msg)=>{ const v=prompt(msg,""); if(v===null) return null; return v.trim()||null; };
+  const where=it=>`${it.event} ${it.season} — ${it.disc.toLowerCase()}${it.stage==="Main"?"":" qualifying"}`;
+  items.slice(0,250).forEach(it=>{
+    const q=document.createElement("div"); q.className="rq";
+    const W=it.winner?show(it.winner,it.disc):"", tagTxt=`${it.round}`;
+    let text="";
+    if(it.kind==="restore"){
+      text=`<b>${esc(W)}</b> beat <b>${esc(show(it.loser,it.disc))}</b> — both won the round before, only one went on`;
+    } else if(it.kind==="wrongway"){
+      text=`<b>${esc(show(it.loser,it.disc))}</b> is down as beating <b>${esc(W)}</b>, but it's ${esc(W)}
+        who plays the ${esc(it.next)} \u2014 the result is probably the wrong way round`;
+    } else if(it.kind==="open"){
+      text=`<b>${esc(show(it.a,it.disc))}</b> v <b>${esc(show(it.b,it.disc))}</b> — no result, and neither appears again`;
+    } else if(it.kind==="opponent"){
+      text=`<b>${esc(W)}</b> played the ${esc(it.next)} with no ${esc(it.round)} result — opponent not known`;
+    } else if(it.kind==="first"){
+      text=`<b>${esc(W)}</b> played the ${esc(it.next)} with no ${esc(it.round)} result, and wasn't seeded for a bye`;
+    } else if(it.kind==="twice"){
+      const line=m=>`${esc(show(m.winner,it.disc))} beat ${esc(show(m.loser,it.disc))}`;
+      text=`<b>${esc(show(it.player,it.disc))}</b> is in two ${esc(it.round)} matches \u2014 ${line(it.first)}; ${line(it.second)}. One of the names is wrong`;
+    } else if(it.kind==="stranded"){
+      text=`<b>${esc(show(it.player,it.disc))}</b> won in the ${esc(it.won)} and has no ${esc(it.round||"later")} result`;
+    } else {
+      text = it.what==="opponent"
+        ? `${it.n} players are in the ${esc(it.next)} with no ${esc(it.round)} result — that round is probably missing or filed under another label`
+        : `${it.n} players won in the ${esc(it.won)} and have no ${esc(it.round||"later")} result — the next round is probably missing`;
+    }
+    q.innerHTML=`<span class="tag">${esc(tagTxt)}</span>
+      <span class="ctx">${text}<br><span class="dim">${esc(where(it))}</span></span>`;
+    const go=document.createElement("button"); go.className="btn sm"; go.textContent="Open";
+    go.title="Look at this draw";
+    go.addEventListener("click",()=>{ showEvent(it.event,it.season);
+      EVENT_UI.disc=it.disc; EVENT_UI.stage=it.stage; renderEvent(); });
+
+    if(it.kind==="restore")
+      q.appendChild(act("Add it", ()=>{ snapshot("match restored"); restoreMatch(it, it.winner, it.loser); }));
+    if(it.kind==="wrongway")
+      q.appendChild(act("Swap it", ()=>{ snapshot("result swapped"); swapRow(it.match); reindex(); }));
+    if(it.kind==="open"){
+      q.appendChild(act(`${show(it.a,it.disc)} won`, ()=>{ snapshot("match restored"); restoreMatch(it, it.a, it.b); }));
+      q.appendChild(act(`${show(it.b,it.disc)} won`, ()=>{ snapshot("match restored"); restoreMatch(it, it.b, it.a); }));
+    }
+    if(it.kind==="opponent" || it.kind==="first")
+      q.appendChild(act("Add result…", ()=>{
+        const v=ask(`Who did ${W} beat in the ${it.round}?`); if(!v) throw new Error("Nothing added.");
+        snapshot("match restored"); restoreMatch(it, it.winner, v); }));
+    if(it.kind==="stranded")
+      q.appendChild(act("Add result…", ()=>{
+        const v=ask(`Who beat ${show(it.player,it.disc)} in the ${it.round}?`); if(!v) throw new Error("Nothing added.");
+        snapshot("match restored"); restoreMatch(it, v, it.player); }));
+    q.appendChild(go);
+    q.appendChild(act(it.kind==="first" ? "It was a bye" : it.kind==="twice" ? "It's right" : "Nothing missing",
+      ()=>{ snapshot("missing match dismissed"); MISSING_OK.add(it.tag); },
+      "Stop flagging this one"));
+    s.appendChild(q);
+  });
+  if(items.length>250){
+    const m=document.createElement("p"); m.className="hint";
+    m.textContent=`…and ${items.length-250} more.`; s.appendChild(m);
+  }
+  box.appendChild(s);
+}
+
 function renderIssues(){
   if(!viewOn("v-issues")) return;
   const box=$("issuesBody"); if(!box) return;
   const {countryConflicts,nameVariants,resolved,tourGaps,eventProblems,
-         dateProblems,renames,unknowns,dupes,pending}=deriveIssues();
+         dateProblems,renames,unknowns,dupes,pending,missing}=deriveIssues();
   box.innerHTML="";
   renderMergePanel(box);
   const total=countryConflicts.length+nameVariants.length+tourGaps.length+eventProblems.length
-    +dateProblems.length+renames.length+unknowns.length+dupes.length+pending.length;
+    +dateProblems.length+renames.length+unknowns.length+dupes.length+pending.length
+    +missing.items.length+missing.variants.length;
 
   if(!total){
     const ok=document.createElement("div"); ok.className="ok";
@@ -4625,6 +5375,8 @@ function renderIssues(){
     });
     box.appendChild(s);
   }
+
+  renderMissing(box, missing);
 
   if(dateProblems.length){
     const s=document.createElement("section"); s.className="review";
@@ -4878,7 +5630,7 @@ function renderIssues(){
 
 /* Settled conflicts, kept out of the way but reversible. */
 function renderResolved(box, resolved){
-  const extras = RENAME_NO.size + DATE_OK.size + UNKNOWN_OK.size + GAP_OK.size;
+  const extras = RENAME_NO.size + DATE_OK.size + UNKNOWN_OK.size + GAP_OK.size + MISSING_OK.size;
   if(!resolved.length && !extras) return;
   const d=document.createElement("details");
   d.className="panel"; d.style.marginTop="20px";
@@ -4933,6 +5685,18 @@ function buildResolvedList(d, resolved){
       <span class="dim">${esc(tour)} \u2014 marked as different people</span></span>`;
     const u=document.createElement("button"); u.className="btn sm"; u.textContent="Undo";
     u.addEventListener("click",()=>{ RENAME_NO.delete(k); markDirty(); refreshAll(); });
+    q.appendChild(u); d.appendChild(q);
+  });
+
+  MISSING_OK.forEach(k=>{
+    const [season,event,disc,stage,round,who]=k.split("|");
+    const q=document.createElement("div"); q.className="wkrow";
+    q.innerHTML=`<span class="nm"><span class="tag">not missing</span>
+      <b style="margin-left:8px">${esc(event)} ${esc(season)}</b>
+      <span class="dim">${esc(disc.toLowerCase())} ${esc(stage.toLowerCase())}, ${esc(round)}
+      ${/^(many|twice)-/.test(who)?"":"\u2014 "+esc(disc==="Doubles"?who:canonName(who))}</span></span>`;
+    const u=document.createElement("button"); u.className="btn sm"; u.textContent="Undo";
+    u.addEventListener("click",()=>{ MISSING_OK.delete(k); markDirty(); refreshAll(); });
     q.appendChild(u); d.appendChild(q);
   });
 
@@ -5211,7 +5975,7 @@ function refreshAll(){
   renderPreview();
   renderReview(); renderIssues(); renderSummary(); renderWeekManager();
   renderFileManager(); renderMatchManager(); renderUndo();
-  setText("sbMatches", MATCHES.length);
+  setText("sbMatches", playedCount());
   setText("sbPlayers", derivePlayers().length);
   setText("sbEvents", uniq(MATCHES.map(m=>m.event)).length);
   /* The same calendar week usually exists on both tours; counting the pair
@@ -5419,6 +6183,10 @@ function decodeMatches(data){
       winnerScore:r[11], loserScore:r[12], winnerSC:r[13], loserSC:r[14],
       winnerRank:r[15]===-1?"":r[15], loserRank:r[16]===-1?"":r[16],
       method:W[r[17]], isBye:!!r[18], tied:!!r[19]};
+    /* The old database stored a bye as a win over a player called "Bye (no
+       match)". It's a bye however it was written, so it's flagged as one here
+       and stays out of every record. */
+    if(!m.isBye && (isByeSide(m.loser) || isByeSide(m.winner))) m.isBye=true;
     m.level = (MAIN_LEVELS[m.round]!==undefined) ? MAIN_LEVELS[m.round]
             : (QUAL_LEVELS[m.round]!==undefined ? QUAL_LEVELS[m.round] : 0);
     MATCHES.push(m);
@@ -5503,6 +6271,7 @@ function serialise(){
     gapsAccepted: [...GAP_OK],
     renameRejected: [...RENAME_NO],
     unknownAccepted: [...UNKNOWN_OK],
+    missingAccepted: [...MISSING_OK],
     pinned
   };
 }
@@ -5515,7 +6284,7 @@ function deserialise(data){
     throw new Error(`That file says it's format "${data.format}", which this page doesn't read.`);
 
   MATCHES=[]; PENDING=[]; WEEKS=[]; DUPES=[]; SEEN.clear(); REG.clear();
-  ALIAS.clear(); PINS.clear(); COUNTRY_OK.clear(); RENAME_NO.clear(); DATE_OK.clear(); GAP_OK.clear(); UNKNOWN_OK.clear();
+  ALIAS.clear(); PINS.clear(); COUNTRY_OK.clear(); RENAME_NO.clear(); DATE_OK.clear(); GAP_OK.clear(); UNKNOWN_OK.clear(); MISSING_OK.clear();
   CALENDAR=[]; MATCH_SEASONS.clear(); MATCH_DIRTY.clear();
   CAL_INDEX=null;
   (data.matchFiles||[]).forEach(f=>{
@@ -5550,6 +6319,7 @@ function deserialise(data){
   CALENDAR = Array.isArray(data.calendar) ? data.calendar : [];
   CAL_INDEX=null;
   (data.unknownAccepted||[]).forEach(k=>UNKNOWN_OK.add(keyOf(k)));
+  (data.missingAccepted||[]).forEach(k=>MISSING_OK.add(String(k)));
 
   /* Older files kept the weeks inline; newer ones list separate season files
      that the caller loads. Both are accepted so nothing has to be converted
@@ -5845,6 +6615,7 @@ function loadBanner(kind, title, detail){
   const wrap = document.querySelector(".wrap");
   if(!wrap) return;
   const old = $("loadBanner"); if(old) old.remove();
+  if(!title && !detail) return;            // nothing to say, so no empty bar
   const el = document.createElement("div");
   el.id = "loadBanner";
   el.className = "msg " + kind;
@@ -5987,6 +6758,64 @@ function checkVersion(){
   }
   return true;
 }
+
+/* ------------------------------------------------------------------
+   FIND A PLAYER
+   A box in the menu bar: type a few letters, pick a name, land on their page.
+   ------------------------------------------------------------------ */
+(function(){
+  const input=$("qsInput"), list=$("qsList");
+  if(!input || !list) return;
+  let index=null, size=-1, picks=[], at=0;
+  const build=()=>{
+    if(index && size===MATCHES.length) return;
+    size=MATCHES.length;
+    const n=new Map();
+    const add=(nm,disc)=>{ if(isByeName(nm)) return; const k=keyOf(nm);
+      const e=n.get(k)||{s:0,d:0}; e[disc==="Doubles"?"d":"s"]++; n.set(k,e); };
+    for(const m of MATCHES){
+      if(m.isBye) continue;
+      if(m.disc==="Doubles"){ m.winner.split("/").forEach(p=>add(p.trim(),"Doubles"));
+        m.loser.split("/").forEach(p=>add(p.trim(),"Doubles")); }
+      else { add(m.winner,"Singles"); add(m.loser,"Singles"); }
+    }
+    index=[...REG.values()].map(e=>{ const c=n.get(e.key)||{s:0,d:0};
+      return {name:e.name, low:e.name.toLowerCase(), country:e.country||"", s:c.s, d:c.d}; })
+      .filter(e=>e.s+e.d>0);
+  };
+  const close=()=>{ list.innerHTML=""; list.hidden=true; picks=[]; };
+  const go=p=>{ input.value=""; close(); input.blur(); showPlayer(p.name, p.s ? "Singles" : "Doubles"); };
+  const draw=()=>{
+    list.innerHTML="";
+    picks.forEach((p,i)=>{
+      const b=document.createElement("button"); b.type="button"; b.className=i===at?"on":"";
+      b.innerHTML=`<span>${esc(p.name)}</span><span class="c">${esc(p.country)}</span>
+        <span class="n">${(p.s+p.d).toLocaleString()} matches</span>`;
+      b.addEventListener("mousedown",e=>{ e.preventDefault(); go(p); });
+      list.appendChild(b);
+    });
+    if(!picks.length){ const d=document.createElement("div"); d.className="none"; d.textContent="No player by that name"; list.appendChild(d); }
+    list.hidden=false;
+  };
+  input.addEventListener("input",()=>{
+    const q=input.value.trim().toLowerCase();
+    if(!q){ close(); return; }
+    build();
+    const flat=q.replace(/[^a-z0-9]/g,"");
+    picks=index.filter(e=>e.low.includes(q) || (flat && e.low.replace(/[^a-z0-9]/g,"").includes(flat)))
+      .sort((a,b)=>(b.low.startsWith(q)-a.low.startsWith(q)) || (b.s+b.d)-(a.s+a.d))
+      .slice(0,8);
+    at=0; draw();
+  });
+  input.addEventListener("keydown",e=>{
+    if(e.key==="Escape"){ input.value=""; close(); return; }
+    if(list.hidden || !picks.length) return;
+    if(e.key==="ArrowDown"){ at=(at+1)%picks.length; draw(); e.preventDefault(); }
+    else if(e.key==="ArrowUp"){ at=(at+picks.length-1)%picks.length; draw(); e.preventDefault(); }
+    else if(e.key==="Enter"){ go(picks[at]); e.preventDefault(); }
+  });
+  input.addEventListener("blur",()=>setTimeout(close,120));
+})();
 
 applyMode();
 refreshAll();
