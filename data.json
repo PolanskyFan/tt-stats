@@ -1,6 +1,6 @@
 {
  "format": "tennis-tipping/1",
- "savedAt": "2026-11-12T18:01:06.984Z",
+ "savedAt": "2026-11-12T23:06:05.617Z",
  "matchFiles": [
   "matches-2026.json",
   "matches-2025.json",
@@ -2209,8 +2209,8 @@
    "draw": [
     128,
     64,
-    128,
-    64
+    64,
+    32
    ],
    "manager": "supertom",
    "challenger": false
@@ -2425,8 +2425,8 @@
    "draw": [
     128,
     64,
-    128,
-    64
+    64,
+    32
    ],
    "manager": "Normand",
    "challenger": false
@@ -2922,8 +2922,8 @@
    "code": "41a",
    "date": "2025-10-06",
    "opened": "",
-   "name": "Jihah CH",
-   "event": "Jihah",
+   "name": "Jinan CH",
+   "event": "Jinan",
    "country": "CHN",
    "surface": "H",
    "draw": [
@@ -54136,6 +54136,14 @@
   {
    "from": "crux quall",
    "to": "crux squall"
+  },
+  {
+   "from": "a",
+   "to": "aa"
+  },
+  {
+   "from": "falcone 1205",
+   "to": "falcone1205"
   }
  ],
  "countryAccepted": [
@@ -54548,7 +54556,7 @@
   "Singles|matt121|hawk aussie",
   "Singles|papillon.|lb5425",
   "Singles|gabrielchile|torochico",
-  "Doubles|vikislietuva|a",
+  "Doubles|vikislietuva|aa",
   "Singles|familiagil|aussie fan",
   "Singles|hesse|trmooney888",
   "Singles|maru angi|tennisninjalove",
@@ -54742,7 +54750,7 @@
   {
    "key": "aurafarmer",
    "name": "AuraFarmer",
-   "country": "SVK"
+   "country": "IRL"
   },
   {
    "key": "fabrice bahrami",
@@ -56568,8 +56576,8 @@
    "country": "GER"
   },
   {
-   "key": "falcone 1205",
-   "country": "BUL"
+   "key": "falcone1205",
+   "name": "Falcone1205"
   },
   {
    "key": "nick96",
@@ -56595,14 +56603,6 @@
   {
    "key": "ezequiel pereyra",
    "name": "Ezequiel Pereyra"
-  },
-  {
-   "key": " aa ",
-   "name": "_AA_"
-  },
-  {
-   "key": "cah ",
-   "name": "cah_"
   },
   {
    "key": "mcbax",

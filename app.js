@@ -155,7 +155,10 @@ const ALIAS = new Map();          // old key -> current key
 /* "lucian_iasi" and "lucian iasi" are the same person typed two ways, which
    happens constantly in these posts. Treating the underscore as a space keeps
    them as one player instead of quietly splitting a record in two. */
-const rawKey = n => String(n).trim().toLowerCase().replace(/_/g," ").replace(/\s+/g," ");
+/* Underscores count as spaces, and the result is trimmed after that swap, not
+   before. Trimming first left "_AA_" keyed as " aa ", which a saved key then
+   lost on the next load, so pins and merges for such names quietly vanished. */
+const rawKey = n => String(n).toLowerCase().replace(/_/g," ").replace(/\s+/g," ").trim();
 function keyOf(n){
   let k = rawKey(n), guard = 0;
   while(ALIAS.has(k) && guard++ < 20) k = ALIAS.get(k);   // guard stops a cycle
@@ -2055,6 +2058,26 @@ function latestWeek(tour){
   return t.length ? t[t.length-1] : null;
 }
 
+/* How many calendar weeks each posted list stood for. Lists aren't posted
+   every week (fortnightly stretches, the off-season), so a list counts for
+   every week until the next one appears. The 2020 ranking freeze
+   (16 March to 24 August 2020) is not counted at all, so the last list
+   before it counts for one week only. The newest list counts for one. */
+const FREEZE_FROM = new Date(2020,2,16), FREEZE_TO = new Date(2020,7,24);
+const WEEK_MS = 7*864e5;
+function weekSpans(ws){
+  return ws.map((w,i)=>{
+    const n=ws[i+1];
+    if(!n || !(w.date instanceof Date) || !(n.date instanceof Date)) return 1;
+    let wk=Math.round((n.date-w.date)/WEEK_MS);
+    if(w.date<FREEZE_TO && n.date>FREEZE_FROM){
+      const lo=Math.max(w.date,FREEZE_FROM), hi=Math.min(n.date,FREEZE_TO);
+      if(hi>lo) wk-=Math.round((hi-lo)/WEEK_MS);
+    }
+    return Math.max(wk,0);
+  });
+}
+
 function sortWeeks(){
   WEEKS.forEach((w,i)=>{ w._i = i; if(w.date===undefined) w.date = weekDate(w.name, w.season); });
   WEEKS.sort((a,b)=>{
@@ -2069,16 +2092,18 @@ function sortWeeks(){
 function playerHistory(tour, name){
   const k = keyOf(name), out = [];
   let prev = null;
-  for(const w of tourWeeks(tour)){
+  const ws = tourWeeks(tour), span = weekSpans(ws);
+  ws.forEach((w,i)=>{
     const hit = (w.list||[]).find(r => keyOf(r.name) === k);
-    if(!hit){ prev = null; continue; }
-    out.push({week:w.name, season:w.season, date:w.date, rank:hit.rank,
+    if(!hit){ prev = null; return; }
+    out.push({week:w.name, season:w.season, date:w.date, rank:hit.rank, span:span[i],
       points:hit.points, move: prev===null ? null : prev-hit.rank});
     prev = hit.rank;
-  }
+  });
   return out;
 }
 
+const sumSpan = a => a.reduce((t,h)=>t+(h.span==null?1:h.span),0);
 function historyStats(hist, season){
   if(!hist.length) return null;
   const seasons = [...new Set(hist.map(h=>h.season).filter(Boolean))].sort((a,b)=>b.localeCompare(a));
@@ -2093,10 +2118,11 @@ function historyStats(hist, season){
     careerHigh: best(hist),
     seasonHigh: inSeason.length ? best(inSeason)  : null,
     seasonLow:  inSeason.length ? worst(inSeason) : null,
-    weeks: hist.length,
-    atNo1:  hist.filter(h=>h.rank===1).length,
-    inTop10: hist.filter(h=>h.rank<=10).length,
-    seasonWeeks: inSeason.length,
+    /* calendar weeks, not posted lists: see weekSpans */
+    weeks: sumSpan(hist),
+    atNo1:  sumSpan(hist.filter(h=>h.rank===1)),
+    inTop10: sumSpan(hist.filter(h=>h.rank<=10)),
+    seasonWeeks: sumSpan(inSeason),
     season: sel, seasons
   };
 }
@@ -2296,7 +2322,7 @@ function renderTour(tour){
   mount.appendChild(nav);
 
   if(st.player)              renderHistoryPanel(tour, mount);
-  else if(st.sub==="records") renderRecords(tour, mount);
+  else if(st.sub==="records") renderRankRecords(tour, mount);
   else if(st.sub==="yearend") renderYearEnd(tour, mount);
   else if(st.sub==="movers")  renderMovers(tour, mount);
   else if(st.sub==="compare") renderCompare(tour, mount);
@@ -2419,11 +2445,16 @@ function rankTallies(tour){
   const streak=new Map(), bestStreak=new Map(), lastIdx=new Map();
   const climbs=[];
   const timeline=[];
+  const span=weekSpans(ws);
 
   ws.forEach((w,i)=>{
-    const holders=[];
+    const holders=[], wk=span[i], seen=new Set();
     (w.list||[]).forEach(r=>{
       const k=keyOf(r.name);
+      /* A player listed twice in one list (a pasted-twice week, or an old
+         name left behind after a rename) counts once, at the first row. */
+      if(seen.has(k)) return;
+      seen.add(k);
       if(!firstSeen.has(k)) firstSeen.set(k,w);
       lastSeen.set(k,w);
 
@@ -2433,13 +2464,13 @@ function rankTallies(tour){
       /* A top-10 run only continues if the player was in the top 10 in the
          immediately preceding week; missing a week ends it. */
       if(r.rank<=10){
-        top10.set(k,(top10.get(k)||0)+1);
-        const run = lastIdx.get(k)===i-1 ? (streak.get(k)||0)+1 : 1;
+        top10.set(k,(top10.get(k)||0)+wk);
+        const run = lastIdx.get(k)===i-1 ? (streak.get(k)||0)+wk : wk;
         streak.set(k,run); lastIdx.set(k,i);
         if(run > ((bestStreak.get(k)||{}).weeks||0)) bestStreak.set(k,{weeks:run, to:w});
       }
       if(r.rank===1){
-        no1.set(k,(no1.get(k)||0)+1);
+        no1.set(k,(no1.get(k)||0)+wk);
         if(!firstAt.has(k)) firstAt.set(k,w);
         lastAt.set(k,w);
         holders.push(k);
@@ -2450,7 +2481,7 @@ function rankTallies(tour){
         if(d>0) climbs.push({key:k, gain:d, from:Number(prev), to:Number(r.rank), week:w});
       }
     });
-    timeline.push({w, holders});
+    timeline.push({w, holders, wk});
   });
   return {no1, top10, firstAt, lastAt, firstSeen, lastSeen, bestPts, bestStreak, climbs, timeline};
 }
@@ -2460,11 +2491,11 @@ function rankTallies(tour){
 function no1Reigns(tour, tallies){
   const {timeline}=tallies || rankTallies(tour);
   const out=[]; let cur=null;
-  timeline.forEach(({w,holders})=>{
+  timeline.forEach(({w,holders,wk})=>{
     if(!holders.length){ cur=null; return; }
     const sig=holders.slice().sort().join("|");
-    if(cur && cur.sig===sig){ cur.weeks++; cur.to=w; return; }
-    cur={sig, keys:holders.slice(), from:w, to:w, weeks:1};
+    if(cur && cur.sig===sig){ cur.weeks+=wk; cur.to=w; return; }
+    cur={sig, keys:holders.slice(), from:w, to:w, weeks:wk};
     out.push(cur);
   });
   return out.reverse();
@@ -2540,7 +2571,9 @@ function recordRows(tour){
 }
 
 /* ---------------- records ---------------- */
-function renderRecords(tour, mount){
+/* Named apart from the overview's renderRecords(): two functions with one
+   name meant the later one replaced this, and this tab came up empty. */
+function renderRankRecords(tour, mount){
   const st=RANK_UI[tour];
   const R=recordRows(tour);
   const go=x=>{ st.player=x; renderTour(tour); };
@@ -2554,7 +2587,8 @@ function renderRecords(tour, mount){
   const bestOne=R.one.reduce((m,o)=>o.longest>m.longest?o:m, R.one[0]);
   const bestTen=R.ten.reduce((m,o)=>o.streak>m.streak?o:m, R.ten[0]);
   const grid=document.createElement("div"); grid.className="statgrid";
-  [["Weeks recorded", String(ws.length), `${weekLabel(ws[0])} onward`],
+  const covered=weekSpans(ws).reduce((a,b)=>a+b,0);
+  [["Weeks covered", String(covered), `${ws.length} lists, ${weekLabel(ws[0])} onward`],
    ["Players at no. 1", String(R.one.length), "all time"],
    ["Separate reigns", String(R.reigns.length), "runs at the top"],
    ["Longest reign", `${bestOne.longest} wks`, bestOne.player],
@@ -2578,7 +2612,8 @@ function renderRecords(tour, mount){
     mount.appendChild(tableOf(cols, rows, opts||{onPlayer:go}));
   };
 
-  section("Weeks at no. 1", "", [
+  section("Weeks at no. 1",
+    "Calendar weeks: a list counts for every week until the next list is posted. The 2020 ranking freeze (16 March to 24 August) is not counted.", [
     {k:"player",h:"Player",csv:r=>r.player},{k:"country",h:"Country",cls:"ctry"},
     {k:"weeks",h:"Weeks at no. 1",cls:"num"},{k:"reigns",h:"Reigns",cls:"num"},
     {k:"longest",h:"Longest reign",cls:"num"},{k:"yearEnd",h:"Year-end no. 1",cls:"num"},
@@ -2619,13 +2654,13 @@ function renderRecords(tour, mount){
   const h=document.createElement("h3"); h.className="sec"; h.textContent="Every reign, newest first";
   mount.appendChild(h);
   const note=document.createElement("p"); note.className="lede";
-  note.textContent="Consecutive weeks under the same player are grouped into one reign.";
+  note.textContent="Consecutive lists under the same player are grouped into one reign, counted in calendar weeks.";
   mount.appendChild(note);
   const rows=R.reigns.map(r=>({
     holder:r.keys.map(k=>canonName(k)).join(" \u00b7 "),
     country:[...new Set(r.keys.map(k=>canonCountry(k)))].join(" \u00b7 "),
     from:weekLabel(r.from), to:weekLabel(r.to), weeks:r.weeks,
-    span:r.weeks===1 ? weekLabel(r.from) : `${weekLabel(r.from)} \u2013 ${weekLabel(r.to)}`
+    span:r.from===r.to ? weekLabel(r.from) : `${weekLabel(r.from)} \u2013 ${weekLabel(r.to)}`
   }));
   const bar=document.createElement("div"); bar.className="controls";
   const b=document.createElement("button"); b.className="btn"; b.textContent="Download CSV";
@@ -4608,13 +4643,16 @@ function renderRecords(){
        rankings tab having been opened. */
     const ws=tourWeeks(tour);
     if(ws.length<2) return;
-    const tally=new Map();
-    ws.forEach(w=>{
-      const top=(w.list||[]).find(r=>r.rank===1);
-      if(!top) return;
-      const k=keyOf(top.name);
-      if(!tally.has(k)) tally.set(k,{player:canonName(top.name), weeks:0});
-      tally.get(k).weeks++;
+    const tally=new Map(), span=weekSpans(ws);
+    ws.forEach((w,i)=>{
+      /* every holder, as doubles partners can share no. 1 */
+      const once=new Set();
+      (w.list||[]).filter(r=>r.rank===1).forEach(top=>{
+        const k=keyOf(top.name);
+        if(once.has(k)) return; once.add(k);
+        if(!tally.has(k)) tally.set(k,{player:canonName(top.name), weeks:0});
+        tally.get(k).weeks+=span[i];
+      });
     });
     section(`Most weeks at no. 1 \u2014 ${tour.toLowerCase()}`,
       [{k:"player",h:"Player",render:r=>nameLinks(r.player,tour), csv:r=>r.player},
