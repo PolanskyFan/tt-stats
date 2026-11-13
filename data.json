@@ -3084,7 +3084,7 @@
    "code": "44b",
    "date": "2025-10-27",
    "opened": "",
-   "name": "Bratislava",
+   "name": "Bratislava CH",
    "event": "Bratislava",
    "country": "SVK",
    "surface": "IH",
@@ -3095,7 +3095,7 @@
     8
    ],
    "manager": "dinkulpus",
-   "challenger": false
+   "challenger": true
   },
   {
    "season": "2025",
@@ -3422,7 +3422,7 @@
    "code": "52a",
    "date": "2025-12-22",
    "opened": "",
-   "name": "Monastir",
+   "name": "Monastir CH",
    "event": "Monastir",
    "country": "TUN",
    "surface": "H",
@@ -3433,14 +3433,14 @@
     8
    ],
    "manager": "FilipoSVK",
-   "challenger": false
+   "challenger": true
   },
   {
    "season": "2025",
    "code": "52b",
    "date": "2025-12-22",
    "opened": "",
-   "name": "Agadir",
+   "name": "Agadir CH",
    "event": "Agadir",
    "country": "MOR",
    "surface": "CL",
@@ -3451,7 +3451,7 @@
     8
    ],
    "manager": "andrepeixe",
-   "challenger": false
+   "challenger": true
   },
   {
    "season": "2024",
@@ -15186,7 +15186,7 @@
    "date": "2018-04-02",
    "opened": "",
    "name": "Santa Margherita di Pula FUT",
-   "event": "Santa Margherita di Pula",
+   "event": "Santa Margherita di Pula FUT",
    "country": "ITA",
    "surface": "CL",
    "draw": [
@@ -15636,7 +15636,7 @@
    "date": "2018-06-04",
    "opened": "",
    "name": "Prostejov CH*",
-   "event": "Prostejov",
+   "event": "Projestov",
    "country": "CZE",
    "surface": "CL",
    "draw": [
@@ -17120,7 +17120,7 @@
    "date": "2017-01-23",
    "opened": "",
    "name": "Nussloch FUT",
-   "event": "Nussloch",
+   "event": "Nussloch FUT",
    "country": "GER",
    "surface": "IH",
    "draw": [
@@ -17624,9 +17624,9 @@
    "date": "2017-03-27",
    "opened": "",
    "name": "Madrid FUT",
-   "event": "Madrid",
+   "event": "Madrid FUT",
    "country": "ESP",
-   "surface": "CL",
+   "surface": "H",
    "draw": [
     32,
     16,
@@ -17678,7 +17678,7 @@
    "date": "2017-04-03",
    "opened": "",
    "name": "Santa Margherita di Pula FUT",
-   "event": "Santa Margherita di Pula",
+   "event": "Santa Margherita Di Pula FUT",
    "country": "ITA",
    "surface": "CL",
    "draw": [
@@ -18254,7 +18254,7 @@
    "date": "2017-06-19",
    "opened": "",
    "name": "Queen's",
-   "event": "Queen's",
+   "event": "London (Queens)",
    "country": "GBR",
    "surface": "G",
    "draw": [
@@ -19208,7 +19208,7 @@
    "date": "2017-11-07",
    "opened": "",
    "name": "TT CH Finals",
-   "event": "TT Finals",
+   "event": "ATP Challenger Finals",
    "country": "ITA",
    "surface": "IH",
    "draw": [],
@@ -19257,7 +19257,7 @@
    "date": "2017-11-12",
    "opened": "",
    "name": "ATP Finals",
-   "event": "ATP Finals",
+   "event": "ATP World Finals",
    "country": "GBR",
    "surface": "IH",
    "draw": [],
@@ -19607,7 +19607,7 @@
    "date": "2016-01-26",
    "opened": "",
    "name": "Nussloch FUT",
-   "event": "Nussloch",
+   "event": "Nussloch FUT",
    "country": "GER",
    "surface": "IH",
    "draw": [
@@ -19625,7 +19625,7 @@
    "date": "2016-01-26",
    "opened": "",
    "name": "Aktobe FUT",
-   "event": "Aktobe",
+   "event": "Aktobe FUT",
    "country": "KAZ",
    "surface": "IH",
    "draw": [
@@ -20039,7 +20039,7 @@
    "date": "2016-02-29",
    "opened": "",
    "name": "Mildura FUT",
-   "event": "Mildura",
+   "event": "Mildura FUT",
    "country": "AUS",
    "surface": "G",
    "draw": [
@@ -21011,7 +21011,7 @@
    "date": "2016-06-20",
    "opened": "",
    "name": "Tulsa FUT",
-   "event": "Tulsa",
+   "event": "Tulsa FUT",
    "country": "USA",
    "surface": "CL",
    "draw": [
@@ -21371,7 +21371,7 @@
    "date": "2016-08-06",
    "opened": "",
    "name": "Olympic Games",
-   "event": "Olympic Games",
+   "event": "Olympics",
    "country": "BRA",
    "surface": "H",
    "draw": [
@@ -21567,7 +21567,7 @@
    "date": "2016-09-05",
    "opened": "",
    "name": "Saint-Remy CH",
-   "event": "Saint-Remy",
+   "event": "St. Remy",
    "country": "FRA",
    "surface": "H",
    "draw": [
@@ -22187,7 +22187,7 @@
    "date": "2016-11-28",
    "opened": "",
    "name": "Jakarta FUT",
-   "event": "Jakarta",
+   "event": "Jakarta FUT",
    "country": "IDN",
    "surface": "H",
    "draw": [
@@ -22205,7 +22205,7 @@
    "date": "2016-11-28",
    "opened": "",
    "name": "Waco FUT",
-   "event": "Waco",
+   "event": "Waco FUT",
    "country": "USA",
    "surface": "IH",
    "draw": [
@@ -22398,7 +22398,7 @@
    "date": "2015-01-12",
    "opened": "",
    "name": "Kish FUT",
-   "event": "Kish",
+   "event": "Kish FUT",
    "country": "IRN",
    "surface": "CL",
    "draw": [
@@ -22408,6 +22408,24 @@
     8
    ],
    "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "3c",
+   "date": "2015-01-12",
+   "opened": "",
+   "name": "Stuttgart FUT",
+   "event": "Stuttgart FUT",
+   "country": "GER",
+   "surface": "IH",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "",
    "challenger": true
   },
   {
@@ -22434,7 +22452,7 @@
    "date": "2015-01-19",
    "opened": "",
    "name": "Weston FUT",
-   "event": "Weston",
+   "event": "Weston FUT",
    "country": "USA",
    "surface": "CL",
    "draw": [
@@ -22506,7 +22524,7 @@
    "date": "2015-01-26",
    "opened": "",
    "name": "Nussloch FUT",
-   "event": "Nussloch",
+   "event": "Nussloch FUT",
    "country": "GER",
    "surface": "IH",
    "draw": [
@@ -22920,7 +22938,7 @@
    "date": "2015-03-02",
    "opened": "",
    "name": "Faro FUT",
-   "event": "Faro",
+   "event": "Faro FUT",
    "country": "POR",
    "surface": "H",
    "draw": [
@@ -22930,6 +22948,24 @@
     8
    ],
    "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "10b",
+   "date": "2015-03-02",
+   "opened": "",
+   "name": "Umag FUT",
+   "event": "Umag FUT",
+   "country": "CRO",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "",
    "challenger": true
   },
   {
@@ -23046,7 +23082,7 @@
    "date": "2015-03-23",
    "opened": "",
    "name": "Rovinj FUT",
-   "event": "Rovinj",
+   "event": "Rovinj FUT",
    "country": "CRO",
    "surface": "CL",
    "draw": [
@@ -23262,7 +23298,7 @@
    "date": "2015-04-13",
    "opened": "",
    "name": "Little Rock FUT",
-   "event": "Little Rock",
+   "event": "Little Rock FUT",
    "country": "USA",
    "surface": "H",
    "draw": [
@@ -23344,6 +23380,24 @@
     8
    ],
    "manager": "Litotes",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "17f",
+   "date": "2015-04-20",
+   "opened": "",
+   "name": "Bangkok FUT",
+   "event": "Bangkok FUT",
+   "country": "THA",
+   "surface": "H",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "",
    "challenger": true
   },
   {
@@ -23658,7 +23712,7 @@
    "date": "2015-05-18",
    "opened": "",
    "name": "Cordoba FUT",
-   "event": "Cordoba",
+   "event": "Cordoba FUT",
    "country": "MEX",
    "surface": "H",
    "draw": [
@@ -24126,7 +24180,7 @@
    "date": "2015-07-06",
    "opened": "",
    "name": "Bourg-en-Bresse FUT",
-   "event": "Bourg-en-Bresse",
+   "event": "Bourg-en-Bresse FUT",
    "country": "FRA",
    "surface": "CL",
    "draw": [
@@ -24648,7 +24702,7 @@
    "date": "2015-08-24",
    "opened": "",
    "name": "Piombino FUT",
-   "event": "Piombino",
+   "event": "Piombino FUT",
    "country": "ITA",
    "surface": "H",
    "draw": [
@@ -24658,6 +24712,42 @@
     8
    ],
    "manager": "bry17may",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "35c",
+   "date": "2015-08-24",
+   "opened": "",
+   "name": "Rotterdam FUT",
+   "event": "Rotterdam FUT",
+   "country": "NED",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "",
+   "challenger": true
+  },
+  {
+   "season": "2015",
+   "code": "35d",
+   "date": "2015-08-24",
+   "opened": "",
+   "name": "Bucharest FUT",
+   "event": "Bucharest FUT",
+   "country": "ROU",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "",
    "challenger": true
   },
   {
@@ -25578,13 +25668,31 @@
   },
   {
    "season": "2015",
+   "code": "47a",
+   "date": "2015-11-16",
+   "opened": "",
+   "name": "Montevideo CH",
+   "event": "Montevideo",
+   "country": "URU",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "",
+   "challenger": true
+  },
+  {
+   "season": "2015",
    "code": "47b",
    "date": "2015-11-23",
    "opened": "",
    "name": "Challenger Tour Finals",
    "event": "Challenger Tour Finals",
    "country": "BRA",
-   "surface": "",
+   "surface": "CL",
    "draw": [
     8,
     8
@@ -25652,7 +25760,7 @@
    "date": "2015-11-30",
    "opened": "",
    "name": "Opava FUT",
-   "event": "Opava",
+   "event": "Opava FUT",
    "country": "CZE",
    "surface": "IH",
    "draw": [
@@ -25670,7 +25778,7 @@
    "date": "2015-11-30",
    "opened": "",
    "name": "Santiago FUT",
-   "event": "Santiago",
+   "event": "Santiago FUT",
    "country": "DOM",
    "surface": "CL",
    "draw": [
@@ -25724,7 +25832,7 @@
    "date": "2015-12-07",
    "opened": "",
    "name": "Lagos FUT",
-   "event": "Lagos",
+   "event": "Lagos FUT",
    "country": "NGA",
    "surface": "H",
    "draw": [
@@ -25760,7 +25868,7 @@
    "date": "2015-12-07",
    "opened": "",
    "name": "Antalya FUT",
-   "event": "Antalya",
+   "event": "Antalya FUT",
    "country": "TUR",
    "surface": "H",
    "draw": [
@@ -25778,7 +25886,7 @@
    "date": "2015-12-14",
    "opened": "",
    "name": "Lagos 2 FUT",
-   "event": "Lagos 2",
+   "event": "Lagos II FUT",
    "country": "NGA",
    "surface": "H",
    "draw": [
@@ -25796,7 +25904,7 @@
    "date": "2015-12-14",
    "opened": "",
    "name": "Doha 2 FUT",
-   "event": "Doha 2",
+   "event": "Doha FUT",
    "country": "QAT",
    "surface": "H",
    "draw": [
@@ -26038,7 +26146,7 @@
    "date": "2014-01-13",
    "opened": "",
    "name": "Glasgow FUT",
-   "event": "Glasgow",
+   "event": "Glasgow FUT",
    "country": "GBR",
    "surface": "IH",
    "draw": [
@@ -26110,7 +26218,7 @@
    "date": "2014-01-20",
    "opened": "",
    "name": "Bressuire FUT",
-   "event": "Bressuire",
+   "event": "Bressuire FUT",
    "country": "FRA",
    "surface": "IH",
    "draw": [
@@ -26614,7 +26722,7 @@
    "date": "2014-03-10",
    "opened": "",
    "name": "Poitiers FUT",
-   "event": "Poitiers",
+   "event": "Poiters Fut",
    "country": "FRA",
    "surface": "IH",
    "draw": [
@@ -26704,7 +26812,7 @@
    "date": "2014-03-24",
    "opened": "",
    "name": "Trimbach FUT",
-   "event": "Trimbach",
+   "event": "Trimbach Fut",
    "country": "SUI",
    "surface": "IH",
    "draw": [
@@ -26776,7 +26884,7 @@
    "date": "2014-03-31",
    "opened": "",
    "name": "Rovinj FUT",
-   "event": "Rovinj",
+   "event": "Rovinj Fut",
    "country": "CRO",
    "surface": "CL",
    "draw": [
@@ -26866,7 +26974,7 @@
    "date": "2014-04-07",
    "opened": "",
    "name": "Chengdu FUT",
-   "event": "Chengdu",
+   "event": "Chengdu Fut",
    "country": "CHN",
    "surface": "H",
    "draw": [
@@ -27028,7 +27136,7 @@
    "date": "2014-04-28",
    "opened": "",
    "name": "Oeiras",
-   "event": "Oeiras",
+   "event": "Estoril",
    "country": "POR",
    "surface": "CL",
    "draw": [
@@ -27344,6 +27452,42 @@
     8
    ],
    "manager": "dinkulpus",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "21f",
+   "date": "2014-05-19",
+   "opened": "",
+   "name": "Bergamo FUT",
+   "event": "Bergamo Fut",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "",
+   "challenger": true
+  },
+  {
+   "season": "2014",
+   "code": "21g",
+   "date": "2014-05-19",
+   "opened": "",
+   "name": "Bucharest FUT",
+   "event": "Bucharest Fut",
+   "country": "ROU",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "",
    "challenger": true
   },
   {
@@ -28266,6 +28410,24 @@
   },
   {
    "season": "2014",
+   "code": "34e",
+   "date": "2014-08-18",
+   "opened": "",
+   "name": "San Juan FUT",
+   "event": "San Juan FUT",
+   "country": "ARG",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "",
+   "challenger": true
+  },
+  {
+   "season": "2014",
    "code": "35a",
    "date": "2014-08-25",
    "opened": "",
@@ -28360,7 +28522,7 @@
    "date": "2014-09-01",
    "opened": "",
    "name": "Saint-Remy CH",
-   "event": "Saint-Remy",
+   "event": "St. Remy",
    "country": "FRA",
    "surface": "H",
    "draw": [
@@ -30086,7 +30248,7 @@
    "date": "2013-03-11",
    "opened": "",
    "name": "Poitiers FUT",
-   "event": "Poitiers",
+   "event": "Poitiers Fut",
    "country": "FRA",
    "surface": "IH",
    "draw": [
@@ -30258,6 +30420,24 @@
     8
    ],
    "manager": "Marto",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "14a",
+   "date": "2013-04-01",
+   "opened": "",
+   "name": "Rome FUT",
+   "event": "Rome FUT",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "",
    "challenger": true
   },
   {
@@ -31670,7 +31850,7 @@
    "date": "2013-08-19",
    "opened": "",
    "name": "Este FUT",
-   "event": "Este",
+   "event": "Este FUT",
    "country": "ITA",
    "surface": "CL",
    "draw": [
@@ -31716,6 +31896,42 @@
     8
    ],
    "manager": "justafanYYC",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "34e",
+   "date": "2013-08-19",
+   "opened": "",
+   "name": "Poznan FUT",
+   "event": "Poznan FUT",
+   "country": "POL",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "",
+   "challenger": true
+  },
+  {
+   "season": "2013",
+   "code": "34f",
+   "date": "2013-08-19",
+   "opened": "",
+   "name": "San Juan FUT",
+   "event": "San Juan FUT",
+   "country": "ARG",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "",
    "challenger": true
   },
   {
@@ -31778,7 +31994,7 @@
    "date": "2013-09-02",
    "opened": "",
    "name": "Alphen CH",
-   "event": "Alphen",
+   "event": "Alphen aan den Rijn",
    "country": "NED",
    "surface": "CL",
    "draw": [
@@ -31940,7 +32156,7 @@
    "date": "2013-09-16",
    "opened": "",
    "name": "Kaohsiung CH*",
-   "event": "Kaohsiung",
+   "event": "Kaoshuing",
    "country": "TPE",
    "surface": "H",
    "draw": [
@@ -32318,7 +32534,7 @@
    "date": "2013-10-14",
    "opened": "",
    "name": "Mansfield FUT",
-   "event": "Mansfield",
+   "event": "Mansfield FUT",
    "country": "USA",
    "surface": "H",
    "draw": [
@@ -32498,9 +32714,9 @@
    "date": "2013-11-04",
    "opened": "",
    "name": "ATP Finals",
-   "event": "ATP Finals",
+   "event": "World Tour Finals",
    "country": "GBR",
-   "surface": "H",
+   "surface": "IH",
    "draw": [],
    "manager": "Mahqz",
    "challenger": false
@@ -32583,9 +32799,9 @@
    "date": "2013-11-11",
    "opened": "",
    "name": "Challenger Tour Finals",
-   "event": "Challenger Tour Finals",
+   "event": "Sao Paulo Challenger Finals",
    "country": "BRA",
-   "surface": "IH",
+   "surface": "CL",
    "draw": [],
    "manager": "bry17may",
    "challenger": false
@@ -32722,7 +32938,7 @@
    "date": "2013-11-18",
    "opened": "",
    "name": "Bol FUT",
-   "event": "Bol",
+   "event": "Bol FUT",
    "country": "CRO",
    "surface": "CL",
    "draw": [
@@ -32879,9 +33095,9 @@
    "date": "2012-01-09",
    "opened": "",
    "name": "GBR Futures 1",
-   "event": "GBR Futures 1",
+   "event": "Glasgow",
    "country": "GBR",
-   "surface": "H",
+   "surface": "IH",
    "draw": [
     32,
     16,
@@ -33589,9 +33805,9 @@
    "date": "2012-03-26",
    "opened": "",
    "name": "Italy Futures",
-   "event": "Italy Futures",
+   "event": "Cividino",
    "country": "ITA",
-   "surface": "H",
+   "surface": "IH",
    "draw": [
     32,
     16,
@@ -34210,6 +34426,24 @@
   },
   {
    "season": "2012",
+   "code": "21d",
+   "date": "2012-05-21",
+   "opened": "",
+   "name": "Getxo FUT",
+   "event": "Getxo",
+   "country": "ESP",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "",
+   "challenger": true
+  },
+  {
+   "season": "2012",
    "code": "22a",
    "date": "2012-05-28",
    "opened": "",
@@ -34232,7 +34466,7 @@
    "date": "2012-05-28",
    "opened": "",
    "name": "Madrid FUT",
-   "event": "Madrid",
+   "event": "Madrid FUT",
    "country": "ESP",
    "surface": "CL",
    "draw": [
@@ -35162,6 +35396,24 @@
   },
   {
    "season": "2012",
+   "code": "34e",
+   "date": "2012-08-20",
+   "opened": "",
+   "name": "Este FUT",
+   "event": "Este",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "",
+   "challenger": true
+  },
+  {
+   "season": "2012",
    "code": "35a",
    "date": "2012-08-27",
    "opened": "",
@@ -35220,7 +35472,7 @@
    "date": "2012-09-03",
    "opened": "",
    "name": "Alphen CH",
-   "event": "Alphen",
+   "event": "Alphen aan den Rijn",
    "country": "NED",
    "surface": "CL",
    "draw": [
@@ -35256,7 +35508,7 @@
    "date": "2012-09-03",
    "opened": "",
    "name": "Saint-Remy CH",
-   "event": "Saint-Remy",
+   "event": "St. Remy",
    "country": "FRA",
    "surface": "H",
    "draw": [
@@ -35940,9 +36192,9 @@
    "date": "2012-11-05",
    "opened": "",
    "name": "ATP Finals",
-   "event": "ATP Finals",
+   "event": "World Tour Finals",
    "country": "GBR",
-   "surface": "H",
+   "surface": "IH",
    "draw": [],
    "manager": "Mahqz",
    "challenger": false
@@ -36135,7 +36387,7 @@
    "name": "Antalya FUT",
    "event": "Antalya",
    "country": "TUR",
-   "surface": "",
+   "surface": "H",
    "draw": [
     32,
     32,
@@ -36151,7 +36403,7 @@
    "date": "2012-11-26",
    "opened": "",
    "name": "Challenger Tour Finals",
-   "event": "Challenger Tour Finals",
+   "event": "Sao Paulo Challenger Finals",
    "country": "BRA",
    "surface": "IH",
    "draw": [],
@@ -36334,7 +36586,7 @@
    "date": "2011-01-17",
    "opened": "",
    "name": "GBR 2 Futures",
-   "event": "GBR 2 Futures",
+   "event": "Sheffield",
    "country": "GBR",
    "surface": "IH",
    "draw": [
@@ -37876,9 +38128,9 @@
    "code": "27c",
    "date": "2011-07-04",
    "opened": "",
-   "name": "Cordoba CH",
-   "event": "Cordoba",
-   "country": "ARG",
+   "name": "Pozoblanco CH",
+   "event": "Pozoblanco",
+   "country": "ESP",
    "surface": "H",
    "draw": [
     32,
@@ -38525,7 +38777,7 @@
    "date": "2011-09-05",
    "opened": "",
    "name": "Alphen CH",
-   "event": "Alphen",
+   "event": "Alphen aan den Rijn",
    "country": "NED",
    "surface": "CL",
    "draw": [
@@ -38543,7 +38795,7 @@
    "date": "2011-09-05",
    "opened": "",
    "name": "Saint-Remy CH",
-   "event": "Saint-Remy",
+   "event": "St. Remy",
    "country": "FRA",
    "surface": "H",
    "draw": [
@@ -38795,7 +39047,7 @@
    "date": "2011-09-26",
    "opened": "",
    "name": "Naples 2 CH",
-   "event": "Naples 2",
+   "event": "Napoli 2",
    "country": "ITA",
    "surface": "CL",
    "draw": [
@@ -39348,7 +39600,7 @@
    "date": "2011-11-20",
    "opened": "",
    "name": "ATP Finals",
-   "event": "ATP Finals",
+   "event": "World Tour Finals",
    "country": "GBR",
    "surface": "IH",
    "draw": [],
@@ -41091,9 +41343,9 @@
    "code": "27c",
    "date": "2010-07-05",
    "opened": "",
-   "name": "Cordoba CH",
-   "event": "Cordoba",
-   "country": "ARG",
+   "name": "Pozoblanco CH",
+   "event": "Pozoblanco",
+   "country": "ESP",
    "surface": "H",
    "draw": [
     32,
@@ -41758,7 +42010,7 @@
    "date": "2010-09-06",
    "opened": "",
    "name": "Alphen CH",
-   "event": "Alphen",
+   "event": "Alphen aan den Rijn",
    "country": "NED",
    "surface": "CL",
    "draw": [
@@ -41776,7 +42028,7 @@
    "date": "2010-09-06",
    "opened": "",
    "name": "Saint-Remy CH",
-   "event": "Saint-Remy",
+   "event": "St. Remy",
    "country": "FRA",
    "surface": "H",
    "draw": [
@@ -42028,7 +42280,7 @@
    "date": "2010-09-27",
    "opened": "",
    "name": "Naples 2 CH",
-   "event": "Naples 2",
+   "event": "Napoli 2",
    "country": "ITA",
    "surface": "CL",
    "draw": [
@@ -42604,7 +42856,7 @@
    "date": "2010-11-21",
    "opened": "",
    "name": "ATP Finals",
-   "event": "ATP Finals",
+   "event": "World Tour Finals",
    "country": "GBR",
    "surface": "IH",
    "draw": [],
@@ -44383,9 +44635,9 @@
    "code": "27c",
    "date": "2009-07-06",
    "opened": "",
-   "name": "Cordoba CH",
-   "event": "Cordoba",
-   "country": "ARG",
+   "name": "Pozoblanco CH",
+   "event": "Pozoblanco",
+   "country": "ESP",
    "surface": "H",
    "draw": [
     32,
@@ -45032,7 +45284,7 @@
    "date": "2009-09-07",
    "opened": "",
    "name": "Alphen CH",
-   "event": "Alphen",
+   "event": "Alphen aan den Rijn",
    "country": "NED",
    "surface": "CL",
    "draw": [
@@ -45050,7 +45302,7 @@
    "date": "2009-09-07",
    "opened": "",
    "name": "Saint-Remy CH",
-   "event": "Saint-Remy",
+   "event": "St. Remy",
    "country": "FRA",
    "surface": "H",
    "draw": [
@@ -45284,7 +45536,7 @@
    "date": "2009-09-28",
    "opened": "",
    "name": "Naples 2 CH",
-   "event": "Naples 2",
+   "event": "Napoli 2",
    "country": "ITA",
    "surface": "CL",
    "draw": [
@@ -45896,7 +46148,7 @@
    "date": "2009-11-22",
    "opened": "",
    "name": "ATP Finals",
-   "event": "ATP Finals",
+   "event": "World Tour Finals",
    "country": "GBR",
    "surface": "IH",
    "draw": [],
@@ -45992,6 +46244,19 @@
    ],
    "manager": "Shi Feng",
    "challenger": true
+  },
+  {
+   "season": "2008",
+   "code": "1e",
+   "date": "2007-12-29",
+   "opened": "",
+   "name": "Hopman Cup",
+   "event": "Hopman Cup",
+   "country": "AUS",
+   "surface": "IH",
+   "draw": [],
+   "manager": "",
+   "challenger": false
   },
   {
    "season": "2008",
@@ -47577,9 +47842,9 @@
    "code": "27a",
    "date": "2008-06-30",
    "opened": "",
-   "name": "Cordoba CH",
-   "event": "Cordoba",
-   "country": "ARG",
+   "name": "Pozoblanco CH",
+   "event": "Pozoblanco",
+   "country": "ESP",
    "surface": "H",
    "draw": [
     32,
@@ -47840,6 +48105,24 @@
     8
    ],
    "manager": "Kielian",
+   "challenger": true
+  },
+  {
+   "season": "2008",
+   "code": "29f",
+   "date": "2008-07-14",
+   "opened": "",
+   "name": "Oberstaufen CH",
+   "event": "Oberstaufen",
+   "country": "GER",
+   "surface": "CL",
+   "draw": [
+    32,
+    16,
+    16,
+    8
+   ],
+   "manager": "",
    "challenger": true
   },
   {
@@ -48260,7 +48543,7 @@
    "date": "2008-09-01",
    "opened": "",
    "name": "Alphen CH",
-   "event": "Alphen",
+   "event": "Alphen aan den Rijn",
    "country": "NED",
    "surface": "CL",
    "draw": [
@@ -49088,7 +49371,7 @@
    "date": "2008-11-09",
    "opened": "",
    "name": "ATP Finals",
-   "event": "ATP Finals",
+   "event": "World Tour Finals",
    "country": "GBR",
    "surface": "IH",
    "draw": [],
@@ -51520,7 +51803,7 @@
    "date": "2007-11-05",
    "opened": "",
    "name": "ATP Finals",
-   "event": "ATP Finals",
+   "event": "World Tour Finals",
    "country": "GBR",
    "surface": "IH",
    "draw": [
