@@ -1,6 +1,6 @@
 {
  "format": "tennis-tipping/1",
- "savedAt": "2026-11-14T04:30:00.000Z",
+ "savedAt": "2026-11-14T15:00:00.000Z",
  "matchFiles": [
   "matches-2026.json",
   "matches-2025.json",
@@ -47134,7 +47134,7 @@
    "draw": [
     32,
     16,
-    16,
+    8,
     8
    ],
    "manager": "aussie_fan",
@@ -47206,7 +47206,7 @@
    "draw": [
     32,
     16,
-    16,
+    8,
     8
    ],
    "manager": "Kielian",
@@ -48353,7 +48353,7 @@
    "draw": [
     32,
     16,
-    16,
+    8,
     8
    ],
    "manager": "pavkata",
@@ -48370,7 +48370,9 @@
    "surface": "H",
    "draw": [
     64,
-    32
+    0,
+    32,
+    0
    ],
    "manager": "adee-gee",
    "challenger": false
@@ -49191,7 +49193,7 @@
    "date": "2008-10-20",
    "opened": "",
    "name": "Buenos Aires CH",
-   "event": "Buenos Aires",
+   "event": "Buenos Aires CH",
    "country": "ARG",
    "surface": "CL",
    "draw": [
@@ -50827,8 +50829,10 @@
    "country": "ITA",
    "surface": "CL",
    "draw": [
-    23,
-    11
+    32,
+    0,
+    16,
+    0
    ],
    "manager": "Labamba",
    "challenger": true
@@ -54565,6 +54569,10 @@
   {
    "from": "east players",
    "to": "aleksz"
+  },
+  {
+   "from": "aimee",
+   "to": "jeahhh!"
   }
  ],
  "countryAccepted": [
@@ -57598,7 +57606,195 @@
    "name": "Flavius1990",
    "code": "ROU",
    "why": "ROM is an old code; ROU is the current one"
+  },
+  {
+   "key": "pichulman",
+   "name": "Pichulman",
+   "code": "ANT",
+   "why": "posted draw: Cali 2 2008"
+  },
+  {
+   "key": "insieme",
+   "name": "insieme",
+   "code": "AUT",
+   "why": "posted draw: Cali 2 2008"
+  },
+  {
+   "key": "kai.",
+   "name": "kai.",
+   "code": "ARG",
+   "why": "posted draw: Cali 2 2008"
+  },
+  {
+   "key": "bolivero",
+   "name": "Bolivero",
+   "code": "PAR",
+   "why": "posted draw: Cali 2 2008"
   }
  ],
- "countryChecksKept": []
+ "countryChecksKept": [],
+ "teamTitles": [
+  {
+   "season": "2007",
+   "event": "WTC Dusseldorf",
+   "team": "BRA",
+   "players": [
+    "GlennMirnyi",
+    "Cristine",
+    "Tytta!.",
+    "virex"
+   ],
+   "runnerUp": "GBR",
+   "beat": [
+    "invu2day",
+    "greatkingrat",
+    "alansk",
+    "MissPovaFan"
+   ],
+   "score": "2-1"
+  },
+  {
+   "season": "2008",
+   "event": "Hopman Cup",
+   "team": "GER",
+   "players": [
+    "Jens",
+    "Hotzenplotz"
+   ],
+   "runnerUp": "",
+   "beat": [
+    "Tomek.",
+    "Labamba",
+    "maldini"
+   ],
+   "score": "3-0"
+  },
+  {
+   "season": "2008",
+   "event": "WTC Dusseldorf",
+   "team": "GBR",
+   "players": [
+    "greatkingrat",
+    "Forever-Delayed",
+    "Marksman"
+   ],
+   "runnerUp": "BUL",
+   "beat": [
+    "Filipo",
+    "Sly"
+   ],
+   "score": "2-1"
+  },
+  {
+   "season": "2009",
+   "event": "Hopman Cup",
+   "team": "",
+   "players": [
+    "adee-gee",
+    "gaynor"
+   ],
+   "runnerUp": "",
+   "beat": [
+    "sexyboy",
+    "Tomek."
+   ],
+   "score": "3-0"
+  },
+  {
+   "season": "2010",
+   "event": "Hopman Cup",
+   "team": "",
+   "players": [
+    "Rik.",
+    "rvugt",
+    "Sheva"
+   ],
+   "runnerUp": "",
+   "beat": [
+    "diego36arg",
+    "lucho_coria",
+    "FiBeR"
+   ],
+   "score": "3-0"
+  },
+  {
+   "season": "2011",
+   "event": "Hopman Cup",
+   "team": "",
+   "players": [
+    "buji",
+    "maru_angi",
+    "FERNET"
+   ],
+   "runnerUp": "",
+   "beat": [
+    "KittyTennis",
+    "JM-Del-Potro"
+   ],
+   "score": "2-1"
+  },
+  {
+   "season": "2012",
+   "event": "Hopman Cup",
+   "team": "",
+   "players": [
+    "extremaduratenis",
+    "YEBRA"
+   ],
+   "runnerUp": "",
+   "beat": [
+    "AdeyC",
+    "Walsall",
+    "mateusz2904"
+   ],
+   "score": "3-0"
+  },
+  {
+   "season": "2013",
+   "event": "Hopman Cup",
+   "team": "",
+   "players": [
+    "savesthedizzle",
+    "indiegor",
+    "Holmzy"
+   ],
+   "runnerUp": "",
+   "beat": [
+    "Hidalgo",
+    "Dmitry Bond"
+   ],
+   "score": "2-1"
+  },
+  {
+   "season": "2014",
+   "event": "Hopman Cup",
+   "team": "",
+   "players": [
+    "AdeyC",
+    "Tomek."
+   ],
+   "runnerUp": "",
+   "beat": [
+    "Southend Aussies",
+    "AussieAdz"
+   ],
+   "score": "3-0"
+  },
+  {
+   "season": "2015",
+   "event": "Hopman Cup",
+   "team": "",
+   "players": [
+    "Szymon",
+    "Tomek.",
+    "Wojcirej"
+   ],
+   "runnerUp": "",
+   "beat": [
+    "Nando_L",
+    "Netin!"
+   ],
+   "score": "3-0"
+  }
+ ]
 }

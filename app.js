@@ -900,7 +900,7 @@ function derivePlayers(surface, season){
       const lr=rankNum(r.loserRank), wr=rankNum(r.winnerRank);
       if(lr!==null && lr<=10) W.t10w++;
       if(wr!==null && wr<=10) L.t10l++;
-      if(r.round==="F"){ W.titles++; L.finals++; W.lastTitle=r.event; }
+      if(titleFinal(r)){ W.titles++; L.finals++; W.lastTitle=r.event; }
       if(r.round==="SF"){ L.sfs++; }
       if(isQ(r.winnerSeed))  W.mdQw++;
       if(isQ(r.loserSeed))   L.mdQl++;
@@ -962,7 +962,7 @@ function deriveTeams(surface, season){
     if(surf){ W["s_"+surf]++; L["l_"+surf]++; }
     if(r.stage==="Main"){
       W.w++; L.l++;
-      if(r.round==="F"){ W.titles++; L.finals++; W.lastTitle=r.event; }
+      if(titleFinal(r)){ W.titles++; L.finals++; W.lastTitle=r.event; }
       if(r.round==="SF"){ L.sfs++; }
       if(isQ(r.winnerSeed)) W.mdQw++;
       if(isQ(r.loserSeed))  L.mdQl++;
@@ -987,7 +987,7 @@ function deriveTitles(){
   const loseOf = r => r.disc==="Doubles" ? canonTeam(r.loser)  : canonName(r.loser);
 
   for(const r of MATCHES){
-    if(r.stage!=="Main" || r.isBye) continue;
+    if(r.stage!=="Main" || r.isBye || isTeamEvent(r.event)) continue;
     if(r.round!=="F" && r.round!=="SF") continue;
     const k = r.event+"||"+r.season;
     if(!ev.has(k)) ev.set(k,{event:r.event, season:r.season,
@@ -996,6 +996,8 @@ function deriveTitles(){
     if(r.round==="F"){ e[s+"W"]=nameOf(r); e[s+"F"]=loseOf(r); }
     else e[s+"S"].push(loseOf(r));
   }
+  teamTitles().forEach(t=>ev.set(t.event+"||"+t.season,{event:t.event, season:t.season,
+    sW:teamTitleText(t), sF:(t.beatTeam?t.beatTeam+": ":"")+t.beat.join(", "), sS:[], dW:"", dF:"", dS:[]}));
   return [...ev.values()].map(e=>({
     event:e.event, season:e.season,
     surface:(calFor(e.event, e.season)||{}).surface||"",
@@ -1111,7 +1113,7 @@ function deriveEventProblems(){
   const ROUND_CAP={F:1, SF:2, QF:4};
   const byRound=new Map();
   for(const r of MATCHES){
-    if(r.stage!=="Main" || r.isBye || ROUND_CAP[r.round]===undefined) continue;
+    if(r.stage!=="Main" || r.isBye || ROUND_CAP[r.round]===undefined || isTeamEvent(r.event)) continue;
     const k=[r.event, r.season||"", r.disc, r.round].join("|");
     if(!byRound.has(k)) byRound.set(k,
       {event:r.event, season:r.season||"", disc:r.disc, round:r.round, n:0});
@@ -1426,6 +1428,26 @@ function repeatsIn(shown){
   }
   return out;
 }
+/* Team events: each tie is two singles and a doubles, so the final has two
+   singles matches (both count as finals) and teams can change their doubles
+   pair between rounds. The group stage is filed as qualifying QFR, like the
+   year-end Finals' round robin. */
+const TEAM_EVENTS = new Set(["Hopman Cup","WTC Dusseldorf"]);
+const isTeamEvent = ev => TEAM_EVENTS.has(ev);
+/* A final that counts as a singles or doubles title. A team event's final
+   matches don't: the cup goes to the country that wins the final tie. */
+const titleFinal = m => m.round==="F" && !isTeamEvent(m.event);
+/* Team-event champions, from data.json (teamTitles): the country that won the
+   final tie and everybody who played the final for it. A team title is kept
+   apart from singles and doubles titles. */
+let TEAM_TITLES=[];
+function teamTitles(){
+  return TEAM_TITLES.map(t=>({event:t.event, season:String(t.season||""),
+    players:(t.players||[]).map(canonName), beat:(t.beat||[]).map(canonName),
+    team:t.team||"", beatTeam:t.runnerUp||"", score:String(t.score||"").replace("-","\u2013")}));
+}
+const teamTitleText = t => (t.team ? t.team+": " : "")+t.players.join(", ");
+
 /* When it happens all over the draw it isn't a mistake: the event is a round
    robin or a team tie, and a draw sheet makes no sense of it. */
 function playsTwice(shown){
@@ -1458,6 +1480,7 @@ function roundList(shown){
 function drawFindings(shown){
   const out={variants:[], items:[], doubled:false};
   const first=shown[0], disc=first.disc, stage=first.stage;
+  if(isTeamEvent(first.event)) return out;
   if(stage==="Main" && shown.filter(m=>m.round==="F" && !m.isBye).length>1){ out.doubled=true; return out; }
   const id=n=>idOf(n,disc);
   if(playsTwice(shown)){ out.roundRobin=true; return out; }
@@ -3564,7 +3587,9 @@ function drawSheet(shown, caption, avail){
   }
   if(d.looseEnds){
     const p=document.createElement("p"); p.className="hint"; p.style.margin="12px 0 0";
-    p.textContent = shown.filter(m=>m.round==="F" && !m.isBye).length>1
+    p.textContent = isTeamEvent(shown[0].event)
+      ? "A team event: each tie has two singles matches and a doubles, so the knockout singles are shown as separate pieces. The country that wins the final tie takes the cup. The group matches are under qualifying."
+      : shown.filter(m=>m.round==="F" && !m.isBye).length>1
       ? "Two finals are filed under this name, so this is probably two tournaments. They're shown one under the other."
       : "Some results couldn't be joined to the rest of this draw, so they're shown as separate pieces. "
         + "That happens when a result is missing or a name is spelled differently from one round to the next.";
@@ -3614,7 +3639,15 @@ function renderEvent(){
 
   /* champions */
   const grid=document.createElement("div"); grid.className="statgrid";
-  ["Singles","Doubles"].forEach(disc=>{
+  const cup=isTeamEvent(event) ? teamTitles().find(t=>t.event===event && t.season===season) : null;
+  if(isTeamEvent(event)){
+    const card=document.createElement("div"); card.className="stat";
+    card.innerHTML=`<span class="k">Champions${cup&&cup.team?" \u2014 "+esc(cup.team):""}</span>
+      <span class="v" style="font-size:20px;line-height:1.25">${cup?esc(cup.players.join(", ")):"\u2014"}</span>
+      <span class="note">${cup?"beat "+esc((cup.beatTeam?cup.beatTeam+": ":"")+cup.beat.join(", "))+" "+cup.score:""}</span>`;
+    grid.appendChild(card);
+  }
+  if(!isTeamEvent(event)) ["Singles","Doubles"].forEach(disc=>{
     const f=ms.find(m=>m.disc===disc && m.stage==="Main" && m.round==="F");
     const nm = f ? (disc==="Doubles"?canonTeam(f.winner):canonName(f.winner)) : "\u2014";
     const runner = f ? (disc==="Doubles"?canonTeam(f.loser):canonName(f.loser)) : "";
@@ -3662,10 +3695,13 @@ function renderEvent(){
     return;
   }
 
-  if(playsTwice(shown) && shown.filter(m=>m.round==="F" && !m.isBye).length<=1){
+  const team=isTeamEvent(event);
+  if(team || (playsTwice(shown) && shown.filter(m=>m.round==="F" && !m.isBye).length<=1)){
     mount.appendChild(roundList(shown));
     const note=document.createElement("p"); note.className="hint";
-    note.textContent="Players meet more than once a round here, so this is a round robin or team event rather than a knockout draw.";
+    note.textContent = team
+      ? "A team event: each tie is two singles matches and a doubles, so this is a list of results rather than a draw. The country that wins the final tie takes the cup, and everyone who played the final for it gets a team title (kept apart from singles and doubles titles). The group matches are under qualifying."
+      : "Players meet more than once a round here, so this is a round robin or team event rather than a knockout draw.";
     mount.appendChild(note);
     eventYears(mount, event, season);
     return;
@@ -3699,6 +3735,7 @@ function eventYears(mount, event, season){
     const lost=(k,disc)=>({k:k+"f", h:"Beat", render:r=>{
       if(!r[k]) return "\u2014";
       const s=nameLinks(r[k].loser,disc); s.className="dim"; return s; }, csv:r=>r[k]?sideOf(r[k],"loser"):""});
+    const cups=isTeamEvent(event) ? new Map(teamTitles().filter(t=>t.event===event).map(t=>[t.season,t])) : null;
     mount.appendChild(tableOf([
       {k:"season",h:"Season",render:r=>{
         if(r.season===season){ const b=document.createElement("b"); b.textContent=r.season; return b; }
@@ -3706,8 +3743,13 @@ function eventYears(mount, event, season){
         b.addEventListener("click",()=>showEvent(event,r.season)); return b; }, csv:r=>r.season},
       {k:"surface",h:"Surface",render:r=>r.cal&&r.cal.surface
         ? `<span class="surf ${esc(r.cal.surface)}">${esc(r.cal.surface)}</span>` : "", csv:r=>r.cal?r.cal.surface:""},
-      who("s","Singles"), lost("s","Singles"),
-      who("d","Doubles"), lost("d","Doubles")], others));
+      ...(cups ? [
+        {k:"cup",h:"Champions",render:r=>cups.has(r.season)?esc(teamTitleText(cups.get(r.season))):"\u2014",
+          csv:r=>cups.has(r.season)?teamTitleText(cups.get(r.season)):""},
+        {k:"cupf",h:"Beat",render:r=>{ const t=cups.get(r.season); if(!t) return "\u2014";
+          return `<span class="dim">${esc((t.beatTeam?t.beatTeam+": ":"")+t.beat.join(", "))} ${t.score}</span>`; },
+          csv:r=>{ const t=cups.get(r.season); return t?(t.beatTeam?t.beatTeam+": ":"")+t.beat.join(", "):""; }}
+      ] : [who("s","Singles"), lost("s","Singles"), who("d","Doubles"), lost("d","Doubles")])], others));
   }
 }
 
@@ -4176,8 +4218,9 @@ function renderProfile(){
   /* headline figures */
   const w=ms.filter(m=>wonBy(m,name)).length, l=ms.length-w;
   const main=ms.filter(m=>m.stage==="Main");
-  const titles=main.filter(m=>m.round==="F" && wonBy(m,name));
-  const finals=main.filter(m=>m.round==="F" && !wonBy(m,name));
+  const titles=main.filter(m=>titleFinal(m) && wonBy(m,name));
+  const finals=main.filter(m=>titleFinal(m) && !wonBy(m,name));
+  const cups=teamTitles().filter(t=>t.players.some(p=>keyOf(p)===keyOf(name)));
   const semis =main.filter(m=>m.round==="SF" && !wonBy(m,name));
   const hist=playerHistory(disc, name);
   const stats=hist.length?historyStats(hist):null;
@@ -4193,6 +4236,8 @@ function renderProfile(){
     ["Finals lost", String(finals.length), ""],
     ["Semis lost", String(semis.length), ""]
   ];
+  if(cups.length) cards.push(["Team titles", String(cups.length),
+    cups.map(t=>t.event+" "+t.season).join(", ")]);
   if(stats) cards.push(
     ["Ranking", live?"#"+stats.current.rank:"NR", live?histLabel(stats.current):"not ranked since "+histLabel(stats.current)],
     ["Career high", "#"+stats.careerHigh.rank, histLabel(stats.careerHigh)]);
@@ -4215,7 +4260,7 @@ function renderProfile(){
     if(!bySurf.has(s)) bySurf.set(s,{surface:SURFACE_NAME[s]||s, w:0, l:0, titles:0});
     const e=bySurf.get(s);
     wonBy(m,name) ? e.w++ : e.l++;
-    if(m.stage==="Main" && m.round==="F" && wonBy(m,name)) e.titles++;
+    if(m.stage==="Main" && titleFinal(m) && wonBy(m,name)) e.titles++;
   });
   const surfRows=[...bySurf.values()].sort((a,b)=>(b.w+b.l)-(a.w+a.l))
     .map(e=>({...e, pct:(e.w+e.l)?Math.round(e.w/(e.w+e.l)*100)+"%":""}));
@@ -4443,7 +4488,7 @@ function seasonRows(name, disc){
     const e=by.get(s);
     wonBy(m,name) ? e.w++ : e.l++;
     e.events.add(m.event);
-    if(m.stage==="Main" && m.round==="F"){ wonBy(m,name) ? e.titles++ : e.finals++; }
+    if(m.stage==="Main" && titleFinal(m)){ wonBy(m,name) ? e.titles++ : e.finals++; }
     if(m.stage==="Main" && m.round==="SF" && !wonBy(m,name)) e.sfs++;
   });
   return [...by.values()].map(e=>({...e, events:e.events.size,
@@ -4465,7 +4510,7 @@ function partnerRows(name){
       if(!by.has(mk)) by.set(mk,{partner:canonName(mate), w:0, l:0, titles:0});
       const e=by.get(mk);
       sideName==="winner" ? e.w++ : e.l++;
-      if(sideName==="winner" && m.stage==="Main" && m.round==="F") e.titles++;
+      if(sideName==="winner" && m.stage==="Main" && titleFinal(m)) e.titles++;
     });
   });
   return [...by.values()].map(e=>({...e, played:e.w+e.l,
@@ -4498,7 +4543,7 @@ function seedRows(season, disc){
       if(!by.has(b)) by.set(b,{band:b, w:0, l:0, titles:0, finals:0});
       const e=by.get(b);
       who==="winner" ? e.w++ : e.l++;
-      if(m.round==="F"){ who==="winner" ? e.titles++ : e.finals++; }
+      if(titleFinal(m)){ who==="winner" ? e.titles++ : e.finals++; }
     });
   });
   const ORDER=["1\u20134","5\u20138","9\u201316","17+","Unseeded","Qualifier","Lucky loser","SE","ALT","WC"];
@@ -6406,6 +6451,7 @@ function serialise(){
     missingAccepted: [...MISSING_OK],
     countryChecks: CHECKS,
     countryChecksKept: [...CHECK_NO],
+    teamTitles: TEAM_TITLES,
     pinned
   };
 }
@@ -6448,6 +6494,7 @@ function deserialise(data){
   (data.renameRejected||[]).forEach(k=>{
     const [tour,from,to]=String(k).split("|");
     RENAME_NO.add(to===undefined ? k : [tour, keyOf(from), keyOf(to)].join("|")); });
+  TEAM_TITLES=Array.isArray(data.teamTitles) ? data.teamTitles.filter(t=>t && t.event && Array.isArray(t.players)) : [];
   CHECKS=(data.countryChecks||[]).filter(c=>c && c.key && c.code).map(c=>({key:c.key, name:c.name||"", code:String(c.code).toUpperCase(), why:c.why||""}));
   (data.countryChecksKept||[]).forEach(k=>{ const i=String(k).lastIndexOf("|"); if(i>0) CHECK_NO.add(keyOf(k.slice(0,i))+"|"+k.slice(i+1)); });
   (data.datesAccepted||[]).forEach(k=>DATE_OK.add(k));
