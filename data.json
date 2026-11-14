@@ -1,6 +1,6 @@
 {
  "format": "tennis-tipping/1",
- "savedAt": "2026-11-14T21:50:48.000Z",
+ "savedAt": "2026-11-14T23:00:00.000Z",
  "matchFiles": [
   "matches-2026.json",
   "matches-2025.json",
@@ -43381,7 +43381,7 @@
    "date": "2009-02-16",
    "opened": "",
    "name": "Belgrade CH",
-   "event": "Belgrade",
+   "event": "Belgrade CH",
    "country": "SRB",
    "surface": "IH",
    "draw": [
@@ -43633,7 +43633,7 @@
    "date": "2009-03-16",
    "opened": "",
    "name": "Bangkok CH",
-   "event": "Bangkok",
+   "event": "Bangkok CH",
    "country": "THA",
    "surface": "H",
    "draw": [
@@ -43831,7 +43831,7 @@
    "date": "2009-04-13",
    "opened": "",
    "name": "Johannesburg CH",
-   "event": "Johannesburg",
+   "event": "Johannesburg CH",
    "country": "RSA",
    "surface": "H",
    "draw": [
@@ -43867,7 +43867,7 @@
    "date": "2009-04-13",
    "opened": "",
    "name": "Rome CH",
-   "event": "Rome",
+   "event": "Rome CH",
    "country": "ITA",
    "surface": "CL",
    "draw": [
@@ -44265,7 +44265,7 @@
     128,
     128,
     64,
-    64
+    32
    ],
    "manager": "FiBeR",
    "challenger": false
@@ -44517,7 +44517,7 @@
     128,
     128,
     64,
-    64
+    32
    ],
    "manager": "ExcaliburII",
    "challenger": false
@@ -44768,7 +44768,7 @@
    "draw": [
     32,
     16,
-    16,
+    8,
     8
    ],
    "manager": "Ilovetheblues_86",
@@ -45074,7 +45074,7 @@
    "draw": [
     32,
     16,
-    16,
+    8,
     8
    ],
    "manager": "James Craven",
@@ -45219,7 +45219,7 @@
     128,
     128,
     64,
-    64
+    32
    ],
    "manager": "l_mac",
    "challenger": false
@@ -45518,7 +45518,7 @@
    "date": "2009-09-28",
    "opened": "",
    "name": "Buenos Aires CH",
-   "event": "Buenos Aires",
+   "event": "Buenos Aires CH",
    "country": "ARG",
    "surface": "CL",
    "draw": [
@@ -57701,12 +57701,12 @@
   {
    "season": "2009",
    "event": "Hopman Cup",
-   "team": "",
+   "team": "BLR",
    "players": [
     "adee-gee",
     "gaynor"
    ],
-   "runnerUp": "",
+   "runnerUp": "POL",
    "beat": [
     "sexyboy",
     "Tomek."
@@ -57808,6 +57808,1126 @@
     "Netin!"
    ],
    "score": "3-0"
+  },
+  {
+   "season": "2009",
+   "event": "WTC Dusseldorf",
+   "team": "GER",
+   "players": [
+    "JMG",
+    "ZackBusner",
+    "bavaria100"
+   ],
+   "runnerUp": "BRA",
+   "beat": [
+    "GlennMirnyi",
+    "Ilovetheblues_86",
+    "Zirconek"
+   ],
+   "score": "2-1"
+  }
+ ],
+ "teamGroups": [
+  {
+   "season": "2008",
+   "event": "Hopman Cup",
+   "source": "worked out from the ties",
+   "groups": [
+    {
+     "name": "Group 1",
+     "teams": [
+      {
+       "team": "GER",
+       "name": "",
+       "players": [
+        "Hotzenplotz",
+        "Jens"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "JeffCandoi",
+        "keqtqiadv",
+        "Netin!",
+        "Tytta!."
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "Genius1787",
+        "MissPovaFan",
+        "Tankman"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "belco",
+        "James_Blake_FAN",
+        "savesthedizzle"
+       ]
+      }
+     ]
+    },
+    {
+     "name": "Group 2",
+     "teams": [
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "Aleksz",
+        "Mara_M"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "balloon",
+        "FilipeMB",
+        "Tzar"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "Mr Brightside",
+        "Spadea TT"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "lucho_coria",
+        "Ria",
+        "Snowwy"
+       ]
+      }
+     ]
+    },
+    {
+     "name": "Group 3",
+     "teams": [
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "Labamba",
+        "maldini",
+        "Tomek."
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "Blue Heart24",
+        "TMJordan"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "Aleka",
+        "Deea",
+        "diego36arg"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "Albop",
+        "Alonsofz",
+        "Fergie"
+       ]
+      }
+     ]
+    },
+    {
+     "name": "Group 4",
+     "teams": [
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "FiBeR",
+        "manu86",
+        "mechi"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "adee-gee",
+        "gaynor",
+        "Nadie"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "Rik.",
+        "Sheva"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "meninosantos",
+        "Nando_L"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "season": "2009",
+   "event": "Hopman Cup",
+   "source": "posted results",
+   "groups": [
+    {
+     "name": "Group A",
+     "teams": [
+      {
+       "team": "BRA",
+       "name": "Brazil",
+       "players": [
+        "keqtqiadv",
+        "Tytta!.",
+        "Uraitan",
+        "Zirconek"
+       ]
+      },
+      {
+       "team": "POL",
+       "name": "Poland",
+       "players": [
+        "sexyboy",
+        "Tomek."
+       ]
+      },
+      {
+       "team": "CHI",
+       "name": "Chile",
+       "players": [
+        "Alonsofz",
+        "ClaudiuS",
+        "juakos17"
+       ]
+      },
+      {
+       "team": "GRE",
+       "name": "Greece",
+       "players": [
+        "Baghdatis#1",
+        "lucian_iasi"
+       ]
+      }
+     ]
+    },
+    {
+     "name": "Group B",
+     "teams": [
+      {
+       "team": "SUI",
+       "name": "Switzerland",
+       "players": [
+        "maldini",
+        "Nando_L"
+       ]
+      },
+      {
+       "team": "BLR",
+       "name": "Belarus",
+       "players": [
+        "adee-gee",
+        "gaynor"
+       ]
+      },
+      {
+       "team": "FRA",
+       "name": "France",
+       "players": [
+        "diego36arg",
+        "trucul",
+        "Tzar"
+       ]
+      },
+      {
+       "team": "ARM",
+       "name": "Armenia",
+       "players": [
+        "kai.",
+        "vmbf"
+       ]
+      }
+     ]
+    },
+    {
+     "name": "Group C",
+     "teams": [
+      {
+       "team": "ARG",
+       "name": "Argentina",
+       "players": [
+        "ExcaliburII",
+        "FiBeR",
+        "lucho_coria",
+        "manu86"
+       ]
+      },
+      {
+       "team": "GER",
+       "name": "Germany",
+       "players": [
+        "Jens",
+        "KalleOnAir"
+       ]
+      },
+      {
+       "team": "ZIM",
+       "name": "Zimbabwe",
+       "players": [
+        "Duncan",
+        "JeffCandoi",
+        "Netin!"
+       ]
+      },
+      {
+       "team": "ITA",
+       "name": "Italy",
+       "players": [
+        "Betty",
+        "Mr Brightside"
+       ]
+      }
+     ]
+    },
+    {
+     "name": "Group D",
+     "teams": [
+      {
+       "team": "FIN",
+       "name": "Finland",
+       "players": [
+        "Dougie",
+        "Labamba",
+        "Overlord",
+        "Smasher"
+       ]
+      },
+      {
+       "team": "GBR",
+       "name": "Great Britain",
+       "players": [
+        "Forever-Delayed",
+        "Hellcat"
+       ]
+      },
+      {
+       "team": "BUL",
+       "name": "Bulgaria",
+       "players": [
+        "Filipo",
+        "Gallina"
+       ]
+      },
+      {
+       "team": "IRL",
+       "name": "Ireland",
+       "players": [
+        "ceci_rah84",
+        "FERNET",
+        "mechi"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "season": "2011",
+   "event": "Hopman Cup",
+   "source": "worked out from the ties",
+   "groups": [
+    {
+     "name": "Group 1",
+     "teams": [
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "Belludal",
+        "keqtqiadv",
+        "Tytta!."
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "Cheeky Chick",
+        "Goldenoldie",
+        "scoobs",
+        "sdtoot"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "JM-Del-Potro",
+        "KittyTennis",
+        "lucian_iasi"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "Eddy DoubleD",
+        "Rik.",
+        "rvugt"
+       ]
+      }
+     ]
+    },
+    {
+     "name": "Group 2",
+     "teams": [
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "Euroquitter",
+        "Hotzenplotz",
+        "KalleOnAir"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "Direnan",
+        "Flavio_Sverige",
+        "vini_federer"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "buji",
+        "FERNET",
+        "maru_angi"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "extremaduratenis",
+        "Harry_Callahan"
+       ]
+      }
+     ]
+    },
+    {
+     "name": "Group 3",
+     "teams": [
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "dinkulpus",
+        "Mincheff",
+        "propaganda",
+        "vn01"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "andrijagajic",
+        "dusan1610"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "156mphserve",
+        "bandtree",
+        "Ibreak4coffee",
+        "Keech"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "Labamba",
+        "Overlord",
+        "Smasher"
+       ]
+      }
+     ]
+    },
+    {
+     "name": "Group 4",
+     "teams": [
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "Gallina",
+        "Mago#01",
+        "Nev",
+        "Pauchis"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "nickelS",
+        "Redguard"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "jervisjames",
+        "Peta Pan"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "kingiskingfineon",
+        "orangehat",
+        "Walsall"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "season": "2013",
+   "event": "Hopman Cup",
+   "source": "worked out from the ties",
+   "groups": [
+    {
+     "name": "Group 1",
+     "teams": [
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "A_Skywalker",
+        "dinkulpus",
+        "kr1s71an",
+        "vexxx"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "Belludal",
+        "dannyrafter",
+        "Felipe Abe",
+        "Rafael Reis"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "Dmitry Bond",
+        "Hidalgo",
+        "kondrashov"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "FiBeR",
+        "manu86"
+       ]
+      }
+     ]
+    },
+    {
+     "name": "Group 2",
+     "teams": [
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "Holmzy",
+        "indiegor",
+        "savesthedizzle"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "fsilva",
+        "hugocnamaral",
+        "lolada_4",
+        "Ramsay"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "extremaduratenis",
+        "YEBRA"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "KingDocy",
+        "Sham Kay Adams"
+       ]
+      }
+     ]
+    },
+    {
+     "name": "Group 3",
+     "teams": [
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "Direnan",
+        "nicksimioni"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "Goldenoldie",
+        "jmjhb",
+        "sdtoot"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "supertom",
+        "Walsall"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "Eddy DoubleD",
+        "lucian_iasi"
+       ]
+      }
+     ]
+    },
+    {
+     "name": "Group 4",
+     "teams": [
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "rajknier",
+        "Sheva"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "Crvena Zvezda",
+        "Igorche"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "156mphserve",
+        "Keech"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "AdeyC",
+        "mateusz2904"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "season": "2014",
+   "event": "Hopman Cup",
+   "source": "worked out from the ties",
+   "groups": [
+    {
+     "name": "Group 1",
+     "teams": [
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "DJDVD",
+        "Matthew2408"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "digor",
+        "Hidalgo",
+        "indiegor"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "AdeyC",
+        "mateusz2904",
+        "Tomek."
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "hugocnamaral",
+        "Sauletekis"
+       ]
+      }
+     ]
+    },
+    {
+     "name": "Group 2",
+     "teams": [
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "a1canada",
+        "Keech"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "buji",
+        "catgamer",
+        "CoolyBri",
+        "Euroquitter"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "supertom",
+        "Walsall"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "dannyrafter",
+        "Felipe Abe",
+        "LHF",
+        "Rafael Reis"
+       ]
+      }
+     ]
+    },
+    {
+     "name": "Group 3",
+     "teams": [
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "Forever-Delayed",
+        "Goldenoldie",
+        "sdtoot"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "A_Skywalker",
+        "dinkulpus",
+        "kr1s71an"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "Igorche",
+        "ProdigyEng"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "Allez-Alejo",
+        "Federer in 2",
+        "goOudinUSA",
+        "VamosHoracio"
+       ]
+      }
+     ]
+    },
+    {
+     "name": "Group 4",
+     "teams": [
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "AussieAdz",
+        "Southend Aussies"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "extremaduratenis",
+        "gak3",
+        "VamosRafaNadal",
+        "YEBRA"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "bry17may",
+        "Litotes",
+        "savesthedizzle"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "Eddy DoubleD",
+        "lucian_iasi",
+        "nole_no1",
+        "traddles"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "season": "2007",
+   "event": "WTC Dusseldorf",
+   "source": "worked out from the ties",
+   "groups": [
+    {
+     "name": "Group 1",
+     "teams": [
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "Allez-Alejo",
+        "coreyschucky",
+        "LaTenista"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "el guero",
+        "Labamba",
+        "Smasher"
+       ]
+      },
+      {
+       "team": "GBR",
+       "name": "",
+       "players": [
+        "alansk",
+        "greatkingrat",
+        "invu2day",
+        "MissPovaFan"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "Aleka",
+        "Deea",
+        "Iza",
+        "Mara_M"
+       ]
+      }
+     ]
+    },
+    {
+     "name": "Group 2",
+     "teams": [
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "Aguante_el_Gato",
+        "Caralimon",
+        "Davidcuervacho",
+        "GustavoM_Fan"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "bavaria100",
+        "KalleOnAir",
+        "TommyB.",
+        "ZackBusner"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "*julie*",
+        "Bubba08",
+        "Crocodile",
+        "JBdV"
+       ]
+      },
+      {
+       "team": "BRA",
+       "name": "",
+       "players": [
+        "Cristine",
+        "GlennMirnyi",
+        "Tytta!.",
+        "virex"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "season": "2008",
+   "event": "WTC Dusseldorf",
+   "source": "worked out from the ties",
+   "groups": [
+    {
+     "name": "Group 1",
+     "teams": [
+      {
+       "team": "GBR",
+       "name": "",
+       "players": [
+        "Forever-Delayed",
+        "greatkingrat",
+        "Marksman"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "cleo1986",
+        "Foosimoo"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "KalleOnAir",
+        "Pixel",
+        "TommyB."
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "Alonsofz",
+        "zxcv"
+       ]
+      }
+     ]
+    },
+    {
+     "name": "Group 2",
+     "teams": [
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "kostas kastoria",
+        "scarecrows"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "GlennMirnyi",
+        "virex"
+       ]
+      },
+      {
+       "team": "BUL",
+       "name": "",
+       "players": [
+        "Filipo",
+        "Sly"
+       ]
+      },
+      {
+       "team": "",
+       "name": "",
+       "players": [
+        "Caralimon",
+        "Enjoy Incubus",
+        "GustavoM_Fan"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "season": "2009",
+   "event": "WTC Dusseldorf",
+   "source": "posted results",
+   "groups": [
+    {
+     "name": "Group Blue",
+     "teams": [
+      {
+       "team": "GER",
+       "name": "Germany",
+       "players": [
+        "bavaria100",
+        "JMG",
+        "ZackBusner"
+       ]
+      },
+      {
+       "team": "IND",
+       "name": "India",
+       "players": [
+        "Davidcuervacho",
+        "FERNET",
+        "mechi"
+       ]
+      },
+      {
+       "team": "ARG",
+       "name": "Argentina",
+       "players": [
+        "diego36arg",
+        "FiBeR",
+        "lucho_coria",
+        "manu86"
+       ]
+      },
+      {
+       "team": "FIN",
+       "name": "Finland",
+       "players": [
+        "Labamba",
+        "Smasher"
+       ]
+      }
+     ]
+    },
+    {
+     "name": "Group Pink",
+     "teams": [
+      {
+       "team": "BRA",
+       "name": "Brazil",
+       "players": [
+        "GlennMirnyi",
+        "Ilovetheblues_86",
+        "Zirconek"
+       ]
+      },
+      {
+       "team": "KAZ",
+       "name": "Kazakhstan",
+       "players": [
+        "gulzhan",
+        "Renaud"
+       ]
+      },
+      {
+       "team": "GBR",
+       "name": "Great Britain",
+       "players": [
+        "Forever-Delayed",
+        "jmjhb"
+       ]
+      },
+      {
+       "team": "SUI",
+       "name": "Switzerland",
+       "players": [
+        "maldini",
+        "Nando_L"
+       ]
+      }
+     ]
+    }
+   ]
   }
  ]
 }
