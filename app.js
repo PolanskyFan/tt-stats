@@ -1021,6 +1021,36 @@ function deriveIssues(){
   return (ISSUE_CACHE = deriveIssuesNow());
 }
 
+/* Players with no country at all — every row they're in left it blank and
+   no ranking list gives one. They don't conflict with anything, so they'd
+   never show up under "Conflicting countries"; this lists them so a code can
+   be typed in. Saving pins it, the same as choosing a code for a conflict. */
+function deriveNoCountry(){
+  const want=new Map();
+  for(const e of REG.values()) if(!e.country) want.set(e.key,{e, n:0, seasons:new Set(), events:new Set()});
+  if(!want.size) return [];
+  const see=(name,r)=>{ const it=want.get(keyOf(String(name).trim())); if(!it) return;
+    it.n++; it.seasons.add(r.season||"?"); it.events.add(r.event); };
+  for(const r of MATCHES){
+    if(r.isBye) continue;
+    for(const side of [r.winner, r.loser]){
+      if(r.disc==="Doubles") String(side).split("/").forEach(p=>see(p,r)); else see(side,r);
+    }
+  }
+  return [...want.values()].sort((a,b)=>b.n-a.n || a.e.name.toLowerCase().localeCompare(b.e.name.toLowerCase()));
+}
+
+function deriveCountryChecks(){
+  const out=[];
+  for(const c of CHECKS){
+    const k=keyOf(c.key), e=REG.get(k);
+    if(!e || !c.code || e.country===c.code) continue;
+    if(CHECK_NO.has(k+"|"+c.code) || acceptedCountries(k).has(c.code)) continue;
+    out.push({e, code:c.code, why:c.why||""});
+  }
+  return out.sort((a,b)=>a.e.name.toLowerCase().localeCompare(b.e.name.toLowerCase()) || a.code.localeCompare(b.code));
+}
+
 function deriveIssuesNow(){
   const countryConflicts=[], nameVariants=[], resolved=[];
   for(const e of REG.values()){
@@ -1039,7 +1069,7 @@ function deriveIssuesNow(){
       (p.name ? resolved : nameVariants).push(item);
     }
   }
-  return {countryConflicts, nameVariants, resolved,
+  return {countryConflicts, nameVariants, resolved, noCountry:deriveNoCountry(), countryChecks:deriveCountryChecks(),
           tourGaps:deriveTourGaps(), eventProblems:deriveEventProblems(),
           dateProblems:deriveDateProblems(), renames:deriveRenameCandidates(),
           unknowns:deriveUnknownPlayers(), missing:deriveMissing(),
@@ -1209,6 +1239,12 @@ function renameWeek(w, newName){
    can be marked as genuine. The conflict settles once every code seen has been
    accepted; a new one appearing later still raises a fresh issue. */
 const COUNTRY_OK = new Map();          // key -> Set of accepted codes
+/* Country questions saved in data.json for the issues page: codes from posted
+   draws, codes that disagree with a pinned choice, and old codes. Each is
+   {key, name, code, why}. A question goes away once the player shows that code,
+   both codes are accepted, or it's marked "keep" (CHECK_NO, key|code). */
+let CHECKS = [];
+const CHECK_NO = new Set();
 
 function firstWeekWithCountry(key, code){
   for(const w of WEEKS){
@@ -5381,15 +5417,70 @@ function renderMissing(box, missing){
   box.appendChild(s);
 }
 
+function renderNoCountry(box, list){
+  const s=document.createElement("section"); s.className="review";
+  s.innerHTML=`<p class="blockhead">Players with no country \u2014 ${list.length}</p>
+    <p class="lede" style="margin-bottom:6px">None of their matches or ranking entries gives a country.
+    Type the three-letter code and save; it's pinned to the player, like choosing a code for a conflict,
+    and undo takes it back.</p>`;
+  const dl=document.createElement("datalist"); dl.id="countryCodes";
+  [...new Set([...REG.values()].map(e=>e.country).filter(c=>/^[A-Z]{3}$/.test(c||"")))].sort()
+    .forEach(c=>{ const o=document.createElement("option"); o.value=c; dl.appendChild(o); });
+  s.appendChild(dl);
+  const span=set=>{ const a=[...set].filter(x=>x!=="?").sort(); return !a.length ? "" : a.length===1 ? a[0] : `${a[0]}\u2013${a[a.length-1]}`; };
+  list.forEach(({e,n,seasons,events})=>{
+    const q=document.createElement("div"); q.className="rq";
+    const ev=[...events];
+    q.innerHTML=`<span class="tag">${n} match${n===1?"":"es"}</span>
+      <span class="ctx"><b>${esc(e.name)}</b> <span class="dim">${esc(span(seasons))}${ev.length?" \u00b7 "+esc(ev.slice(0,3).join(", "))+(ev.length>3?"\u2026":""):""}</span></span>`;
+    const inp=document.createElement("input");
+    inp.type="text"; inp.maxLength=3; inp.placeholder="Code"; inp.setAttribute("list","countryCodes");
+    inp.setAttribute("aria-label",`Country for ${e.name}`);
+    inp.style.maxWidth="96px"; inp.style.textTransform="uppercase";
+    const go=document.createElement("button"); go.className="btn sm"; go.textContent="Save";
+    const save=()=>{
+      const c=inp.value.trim().toUpperCase();
+      if(!/^[A-Z]{3}$/.test(c)){ alert("Type a three-letter country code, e.g. POL."); inp.focus(); return; }
+      snapshot("country set"); pin(e.key,"country",c); markDirty(); refreshAll();
+    };
+    go.addEventListener("click", save);
+    inp.addEventListener("keydown", ev=>{ if(ev.key==="Enter") save(); });
+    q.appendChild(inp); q.appendChild(go);
+    s.appendChild(q);
+  });
+  box.appendChild(s);
+}
+
+function renderCountryChecks(box, list){
+  const s=document.createElement("section"); s.className="review";
+  s.innerHTML=`<p class="blockhead">Countries to check \u2014 ${list.length}</p>
+    <p class="lede" style="margin-bottom:6px">Codes from the draws you posted, codes that disagree with a choice
+    you pinned, and old codes. Nothing has been changed. <b>Use</b> pins the code to the player,
+    <b>Both right</b> accepts both codes (a flag changed over time), <b>Keep</b> leaves the player as they are.</p>`;
+  list.forEach(({e,code,why})=>{
+    const q=document.createElement("div"); q.className="rq";
+    q.innerHTML=`<span class="tag">${esc(code)}</span>
+      <span class="ctx"><b>${esc(e.name)}</b> <span class="dim">now ${esc(e.country||"none")} \u00b7 ${esc(why)}</span></span>`;
+    const mk=(label,fn)=>{ const b=document.createElement("button"); b.className="btn sm"; b.textContent=label;
+      b.addEventListener("click",fn); q.appendChild(b); };
+    mk(`Use ${code}`, ()=>{ snapshot("country set"); pin(e.key,"country",code); markDirty(); refreshAll(); });
+    if(e.country) mk("Both right", ()=>{ invalidateIssues(); acceptCountry(e.key,e.country); acceptCountry(e.key,code); markDirty(); refreshAll(); });
+    mk("Keep", ()=>{ invalidateIssues(); CHECK_NO.add(e.key+"|"+code); markDirty(); refreshAll(); });
+    s.appendChild(q);
+  });
+  box.appendChild(s);
+}
+
 function renderIssues(){
   if(!viewOn("v-issues")) return;
   const box=$("issuesBody"); if(!box) return;
   const {countryConflicts,nameVariants,resolved,tourGaps,eventProblems,
-         dateProblems,renames,unknowns,dupes,pending,missing}=deriveIssues();
+         dateProblems,renames,unknowns,dupes,pending,missing,noCountry,countryChecks}=deriveIssues();
   box.innerHTML="";
   renderMergePanel(box);
   const total=countryConflicts.length+nameVariants.length+tourGaps.length+eventProblems.length
     +dateProblems.length+renames.length+unknowns.length+dupes.length+pending.length
+    +noCountry.length+countryChecks.length
     +missing.items.length+missing.variants.length;
 
   if(!total){
@@ -5413,6 +5504,9 @@ function renderIssues(){
     });
     box.appendChild(s);
   }
+
+  if(countryChecks.length) renderCountryChecks(box, countryChecks);
+  if(noCountry.length) renderNoCountry(box, noCountry);
 
   renderMissing(box, missing);
 
@@ -6310,6 +6404,8 @@ function serialise(){
     renameRejected: [...RENAME_NO],
     unknownAccepted: [...UNKNOWN_OK],
     missingAccepted: [...MISSING_OK],
+    countryChecks: CHECKS,
+    countryChecksKept: [...CHECK_NO],
     pinned
   };
 }
@@ -6322,7 +6418,7 @@ function deserialise(data){
     throw new Error(`That file says it's format "${data.format}", which this page doesn't read.`);
 
   MATCHES=[]; PENDING=[]; WEEKS=[]; DUPES=[]; SEEN.clear(); REG.clear();
-  ALIAS.clear(); PINS.clear(); COUNTRY_OK.clear(); RENAME_NO.clear(); DATE_OK.clear(); GAP_OK.clear(); UNKNOWN_OK.clear(); MISSING_OK.clear();
+  ALIAS.clear(); PINS.clear(); COUNTRY_OK.clear(); CHECK_NO.clear(); CHECKS=[]; RENAME_NO.clear(); DATE_OK.clear(); GAP_OK.clear(); UNKNOWN_OK.clear(); MISSING_OK.clear();
   CALENDAR=[]; MATCH_SEASONS.clear(); MATCH_DIRTY.clear();
   CAL_INDEX=null;
   (data.matchFiles||[]).forEach(f=>{
@@ -6352,6 +6448,8 @@ function deserialise(data){
   (data.renameRejected||[]).forEach(k=>{
     const [tour,from,to]=String(k).split("|");
     RENAME_NO.add(to===undefined ? k : [tour, keyOf(from), keyOf(to)].join("|")); });
+  CHECKS=(data.countryChecks||[]).filter(c=>c && c.key && c.code).map(c=>({key:c.key, name:c.name||"", code:String(c.code).toUpperCase(), why:c.why||""}));
+  (data.countryChecksKept||[]).forEach(k=>{ const i=String(k).lastIndexOf("|"); if(i>0) CHECK_NO.add(keyOf(k.slice(0,i))+"|"+k.slice(i+1)); });
   (data.datesAccepted||[]).forEach(k=>DATE_OK.add(k));
   (data.gapsAccepted||[]).forEach(k=>GAP_OK.add(k));
   CALENDAR = Array.isArray(data.calendar) ? data.calendar : [];
