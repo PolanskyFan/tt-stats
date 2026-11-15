@@ -54629,6 +54629,146 @@
   {
    "from": "seneka1",
    "to": "senegal"
+  },
+  {
+   "from": "sarettafan",
+   "to": "netin!"
+  },
+  {
+   "from": "mc zircon",
+   "to": "zirconek"
+  },
+  {
+   "from": "adidas",
+   "to": "[adidas]"
+  },
+  {
+   "from": "< lt*alonso*cl >",
+   "to": "+alonso"
+  },
+  {
+   "from": "sylvester",
+   "to": "andre♥"
+  },
+  {
+   "from": "hantu",
+   "to": "bennyko"
+  },
+  {
+   "from": "adrian1992",
+   "to": "domachowskadreamer"
+  },
+  {
+   "from": "cipa",
+   "to": "enjoy incubus"
+  },
+  {
+   "from": "gigiberi",
+   "to": "gigi"
+  },
+  {
+   "from": "sol apollo",
+   "to": "haute"
+  },
+  {
+   "from": "guarrigues",
+   "to": "medina"
+  },
+  {
+   "from": "giantkiller",
+   "to": "wolfy"
+  },
+  {
+   "from": "santiago vlad",
+   "to": "stgobaiano"
+  },
+  {
+   "from": "marr",
+   "to": "nofroz"
+  },
+  {
+   "from": "~*carlito*~",
+   "to": "denaon"
+  },
+  {
+   "from": "ghan",
+   "to": "непознати"
+  },
+  {
+   "from": "bashkatik",
+   "to": "federer in 2"
+  },
+  {
+   "from": "magdalena ry",
+   "to": "emrys"
+  },
+  {
+   "from": "grigordjokovic",
+   "to": "bastillano"
+  },
+  {
+   "from": "doriangray",
+   "to": "dorian gray"
+  },
+  {
+   "from": "saule",
+   "to": "vilnietė"
+  },
+  {
+   "from": "dusan1610",
+   "to": "forehand dtl"
+  },
+  {
+   "from": "mrexcel",
+   "to": "samtennis86"
+  },
+  {
+   "from": "wacked82",
+   "to": "thanos"
+  },
+  {
+   "from": "kingiskingfineon",
+   "to": "chirag"
+  },
+  {
+   "from": "howmanytimes",
+   "to": "prodigyeng"
+  },
+  {
+   "from": "serbian-tennis",
+   "to": "igorche"
+  },
+  {
+   "from": "vamos!!",
+   "to": "le vautour"
+  },
+  {
+   "from": "wazza",
+   "to": "waz"
+  },
+  {
+   "from": "jupiterlover",
+   "to": "cswab22"
+  },
+  {
+   "from": "djokovicgonzalez",
+   "to": "emotion"
+  },
+  {
+   "from": "sphrontanascier",
+   "to": "soliloque"
+  },
+  {
+   "from": "locoxcaña",
+   "to": "arielch."
+  },
+  {
+   "from": "deck",
+   "to": "ivanatis"
+  },
+  {
+   "from": "ivantis",
+   "to": "ivanatis"
   }
  ],
  "countryAccepted": [
@@ -55194,7 +55334,6 @@
   "Singles|hesse|trmooney888",
   "Singles|maru angi|tennisninjalove",
   "Doubles|karo em9|svk",
-  "Singles|jupiterlover|cswab22",
   "Singles|vini federer|mreleganza",
   "Singles|tiptopdaisy|applegirl",
   "Singles|jens|mahqz",
@@ -59672,6 +59811,126 @@
   {
    "key": "eltrico",
    "name": "eltrico"
+  },
+  {
+   "key": "netin!",
+   "name": "Netin!"
+  },
+  {
+   "key": "zirconek",
+   "name": "Zirconek"
+  },
+  {
+   "key": "[adidas]",
+   "name": "[adidas]"
+  },
+  {
+   "key": "+alonso",
+   "name": "+alonso"
+  },
+  {
+   "key": "andre♥",
+   "name": "Andre♥"
+  },
+  {
+   "key": "bennyko",
+   "name": "Bennyko"
+  },
+  {
+   "key": "domachowskadreamer",
+   "name": "DomachowskaDreamer"
+  },
+  {
+   "key": "enjoy incubus",
+   "name": "Enjoy Incubus"
+  },
+  {
+   "key": "gigi",
+   "name": "Gigi"
+  },
+  {
+   "key": "haute",
+   "name": "Haute"
+  },
+  {
+   "key": "medina",
+   "name": "Medina"
+  },
+  {
+   "key": "wolfy",
+   "name": "Wolfy"
+  },
+  {
+   "key": "stgobaiano",
+   "name": "Stgobaiano"
+  },
+  {
+   "key": "nofroz",
+   "name": "NoFroz"
+  },
+  {
+   "key": "denaon",
+   "name": "Denaon"
+  },
+  {
+   "key": "federer in 2",
+   "name": "Federer in 2"
+  },
+  {
+   "key": "emrys",
+   "name": "Emrys"
+  },
+  {
+   "key": "dorian gray",
+   "name": "Dorian Gray"
+  },
+  {
+   "key": "vilnietė",
+   "name": "Vilnietė"
+  },
+  {
+   "key": "forehand dtl",
+   "name": "Forehand DTL"
+  },
+  {
+   "key": "samtennis86",
+   "name": "SamTennis86"
+  },
+  {
+   "key": "thanos",
+   "name": "Thanos"
+  },
+  {
+   "key": "chirag",
+   "name": "Chirag"
+  },
+  {
+   "key": "prodigyeng",
+   "name": "ProdigyEng"
+  },
+  {
+   "key": "igorche",
+   "name": "Igorche"
+  },
+  {
+   "key": "waz",
+   "name": "Waz"
+  },
+  {
+   "key": "emotion",
+   "name": "Emotion"
+  },
+  {
+   "key": "soliloque",
+   "name": "Soliloque"
+  },
+  {
+   "key": "arielch.",
+   "name": "ArielCH."
+  },
+  {
+   "key": "ivanatis",
+   "name": "Ivanatis"
   }
  ]
 }
