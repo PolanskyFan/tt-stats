@@ -2246,7 +2246,8 @@ function weekDate(name, season){
 }
 
 const tourWeeks   = tour => WEEKS.filter(w => (w.tour||"Singles") === tour);
-const weekLabel   = w => w ? w.name + (w.season ? ` ${w.season}` : "") : "";
+const weekLabel   = w => w ? w.name + (w.season ? ` ${w.season}` : "") + (w.est ? " (est.)" : "") : "";
+const EST_NOTE = "Estimated ranking. The original lists from 2007 to 2010 are lost, so these are rebuilt from the results and the points of the time.";
 /* A history entry keeps its week under .week, not .name, so it needs its own
    label helper — using weekLabel on one silently produced "undefined 2026". */
 const histLabel   = h => h ? h.week + (h.season ? ` ${h.season}` : "") : "";
@@ -2609,6 +2610,10 @@ function renderWeekPanel(tour, mount){
   const dl=document.createElement("button"); dl.className="btn"; dl.textContent="Download CSV";
   bar.appendChild(field("", dl));
   mount.appendChild(bar);
+  if(week && week.est){
+    const en=document.createElement("p"); en.className="hint"; en.textContent=EST_NOTE;
+    mount.appendChild(en);
+  }
 
   const q=st.q.trim().toLowerCase();
   let rows=(week?week.list:[]).filter(r=>!q||hay(canonName(r.name),r.country).includes(q));
@@ -2785,6 +2790,11 @@ function renderRankRecords(tour, mount){
   }
 
   const ws=tourWeeks(tour);
+  if(ws.some(w=>w.est)){
+    const en=document.createElement("p"); en.className="hint";
+    en.textContent="Weeks from 2007 to 2010 are counted from estimated rankings (marked est.), rebuilt from the results.";
+    mount.appendChild(en);
+  }
   const bestOne=R.one.reduce((m,o)=>o.longest>m.longest?o:m, R.one[0]);
   const bestTen=R.ten.reduce((m,o)=>o.streak>m.streak?o:m, R.ten[0]);
   const grid=document.createElement("div"); grid.className="statgrid";
@@ -6562,8 +6572,12 @@ function encodeSeason(season){
         r.points,
         (r.events===""||r.events==null) ? -1 : r.events ])
   }));
-  return {format:RANKINGS_FORMAT, season, savedAt:new Date().toISOString(),
+  const out = {format:RANKINGS_FORMAT, season, savedAt:new Date().toISOString(),
           players, countries, weeks};
+  /* 2007-2010 have no surviving lists; theirs are rebuilt from the results.
+     The flag travels with the season file so the desk never drops it. */
+  if(WEEKS.some(w=>seasonKey(w)===season && w.est)) out.estimated = true;
+  return out;
 }
 
 function decodeSeason(data){
@@ -6583,7 +6597,7 @@ function decodeSeason(data){
     list.forEach(r=>{ index.set(keyOf(r.name), r.rank); seePlayer(r.name, r.country); });
     WEEKS.push({name:w.n, season: data.season==="unknown" ? "" : data.season,
                 tour: w.t==="D" ? "Doubles" : "Singles",
-                list, index, date:weekDate(w.n, data.season)});
+                list, index, date:weekDate(w.n, data.season), est:!!data.estimated});
   });
 }
 
