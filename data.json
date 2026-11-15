@@ -40125,7 +40125,7 @@
    "date": "2010-02-15",
    "opened": "",
    "name": "Belgrade CH",
-   "event": "Belgrade",
+   "event": "Belgrade CH",
    "country": "SRB",
    "surface": "IH",
    "draw": [
@@ -40166,7 +40166,7 @@
    "surface": "H",
    "draw": [
     32,
-    16,
+    32,
     16,
     8
    ],
@@ -40184,7 +40184,7 @@
    "surface": "CL",
    "draw": [
     32,
-    16,
+    32,
     16,
     8
    ],
@@ -40202,9 +40202,9 @@
    "surface": "H",
    "draw": [
     32,
+    32,
     16,
-    16,
-    8
+    16
    ],
    "manager": "Troickitard",
    "challenger": false
@@ -40225,24 +40225,6 @@
     8
    ],
    "manager": "Colt th Magnific",
-   "challenger": true
-  },
-  {
-   "season": "2010",
-   "code": "8e",
-   "date": "2010-02-22",
-   "opened": "",
-   "name": "Vina del Mar CH",
-   "event": "Vina del Mar",
-   "country": "CHI",
-   "surface": "CL",
-   "draw": [
-    32,
-    16,
-    16,
-    8
-   ],
-   "manager": "Bandtree",
    "challenger": true
   },
   {
@@ -40383,7 +40365,7 @@
    "draw": [
     32,
     16,
-    16,
+    8,
     8
    ],
    "manager": "",
@@ -40405,24 +40387,6 @@
     16
    ],
    "manager": "Genius1787",
-   "challenger": true
-  },
-  {
-   "season": "2010",
-   "code": "13b",
-   "date": "2010-03-29",
-   "opened": "",
-   "name": "San Luis Potosi CH",
-   "event": "San Luis Potosi",
-   "country": "MEX",
-   "surface": "CL",
-   "draw": [
-    32,
-    32,
-    16,
-    16
-   ],
-   "manager": "Mago#01",
    "challenger": true
   },
   {
@@ -40539,7 +40503,7 @@
    "date": "2010-04-12",
    "opened": "",
    "name": "Johannesburg CH",
-   "event": "Johannesburg",
+   "event": "Johannesburg CH",
    "country": "RSA",
    "surface": "H",
    "draw": [
@@ -40647,7 +40611,7 @@
    "date": "2010-04-19",
    "opened": "",
    "name": "Rome CH",
-   "event": "Rome",
+   "event": "Rome CH",
    "country": "ITA",
    "surface": "CL",
    "draw": [
@@ -40881,7 +40845,7 @@
    "date": "2010-05-10",
    "opened": "",
    "name": "Zagreb CH",
-   "event": "Zagreb",
+   "event": "Zagreb CH",
    "country": "CRO",
    "surface": "CL",
    "draw": [
@@ -41314,7 +41278,7 @@
    "draw": [
     32,
     16,
-    16,
+    8,
     8
    ],
    "manager": "chowdahead25",
@@ -41782,7 +41746,7 @@
    "draw": [
     32,
     16,
-    16,
+    8,
     8
    ],
    "manager": "Stancho123",
@@ -41818,7 +41782,7 @@
    "draw": [
     32,
     16,
-    16,
+    8,
     8
    ],
    "manager": "GoBlakeGo",
@@ -42106,7 +42070,7 @@
    "draw": [
     32,
     16,
-    16,
+    8,
     8
    ],
    "manager": "GoBlakeGo",
@@ -42178,7 +42142,7 @@
    "draw": [
     32,
     16,
-    16,
+    8,
     8
    ],
    "manager": "Hotzenplotz",
@@ -42352,13 +42316,13 @@
    "date": "2010-10-04",
    "opened": "",
    "name": "Buenos Aires CH",
-   "event": "Buenos Aires",
+   "event": "Buenos Aires CH",
    "country": "ARG",
    "surface": "CL",
    "draw": [
     32,
     16,
-    16,
+    8,
     8
    ],
    "manager": "Ibreak4coffee",
@@ -42532,7 +42496,7 @@
    "date": "2010-10-18",
    "opened": "",
    "name": "Santiago CH",
-   "event": "Santiago",
+   "event": "Santiago CH",
    "country": "CHI",
    "surface": "CL",
    "draw": [
@@ -42772,7 +42736,7 @@
    "draw": [
     32,
     16,
-    16,
+    8,
     8
    ],
    "manager": "Diego36Arg",
@@ -57716,13 +57680,13 @@
   {
    "season": "2010",
    "event": "Hopman Cup",
-   "team": "",
+   "team": "NED",
    "players": [
     "Rik.",
     "rvugt",
     "Sheva"
    ],
-   "runnerUp": "",
+   "runnerUp": "ARG",
    "beat": [
     "diego36arg",
     "lucho_coria",
@@ -57825,6 +57789,22 @@
     "Zirconek"
    ],
    "score": "2-1"
+  },
+  {
+   "season": "2010",
+   "event": "WTC Dusseldorf",
+   "team": "GRE",
+   "players": [
+    "GustavoM_Fan",
+    "Kraxths",
+    "Baghdatis#1"
+   ],
+   "runnerUp": "MON",
+   "beat": [
+    "Pauchis",
+    "Nikki♥"
+   ],
+   "score": "3-0"
   }
  ],
  "teamGroups": [
@@ -58923,6 +58903,263 @@
        "players": [
         "maldini",
         "Nando_L"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "season": "2010",
+   "event": "WTC Dusseldorf",
+   "source": "posted results",
+   "groups": [
+    {
+     "name": "Group Kastoria",
+     "teams": [
+      {
+       "team": "IND",
+       "name": "India",
+       "players": [
+        "Davidcuervacho",
+        "FERNET"
+       ]
+      },
+      {
+       "team": "FIN",
+       "name": "Finland",
+       "players": [
+        "Labamba",
+        "Overlord",
+        "Smasher"
+       ]
+      },
+      {
+       "team": "ZIM",
+       "name": "Zimbabwe",
+       "players": [
+        "Duncan",
+        "JeffCandoi"
+       ]
+      },
+      {
+       "team": "GRE",
+       "name": "Greece",
+       "players": [
+        "Baghdatis#1",
+        "GustavoM_Fan",
+        "Kraxths"
+       ]
+      }
+     ]
+    },
+    {
+     "name": "Group La Plata",
+     "teams": [
+      {
+       "team": "ARG",
+       "name": "Argentina",
+       "players": [
+        "FiBeR",
+        "manu86",
+        "rodrigol_87"
+       ]
+      },
+      {
+       "team": "GER",
+       "name": "Germany",
+       "players": [
+        "JMG",
+        "KalleOnAir",
+        "marquez"
+       ]
+      },
+      {
+       "team": "USA",
+       "name": "USA",
+       "players": [
+        "chowdahead25",
+        "Ozone"
+       ]
+      },
+      {
+       "team": "MON",
+       "name": "Monaco",
+       "players": [
+        "ExcaliburII",
+        "Nikki♥",
+        "Pauchis"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "season": "2010",
+   "event": "Hopman Cup",
+   "source": "posted entry list",
+   "groups": [
+    {
+     "name": "Group A",
+     "teams": [
+      {
+       "team": "BRA",
+       "name": "Brazil",
+       "players": [
+        "keqtqiadv",
+        "Tytta!."
+       ]
+      },
+      {
+       "team": "FRA",
+       "name": "France",
+       "players": [
+        "trucul",
+        "Walsall"
+       ]
+      },
+      {
+       "team": "CRO",
+       "name": "Croatia",
+       "players": [
+        "_A_",
+        "Deathless Mortal",
+        "Superior1",
+        "tennismaster882001"
+       ]
+      },
+      {
+       "team": "AUS",
+       "name": "Australia",
+       "players": [
+        "kengyin",
+        "Peta Pan",
+        "save ausdecline",
+        "Tankman"
+       ]
+      }
+     ]
+    },
+    {
+     "name": "Group B",
+     "teams": [
+      {
+       "team": "CHI",
+       "name": "Chile",
+       "players": [
+        "ChinoRios4Ever",
+        "juakos17"
+       ]
+      },
+      {
+       "team": "IND",
+       "name": "India",
+       "players": [
+        "FERNET",
+        "Pauchis"
+       ]
+      },
+      {
+       "team": "ROU",
+       "name": "Romania",
+       "players": [
+        "lucian_iasi",
+        "Mago#01",
+        "Marita"
+       ]
+      },
+      {
+       "team": "CAN",
+       "name": "Canada",
+       "players": [
+        "156mphserve",
+        "bandtree",
+        "Ibreak4coffee"
+       ]
+      }
+     ]
+    },
+    {
+     "name": "Group C",
+     "teams": [
+      {
+       "team": "ARG",
+       "name": "Argentina",
+       "players": [
+        "diego36arg",
+        "FiBeR",
+        "lucho_coria",
+        "manu86"
+       ]
+      },
+      {
+       "team": "FIN",
+       "name": "Finland",
+       "players": [
+        "Labamba",
+        "orangehat",
+        "Overlord"
+       ]
+      },
+      {
+       "team": "TUR",
+       "name": "Turkey",
+       "players": [
+        "Bashak",
+        "chowdahead25",
+        "Luinir"
+       ]
+      },
+      {
+       "team": "RUS",
+       "name": "Russia",
+       "players": [
+        "Miss Glazastik",
+        "nickelS",
+        "Redguard"
+       ]
+      }
+     ]
+    },
+    {
+     "name": "Group D",
+     "teams": [
+      {
+       "team": "NED",
+       "name": "Netherlands",
+       "players": [
+        "Rik.",
+        "rvugt",
+        "Sheva"
+       ]
+      },
+      {
+       "team": "SRB",
+       "name": "Serbia",
+       "players": [
+        "Crvena Zvezda",
+        "dusan1610"
+       ]
+      },
+      {
+       "team": "ECU",
+       "name": "Ecuador",
+       "players": [
+        "ExcaliburII",
+        "Harmless",
+        "Machiavelli",
+        "Snoo Foo"
+       ]
+      },
+      {
+       "team": "GBR",
+       "name": "Great Britain",
+       "players": [
+        "bowlbowl01",
+        "Cheeky Chick",
+        "Forever-Delayed",
+        "ippigetis"
        ]
       }
      ]
