@@ -1,8 +1,7 @@
 {
  "format": "tennis-tipping/1",
- "savedAt": "2026-11-15T20:55:16.524Z",
+ "savedAt": "2026-11-15T21:54:37.000Z",
  "matchFiles": [
-  "matches-unknown.json",
   "matches-2026.json",
   "matches-2025.json",
   "matches-2024.json",
@@ -12118,7 +12117,7 @@
    "surface": "CL",
    "draw": [],
    "manager": "a1canada",
-   "challenger": false
+   "challenger": true
   },
   {
    "season": "2020",
@@ -12329,7 +12328,7 @@
    "code": "4c",
    "date": "2019-01-21",
    "opened": "",
-   "name": "Punta del Este",
+   "name": "Punta del Este CH",
    "event": "Punta del Este",
    "country": "URU",
    "surface": "CL",
@@ -12338,7 +12337,7 @@
     16
    ],
    "manager": "nachotuerto",
-   "challenger": false
+   "challenger": true
   },
   {
    "season": "2019",
@@ -12991,7 +12990,7 @@
    "code": "17c",
    "date": "2019-04-22",
    "opened": "",
-   "name": "Francavilla",
+   "name": "Francavilla CH",
    "event": "Francavilla",
    "country": "ITA",
    "surface": "CL",
@@ -13000,7 +12999,7 @@
     16
    ],
    "manager": "R. Ozgerer",
-   "challenger": false
+   "challenger": true
   },
   {
    "season": "2019",
@@ -22148,7 +22147,7 @@
    "surface": "IH",
    "draw": [],
    "manager": "dinkulpus",
-   "challenger": false
+   "challenger": true
   },
   {
    "season": "2016",
@@ -25444,7 +25443,7 @@
    "code": "44b",
    "date": "2015-11-02",
    "opened": "",
-   "name": "Canberra",
+   "name": "Canberra CH",
    "event": "Canberra",
    "country": "AUS",
    "surface": "H",
@@ -25455,7 +25454,7 @@
     8
    ],
    "manager": "BMT360",
-   "challenger": false
+   "challenger": true
   },
   {
    "season": "2015",
@@ -25703,7 +25702,7 @@
     8
    ],
    "manager": "valac222",
-   "challenger": false
+   "challenger": true
   },
   {
    "season": "2015",
@@ -26011,7 +26010,7 @@
    "code": "1e",
    "date": "2013-12-30",
    "opened": "",
-   "name": "Noumea",
+   "name": "Noumea CH",
    "event": "Noumea",
    "country": "NCL",
    "surface": "H",
@@ -26022,14 +26021,14 @@
     8
    ],
    "manager": "CoolyBri",
-   "challenger": false
+   "challenger": true
   },
   {
    "season": "2014",
    "code": "1f",
    "date": "2013-12-30",
    "opened": "",
-   "name": "Sao Paulo*",
+   "name": "Sao Paulo CH*",
    "event": "Sao Paulo",
    "country": "BRA",
    "surface": "H",
@@ -26040,7 +26039,7 @@
     8
    ],
    "manager": "DJDVD",
-   "challenger": false
+   "challenger": true
   },
   {
    "season": "2014",
@@ -26798,7 +26797,7 @@
    "code": "13b",
    "date": "2014-03-24",
    "opened": "",
-   "name": "Barranquilla",
+   "name": "Barranquilla CH",
    "event": "Barranquilla",
    "country": "COL",
    "surface": "CL",
@@ -26809,7 +26808,7 @@
     8
    ],
    "manager": "peixe15",
-   "challenger": false
+   "challenger": true
   },
   {
    "season": "2014",
@@ -29174,7 +29173,7 @@
    "code": "44d",
    "date": "2014-10-27",
    "opened": "",
-   "name": "Reunion Island",
+   "name": "Reunion Island CH",
    "event": "Reunion Island",
    "country": "FRA",
    "surface": "H",
@@ -29185,7 +29184,7 @@
     8
    ],
    "manager": "dinkulpus",
-   "challenger": false
+   "challenger": true
   },
   {
    "season": "2014",
@@ -29228,7 +29227,7 @@
    "code": "45c",
    "date": "2014-11-03",
    "opened": "",
-   "name": "Mouilleron Le Captif",
+   "name": "Mouilleron Le Captif CH",
    "event": "Mouilleron Le Captif",
    "country": "FRA",
    "surface": "IH",
@@ -29239,7 +29238,7 @@
     8
    ],
    "manager": "dinkulpus",
-   "challenger": false
+   "challenger": true
   },
   {
    "season": "2014",
@@ -29264,7 +29263,7 @@
    "code": "45e",
    "date": "2014-11-03",
    "opened": "",
-   "name": "Traralgon 2",
+   "name": "Traralgon 2 CH",
    "event": "Traralgon 2",
    "country": "AUS",
    "surface": "H",
@@ -29275,7 +29274,7 @@
     8
    ],
    "manager": "AussieAdz",
-   "challenger": false
+   "challenger": true
   },
   {
    "season": "2014",
@@ -29373,7 +29372,7 @@
    "surface": "CL",
    "draw": [],
    "manager": "bry17may",
-   "challenger": false
+   "challenger": true
   },
   {
    "season": "2014",
@@ -32430,7 +32429,7 @@
    "code": "41c",
    "date": "2013-10-07",
    "opened": "",
-   "name": "San Juan",
+   "name": "San Juan CH",
    "event": "San Juan",
    "country": "ARG",
    "surface": "H",
@@ -32441,7 +32440,7 @@
     8
    ],
    "manager": "justafanYYC",
-   "challenger": false
+   "challenger": true
   },
   {
    "season": "2013",
@@ -32809,7 +32808,7 @@
    "surface": "CL",
    "draw": [],
    "manager": "bry17may",
-   "challenger": false
+   "challenger": true
   },
   {
    "season": "2013",
@@ -33110,7 +33109,7 @@
     16
    ],
    "manager": "AdeyC",
-   "challenger": false
+   "challenger": true
   },
   {
    "season": "2012",
@@ -33159,7 +33158,7 @@
     8
    ],
    "manager": "abollo",
-   "challenger": false
+   "challenger": true
   },
   {
    "season": "2012",
@@ -33791,7 +33790,7 @@
    "code": "13b",
    "date": "2012-03-26",
    "opened": "",
-   "name": "Barranquilla",
+   "name": "Barranquilla CH",
    "event": "Barranquilla",
    "country": "COL",
    "surface": "H",
@@ -33802,7 +33801,7 @@
     8
    ],
    "manager": "justafanYYC",
-   "challenger": false
+   "challenger": true
   },
   {
    "season": "2012",
@@ -33820,7 +33819,7 @@
     8
    ],
    "manager": "Vilniete",
-   "challenger": false
+   "challenger": true
   },
   {
    "season": "2012",
@@ -34830,7 +34829,7 @@
    "code": "27d",
    "date": "2012-07-02",
    "opened": "",
-   "name": "Lima",
+   "name": "Lima CH",
    "event": "Lima",
    "country": "PER",
    "surface": "CL",
@@ -34841,7 +34840,7 @@
     8
    ],
    "manager": "doctorlopes",
-   "challenger": false
+   "challenger": true
   },
   {
    "season": "2012",
@@ -35242,7 +35241,7 @@
    "code": "32d",
    "date": "2012-08-06",
    "opened": "",
-   "name": "Pozoblanco",
+   "name": "Pozoblanco CH",
    "event": "Pozoblanco",
    "country": "ESP",
    "surface": "CL",
@@ -35253,7 +35252,7 @@
     8
    ],
    "manager": "Direnan",
-   "challenger": false
+   "challenger": true
   },
   {
    "season": "2012",
@@ -36335,7 +36334,7 @@
    "code": "46e",
    "date": "2012-11-12",
    "opened": "",
-   "name": "Marbella",
+   "name": "Marbella CH",
    "event": "Marbella",
    "country": "ESP",
    "surface": "CL",
@@ -36346,7 +36345,7 @@
     8
    ],
    "manager": "Marto",
-   "challenger": false
+   "challenger": true
   },
   {
    "season": "2012",
@@ -36413,7 +36412,7 @@
    "surface": "IH",
    "draw": [],
    "manager": "doctorlopes",
-   "challenger": false
+   "challenger": true
   },
   {
    "season": "2011",
@@ -39339,7 +39338,7 @@
    "code": "43c",
    "date": "2011-10-24",
    "opened": "",
-   "name": "Sao Jose do Rio Preto",
+   "name": "Sao Jose do Rio Preto CH",
    "event": "Sao Jose do Rio Preto",
    "country": "BRA",
    "surface": "CL",
@@ -39350,7 +39349,7 @@
     16
    ],
    "manager": "Marto",
-   "challenger": false
+   "challenger": true
   },
   {
    "season": "2011",
@@ -39525,7 +39524,7 @@
    "surface": "IH",
    "draw": [],
    "manager": "Marto",
-   "challenger": false
+   "challenger": true
   },
   {
    "season": "2011",

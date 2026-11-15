@@ -926,11 +926,13 @@ function derivePlayers(surface, season){
   /* Best win and longest run used to be worked out per player, each scanning
      every match \u2014 fine for one season, ten seconds across eighteen. One pass
      in date order does both for everybody. */
-  const bestR=new Map(), bestRun=new Map(), run=new Map();
+  const bestR=new Map(), bestRun=new Map(), run=new Map(), lastYr=new Map();
   inOrder(MATCHES.filter(m=>m.disc==="Singles" && !m.isBye)).forEach(m=>{
     if(surface && surfaceOf(m)!==surface) return;
     if(season && m.season!==season) return;
     const w=keyOf(m.winner), l=keyOf(m.loser);
+    const yr=parseInt(m.season,10);
+    [w,l].forEach(k=>{ if(seasonGap(lastYr.get(k), yr)) run.set(k,0); if(!isNaN(yr)) lastYr.set(k,yr); });
     const r=parseInt(m.loserRank,10);
     if(!isNaN(r) && (!bestR.has(w) || r<bestR.get(w))) bestR.set(w,r);
     const k=(run.get(w)||0)+1;
@@ -4576,6 +4578,9 @@ function applyHash(){
     case "manager":
       if(a){ MANAGER_UI.name=a; renderManagerPage(); }
       return go("manager");
+    case "records":
+      if(a==="Doubles" || a==="Both" || a==="Singles") REC_UI.tab=a;
+      return go("records");
     case "rank":
       if(a){ RANK_UI[a==="Doubles"?"Doubles":"Singles"].player = b?canonName(b):null;
              renderTour(a==="Doubles"?"Doubles":"Singles"); }
@@ -4608,12 +4613,42 @@ function newestFirst(list){
   });
 }
 
+/* Playing order: the tournament's calendar date, then qualifying before the
+   main draw and each round before the next. The season files hold a
+   tournament's rounds in no fixed order (some list the final first), so load
+   order can't stand in for the order of play. */
 function inOrder(list){
-  return list.slice().sort((x,y)=>{
-    const a=matchDate(x), b=matchDate(y);
-    if(a && b && a!==b) return a<b ? -1 : 1;
-    return (x.id||0)-(y.id||0);
+  const when=new Map();
+  const rows=list.map(m=>{
+    const k=m.event+"|"+m.season;
+    let d=when.get(k);
+    if(d===undefined){ d=whenOf(m.event,m.season); when.set(k,d); }
+    return {m, d, s:m.stage==="Main"?1:0};
   });
+  rows.sort((x,y)=>{
+    if(x.d!==y.d) return x.d<y.d ? -1 : 1;
+    if(x.m.event!==y.m.event) return x.m.event<y.m.event ? -1 : 1;
+    return x.s-y.s || (y.m.level||0)-(x.m.level||0) || (x.m.id||0)-(y.m.id||0);
+  });
+  return rows.map(r=>r.m);
+}
+
+/* A run can't carry across seasons whose results aren't on the site: winning
+   the last match of 2018 and the first of 2024 is not two in a row. True when
+   a season with no results lies between the two years. */
+let YEARS_CACHE=null;
+function loadedYears(){
+  if(YEARS_CACHE && YEARS_CACHE.n===MATCHES.length) return YEARS_CACHE.set;
+  const set=new Set();
+  MATCHES.forEach(m=>{ const y=parseInt(m.season,10); if(!isNaN(y)) set.add(y); });
+  YEARS_CACHE={n:MATCHES.length, set};
+  return set;
+}
+function seasonGap(a, b){
+  if(a==null || isNaN(a) || isNaN(b)) return false;
+  const yrs=loadedYears();
+  for(let y=a+1;y<b;y++) if(!yrs.has(y)) return true;
+  return false;
 }
 
 /* ==================================================================
@@ -4632,8 +4667,11 @@ function bestWin(name, disc){
 
 function longestStreak(name, disc){
   const ms=inOrder(playerMatches(name, disc));
-  let run=0, best=0, from=null, bestFrom=null, bestTo=null, cur=null;
+  let run=0, best=0, from=null, bestFrom=null, bestTo=null, cur=null, prevYr=null;
   ms.forEach(m=>{
+    const yr=parseInt(m.season,10);
+    if(seasonGap(prevYr, yr)) run=0;
+    if(!isNaN(yr)) prevYr=yr;
     if(wonBy(m,name)){
       if(!run) from=m;
       run++; cur=m;
@@ -4804,8 +4842,645 @@ function renderOverview(){
 
 /* ==================================================================
    RECORDS
-   The arguments people actually have in the threads.
+   The arguments people actually have in the threads. Three pages:
+   singles, doubles (each player, and each team) and the two together.
+   Every figure comes from one pass over the matches in playing order,
+   and the result is kept until the data changes.
    ================================================================== */
+const REC_UI = {tab:"Singles", open:new Set()};
+let REC_CACHE = null;
+function invalidateRecords(){ REC_CACHE=null; }
+
+const REC_SLAMS = {"Australian Open":"ao", "Roland Garros":"rg", "Wimbledon":"wim", "U.S. Open":"uso"};
+const REC_MASTERS = new Set(["Indian Wells","Miami","Monte Carlo","Rome","Madrid","Hamburg",
+  "Montreal","Toronto","Cincinnati","Shanghai","Paris"]);
+/* Hamburg was a Masters until 2008, and Shanghai has been one since 2009. */
+function recMastersName(event, season){
+  if(!REC_MASTERS.has(event)) return false;
+  const y=parseInt(season,10);
+  if(event==="Hamburg")  return y<=2008;
+  if(event==="Shanghai") return y>=2009;
+  return true;
+}
+
+const recPct  = (w,l) => (w+l) ? Math.round(w/(w+l)*100)+"%" : "";
+const recSpan = (a,b) => (!a && !b) ? "" : (a===b || !b) ? String(a) : `${a}–${b}`;
+const recEv   = m => m ? `${m.event} ${m.season}` : "";
+const recName = (a,b) => String(a.name).toLowerCase().localeCompare(String(b.name).toLowerCase());
+
+/* Everything the three pages share: which seasons are loaded, what each
+   tournament is, and the matches of each discipline in playing order. */
+function recContext(){
+  const yrs=loadedYears(), gap=seasonGap;
+
+  const cal=new Map();
+  CALENDAR.forEach(c=>{
+    const k=c.event+"|"+(c.season||"");
+    if(!cal.has(k)) cal.set(k,[]);
+    cal.get(k).push(c);
+  });
+  const flags=new Map();
+  const flagsOf=eid=>{
+    let f=flags.get(eid);
+    if(!f){
+      const rows=cal.get(eid)||[];
+      f={yef:rows.some(c=>c.name==="ATP Finals"),
+         /* a round robin filed as qualifying: no one "qualifies" from it */
+         rr:rows.some(c=>/Finals$/i.test(c.name||"")),
+         tour:rows.some(c=>!c.challenger), ch:rows.some(c=>c.challenger)};
+      flags.set(eid,f);
+    }
+    return f;
+  };
+
+  /* Which final is the Masters final. A Challenger sometimes shares the
+     Masters' name and season (Rome, Madrid, Shanghai), so one name can hold
+     two finals. The Masters is the bigger draw, so its finalists are the ones
+     who also have a line in the round the Challenger doesn't have. */
+  const fin=new Map(), first=new Map(), wins=new Map();
+  for(const m of MATCHES){
+    if(m.stage!=="Main" || !recMastersName(m.event, m.season)) continue;
+    const k=m.event+"|"+m.season+"|"+m.disc;
+    const big = m.disc==="Doubles" ? (m.round==="R64"||m.round==="R32")
+                                   : (m.round==="R128"||m.round==="R64");
+    if(big){
+      let s=first.get(k); if(!s){ s=new Set(); first.set(k,s); }
+      s.add(idOf(m.winner,m.disc)); s.add(idOf(m.loser,m.disc));
+    }
+    if(m.isBye) continue;
+    const wk=k+"|"+idOf(m.winner,m.disc);
+    wins.set(wk,(wins.get(wk)||0)+1);
+    if(m.round==="F"){ if(!fin.has(k)) fin.set(k,[]); fin.get(k).push(m); }
+  }
+  const masters=new Set();
+  fin.forEach((list,k)=>{
+    const p=k.split("|");
+    if(!flagsOf(p[0]+"|"+p[1]).tour) return;
+    if(list.length===1){ masters.add(list[0]); return; }
+    const s=first.get(k)||new Set();
+    const pass=list.filter(m=>s.has(idOf(m.winner,m.disc)) && s.has(idOf(m.loser,m.disc)));
+    if(!pass.length) return;
+    const w=m=>wins.get(k+"|"+idOf(m.winner,m.disc))||0;
+    pass.sort((x,y)=>w(y)-w(x));
+    masters.add(pass[0]);
+  });
+
+  const tierOf=m=>{
+    if(REC_SLAMS[m.event]) return "gs";
+    if(flagsOf(m.event+"|"+m.season).yef) return "yef";
+    if(masters.has(m)) return "ms";
+    return "";
+  };
+
+  /* A tour-level title: a Grand Slam, the Finals, a Masters, or a tournament
+     whose name isn't shared with a Challenger that season. */
+  const tourLevel=m=>{
+    if(REC_SLAMS[m.event] || masters.has(m)) return true;
+    const f=flagsOf(m.event+"|"+m.season);
+    return f.tour && !f.ch;
+  };
+
+  /* A player's singles rank in the week of the tournament, as stored on the
+     match row. Rows from 2024 on took it from the draw; the 2007 to 2018 rows
+     were filled from the ranking lists (the latest list dated on or before the
+     Monday nearest the tournament's calendar date, starting with the estimated
+     list of 9 July 2007). Reading the row keeps these records in step with the
+     Players tab, which counts the same figures. */
+  const rankOf=(m, which)=>{
+    const v=m[which+"Rank"];
+    return (v!=="" && v!=null && Number(v)>0) ? Number(v) : null;
+  };
+
+  const orders={};
+  const order=disc=>orders[disc] || (orders[disc]=inOrder(MATCHES.filter(m=>m.disc===disc && !m.isBye)));
+  const sorted=[...yrs].sort((a,b)=>a-b);
+  return {yrs, years:sorted, maxYr:sorted.length?sorted[sorted.length-1]:null, gap, flagsOf, tierOf, tourLevel, rankOf, order};
+}
+
+/* One pass over a discipline. "solo" counts singles players, "team" doubles
+   pairs and "member" each doubles player whoever the partner was. */
+function recBuild(ctx, disc, mode){
+  const U=new Map(), P=new Map(), upsets=[], rankedTitles=[];
+  const sides = mode==="solo" ? n=>[[keyOf(n), n]]
+    : mode==="team" ? n=>[[teamKeyOf(n), n]]
+    : n=>String(n).split("/").map(p=>p.trim()).filter(p=>p && !isByeName(p)).map(p=>[keyOf(p), p]);
+  const unit=(key,raw)=>{
+    let u=U.get(key);
+    if(!u){
+      u={key, name: mode==="team" ? canonTeam(raw) : canonName(raw),
+        w:0,l:0,aw:0,al:0,qw:0,ql:0,qualified:0,titles:0,finals:0,
+        gs:0,yef:0,ms:0,ao:0,rg:0,wim:0,uso:0,gsW:0,gsL:0,tH:0,tCL:0,tG:0,tIH:0,
+        events:new Set(), seasons:new Map(), evTitles:new Map(), titleIds:new Set(),
+        entries:[], run:0, runFrom:null, best:null, lastYr:null, lastM:null,
+        lrun:0, lFrom:null, worst:null, qTitles:[], llTitles:[], no1W:0, no1Last:null, t10w:0, t10l:0,
+        evRun:new Map(), partners:new Map(), firstTitle:null, lastTitle:null};
+      U.set(key,u);
+    }
+    return u;
+  };
+
+  for(const m of ctx.order(disc)){
+    const yr=parseInt(m.season,10);
+    const main=m.stage==="Main", team=isTeamEvent(m.event);
+    const eid=m.event+"|"+m.season;
+    const tf=main && titleFinal(m);
+    const tier=tf ? ctx.tierOf(m) : "";
+    const surf=tf ? surfaceOf(m) : "";
+    const slam=REC_SLAMS[m.event];
+    const rr=team || ctx.flagsOf(eid).rr;
+    const ws=sides(m.winner), ls=sides(m.loser);
+
+    const touch=(pair, won, mates)=>{
+      const u=unit(pair[0], mode==="team" ? m[won?"winner":"loser"] : pair[1]);
+      if(ctx.gap(u.lastYr, yr)){ u.run=0; u.runFrom=null; u.lrun=0; }
+      if(!isNaN(yr)) u.lastYr=yr;
+      u.lastM=m;
+      won ? u.aw++ : u.al++;
+      let s=u.seasons.get(m.season);
+      if(!s){ s={season:m.season, w:0, l:0, titles:0, finals:0}; u.seasons.set(m.season,s); }
+      u.events.add(eid);
+
+      if(main){
+        if(won){ u.w++; s.w++; } else { u.l++; s.l++; }
+        if(slam){ won ? u.gsW++ : u.gsL++; }
+      } else if(!rr){
+        won ? u.qw++ : u.ql++;
+        if(won && m.round==="QFR") u.qualified++;
+      }
+
+      if(tf){
+        u.finals++; s.finals++;
+        if(won){
+          u.titles++; s.titles++; u.titleIds.add(eid);
+          if(tier) u[tier]++;
+          if(slam) u[slam]++;
+          if(surf && u["t"+surf]!==undefined) u["t"+surf]++;
+          let et=u.evTitles.get(m.event);
+          if(!et){ et={event:m.event, n:0, seasons:[]}; u.evTitles.set(m.event,et); }
+          et.n++; et.seasons.push(m.season);
+          if(!u.firstTitle) u.firstTitle=m;
+          u.lastTitle=m;
+        }
+      }
+
+      /* winning and losing runs: every match counts, qualifying included */
+      if(won){
+        u.lrun=0;
+        if(!u.run) u.runFrom=m;
+        u.run++;
+        if(!u.best || u.run>u.best.n) u.best={n:u.run, from:u.runFrom, to:m};
+      } else {
+        u.run=0;
+        if(!u.lrun) u.lFrom=m;
+        u.lrun++;
+        if(!u.worst || u.lrun>u.worst.n) u.worst={n:u.lrun, from:u.lFrom, to:m};
+      }
+
+      /* unbeaten at one tournament, main draw only */
+      if(main && !team){
+        let er=u.evRun.get(m.event);
+        if(!er){ er={run:0, from:"", best:0, bFrom:"", bTo:"", lastYr:null}; u.evRun.set(m.event,er); }
+        if(ctx.gap(er.lastYr, yr)) er.run=0;
+        if(!isNaN(yr)) er.lastYr=yr;
+        if(won){
+          if(!er.run) er.from=m.season;
+          er.run++;
+          if(er.run>er.best){ er.best=er.run; er.bFrom=er.from; er.bTo=m.season; }
+        } else er.run=0;
+      }
+
+      /* the tournaments entered, in order, for runs of titles and finals */
+      if(!team){
+        let e=u.entries[u.entries.length-1];
+        if(!e || e.id!==eid){ e={id:eid, event:m.event, season:m.season, yr, title:false, final:false, q:false, ll:false}; u.entries.push(e); }
+        /* came through qualifying, or in as a lucky loser: the tag can sit on
+           any main-draw line, not always the final's */
+        if(main){
+          const sd=won ? m.winnerSeed : m.loserSeed;
+          if(isQ(sd)) e.q=true; else if(isLL(sd)) e.ll=true;
+        }
+        if(tf){
+          e.final=true;
+          if(won){ e.title=true; if(e.q) u.qTitles.push(m); else if(e.ll) u.llTitles.push(m); }
+        }
+      }
+
+      if(mode==="member"){
+        mates.forEach(mt=>{
+          if(mt[0]===pair[0]) return;
+          let p=u.partners.get(mt[0]);
+          if(!p){ p={key:mt[0], name:canonName(mt[1]), n:0, w:0, titles:0}; u.partners.set(mt[0],p); }
+          p.n++; if(won) p.w++; if(tf && won) p.titles++;
+        });
+      }
+    };
+    ws.forEach(p=>touch(p,true,ws));
+    ls.forEach(p=>touch(p,false,ls));
+
+    /* records that need each player's rank at the time: singles main draws */
+    if(mode==="solo" && main){
+      const wr=ctx.rankOf(m,"winner"), lr=ctx.rankOf(m,"loser");
+      const W=U.get(ws[0][0]), L=U.get(ls[0][0]);
+      if(lr===1){ W.no1W++; W.no1Last=m; }
+      if(lr && lr<=10){ W.t10w++; if(wr && wr>lr) upsets.push({m, wr, lr, w:W.name, l:L.name}); }
+      if(wr && wr<=10) L.t10l++;
+      if(tf && wr && ctx.tourLevel(m)) rankedTitles.push({m, wr, w:W.name});
+    }
+
+    if(mode!=="member" && ws.length && ls.length){
+      const a=ws[0][0], b=ls[0][0];
+      if(a!==b){
+        const lo=a<b?a:b, hi=a<b?b:a, pk=lo+"||"+hi;
+        let p=P.get(pk);
+        if(!p){ p={a:lo, b:hi, aw:0, bw:0, n:0, finals:0, first:m.season, last:m.season}; P.set(pk,p); }
+        p.n++; (a===lo) ? p.aw++ : p.bw++;
+        if(tf) p.finals++;
+        p.last=m.season;
+      }
+    }
+  }
+  return {units:[...U.values()], byKey:U, pairs:[...P.values()], upsets, rankedTitles, mode, disc};
+}
+
+/* The longest stretch of consecutive entries that pass a test. */
+function recRun(ctx, entries, test){
+  let run=0, from=null, best=null, prev=null;
+  entries.forEach(e=>{
+    if(ctx.gap(prev, e.yr)) run=0;
+    if(!isNaN(e.yr)) prev=e.yr;
+    if(test(e)){
+      if(!run) from=e;
+      run++;
+      if(!best || run>best.n) best={n:run, from, to:e};
+    } else run=0;
+  });
+  return best;
+}
+
+function recData(){
+  const key=[MATCHES.length, WEEKS.length, REG.size, ALIAS.size, CALENDAR.length].join("|");
+  if(REC_CACHE && REC_CACHE.key===key) return REC_CACHE;
+  const ctx=recContext();
+  const made={};
+  const get=(name, disc, mode)=>made[name] || (made[name]=recBuild(ctx, disc, mode));
+  REC_CACHE={key, ctx,
+    solo:()=>get("solo","Singles","solo"),
+    team:()=>get("team","Doubles","team"),
+    member:()=>get("member","Doubles","member"),
+    rank:tour=>made["rank"+tour] || (made["rank"+tour]=tourWeeks(tour).length>1 ? recordRows(tour) : null)};
+  return REC_CACHE;
+}
+
+/* ---------------- the tables ---------------- */
+/* Every table for one set of players or teams. Rows are sorted and cut to the
+   top 25; the card shows ten and opens to the rest. */
+function recTables(D, ctx, suffix){
+  const mode=D.mode, disc=D.disc, U=D.units;
+  const sfx=suffix||"";
+  const who = mode==="team"
+    ? {k:"name",h:"Team",render:r=>nameLinks(r.name,"Doubles"),csv:r=>r.name}
+    : {k:"name",h:"Player",render:r=>nameLinks(r.name,disc),csv:r=>r.name};
+  const num=(k,h)=>({k,h,cls:"num"});
+  const mono=(k,h)=>({k,h,cls:"mono"});
+  const evCol={k:"event",h:"Tournament",render:r=>{
+    const b=document.createElement("button"); b.className="linkish"; b.textContent=r.event;
+    b.addEventListener("click",()=>showEvent(r.event, r.evSeason||"")); return b;}, csv:r=>r.event};
+  const top=(rows, cmp, n)=>rows.slice().sort((a,b)=>cmp(a,b) || recName(a,b)).slice(0, n||25);
+  const T={};
+  const noun = mode==="team" ? "team" : "player";
+
+  /* ---- titles ---- */
+  const champs=U.filter(u=>u.titles>0);
+  T.titles={title:"Most titles"+sfx, by:["titles"],
+    cols:[who, num("titles","Titles"), num("lost","Runner-up")]
+      .concat(mode==="member" ? [num("mates","Won with")] : [])
+      .concat([mono("first","First"), {k:"latest",h:"Latest"}]),
+    hint: mode==="member" ? "Won with: how many different partners the titles came with." : "",
+    rows:top(champs.map(u=>({name:u.name, titles:u.titles, lost:u.finals-u.titles,
+      mates:[...u.partners.values()].filter(p=>p.titles>0).length,
+      first:u.firstTitle.season, latest:recEv(u.lastTitle)})), (a,b)=>b.titles-a.titles || a.lost-b.lost)};
+
+  T.big={title:"Biggest titles"+sfx, by:["total","gs"],
+    hint:"Grand Slams, the year-end Finals and the Masters events.",
+    cols:[who, num("total","Total"), num("gs","Grand Slams"), num("yef","Finals"), num("ms","Masters")],
+    rows:top(U.filter(u=>u.gs+u.yef+u.ms>0).map(u=>({name:u.name, total:u.gs+u.yef+u.ms, gs:u.gs, yef:u.yef, ms:u.ms})),
+      (a,b)=>b.total-a.total || b.gs-a.gs || b.yef-a.yef)};
+
+  T.slams={title:"Grand Slam titles"+sfx, by:["gs"],
+    cols:[who, num("gs","Titles"), num("ao","Australian Open"), num("rg","Roland Garros"),
+      num("wim","Wimbledon"), num("uso","U.S. Open")],
+    rows:top(U.filter(u=>u.gs>0).map(u=>({name:u.name, gs:u.gs, ao:u.ao, rg:u.rg, wim:u.wim, uso:u.uso})),
+      (a,b)=>b.gs-a.gs)};
+
+  T.finals={title:"Most finals"+sfx, by:["finals"],
+    cols:[who, num("finals","Finals"), num("titles","Won"), num("lost","Lost"), num("rate","Won %")],
+    rows:top(U.filter(u=>u.finals>0).map(u=>({name:u.name, finals:u.finals, titles:u.titles,
+      lost:u.finals-u.titles, rate:recPct(u.titles, u.finals-u.titles)})), (a,b)=>b.finals-a.finals || b.titles-a.titles)};
+
+  T.noTitle={title:"Most finals without a title"+sfx, by:["finals"],
+    cols:[who, num("finals","Finals"), mono("span","Seasons")],
+    rows:top(U.filter(u=>u.finals>0 && !u.titles).map(u=>{
+      const ss=[...u.seasons.values()].filter(s=>s.finals).map(s=>s.season).sort();
+      return {name:u.name, finals:u.finals, span:recSpan(ss[0], ss[ss.length-1])}; }),
+      (a,b)=>b.finals-a.finals).filter(r=>r.finals>1)};
+
+  const atOne=[];
+  champs.forEach(u=>u.evTitles.forEach(et=>{ if(et.n>1) atOne.push({name:u.name, event:et.event, n:et.n,
+    evSeason:et.seasons[et.seasons.length-1], when:et.seasons.join(", ")}); }));
+  T.atOne={title:"Most titles at one tournament"+sfx, by:["n"],
+    cols:[who, evCol, num("n","Titles"), mono("when","Seasons")],
+    rows:top(atOne, (a,b)=>b.n-a.n)};
+
+  T.different={title:"Most different tournaments won"+sfx, by:["n"],
+    cols:[who, num("n","Tournaments"), num("titles","Titles")],
+    rows:top(champs.map(u=>({name:u.name, n:u.evTitles.size, titles:u.titles})), (a,b)=>b.n-a.n || b.titles-a.titles)};
+
+  /* titles from qualifying, or as a lucky loser */
+  const tagNote="Qualifier and lucky-loser tags are on the site for 2007\u20132010 and 2024\u20132026 only.";
+  const tagged=(key)=>top(U.filter(u=>u[key].length).map(u=>({name:u.name, n:u[key].length,
+    list:u[key].slice(-3).reverse().map(recEv).join(", ")+(u[key].length>3?"\u2026":"")})), (a,b)=>b.n-a.n);
+  T.qTitles={title:"Most titles as a qualifier"+sfx, by:["n"], hint:tagNote,
+    cols:[who, num("n","Titles"), {k:"list",h:"Most recent"}], rows:tagged("qTitles")};
+  T.llTitles={title:"Titles as a lucky loser"+sfx, by:["n"], hint:tagNote,
+    cols:[who, num("n","Titles"), {k:"list",h:"Most recent"}], rows:tagged("llTitles")};
+
+  /* five leaders on each surface, side by side */
+  const cell=k=>({k, h:SURFACE_NAME[k], render:r=>{
+    const c=r[k]; if(!c) return "—";
+    const w=nameLinks(c.name, disc);
+    const n=document.createElement("span"); n.className="recn"; n.textContent=c.n;
+    w.appendChild(n); return w; }, csv:r=>r[k] ? `${r[k].name} (${r[k].n})` : ""});
+  const lead={};
+  SURFACES.forEach(s=>{ lead[s]=top(U.filter(u=>u["t"+s]>0).map(u=>({name:u.name, n:u["t"+s]})), (a,b)=>b.n-a.n, 5); });
+  const surfRows=[];
+  for(let i=0;i<5;i++){
+    if(!SURFACES.some(s=>lead[s][i])) break;
+    const r={pos:i+1}; SURFACES.forEach(s=>{ r[s]=lead[s][i]||null; }); surfRows.push(r);
+  }
+  T.surface={title:"Most titles on each surface"+sfx, norank:true, fixed:true,
+    cols:[{k:"pos",h:"#",cls:"num rk"}].concat(SURFACES.map(cell)), rows:surfRows};
+
+  /* ---- matches ---- */
+  T.wins={title:"Most match wins"+sfx, by:["w"],
+    cols:[who, num("w","Won"), num("l","Lost"), num("rate","Win rate")],
+    rows:top(U.filter(u=>u.w>0).map(u=>({name:u.name, w:u.w, l:u.l, rate:recPct(u.w,u.l)})), (a,b)=>b.w-a.w || a.l-b.l)};
+
+  /* For a pair the question is how often they have played together, so every
+     match counts, qualifying included; for a player it is the main draw. */
+  const all = mode==="team";
+  T.played={title: all ? "Most matches together" : "Most matches played"+sfx, by:["n"],
+    hint: all ? "Every match as a pair, qualifying included." : "",
+    cols:[who, num("n","Played"), num("w","Won"), num("l","Lost"), num("rate","Win rate")]
+      .concat(all ? [mono("span","Seasons")] : []),
+    rows:top(U.map(u=>{
+      const ss=[...u.seasons.keys()].sort(), w=all?u.aw:u.w, l=all?u.al:u.l;
+      return {name:u.name, n:w+l, w, l, rate:recPct(w,l), span:recSpan(ss[0], ss[ss.length-1])}; }).filter(r=>r.n>0),
+      (a,b)=>b.n-a.n || b.w-a.w)};
+
+  const minRate = mode==="team" ? 40 : 100;
+  T.rate={title:"Best win rate"+sfx, by:["rate"], hint:`At least ${minRate} main-draw matches.`,
+    cols:[who, num("rate","Win rate"), num("w","Won"), num("l","Lost")],
+    rows:top(U.filter(u=>u.w+u.l>=minRate).map(u=>({name:u.name, p:u.w/(u.w+u.l), rate:recPct(u.w,u.l), w:u.w, l:u.l})),
+      (a,b)=>b.p-a.p || b.w-a.w)};
+
+  T.events={title: mode==="team" ? "Longest partnerships" : "Most tournaments played"+sfx,
+    by: mode==="team" ? ["seasons"] : ["n"],
+    hint: mode==="team" ? "Seasons in which the pair played at least one match together." : "Qualifying counts as playing the tournament.",
+    cols: mode==="team"
+      ? [who, num("seasons","Seasons"), mono("span","From–to"), num("n","Tournaments")]
+      : [who, num("n","Tournaments"), num("seasons","Seasons"), mono("span","From–to")],
+    rows:top(U.map(u=>{ const ss=[...u.seasons.keys()].sort();
+      return {name:u.name, n:u.events.size, seasons:ss.length, span:recSpan(ss[0], ss[ss.length-1])}; }),
+      mode==="team" ? (a,b)=>b.seasons-a.seasons || b.n-a.n : (a,b)=>b.n-a.n || b.seasons-a.seasons)};
+
+  T.slamWins={title:"Most Grand Slam match wins"+sfx, by:["w"],
+    cols:[who, num("w","Won"), num("l","Lost"), num("gs","Titles")],
+    rows:top(U.filter(u=>u.gsW>0).map(u=>({name:u.name, w:u.gsW, l:u.gsL, gs:u.gs})), (a,b)=>b.w-a.w || a.l-b.l)};
+
+  T.qualified={title:"Most times qualified"+sfx, by:["q"],
+    hint:"Came through qualifying into the main draw.",
+    cols:[who, num("q","Qualified"), num("qw","Q won"), num("ql","Q lost")],
+    rows:top(U.filter(u=>u.qualified>0).map(u=>({name:u.name, q:u.qualified, qw:u.qw, ql:u.ql})),
+      (a,b)=>b.q-a.q || b.qw-a.qw)};
+
+  /* ---- seasons ---- */
+  const seasons=[];
+  U.forEach(u=>u.seasons.forEach(s=>seasons.push({name:u.name, season:s.season, w:s.w, l:s.l,
+    titles:s.titles, lost:s.finals-s.titles, finals:s.finals, rate:recPct(s.w,s.l), p:(s.w+s.l)?s.w/(s.w+s.l):0})));
+  T.seasonTitles={title:"Most titles in a season"+sfx, by:["titles"],
+    cols:[who, mono("season","Season"), num("titles","Titles"), num("lost","Runner-up"), num("w","Won"), num("l","Lost")],
+    rows:top(seasons.filter(s=>s.titles>0), (a,b)=>b.titles-a.titles || a.lost-b.lost || b.w-a.w)};
+  T.seasonWins={title:"Most wins in a season"+sfx, by:["w"],
+    cols:[who, mono("season","Season"), num("w","Won"), num("l","Lost"), num("rate","Win rate"), num("titles","Titles")],
+    rows:top(seasons.filter(s=>s.w>0), (a,b)=>b.w-a.w || a.l-b.l)};
+  const minSeason = mode==="team" ? 20 : 40;
+  T.seasonRate={title:"Best win rate in a season"+sfx, by:["rate"], hint:`At least ${minSeason} main-draw matches in the season.`,
+    cols:[who, mono("season","Season"), num("rate","Win rate"), num("w","Won"), num("l","Lost")],
+    rows:top(seasons.filter(s=>s.w+s.l>=minSeason), (a,b)=>b.p-a.p || b.w-a.w)};
+
+  T.titleSeasons={title:"Most seasons with a title"+sfx, by:["n"],
+    hint:"In a row: the longest run of back-to-back seasons with at least one title.",
+    cols:[who, num("n","Seasons"), num("row","In a row"), mono("span","From–to")],
+    rows:top(champs.map(u=>{
+      const ys=[...u.seasons.values()].filter(s=>s.titles).map(s=>parseInt(s.season,10)).filter(y=>!isNaN(y)).sort((a,b)=>a-b);
+      let run=0, best=0, prev=null;
+      ys.forEach(y=>{ run = prev!==null && y===prev+1 ? run+1 : 1; prev=y; if(run>best) best=run; });
+      return {name:u.name, n:ys.length, row:best, span:recSpan(ys[0], ys[ys.length-1])}; }).filter(r=>r.n>1),
+      (a,b)=>b.n-a.n || b.row-a.row)};
+
+  /* ---- streaks ---- */
+  const runSpan=(f,t)=>recEv(f)===recEv(t) ? recEv(f) : `${recEv(f)} — ${recEv(t)}`;
+  T.runs={title:"Longest winning runs"+sfx, by:["n"],
+    hint:"Matches won in a row, qualifying included. A run still going is marked.",
+    cols:[who, num("n","Wins"), {k:"span",h:"From — to"}],
+    rows:top(U.filter(u=>u.best && u.best.n>1).map(u=>({name:u.name, n:u.best.n,
+      span:runSpan(u.best.from, u.best.to)
+        + (u.best.to===u.lastM && u.lastYr===ctx.maxYr ? " · still going" : "")})), (a,b)=>b.n-a.n)};
+
+  T.losing={title:"Longest losing runs"+sfx, by:["n"],
+    hint:"Matches lost in a row, qualifying included. A run still going is marked.",
+    cols:[who, num("n","Losses"), {k:"span",h:"From \u2014 to"}],
+    rows:top(U.filter(u=>u.worst && u.worst.n>4).map(u=>({name:u.name, n:u.worst.n,
+      span:runSpan(u.worst.from, u.worst.to)
+        + (u.worst.to===u.lastM && u.lastYr===ctx.maxYr ? " \u00b7 still going" : "")})), (a,b)=>b.n-a.n)};
+
+  const seq=(test)=>U.map(u=>{ const b=recRun(ctx, u.entries, test);
+    return b && b.n>2 ? {name:u.name, n:b.n, span:runSpan(b.from, b.to)} : null; }).filter(Boolean);
+  T.consTitles={title:"Most titles in a row"+sfx, by:["n"],
+    hint:`Consecutive tournaments the ${noun} entered and won.`,
+    cols:[who, num("n","Titles"), {k:"span",h:"From — to"}],
+    rows:top(seq(e=>e.title), (a,b)=>b.n-a.n)};
+  T.consFinals={title:"Most finals in a row"+sfx, by:["n"],
+    hint:`Consecutive tournaments in which the ${noun} reached the final.`,
+    cols:[who, num("n","Finals"), {k:"span",h:"From — to"}],
+    rows:top(seq(e=>e.final), (a,b)=>b.n-a.n)};
+  T.finalsRun={title:"Most finals won in a row"+sfx, by:["n"],
+    hint:"Counting finals only, however many tournaments came between them.",
+    cols:[who, num("n","Finals won"), {k:"span",h:"From — to"}],
+    rows:top(U.map(u=>{ const b=recRun(ctx, u.entries.filter(e=>e.final), e=>e.title);
+      return b && b.n>2 ? {name:u.name, n:b.n, span:runSpan(b.from, b.to)} : null; }).filter(Boolean), (a,b)=>b.n-a.n)};
+
+  const evRuns=[];
+  U.forEach(u=>u.evRun.forEach((er,event)=>{ if(er.best>=8) evRuns.push({name:u.name, event, evSeason:er.bTo,
+    n:er.best, span:recSpan(er.bFrom, er.bTo)}); }));
+  T.evRuns={title:"Longest winning runs at one tournament"+sfx, by:["n"],
+    hint:"Main-draw matches won in a row at the same tournament, across seasons.",
+    cols:[who, evCol, num("n","Wins"), mono("span","Seasons")],
+    rows:top(evRuns, (a,b)=>b.n-a.n)};
+
+  /* ---- by rank at the time (singles) ---- */
+  if(mode==="solo"){
+    const rankNote="Rank in the week of the tournament. Before 2011 the ranks come from the estimated rankings, "
+      + "starting after Wimbledon 2007.";
+    const other=(k,h)=>({k,h,render:r=>nameLinks(r[k],"Singles"),csv:r=>r[k]});
+    const rnd={k:"round",h:"Round",cls:"rnd"};
+    T.no1Wins={title:"Most wins over the no. 1", by:["n"], hint:rankNote,
+      cols:[who, num("n","Wins"), {k:"latest",h:"Most recent"}],
+      rows:top(U.filter(u=>u.no1W>0).map(u=>({name:u.name, n:u.no1W, latest:recEv(u.no1Last)})), (a,b)=>b.n-a.n)};
+    T.top10Wins={title:"Most wins over the top 10", by:["w"],
+      hint:"Main-draw wins over a player ranked in the top 10 at the time, and the losses to them.",
+      cols:[who, num("w","Won"), num("l","Lost"), num("rate","Win rate")],
+      rows:top(U.filter(u=>u.t10w>0).map(u=>({name:u.name, w:u.t10w, l:u.t10l, rate:recPct(u.t10w,u.t10l)})),
+        (a,b)=>b.w-a.w || a.l-b.l)};
+    T.upsets={title:"Biggest upsets", by:["wr"],
+      hint:"The lowest-ranked players to beat a top-10 player in a main draw.",
+      cols:[who, num("wr","Rank"), other("beat","Beat"), num("lr","Their rank"), evCol, mono("season","Season"), rnd],
+      rows:D.upsets.slice().sort((a,b)=>b.wr-a.wr || a.lr-b.lr || recName({name:a.w},{name:b.w})).slice(0,25)
+        .map(x=>({name:x.w, wr:x.wr, beat:x.l, lr:x.lr, event:x.m.event, evSeason:x.m.season, season:x.m.season, round:x.m.round}))};
+    T.lowBig={title:"Lowest-ranked champions at the biggest events", by:["wr"],
+      hint:"Grand Slams, the year-end Finals and the Masters events.",
+      cols:[who, num("wr","Rank"), evCol, mono("season","Season")],
+      rows:D.rankedTitles.filter(x=>ctx.tierOf(x.m)).sort((a,b)=>b.wr-a.wr || recName({name:a.w},{name:b.w})).slice(0,25)
+        .map(x=>({name:x.w, wr:x.wr, event:x.m.event, evSeason:x.m.season, season:x.m.season}))};
+    T.lowChamps={title:"Lowest-ranked champions", by:["wr"],
+      hint:"Every tournament the calendar doesn't mark as a Challenger. Champions with no ranking at the time are left out.",
+      cols:[who, num("wr","Rank"), evCol, mono("season","Season")],
+      rows:D.rankedTitles.slice().sort((a,b)=>b.wr-a.wr || recName({name:a.w},{name:b.w})).slice(0,25)
+        .map(x=>({name:x.w, wr:x.wr, event:x.m.event, evSeason:x.m.season, season:x.m.season}))};
+  }
+
+  /* ---- rivalries ---- */
+  if(D.pairs.length){
+    const nm=k=>(D.byKey.get(k)||{}).name||k;
+    const vs={k:"a",h:"Rivalry",render:r=>{
+      const w=document.createElement("span");
+      w.appendChild(nameLinks(r.a, disc));
+      const v=document.createElement("span"); v.className="dim"; v.textContent=" v "; w.appendChild(v);
+      w.appendChild(nameLinks(r.b, disc));
+      return w; }, csv:r=>`${r.a} v ${r.b}`};
+    const h2h={k:"rec",h:"Head to head",cls:"mono",render:r=>{
+      const b=document.createElement("button"); b.className="linkish"; b.textContent=r.rec;
+      b.title="Open the head to head";
+      b.addEventListener("click",()=>{ H2H_UI.a=r.a; H2H_UI.b=r.b; H2H_UI.disc=disc; H2H_UI.sub="pair";
+        renderH2H(); openView("h2h"); setHash(`h2h/${enc(r.a)}/${enc(r.b)}`); });
+      return b; }, csv:r=>r.rec};
+    /* the one in front is named first */
+    const row=p=>{ const lead=p.aw>=p.bw;
+      return {a:nm(lead?p.a:p.b), b:nm(lead?p.b:p.a), name:nm(lead?p.a:p.b), n:p.n,
+        hi:Math.max(p.aw,p.bw), lo:Math.min(p.aw,p.bw),
+        rec:`${Math.max(p.aw,p.bw)}–${Math.min(p.aw,p.bw)}`, finals:p.finals, span:recSpan(p.first,p.last)}; };
+    T.rivals={title: mode==="team" ? "Most-played team rivalries" : "Most-played rivalries", by:["n"],
+      hint:"Every meeting, qualifying included. The one in front is named first; the score opens the head to head.",
+      cols:[vs, num("n","Meetings"), h2h, num("finals","In finals"), mono("span","Seasons")],
+      rows:top(D.pairs.filter(p=>p.n>1).map(row), (a,b)=>b.n-a.n || b.finals-a.finals)};
+    T.oneSided={title:"Most wins without losing to one opponent", by:["hi"], hl:["rec"],
+      cols:[vs, h2h, mono("span","Seasons")],
+      rows:top(D.pairs.filter(p=>Math.min(p.aw,p.bw)===0 && p.n>2).map(row), (a,b)=>b.hi-a.hi)};
+  }
+  return T;
+}
+
+/* ---------------- drawing ---------------- */
+function recCss(){
+  if($("recCss")) return;
+  const st=document.createElement("style"); st.id="recCss";
+  st.textContent=`
+.recjump{display:flex;flex-wrap:wrap;gap:6px 16px;margin:0 0 4px;font-family:"IBM Plex Mono",monospace;
+  font-size:10px;letter-spacing:.1em;text-transform:uppercase}
+.recjump span{color:var(--slate)}
+.recjump button{background:none;border:0;padding:0;font:inherit;letter-spacing:inherit;text-transform:inherit;
+  color:var(--line);cursor:pointer;border-bottom:1px solid rgba(221,240,75,.35)}
+.recjump button:hover{color:var(--ball);border-bottom-color:var(--ball)}
+h3.sec.recsec{margin:34px 0 14px;padding-top:14px;border-top:2px solid var(--rule-strong);scroll-margin-top:10px}
+.recgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,480px),1fr));gap:26px 34px;align-items:start}
+.reccard{min-width:0}
+.reccard .rh{display:flex;align-items:baseline;gap:12px;padding-bottom:5px;border-bottom:1px solid var(--rule-strong)}
+.reccard h4{flex:1;margin:0;font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:17px;
+  text-transform:uppercase;letter-spacing:.03em}
+.reccard .rh button{background:none;border:0;padding:0;cursor:pointer;font-family:"IBM Plex Mono",monospace;
+  font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--slate);white-space:nowrap}
+.reccard .rh button:hover{color:var(--ball)}
+.reccard .rnote{font-size:12px;color:var(--slate);margin:6px 0 0}
+.reccard table{font-size:13px}
+.reccard thead th{position:static;padding:8px 8px 6px;background:transparent}
+.reccard tbody td{padding:6px 8px}
+.reccard td.rk,.reccard th:first-child{width:30px}
+.reccard td.rk{color:var(--slate);text-align:right}
+.reccard tr.rec1 td.rv,.reccard tr.rec1 td.rv .linkish{color:var(--ball);font-weight:600}
+.reccard tr.rec1 td.rk{color:var(--ball)}
+.recn{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--slate);margin-left:7px}
+`;
+  document.head.appendChild(st);
+}
+
+/* A card: the title, a top ten that opens to twenty-five, and a CSV. Rows
+   level on the figure being ranked share a place. */
+function recCard(grid, spec, file){
+  if(!spec || !spec.rows.length) return;
+  const card=document.createElement("div"); card.className="reccard";
+  const head=document.createElement("div"); head.className="rh";
+  const h=document.createElement("h4"); h.textContent=spec.title; head.appendChild(h);
+  card.appendChild(head);
+  if(spec.hint){ const p=document.createElement("p"); p.className="rnote"; p.textContent=spec.hint; card.appendChild(p); }
+
+  let rows=spec.rows, cols=spec.cols;
+  if(!spec.norank){
+    const by=spec.by||[];
+    let rank=0;
+    rows=rows.map((r,i)=>{
+      const prev=spec.rows[i-1];
+      if(!prev || by.some(k=>prev[k]!==r[k])) rank=i+1;
+      return {...r, _rk:rank};
+    });
+    /* only the figure being ranked is picked out on the leader's row */
+    const hl=spec.hl||by;
+    cols=[{k:"_rk",h:"#",cls:"num rk"}].concat(cols.map(c=>hl.includes(c.k) ? {...c, cls:(c.cls?c.cls+" ":"")+"rv"} : c));
+  }
+  const id=REC_UI.tab+"|"+spec.title;
+  const body=document.createElement("div");
+  const draw=()=>{
+    body.innerHTML="";
+    const open=spec.fixed || REC_UI.open.has(id);
+    const shown=open ? rows : rows.slice(0,10);
+    const t=tableOf(cols, shown);
+    if(!spec.norank) [...t.querySelectorAll("tbody tr")].forEach((tr,i)=>{ if(shown[i]._rk===1) tr.classList.add("rec1"); });
+    body.appendChild(t);
+  };
+  if(!spec.fixed && rows.length>10){
+    const more=document.createElement("button");
+    const label=()=>{ more.textContent=REC_UI.open.has(id) ? "Top 10" : `Top ${rows.length}`; };
+    label();
+    more.addEventListener("click",()=>{ REC_UI.open.has(id) ? REC_UI.open.delete(id) : REC_UI.open.add(id); label(); draw(); });
+    head.appendChild(more);
+  }
+  const csv=document.createElement("button"); csv.textContent="CSV";
+  csv.title="Download this table";
+  csv.addEventListener("click",()=>downloadCsv(cols.map(c=>c.k==="_rk"?{...c,h:"Rank"}:c), rows, file+".csv"));
+  head.appendChild(csv);
+  draw();
+  card.appendChild(body);
+  grid.appendChild(card);
+}
+
+/* The leader of a table as a headline figure, with a note of any tie. */
+function recStat(label, spec, valueKey, noteOf){
+  if(!spec || !spec.rows.length) return null;
+  const r=spec.rows[0];
+  const tied=spec.rows.filter(x=>x[valueKey]===r[valueKey]).length-1;
+  const note=(noteOf ? noteOf(r) : r.name) + (tied>0 ? ` and ${tied} other${tied===1?"":"s"}` : "");
+  return [label, String(r[valueKey]), note];
+}
+
 function renderRecords(){
   if(!viewOn("v-records")) return;
   const mount=$("recordsMount"); if(!mount) return;
@@ -4814,98 +5489,238 @@ function renderRecords(){
     mount.innerHTML=`<div class="empty"><strong>No matches loaded</strong></div>`;
     return;
   }
+  recCss();
+  const R=recData(), ctx=R.ctx;
+
+  const nav=document.createElement("div"); nav.className="subnav"; nav.style.marginTop="0";
+  [["Singles","Singles"],["Doubles","Doubles"],["Both","Singles & doubles"]].forEach(([k,label])=>{
+    const b=document.createElement("button"); b.textContent=label;
+    b.setAttribute("aria-pressed", String(REC_UI.tab===k));
+    b.addEventListener("click",()=>{ REC_UI.tab=k; setHash("records/"+k); renderRecords(); });
+    nav.appendChild(b);
+  });
+  mount.appendChild(nav);
+
+  /* which seasons the records cover, as ranges */
+  const ranges=[]; let a=null, prev=null;
+  ctx.years.forEach(y=>{
+    if(prev!==null && y===prev+1){ prev=y; return; }
+    if(a!==null) ranges.push(recSpan(a,prev));
+    a=y; prev=y;
+  });
+  if(a!==null) ranges.push(recSpan(a,prev));
   const lede=document.createElement("p"); lede.className="lede";
-  lede.textContent="Every season loaded, singles unless stated.";
+  lede.textContent=`Records from the seasons with results on the site: ${ranges.join(" and ")}. `
+    + "Wins and losses are main-draw matches, as on the Players tab; winning runs count every match. "
+    + "The Hopman Cup and WTC Dusseldorf are team titles, so they are not counted as singles or doubles titles here.";
   mount.appendChild(lede);
 
-  const section=(title, cols, rows, hint)=>{
-    if(!rows.length) return;
-    const h=document.createElement("h3"); h.className="sec"; h.textContent=title;
+  const jump=document.createElement("div"); jump.className="recjump";
+  const jl=document.createElement("span"); jl.textContent="Jump to"; jump.appendChild(jl);
+  const statgrid=document.createElement("div"); statgrid.className="statgrid"; statgrid.style.marginTop="16px";
+  mount.appendChild(jump);
+  mount.appendChild(statgrid);
+  const stats=list=>list.filter(Boolean).forEach(([k,v,note])=>{
+    const c=document.createElement("div"); c.className="stat";
+    c.innerHTML=`<span class="k">${esc(k)}</span><span class="v">${esc(v)}</span><span class="note">${esc(note||"")}</span>`;
+    statgrid.appendChild(c);
+  });
+  const slug=s=>s.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+  const section=(title, specs)=>{
+    specs=specs.filter(s=>s && s.rows.length);
+    if(!specs.length) return;
+    const h=document.createElement("h3"); h.className="sec recsec"; h.textContent=title;
     mount.appendChild(h);
-    if(hint){ const p=document.createElement("p"); p.className="lede"; p.textContent=hint;
-      mount.appendChild(p); }
-    mount.appendChild(tableOf(cols, rows));
+    const jb=document.createElement("button"); jb.textContent=title;
+    jb.addEventListener("click",()=>h.scrollIntoView({behavior:"smooth", block:"start"}));
+    jump.appendChild(jb);
+    const grid=document.createElement("div"); grid.className="recgrid";
+    specs.forEach(s=>recCard(grid, s, slug(REC_UI.tab+" "+s.title)));
+    mount.appendChild(grid);
   };
-  const pl = (k,label) => ({k, h:label, render:r=>nameLinks(r[k], r.disc||"Singles"), csv:r=>r[k]});
 
-  /* longest winning run, in tournament order */
-  const runs=[];
-  ["Singles","Doubles"].forEach(disc=>{
-    const run=new Map(), from=new Map(), best=new Map();
-    inOrder(MATCHES.filter(m=>m.disc===disc && !m.isBye)).forEach(m=>{
-      const w=idOf(m.winner,disc), l=idOf(m.loser,disc);
-      if(!run.has(w)){ run.set(w,0); }
-      if(run.get(w)===0) from.set(w, m);
-      run.set(w, run.get(w)+1);
-      const cur=run.get(w);
-      const b=best.get(w);
-      if(!b || cur>b.n) best.set(w, {n:cur, name:sideOf(m,"winner"), disc,
-        from:from.get(w), to:m});
-      run.set(l,0);
+  /* weeks at no. 1 and in the top ten, from the ranking lists */
+  const rankSpecs=(tour)=>{
+    const rr=R.rank(tour);
+    if(!rr || !rr.one.length) return [];
+    const who={k:"name",h:"Player",render:r=>nameLinks(r.name,tour),csv:r=>r.name};
+    const num=(k,h)=>({k,h,cls:"num"});
+    const est=tourWeeks(tour).some(w=>w.est) ? " Weeks from 2007 to 2010 come from the estimated rankings." : "";
+    return [
+      {title:`Most weeks at no. 1`, by:["weeks"],
+        hint:"Calendar weeks. More on the "+tour+" Rankings tab."+est,
+        cols:[who, num("weeks","Weeks"), num("reigns","Reigns"), num("longest","Longest reign"), num("yearEnd","Year-end no. 1")],
+        rows:rr.one.slice(0,25).map(r=>({...r, name:r.player}))},
+      {title:`Most weeks in the top 10`, by:["weeks"],
+        hint:"Longest run: unbroken weeks in the top 10.",
+        cols:[who, num("weeks","Weeks"), num("streak","Longest run"), num("atNo1","At no. 1")],
+        rows:rr.ten.slice(0,25).map(r=>({...r, name:r.player}))}
+    ];
+  };
+
+  if(REC_UI.tab==="Singles"){
+    const D=R.solo(), T=recTables(D, ctx, "");
+    const rk=rankSpecs("Singles");
+    /* titles by country: the champion's country as the site has it */
+    const byC=new Map();
+    D.units.forEach(u=>{
+      if(!u.titles) return;
+      const c=canonCountry(u.name)||"—";
+      if(!byC.has(c)) byC.set(c,{country:c, titles:0, players:[]});
+      const e=byC.get(c); e.titles+=u.titles; e.players.push(u);
     });
-    [...best.values()].forEach(b=>runs.push(b));
-  });
-  section("Longest winning runs",
-    [pl("name","Player"), {k:"disc",h:"Discipline"}, {k:"n",h:"Wins",cls:"num",desc:true},
-     {k:"span",h:"From \u2014 to"}],
-    runs.sort((a,b)=>b.n-a.n).slice(0,15).map(b=>({
-      name:b.name, disc:b.disc, n:b.n,
-      span:`${b.from.event} ${b.from.season} \u2014 ${b.to.event} ${b.to.season}`})));
+    const countries={title:"Titles by country", by:["titles"],
+      cols:[{k:"country",h:"Country",cls:"ctry"}, {k:"titles",h:"Titles",cls:"num"},
+        {k:"n",h:"Champions",cls:"num"},
+        {k:"name",h:"Most titles",render:r=>{ const w=nameLinks(r.name,"Singles");
+          const n=document.createElement("span"); n.className="recn"; n.textContent=r.best; w.appendChild(n); return w; },
+          csv:r=>`${r.name} (${r.best})`}],
+      rows:[...byC.values()].filter(e=>e.country!=="—").map(e=>{
+        const top=e.players.slice().sort((x,y)=>y.titles-x.titles || recName(x,y))[0];
+        return {country:e.country, titles:e.titles, n:e.players.length, name:top.name, best:top.titles}; })
+        .sort((x,y)=>y.titles-x.titles || x.country.localeCompare(y.country)).slice(0,25)};
 
-  /* most titles in one season */
-  const bySeason=new Map();
-  MATCHES.forEach(m=>{
-    if(m.stage!=="Main" || m.round!=="F" || m.isBye) return;
-    const k=idOf(m.winner,m.disc)+"|"+m.season+"|"+m.disc;
-    if(!bySeason.has(k)) bySeason.set(k,{name:sideOf(m,"winner"), season:m.season,
-      disc:m.disc, n:0, events:[]});
-    const e=bySeason.get(k); e.n++; e.events.push(m.event);
-  });
-  section("Most titles in a season",
-    [pl("name","Player"), {k:"disc",h:"Discipline"}, {k:"season",h:"Season",cls:"mono"},
-     {k:"n",h:"Titles",cls:"num",desc:true}, {k:"list",h:"Including"}],
-    [...bySeason.values()].sort((a,b)=>b.n-a.n).slice(0,15).map(e=>({
-      ...e, list:e.events.slice(0,4).join(", ")+(e.events.length>4?"\u2026":"")})));
+    stats([
+      recStat("Most titles", T.titles, "titles"),
+      recStat("Most Grand Slams", T.slams, "gs"),
+      recStat("Most match wins", T.wins, "w"),
+      recStat("Longest winning run", T.runs, "n"),
+      recStat("Most titles in a season", T.seasonTitles, "titles", r=>`${r.name}, ${r.season}`),
+      rk.length ? recStat("Most weeks at no. 1", rk[0], "weeks") : null
+    ]);
+    section("Titles", [T.titles, T.big, T.slams, T.finals, T.atOne, T.different, T.surface, countries, T.qTitles, T.llTitles, T.noTitle]);
+    section("Matches", [T.wins, T.played, T.rate, T.slamWins, T.events, T.qualified]);
+    section("Seasons", [T.seasonTitles, T.seasonWins, T.seasonRate, T.titleSeasons]);
+    section("Streaks", [T.runs, T.consTitles, T.consFinals, T.finalsRun, T.evRuns, T.losing]);
+    section("Rivalries", [T.rivals, T.oneSided]);
+    section("Rankings", rk);
+    section("Upsets", [T.no1Wins, T.top10Wins, T.upsets, T.lowBig, T.lowChamps]);
+  }
+  else if(REC_UI.tab==="Doubles"){
+    const M=R.member(), TM=recTables(M, ctx, " — players");
+    const TT=recTables(R.team(), ctx, " — teams");
+    const rk=rankSpecs("Doubles");
+    const who={k:"name",h:"Player",render:r=>nameLinks(r.name,"Doubles"),csv:r=>r.name};
+    const num=(k,h)=>({k,h,cls:"num"});
+    const mate=(k,h)=>({k,h,render:r=>{ if(!r[k]) return "—";
+      const w=nameLinks(r[k],"Doubles");
+      const n=document.createElement("span"); n.className="recn"; n.textContent=r[k+"N"]; w.appendChild(n); return w; },
+      csv:r=>r[k] ? `${r[k]} (${r[k+"N"]})` : ""});
+    const pr=M.units.map(u=>{
+      const ps=[...u.partners.values()];
+      const often=ps.slice().sort((x,y)=>y.n-x.n || recName(x,y))[0];
+      const won=ps.filter(p=>p.titles>0);
+      const best=won.slice().sort((x,y)=>y.titles-x.titles || recName(x,y))[0];
+      return {name:u.name, partners:ps.length, matches:u.aw+u.al,
+        often:often?often.name:"", oftenN:often?often.n:"",
+        wonWith:won.length, titles:u.titles, best:best?best.name:"", bestN:best?best.titles:""};
+    });
+    const partners={title:"Most partners", by:["partners"],
+      hint:"Different players partnered in at least one match.",
+      cols:[who, num("partners","Partners"), num("matches","Matches"), mate("often","Most often with")],
+      rows:pr.filter(r=>r.partners>1).sort((x,y)=>y.partners-x.partners || y.matches-x.matches || recName(x,y)).slice(0,25)};
+    const wonWith={title:"Most titles with different partners", by:["wonWith"],
+      hint:"How many different partners a player has won a title with.",
+      cols:[who, num("wonWith","Partners won with"), num("titles","Titles"), mate("best","Most titles with")],
+      rows:pr.filter(r=>r.wonWith>1).sort((x,y)=>y.wonWith-x.wonWith || y.titles-x.titles || recName(x,y)).slice(0,25)};
 
-  /* career totals */
-  const players=derivePlayers();
-  section("Most titles, all time",
-    [pl("player","Player"), {k:"titles",h:"Titles",cls:"num",desc:true},
-     {k:"w",h:"W",cls:"num"}, {k:"l",h:"L",cls:"num"}, {k:"pctStr",h:"Win rate",cls:"num"}],
-    players.slice().sort((a,b)=>b.titles-a.titles).slice(0,15)
-      .map(p=>({...p, pctStr:Math.round(p.pct*100)+"%"})));
-  section("Best win rate",
-    [pl("player","Player"), {k:"pctStr",h:"Win rate",cls:"num",desc:true},
-     {k:"w",h:"W",cls:"num"}, {k:"l",h:"L",cls:"num"}, {k:"titles",h:"Titles",cls:"num"}],
-    players.filter(p=>p.w+p.l>=100).sort((a,b)=>b.pct-a.pct).slice(0,15)
-      .map(p=>({...p, pctStr:Math.round(p.pct*100)+"%"})),
-    "Minimum one hundred matches.");
+    stats([
+      recStat("Most titles, player", TM.titles, "titles"),
+      recStat("Most titles, team", TT.titles, "titles"),
+      recStat("Most partners", partners, "partners"),
+      recStat("Most matches together", TT.played, "n"),
+      recStat("Longest winning run, team", TT.runs, "n"),
+      rk.length ? recStat("Most weeks at no. 1", rk[0], "weeks") : null
+    ]);
+    section("Titles", [TM.titles, TT.titles, TM.big, TT.big, TM.slams, TM.finals, TM.atOne, TT.atOne, TM.surface, TT.qTitles, TT.llTitles, TM.noTitle]);
+    section("Partners", [wonWith, partners, TT.played, TT.events]);
+    section("Matches", [TM.wins, TT.wins, TM.rate, TT.rate, TM.slamWins, TM.events]);
+    section("Seasons", [TM.seasonTitles, TT.seasonTitles, TM.seasonWins, TT.seasonWins, TM.titleSeasons]);
+    section("Streaks", [TM.runs, TT.runs, TM.consTitles, TT.consTitles, TM.consFinals, TM.evRuns, TM.losing, TT.losing]);
+    section("Rivalries", [TT.rivals, TT.oneSided]);
+    section("Rankings", rk);
+  }
+  else {
+    const S=R.solo(), M=R.member();
+    const who={k:"name",h:"Player",render:r=>nameLinks(r.name,"Singles"),csv:r=>r.name};
+    const num=(k,h)=>({k,h,cls:"num"});
+    const mono=(k,h)=>({k,h,cls:"mono"});
+    const keys=new Set([...S.byKey.keys(), ...M.byKey.keys()]);
+    const zero={titles:0, w:0, l:0, gs:0, yef:0, ms:0};
+    const all=[...keys].map(k=>{
+      const s=S.byKey.get(k), m=M.byKey.get(k);
+      const ev=new Set([...(s?s.events:[]), ...(m?m.events:[])]);
+      const ss=[...new Set([...(s?s.seasons.keys():[]), ...(m?m.seasons.keys():[])])].sort();
+      /* the double: singles and doubles titles at the same tournament */
+      const dbl=s && m ? [...s.titleIds].filter(id=>m.titleIds.has(id)) : [];
+      return {key:k, name:(s||m).name, s:s||zero, m:m||zero, events:ev.size, seasons:ss.length,
+        span:recSpan(ss[0], ss[ss.length-1]), dbl,
+        sSeasons:s?s.seasons:new Map(), mSeasons:m?m.seasons:new Map()};
+    });
+    const top=(rows, cmp)=>rows.slice().sort((x,y)=>cmp(x,y) || recName(x,y)).slice(0,25);
 
-  /* ranking records, if any weeks are loaded */
-  ["Singles","Doubles"].forEach(tour=>{
-    /* Counted straight from the loaded weeks so this doesn't depend on the
-       rankings tab having been opened. */
-    const ws=tourWeeks(tour);
-    if(ws.length<2) return;
-    const tally=new Map(), span=weekSpans(ws);
-    ws.forEach((w,i)=>{
-      /* every holder, as doubles partners can share no. 1 */
-      const once=new Set();
-      (w.list||[]).filter(r=>r.rank===1).forEach(top=>{
-        const k=keyOf(top.name);
-        if(once.has(k)) return; once.add(k);
-        if(!tally.has(k)) tally.set(k,{player:canonName(top.name), weeks:0});
-        tally.get(k).weeks+=span[i];
+    const titles={title:"Most titles, singles and doubles", by:["total"],
+      cols:[who, num("total","Total"), num("sv","Singles"), num("dv","Doubles")],
+      rows:top(all.filter(p=>p.s.titles+p.m.titles>0).map(p=>({name:p.name, total:p.s.titles+p.m.titles,
+        sv:p.s.titles, dv:p.m.titles})), (x,y)=>y.total-x.total || y.sv-x.sv)};
+    const big={title:"Biggest titles, singles and doubles", by:["total"],
+      hint:"Grand Slams, the year-end Finals and the Masters events.",
+      cols:[who, num("total","Total"), num("sv","Singles"), num("dv","Doubles"), num("gs","Grand Slams")],
+      rows:top(all.map(p=>({name:p.name, sv:p.s.gs+p.s.yef+p.s.ms, dv:p.m.gs+p.m.yef+p.m.ms, gs:p.s.gs+p.m.gs}))
+        .map(r=>({...r, total:r.sv+r.dv})).filter(r=>r.total>0), (x,y)=>y.total-x.total || y.gs-x.gs)};
+    const doubles={title:"The double", by:["n"],
+      hint:"Singles and doubles titles at the same tournament in the same season.",
+      cols:[who, num("n","Times"), {k:"latest",h:"Latest"}],
+      rows:top(all.filter(p=>p.dbl.length).map(p=>({name:p.name, n:p.dbl.length,
+        latest:p.dbl[p.dbl.length-1].replace("|"," ")})), (x,y)=>y.n-x.n)};
+    const wins={title:"Most match wins, singles and doubles", by:["total"],
+      cols:[who, num("total","Total"), num("sv","Singles"), num("dv","Doubles")],
+      rows:top(all.filter(p=>p.s.w+p.m.w>0).map(p=>({name:p.name, total:p.s.w+p.m.w, sv:p.s.w, dv:p.m.w})),
+        (x,y)=>y.total-x.total)};
+    const events={title:"Most tournaments played", by:["n"],
+      hint:"Singles or doubles, qualifying included.",
+      cols:[who, num("n","Tournaments"), num("seasons","Seasons"), mono("span","From–to")],
+      rows:top(all.map(p=>({name:p.name, n:p.events, seasons:p.seasons, span:p.span})), (x,y)=>y.n-x.n || y.seasons-x.seasons)};
+    const seasonRows=[];
+    all.forEach(p=>{
+      new Set([...p.sSeasons.keys(), ...p.mSeasons.keys()]).forEach(se=>{
+        const sv=(p.sSeasons.get(se)||{}).titles||0, dv=(p.mSeasons.get(se)||{}).titles||0;
+        if(sv+dv>0) seasonRows.push({name:p.name, season:se, total:sv+dv, sv, dv});
       });
     });
-    section(`Most weeks at no. 1 \u2014 ${tour.toLowerCase()}`,
-      [{k:"player",h:"Player",render:r=>nameLinks(r.player,tour), csv:r=>r.player},
-       {k:"weeks",h:"Weeks",cls:"num",desc:true}],
-      [...tally.values()].sort((a,b)=>b.weeks-a.weeks).slice(0,10));
-  });
+    const season={title:"Most titles in a season, singles and doubles", by:["total"],
+      cols:[who, mono("season","Season"), num("total","Total"), num("sv","Singles"), num("dv","Doubles")],
+      rows:top(seasonRows, (x,y)=>y.total-x.total || y.sv-x.sv)};
+    const longest={title:"Most seasons played", by:["seasons"],
+      cols:[who, num("seasons","Seasons"), mono("span","From–to"), num("n","Tournaments")],
+      rows:top(all.map(p=>({name:p.name, n:p.events, seasons:p.seasons, span:p.span})), (x,y)=>y.seasons-x.seasons || y.n-x.n)};
+
+    /* no. 1 on both tours */
+    const rs=R.rank("Singles"), rd=R.rank("Doubles");
+    let both=null;
+    if(rs && rd){
+      const dm=new Map(rd.one.map(r=>[r.key, r]));
+      both={title:"No. 1 in singles and in doubles", by:["total"],
+        hint:"Players who have held both no. 1 rankings, in calendar weeks.",
+        cols:[who, num("total","Weeks"), num("sv","Singles"), num("dv","Doubles")],
+        rows:rs.one.filter(r=>dm.has(r.key)).map(r=>({name:r.player, sv:r.weeks, dv:dm.get(r.key).weeks,
+          total:r.weeks+dm.get(r.key).weeks})).sort((x,y)=>y.total-x.total || recName(x,y)).slice(0,25)};
+    }
+
+    stats([
+      recStat("Most titles", titles, "total"),
+      recStat("The double", doubles, "n"),
+      recStat("Most match wins", wins, "total"),
+      recStat("Most tournaments", events, "n"),
+      recStat("Most seasons", longest, "seasons")
+    ]);
+    section("Titles", [titles, big, doubles, season]);
+    section("Matches", [wins, events, longest]);
+    section("Rankings", [both]);
+  }
 
   const note=detailNote(MATCHES.map(m=>m.season));
-  if(note) mount.appendChild(note);
+  if(note){ note.style.marginTop="28px"; mount.appendChild(note); }
 }
 
 /* ==================================================================
@@ -6468,7 +7283,7 @@ function undoLast(){
   refreshAll();
   return true;
 }
-const markDirty = () => { DIRTY = true; invalidateIssues(); renderSummary(); };
+const markDirty = () => { DIRTY = true; invalidateIssues(); invalidateRecords(); renderSummary(); };
 
 /* ------------------------------------------------------------------
    FILE LAYOUT
@@ -6534,9 +7349,14 @@ function decodeMatches(data){
   MATCH_SEASONS.add(data.season);
 }
 
+/* "unknown" is where a draw added without a season lands. Once those rows are
+   gone (undone, or given their season) the name must go too: left in the list,
+   data.json points at a matches-unknown.json that was never written, and the
+   public page reports a file it couldn't load. */
 function matchSeasons(){
+  const blank=MATCHES.some(m=>!m.season);
   return [...new Set([...MATCH_SEASONS, ...MATCHES.map(m=>m.season||"unknown")])]
-    .filter(Boolean).sort((a,b)=>b.localeCompare(a));
+    .filter(s=>s && (s!=="unknown" || blank)).sort((a,b)=>b.localeCompare(a));
 }
 const loadedMatchSeasons = () =>
   [...new Set(MATCHES.map(m=>m.season||"unknown"))].sort((a,b)=>b.localeCompare(a));
@@ -6723,7 +7543,7 @@ function deserialise(data){
    built on keys has to be laid down again. Matches themselves are untouched;
    only the lookups are rebuilt. */
 function reindex(){
-  invalidateIssues();
+  invalidateIssues(); invalidateRecords();
   CAL_INDEX=null;
   REG.clear(); SEEN.clear();
   for(const w of WEEKS){
