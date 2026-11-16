@@ -4511,7 +4511,7 @@ function renderProfile(){
     cups.map(t=>t.event+" "+t.season).join(", ")]);
   const awards=playerAwards(name);
   if(awards.length) cards.push(["Awards", String(awards.length),
-    awards.map(a=>a.award+" "+a.season).join(", ")]);
+    awards[0].award+" "+awards[0].season]);
   if(stats) cards.push(
     ["Ranking", live?"#"+stats.current.rank:"NR", live?histLabel(stats.current):"not ranked since "+histLabel(stats.current)],
     ["Career high", "#"+stats.careerHigh.rank, histLabel(stats.careerHigh)]);
@@ -4526,6 +4526,8 @@ function renderProfile(){
     grid.appendChild(c);
   });
   mount.appendChild(grid);
+
+  awardsSection(mount, awards);
 
   /* surfaces */
   const bySurf=new Map();
@@ -4667,18 +4669,75 @@ async function loadAwards(){
         awards:s.awards.filter(a=>a && a.award && Array.isArray(a.winners))}))
       .sort((a,b)=>b.season.localeCompare(a.season));
   }catch(e){ AWARDS=[]; }
-  renderAwards(); renderProfile();
+  renderAwards(); renderProfile(); renderManagerPage();
 }
 
-/* Awards won by a player: their own, as half of a doubles team, or as a manager. */
+/* The calendar row for a tournament named in an award: the calendar name
+   first ("Florianopolis CH"), then the event name the results use. */
+function awardEventRow(w, season){
+  return CALENDAR.find(x=>x.season===season && x.name===w)
+      || CALENDAR.find(x=>x.season===season && x.event===w) || null;
+}
+
+/* Who managed each tournament in a tournament award: the manager the post
+   named, when it named one, otherwise the calendar's manager. */
+function awardEventManagers(a, season){
+  return a.winners.map(w=>{
+    if(a.manager) return {event:w, managers:[].concat(a.manager)};
+    const c=awardEventRow(w, season);
+    return {event:w, managers:c && c.manager ? [c.manager] : []};
+  });
+}
+
+/* Every award a person has a share in: as a player, as half of a doubles
+   team, as Manager of the Year, or as the manager of a winning tournament.
+   Newest season first. */
 function playerAwards(name){
   const k=keyOf(name), out=[];
   AWARDS.forEach(s=>s.awards.forEach(a=>{
-    if(!["player","team","manager"].includes(a.type)) return;
-    if(a.winners.some(w=>String(w).split("/").some(p=>keyOf(p.trim())===k)))
-      out.push({award:a.title||a.award, season:s.season});
+    const award=a.title||a.award;
+    if(a.type==="player" || a.type==="team"){
+      a.winners.forEach(w=>{
+        const parts=String(w).split("/").map(p=>p.trim());
+        const me=parts.find(p=>keyOf(p)===k); if(!me) return;
+        const notes=[];
+        if(a.type==="team"){
+          const o=parts.filter(p=>p!==me).map(canonName);
+          if(o.length) notes.push("with "+o.join(" / "));
+        }
+        if(rawKey(canonName(me))!==rawKey(me)) notes.push("as "+me);
+        out.push({season:s.season, award, role:a.type==="team"?"Doubles team":"Player", note:notes.join(", ")});
+      });
+    } else if(a.type==="manager"){
+      a.winners.forEach(w=>{
+        if(keyOf(w)===k) out.push({season:s.season, award, role:"Manager", note:""});
+      });
+    } else if(a.type==="event"){
+      awardEventManagers(a, s.season).forEach(e=>{
+        if(e.managers.some(m=>keyOf(m)===k))
+          out.push({season:s.season, award, role:"Tournament manager", note:e.event, event:e.event});
+      });
+    }
   }));
-  return out;
+  return out.sort((x,y)=>y.season.localeCompare(x.season));
+}
+
+/* The awards table on a player's or a manager's page. */
+function awardsSection(mount, list){
+  if(!list.length) return;
+  const h=document.createElement("h3"); h.className="sec"; h.textContent="Awards";
+  mount.appendChild(h);
+  mount.appendChild(tableOf([
+    {k:"season",h:"Season",cls:"mono"},
+    {k:"award",h:"Award"},
+    {k:"role",h:"For"},
+    {k:"note",h:"",render:r=>{
+      if(!r.event) return esc(r.note||"");
+      const ev=awardEvent(r.event, r.season);
+      if(!ev) return esc(r.event);
+      const b=document.createElement("button"); b.className="linkish"; b.textContent=r.event;
+      b.addEventListener("click",()=>showEvent(ev, r.season)); return b;
+    }}], list));
 }
 
 function awardsCss(){
@@ -4821,12 +4880,17 @@ function renderAwards(){
       const w=document.createElement("div"); w.className="aww"+(a.type==="text"?" txt":"");
       w.appendChild(awardWinners(a, S.season));
       c.appendChild(k); c.appendChild(w);
-      if(a.manager){
+      const em = a.type==="event" ? awardEventManagers(a, S.season).filter(e=>e.managers.length) : [];
+      if(em.length){
         const n=document.createElement("div"); n.className="awnote";
         n.appendChild(document.createTextNode("Managed by "));
-        [].concat(a.manager).forEach((m,i)=>{
-          if(i) n.appendChild(document.createTextNode(" and "));
-          n.appendChild(awardName("manager", m, S.season));
+        em.forEach((e,j)=>{
+          if(j) n.appendChild(document.createTextNode(", "));
+          e.managers.forEach((m,i)=>{
+            if(i) n.appendChild(document.createTextNode(" and "));
+            n.appendChild(awardName("manager", m, S.season));
+          });
+          if(a.winners.length>1) n.appendChild(document.createTextNode(` (${e.event})`));
         });
         c.appendChild(n);
       }
@@ -6124,6 +6188,8 @@ function renderManagerPage(){
     grid.appendChild(c);
   });
   mount.appendChild(grid);
+
+  awardsSection(mount, playerAwards(name).filter(a=>a.role==="Manager" || a.role==="Tournament manager"));
 
   /* by season, so a long steady run reads differently from one heavy year */
   const perSeason=seasons.slice().reverse().map(s=>({
