@@ -3932,7 +3932,7 @@
    "date": "2024-03-11",
    "opened": "",
    "name": "Santiago CH",
-   "event": "Santiago",
+   "event": "Santiago CH",
    "country": "CHI",
    "surface": "CL",
    "draw": [
@@ -4630,24 +4630,6 @@
   },
   {
    "season": "2024",
-   "code": "29d",
-   "date": "2024-07-15",
-   "opened": "",
-   "name": "Gstaad",
-   "event": "Gstaad",
-   "country": "SUI",
-   "surface": "CL",
-   "draw": [
-    32,
-    16,
-    16,
-    8
-   ],
-   "manager": "Snowwy",
-   "challenger": false
-  },
-  {
-   "season": "2024",
    "code": "30a",
    "date": "2024-07-22",
    "opened": "",
@@ -4711,7 +4693,9 @@
    "surface": "CL",
    "draw": [
     64,
-    32
+    0,
+    32,
+    0
    ],
    "manager": "Snowwy",
    "challenger": false
@@ -4726,7 +4710,7 @@
    "country": "USA",
    "surface": "H",
    "draw": [
-    64,
+    32,
     32,
     32,
     16
@@ -4955,8 +4939,8 @@
    "code": "38b",
    "date": "2024-09-18",
    "opened": "",
-   "name": "Zhuhai",
-   "event": "Zhuhai",
+   "name": "Hangzhou",
+   "event": "Hangzhou",
    "country": "CHN",
    "surface": "H",
    "draw": [
@@ -5064,7 +5048,7 @@
    "date": "2024-10-07",
    "opened": "",
    "name": "Hangzhou CH*",
-   "event": "Hangzhou",
+   "event": "Hangzhou CH",
    "country": "CHN",
    "surface": "H",
    "draw": [
@@ -5430,7 +5414,7 @@
     8
    ],
    "manager": "Bublike",
-   "challenger": false
+   "challenger": true
   },
   {
    "season": "2023",
