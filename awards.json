@@ -1,0 +1,26 @@
+{
+  "format": "tt-awards/1",
+  "note": "One entry per season. type is player, team (doubles pair as Name/Name), event, manager or text. To add votes to an award, give it \"votes\": [{\"name\": \"vjatceslav\", \"votes\": 12}, {\"name\": \"Jo95\", \"votes\": 5}]. Names are the same as in the results.",
+  "seasons": [
+    {
+      "season": "2025",
+      "announced": "2025-12-27",
+      "by": "BMT360",
+      "awards": [
+        {"group": "Players", "award": "Player of the Year", "type": "player", "winners": ["vjatceslav"]},
+        {"group": "Players", "award": "Doubles Team of the Year", "type": "team", "winners": ["BMT360/starluk"]},
+        {"group": "Players", "award": "Most Improved Player of the Year", "type": "player", "winners": ["Jo95"]},
+        {"group": "Players", "award": "NextGen Player of the Year", "type": "player", "winners": ["p_varna"]},
+        {"group": "Players", "award": "Challenger King/Queen", "type": "player", "winners": ["McBax"]},
+        {"group": "Players", "award": "Disappointment of the Year", "type": "player", "winners": ["FERNANDO CORDEIR"]},
+        {"group": "Tournaments", "award": "Grand Slam of the Year", "type": "event", "winners": ["Australian Open", "Roland Garros"]},
+        {"group": "Tournaments", "award": "ATP1000 Tournament of the Year", "type": "event", "winners": ["Monte Carlo"]},
+        {"group": "Tournaments", "award": "ATP250/500 Tournament of the Year", "type": "event", "winners": ["Buenos Aires"]},
+        {"group": "Tournaments", "award": "Challenger of the Year", "type": "event", "winners": ["Florianopolis CH"]},
+        {"group": "Community", "award": "Manager of the Year", "type": "manager", "winners": ["tommyboy0515"]},
+        {"group": "Community", "award": "Yemok & Biliana Sportsmanship Award", "type": "player", "winners": ["Bublike"]},
+        {"group": "Community", "award": "DeccyB123 Contribution to TT Award", "type": "player", "winners": ["BMT360"]}
+      ]
+    }
+  ]
+}

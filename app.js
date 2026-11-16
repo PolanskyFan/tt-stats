@@ -4403,6 +4403,9 @@ function renderProfile(){
   ];
   if(cups.length) cards.push(["Team titles", String(cups.length),
     cups.map(t=>t.event+" "+t.season).join(", ")]);
+  const awards=playerAwards(name);
+  if(awards.length) cards.push(["Awards", String(awards.length),
+    awards.map(a=>a.award+" "+a.season).join(", ")]);
   if(stats) cards.push(
     ["Ranking", live?"#"+stats.current.rank:"NR", live?histLabel(stats.current):"not ranked since "+histLabel(stats.current)],
     ["Career high", "#"+stats.careerHigh.rank, histLabel(stats.careerHigh)]);
@@ -4537,6 +4540,202 @@ function renderProfile(){
 }
 
 /* ==================================================================
+   AWARDS
+   The end-of-season Tennis Tipping Awards, read from awards.json. They
+   live in their own file so a desk save of data.json can never drop
+   them. Each season lists its awards in order, in groups; an award may
+   carry "votes" ([{name, votes}]) and the page then shows the vote
+   under the winner. A second season adds an "All years" table.
+   ================================================================== */
+let AWARDS = [];
+const AWARDS_UI = {season:""};
+
+async function loadAwards(){
+  try{
+    const r = await fetch("awards.json", {cache:"no-store"});
+    if(!r.ok) return;
+    const j = await r.json();
+    AWARDS = (Array.isArray(j.seasons) ? j.seasons : [])
+      .filter(s=>s && s.season && Array.isArray(s.awards))
+      .map(s=>({...s, season:String(s.season),
+        awards:s.awards.filter(a=>a && a.award && Array.isArray(a.winners))}))
+      .sort((a,b)=>b.season.localeCompare(a.season));
+  }catch(e){ AWARDS=[]; }
+  renderAwards(); renderProfile();
+}
+
+/* Awards won by a player: their own, as half of a doubles team, or as a manager. */
+function playerAwards(name){
+  const k=keyOf(name), out=[];
+  AWARDS.forEach(s=>s.awards.forEach(a=>{
+    if(!["player","team","manager"].includes(a.type)) return;
+    if(a.winners.some(w=>String(w).split("/").some(p=>keyOf(p.trim())===k)))
+      out.push({award:a.award, season:s.season});
+  }));
+  return out;
+}
+
+function awardsCss(){
+  if($("awardsCss")) return;
+  const st=document.createElement("style"); st.id="awardsCss";
+  st.textContent=`
+.awgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:10px}
+.awcard{background:var(--panel);border:1px solid var(--rule);padding:15px 17px 16px;min-width:0}
+.awcard .awk{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--slate)}
+.awcard .aww{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:25px;line-height:1.15;
+  margin-top:5px;overflow-wrap:anywhere}
+.awcard .aww .linkish{color:var(--ball);border-bottom-color:rgba(221,240,75,.35)}
+.awcard .aww .linkish:hover{color:var(--line)}
+.awamp{color:var(--slate);margin:0 6px}
+.awcard .aww .awamp{font-weight:500}
+.awcard .awnote{font-size:11.5px;color:var(--slate);margin-top:3px}
+.awvotes{margin-top:11px;border-top:1px solid var(--rule);padding-top:8px}
+.awv{display:grid;grid-template-columns:1fr 70px 30px;gap:8px;align-items:center;font-size:12.5px;padding:2px 0}
+.awv .bar{height:5px;background:rgba(232,239,234,.13);position:relative}
+.awv .bar i{position:absolute;left:0;top:0;bottom:0;background:var(--slate)}
+.awv.top .bar i{background:var(--ball)}
+.awv .n{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--slate);text-align:right}
+.awv .linkish{font-size:12.5px}
+.awtable td{white-space:normal;vertical-align:top}
+.awtable td:first-child{white-space:nowrap;color:var(--slate)}
+`;
+  document.head.appendChild(st);
+}
+
+/* One winner (or one name in a vote list) as a link to the right page. */
+function awardName(type, w, season){
+  if(type==="player") return nameLinks(w,"Singles");
+  if(type==="team") return nameLinks(w,"Doubles");
+  if(type==="manager"){
+    const b=document.createElement("button"); b.className="linkish"; b.textContent=w;
+    b.addEventListener("click",()=>showManager(w)); return b;
+  }
+  if(type==="event" && MATCHES.some(m=>m.event===w && (m.season||"")===season)){
+    const b=document.createElement("button"); b.className="linkish"; b.textContent=w;
+    b.addEventListener("click",()=>showEvent(w,season)); return b;
+  }
+  const s=document.createElement("span"); s.textContent=w; return s;
+}
+
+function awardWinners(a, season){
+  const wrap=document.createElement("span");
+  a.winners.forEach((w,i)=>{
+    if(i){ const x=document.createElement("span"); x.className="awamp"; x.textContent="&"; wrap.appendChild(x); }
+    wrap.appendChild(awardName(a.type, w, season));
+  });
+  return wrap;
+}
+
+function renderAwards(){
+  if(!viewOn("v-awards")) return;
+  const mount=$("awardsMount"); if(!mount) return;
+  mount.innerHTML="";
+  awardsCss();
+  if(!AWARDS.length){
+    mount.innerHTML=`<div class="empty"><strong>No awards yet</strong>The awards list hasn't loaded.</div>`;
+    return;
+  }
+  const seasons=AWARDS.map(s=>s.season);
+  if(AWARDS_UI.season!=="all" || seasons.length<2)
+    if(!seasons.includes(AWARDS_UI.season)) AWARDS_UI.season=seasons[0];
+
+  const nav=document.createElement("div"); nav.className="subnav"; nav.style.marginTop="0";
+  const opts=seasons.map(s=>[s,s]);
+  if(seasons.length>1) opts.push(["all","All years"]);
+  opts.forEach(([k,label])=>{
+    const b=document.createElement("button"); b.textContent=label;
+    b.setAttribute("aria-pressed", String(AWARDS_UI.season===k));
+    b.addEventListener("click",()=>{ AWARDS_UI.season=k; setHash("awards/"+k); renderAwards(); });
+    nav.appendChild(b);
+  });
+  mount.appendChild(nav);
+
+  if(AWARDS_UI.season==="all"){ renderAwardsTable(mount); return; }
+
+  const S=AWARDS.find(s=>s.season===AWARDS_UI.season);
+  const lede=document.createElement("p"); lede.className="lede";
+  let when="";
+  if(S.announced){
+    const d=new Date(S.announced+"T12:00:00");
+    if(!isNaN(d)) when=` Announced on the forum on ${d.toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})}`
+      + (S.by?` by ${S.by}`:"")+".";
+  }
+  lede.textContent=`The Tennis Tipping Awards for the ${S.season} season.${when}`;
+  mount.appendChild(lede);
+
+  const groups=[];
+  S.awards.forEach(a=>{
+    const g=a.group||"Awards";
+    let G=groups.find(x=>x.name===g);
+    if(!G){ G={name:g, list:[]}; groups.push(G); }
+    G.list.push(a);
+  });
+  groups.forEach(G=>{
+    const h=document.createElement("h3"); h.className="sec"; h.textContent=G.name;
+    mount.appendChild(h);
+    const grid=document.createElement("div"); grid.className="awgrid";
+    G.list.forEach(a=>{
+      const c=document.createElement("div"); c.className="awcard";
+      const k=document.createElement("div"); k.className="awk"; k.textContent=a.award;
+      const w=document.createElement("div"); w.className="aww";
+      w.appendChild(awardWinners(a, S.season));
+      c.appendChild(k); c.appendChild(w);
+      if(a.type==="event" && a.winners.some(x=>!MATCHES.some(m=>m.event===x && (m.season||"")===S.season))){
+        const n=document.createElement("div"); n.className="awnote";
+        n.textContent="Results not on the site yet"; c.appendChild(n);
+      }
+      if(a.note){
+        const n=document.createElement("div"); n.className="awnote"; n.textContent=a.note; c.appendChild(n);
+      }
+      const votes=(Array.isArray(a.votes)?a.votes:[]).filter(v=>v && v.name)
+        .map(v=>({name:v.name, n:Number(v.votes)||0})).sort((x,y)=>y.n-x.n);
+      if(votes.length){
+        const max=votes[0].n||1;
+        const box=document.createElement("div"); box.className="awvotes";
+        votes.forEach(v=>{
+          const r=document.createElement("div"); r.className="awv"+(v.n===votes[0].n?" top":"");
+          const nm=document.createElement("div"); nm.appendChild(awardName(a.type, v.name, S.season));
+          const bar=document.createElement("div"); bar.className="bar";
+          bar.innerHTML=`<i style="width:${Math.round(v.n/max*100)}%"></i>`;
+          const n=document.createElement("div"); n.className="n"; n.textContent=v.n;
+          r.appendChild(nm); r.appendChild(bar); r.appendChild(n);
+          box.appendChild(r);
+        });
+        c.appendChild(box);
+      }
+      grid.appendChild(c);
+    });
+    mount.appendChild(grid);
+  });
+}
+
+/* Every award by season, newest season first. */
+function renderAwardsTable(mount){
+  const names=[];
+  AWARDS.forEach(s=>s.awards.forEach(a=>{ if(!names.includes(a.award)) names.push(a.award); }));
+  const scroll=document.createElement("div"); scroll.className="tablescroll";
+  const t=document.createElement("table"); t.className="awtable";
+  const head=document.createElement("tr");
+  ["Award"].concat(AWARDS.map(s=>s.season)).forEach(h=>{
+    const th=document.createElement("th"); th.className="nosort"; th.textContent=h; head.appendChild(th); });
+  const thead=document.createElement("thead"); thead.appendChild(head); t.appendChild(thead);
+  const body=document.createElement("tbody");
+  names.forEach(nm=>{
+    const tr=document.createElement("tr");
+    const td0=document.createElement("td"); td0.textContent=nm; tr.appendChild(td0);
+    AWARDS.forEach(s=>{
+      const td=document.createElement("td");
+      const a=s.awards.find(x=>x.award===nm);
+      if(a) td.appendChild(awardWinners(a, s.season)); else td.innerHTML='<span class="dim">—</span>';
+      tr.appendChild(td);
+    });
+    body.appendChild(tr);
+  });
+  t.appendChild(body); scroll.appendChild(t); mount.appendChild(scroll);
+}
+
+/* ==================================================================
    LINKS
    Every view goes in the URL so it can be posted, bookmarked and
    stepped back through. Without this a link to "my profile" just lands
@@ -4581,6 +4780,9 @@ function applyHash(){
     case "records":
       if(a==="Doubles" || a==="Both" || a==="Singles") REC_UI.tab=a;
       return go("records");
+    case "awards":
+      if(a) AWARDS_UI.season=a;
+      renderAwards(); return go("awards");
     case "rank":
       if(a){ RANK_UI[a==="Doubles"?"Doubles":"Singles"].player = b?canonName(b):null;
              renderTour(a==="Doubles"?"Doubles":"Singles"); }
@@ -7126,7 +7328,7 @@ function refreshAll(){
   tMatches.render(); tPlayers.render(); tTeams.render();
   tTitles.render(); renderRankings();
   renderCalendar(); renderEvent(); renderManagers(); renderH2H(); renderLuck(); renderProfile();
-  renderOverview(); renderRecords(); renderManagerPage();
+  renderOverview(); renderRecords(); renderAwards(); renderManagerPage();
   renderPreview();
   renderReview(); renderIssues(); renderSummary(); renderWeekManager();
   renderFileManager(); renderMatchManager(); renderUndo();
@@ -7993,3 +8195,4 @@ applyMode();
 refreshAll();
 checkVersion();
 autoload().then(()=>{ if(location.hash) applyHash(); });
+loadAwards();
