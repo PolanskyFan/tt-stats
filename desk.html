@@ -469,10 +469,17 @@ Matches Remaining: 0
   <!-- PLAYERS ---------------------------------------------------------- -->
   <section class="view" id="v-players">
     <p class="lede">One table in place of eight tabs — main-draw record, titles, record against the
-      top 10, qualifying record and main-draw record as a qualifier or lucky loser. Click any heading to sort.</p>
+      top 10 and main-draw record as a qualifier or lucky loser. Pick which events count with the
+      Events filter, and click any heading to sort.</p>
     <div class="controls">
+      <div class="field"><label for="pLevel">Events</label>
+        <select id="pLevel"></select></div>
       <div class="field grow"><label for="pQ">Search</label>
         <input type="text" id="pQ" placeholder="Player or country…"></div>
+      <div class="field sm"><label for="pFrom">From</label>
+        <select id="pFrom"><option value="">First season</option></select></div>
+      <div class="field sm"><label for="pTo">To</label>
+        <select id="pTo"><option value="">Latest season</option></select></div>
       <div class="field sm"><label for="pCtry">Country</label>
         <select id="pCtry"><option value="">All</option></select></div>
       <div class="field sm"><label for="pSurf">Surface</label>
@@ -480,6 +487,7 @@ Matches Remaining: 0
       <div class="field"><label>&nbsp;</label>
         <button class="btn" id="btnPcsv">Download CSV</button></div>
     </div>
+    <p class="hint" id="pLevelNote"></p>
     <div class="tablescroll"><table><thead><tr id="pHead"></tr></thead><tbody id="pBody"></tbody></table></div>
     <div class="empty" id="pEmpty"><strong>No players yet</strong>Add a draw on the first tab.</div>
   </section>
@@ -489,13 +497,20 @@ Matches Remaining: 0
     <p class="lede">Teams are identified by their pair of players, so partner order never splits a
       record in two. Change a partner and it's correctly a different team.</p>
     <div class="controls">
+      <div class="field"><label for="tLevel">Events</label>
+        <select id="tLevel"></select></div>
       <div class="field grow"><label for="tQ">Search</label>
         <input type="text" id="tQ" placeholder="Team or player…"></div>
+      <div class="field sm"><label for="tFrom">From</label>
+        <select id="tFrom"><option value="">First season</option></select></div>
+      <div class="field sm"><label for="tTo">To</label>
+        <select id="tTo"><option value="">Latest season</option></select></div>
       <div class="field sm"><label for="tSurf">Surface</label>
         <select id="tSurf"><option value="">All surfaces</option></select></div>
       <div class="field"><label>&nbsp;</label>
         <button class="btn" id="btnTcsv">Download CSV</button></div>
     </div>
+    <p class="hint" id="tLevelNote"></p>
     <div class="tablescroll"><table><thead><tr id="tHead"></tr></thead><tbody id="tBody"></tbody></table></div>
     <div class="empty" id="tEmpty"><strong>No teams yet</strong>Add a doubles draw on the first tab.</div>
   </section>
@@ -527,7 +542,7 @@ Matches Remaining: 0
   </section>
 
 </div>
-<script src="app.js?v=2026-11-16c"></script>
+<script src="app.js?v=2026-11-16e"></script>
 
 <script>
 /* ==================================================================

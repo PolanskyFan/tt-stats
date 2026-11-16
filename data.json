@@ -1,6 +1,6 @@
 {
  "format": "tennis-tipping/1",
- "savedAt": "2026-11-16T03:19:30.438Z",
+ "savedAt": "2026-11-16T15:00:00.000Z",
  "matchFiles": [
   "matches-2026.json",
   "matches-2025.json",
@@ -3143,8 +3143,8 @@
    "code": "45c",
    "date": "2025-11-03",
    "opened": "",
-   "name": "Lima CH",
-   "event": "Lima",
+   "name": "Lima 2 CH",
+   "event": "Lima 2 CH",
    "country": "PER",
    "surface": "CL",
    "draw": [
@@ -3322,7 +3322,7 @@
    "date": "2025-12-01",
    "opened": "",
    "name": "Madrid ITF",
-   "event": "Madrid",
+   "event": "Madrid ITF",
    "country": "ESP",
    "surface": "CL",
    "draw": [
@@ -3358,7 +3358,7 @@
    "date": "2025-12-08",
    "opened": "",
    "name": "Lima ITF",
-   "event": "Lima",
+   "event": "Lima ITF",
    "country": "PER",
    "surface": "CL",
    "draw": [
@@ -3402,15 +3402,15 @@
     8
    ],
    "manager": "supertom",
-   "challenger": false
+   "challenger": true
   },
   {
    "season": "2025",
    "code": "51b",
    "date": "2025-12-15",
    "opened": "",
-   "name": "Lima ITF",
-   "event": "Lima",
+   "name": "Lima 2 ITF",
+   "event": "Lima 2 ITF",
    "country": "PER",
    "surface": "CL",
    "draw": [
@@ -8949,7 +8949,7 @@
    "date": "2022-10-10",
    "opened": "",
    "name": "Seoul CH",
-   "event": "Seoul",
+   "event": "Seoul CH",
    "country": "KOR",
    "surface": "H",
    "draw": [
@@ -9113,7 +9113,7 @@
     8
    ],
    "manager": "dinkulpus",
-   "challenger": false
+   "challenger": true
   },
   {
    "season": "2022",
@@ -9301,7 +9301,7 @@
    "date": "2021-01-11",
    "opened": "",
    "name": "Mallorca FUT",
-   "event": "Mallorca",
+   "event": "Mallorca FUT",
    "country": "ESP",
    "surface": "H",
    "draw": [
@@ -9365,7 +9365,7 @@
    "date": "2021-01-25",
    "opened": "",
    "name": "Antalya CH",
-   "event": "Antalya",
+   "event": "Antalya CH",
    "country": "TUR",
    "surface": "CL",
    "draw": [
@@ -9584,7 +9584,7 @@
    "date": "2021-03-01",
    "opened": "",
    "name": "Nur-Sultan CH*",
-   "event": "Nur-Sultan",
+   "event": "Nur-Sultan CH",
    "country": "KAZ",
    "surface": "H",
    "draw": [
@@ -9708,7 +9708,7 @@
    "date": "2021-03-29",
    "opened": "",
    "name": "Marbella CH",
-   "event": "Marbella",
+   "event": "Marbella CH",
    "country": "ESP",
    "surface": "CL",
    "draw": [
@@ -9794,7 +9794,7 @@
    "date": "2021-04-12",
    "opened": "",
    "name": "Belgrade CH*",
-   "event": "Belgrade",
+   "event": "Belgrade CH",
    "country": "SRB",
    "surface": "IH",
    "draw": [
@@ -9882,7 +9882,7 @@
    "date": "2021-04-26",
    "opened": "",
    "name": "Rome CH",
-   "event": "Rome",
+   "event": "Rome CH",
    "country": "ITA",
    "surface": "IH",
    "draw": [
@@ -10629,8 +10629,8 @@
    "code": "37c",
    "date": "2021-09-13",
    "opened": "",
-   "name": "Istanbul CH",
-   "event": "Istanbul",
+   "name": "Istanbul 2 CH",
+   "event": "Istanbul 2 CH",
    "country": "TUR",
    "surface": "CL",
    "draw": [
@@ -10768,7 +10768,7 @@
    "date": "2021-10-11",
    "opened": "",
    "name": "Santiago CH",
-   "event": "Santiago",
+   "event": "Santiago CH",
    "country": "CHI",
    "surface": "CL",
    "draw": [
@@ -10948,7 +10948,7 @@
     8
    ],
    "manager": "supertom",
-   "challenger": false
+   "challenger": true
   },
   {
    "season": "2021",
@@ -12658,7 +12658,7 @@
    "date": "2019-02-25",
    "opened": "",
    "name": "Indian Wells CH*",
-   "event": "Indian Wells",
+   "event": "Indian Wells CH",
    "country": "USA",
    "surface": "H",
    "draw": [
@@ -13330,7 +13330,7 @@
    "date": "2019-06-10",
    "opened": "",
    "name": "Lyon CH",
-   "event": "Lyon",
+   "event": "Lyon CH",
    "country": "FRA",
    "surface": "CL",
    "draw": [
@@ -13942,7 +13942,7 @@
    "date": "2019-09-09",
    "opened": "",
    "name": "Shanghai CH",
-   "event": "Shanghai",
+   "event": "Shanghai CH",
    "country": "CHN",
    "surface": "H",
    "draw": [
@@ -14345,8 +14345,8 @@
    "code": "45b",
    "date": "2019-11-04",
    "opened": "",
-   "name": "Bratislava CH*",
-   "event": "Bratislava",
+   "name": "Bratislava 2 CH*",
+   "event": "Bratislava 2 CH",
    "country": "SVK",
    "surface": "IH",
    "draw": [
@@ -14391,7 +14391,7 @@
    "date": "2019-11-11",
    "opened": "",
    "name": "Pune CH",
-   "event": "Pune",
+   "event": "Pune CH",
    "country": "IND",
    "surface": "H",
    "draw": [
@@ -14407,7 +14407,7 @@
    "date": "2019-11-11",
    "opened": "",
    "name": "Houston CH*",
-   "event": "Houston",
+   "event": "Houston CH",
    "country": "USA",
    "surface": "H",
    "draw": [
@@ -14977,7 +14977,7 @@
    "date": "2018-02-26",
    "opened": "",
    "name": "Indian Wells CH*",
-   "event": "Indian Wells",
+   "event": "Indian Wells CH",
    "country": "USA",
    "surface": "H",
    "draw": [
@@ -15049,7 +15049,7 @@
    "date": "2018-03-12",
    "opened": "",
    "name": "Shenzhen CH",
-   "event": "Shenzhen",
+   "event": "Shenzhen CH",
    "country": "CHN",
    "surface": "H",
    "draw": [
@@ -15481,7 +15481,7 @@
    "date": "2018-05-07",
    "opened": "",
    "name": "Rome CH",
-   "event": "Rome",
+   "event": "Rome CH",
    "country": "ITA",
    "surface": "CL",
    "draw": [
@@ -16381,7 +16381,7 @@
    "date": "2018-09-10",
    "opened": "",
    "name": "Shanghai CH",
-   "event": "Shanghai",
+   "event": "Shanghai CH",
    "country": "CHN",
    "surface": "H",
    "draw": [
@@ -16857,7 +16857,7 @@
    "date": "2018-11-12",
    "opened": "",
    "name": "Houston CH*",
-   "event": "Houston",
+   "event": "Houston CH",
    "country": "USA",
    "surface": "H",
    "draw": [
@@ -16875,7 +16875,7 @@
    "date": "2018-11-19",
    "opened": "",
    "name": "Pune CH",
-   "event": "Pune",
+   "event": "Pune CH",
    "country": "IND",
    "surface": "H",
    "draw": [
@@ -17541,7 +17541,7 @@
    "date": "2017-03-13",
    "opened": "",
    "name": "Shenzhen CH",
-   "event": "Shenzhen",
+   "event": "Shenzhen CH",
    "country": "CHN",
    "surface": "H",
    "draw": [
@@ -18801,7 +18801,7 @@
    "date": "2017-09-11",
    "opened": "",
    "name": "Istanbul CH",
-   "event": "Istanbul",
+   "event": "Istanbul CH",
    "country": "TUR",
    "surface": "H",
    "draw": [
@@ -19017,7 +19017,7 @@
    "date": "2017-10-09",
    "opened": "",
    "name": "Buenos Aires CH",
-   "event": "Buenos Aires",
+   "event": "Buenos Aires CH",
    "country": "ARG",
    "surface": "CL",
    "draw": [
@@ -19506,7 +19506,7 @@
    "date": "2016-01-11",
    "opened": "",
    "name": "Buenos Aires CH",
-   "event": "Buenos Aires",
+   "event": "Buenos Aires CH",
    "country": "ARG",
    "surface": "CL",
    "draw": [
@@ -20154,7 +20154,7 @@
    "date": "2016-03-21",
    "opened": "",
    "name": "Shenzhen CH",
-   "event": "Shenzhen",
+   "event": "Shenzhen CH",
    "country": "CHN",
    "surface": "H",
    "draw": [
@@ -20693,8 +20693,8 @@
    "code": "20d",
    "date": "2016-05-16",
    "opened": "",
-   "name": "Bangkok CH",
-   "event": "Bangkok",
+   "name": "Bangkok 2 CH",
+   "event": "Bangkok 2 CH",
    "country": "THA",
    "surface": "H",
    "draw": [
@@ -20856,7 +20856,7 @@
    "date": "2016-06-06",
    "opened": "",
    "name": "Moscow CH",
-   "event": "Moscow",
+   "event": "Moscow CH",
    "country": "RUS",
    "surface": "CL",
    "draw": [
@@ -21342,7 +21342,7 @@
    "date": "2016-08-01",
    "opened": "",
    "name": "Chengdu CH*",
-   "event": "Chengdu",
+   "event": "Chengdu CH",
    "country": "CHN",
    "surface": "H",
    "draw": [
@@ -21610,7 +21610,7 @@
    "date": "2016-09-12",
    "opened": "",
    "name": "Istanbul CH",
-   "event": "Istanbul",
+   "event": "Istanbul CH",
    "country": "TUR",
    "surface": "H",
    "draw": [
@@ -22351,7 +22351,7 @@
    "date": "2015-01-12",
    "opened": "",
    "name": "Casablanca CH",
-   "event": "Casablanca",
+   "event": "Casablanca CH",
    "country": "MOR",
    "surface": "CL",
    "draw": [
@@ -22369,7 +22369,7 @@
    "date": "2015-01-12",
    "opened": "",
    "name": "Stuttgart FUT",
-   "event": "Stuttgart",
+   "event": "Stuttgart FUT (2d)",
    "country": "GER",
    "surface": "IH",
    "draw": [
@@ -22909,7 +22909,7 @@
    "date": "2015-03-02",
    "opened": "",
    "name": "Umag FUT",
-   "event": "Umag",
+   "event": "Umag FUT (9c)",
    "country": "CRO",
    "surface": "CL",
    "draw": [
@@ -23035,7 +23035,7 @@
    "date": "2015-03-16",
    "opened": "",
    "name": "Shenzhen CH",
-   "event": "Shenzhen",
+   "event": "Shenzhen CH",
    "country": "CHN",
    "surface": "H",
    "draw": [
@@ -23467,7 +23467,7 @@
    "date": "2015-04-27",
    "opened": "",
    "name": "Sao Paulo CH",
-   "event": "Sao Paulo",
+   "event": "Sao Paulo CH",
    "country": "BRA",
    "surface": "CL",
    "draw": [
@@ -23683,7 +23683,7 @@
    "date": "2015-05-18",
    "opened": "",
    "name": "Bucharest FUT",
-   "event": "Bucharest",
+   "event": "Bucharest FUT (20d)",
    "country": "ROU",
    "surface": "CL",
    "draw": [
@@ -23881,7 +23881,7 @@
    "date": "2015-06-08",
    "opened": "",
    "name": "Moscow CH",
-   "event": "Moscow",
+   "event": "Moscow CH",
    "country": "RUS",
    "surface": "CL",
    "draw": [
@@ -24673,7 +24673,7 @@
    "date": "2015-08-24",
    "opened": "",
    "name": "Rotterdam FUT",
-   "event": "Rotterdam",
+   "event": "Rotterdam FUT (34c)",
    "country": "NED",
    "surface": "CL",
    "draw": [
@@ -24817,7 +24817,7 @@
    "date": "2015-09-07",
    "opened": "",
    "name": "Shanghai CH",
-   "event": "Shanghai",
+   "event": "Shanghai CH",
    "country": "CHN",
    "surface": "H",
    "draw": [
@@ -24889,7 +24889,7 @@
    "date": "2015-09-14",
    "opened": "",
    "name": "Istanbul CH",
-   "event": "Istanbul",
+   "event": "Istanbul CH",
    "country": "TUR",
    "surface": "H",
    "draw": [
@@ -25519,7 +25519,7 @@
    "date": "2015-11-09",
    "opened": "",
    "name": "Buenos Aires CH",
-   "event": "Buenos Aires",
+   "event": "Buenos Aires CH",
    "country": "ARG",
    "surface": "CL",
    "draw": [
@@ -25785,7 +25785,7 @@
    "date": "2015-11-30",
    "opened": "",
    "name": "Bangkok FUT",
-   "event": "Bangkok",
+   "event": "Bangkok FUT (48c)",
    "country": "THA",
    "surface": "H",
    "draw": [
@@ -25839,7 +25839,7 @@
    "date": "2015-12-07",
    "opened": "",
    "name": "Doha FUT",
-   "event": "Doha",
+   "event": "Doha FUT (49b)",
    "country": "QAT",
    "surface": "H",
    "draw": [
@@ -26014,7 +26014,7 @@
    "date": "2013-12-30",
    "opened": "",
    "name": "Sao Paulo CH*",
-   "event": "Sao Paulo",
+   "event": "Sao Paulo CH",
    "country": "BRA",
    "surface": "H",
    "draw": [
@@ -27016,8 +27016,8 @@
    "code": "16c",
    "date": "2014-04-14",
    "opened": "",
-   "name": "Sao Paulo CH",
-   "event": "Sao Paulo",
+   "name": "Sao Paulo 2 CH",
+   "event": "Sao Paulo 2 CH",
    "country": "BRA",
    "surface": "CL",
    "draw": [
@@ -27089,7 +27089,7 @@
    "date": "2014-04-21",
    "opened": "",
    "name": "Shenzhen CH",
-   "event": "Shenzhen",
+   "event": "Shenzhen CH",
    "country": "CHN",
    "surface": "H",
    "draw": [
@@ -27269,7 +27269,7 @@
    "date": "2014-05-05",
    "opened": "",
    "name": "Rome CH",
-   "event": "Rome",
+   "event": "Rome CH",
    "country": "ITA",
    "surface": "CL",
    "draw": [
@@ -27413,7 +27413,7 @@
    "date": "2014-05-19",
    "opened": "",
    "name": "Bergamo FUT",
-   "event": "Bergamo",
+   "event": "Bergamo FUT (21d)",
    "country": "ITA",
    "surface": "CL",
    "draw": [
@@ -27431,7 +27431,7 @@
    "date": "2014-05-19",
    "opened": "",
    "name": "Bucharest FUT",
-   "event": "Bucharest",
+   "event": "Bucharest FUT (21e)",
    "country": "ROU",
    "surface": "CL",
    "draw": [
@@ -28385,7 +28385,7 @@
    "date": "2014-08-18",
    "opened": "",
    "name": "San Juan FUT",
-   "event": "San Juan",
+   "event": "San Juan FUT (34d)",
    "country": "ARG",
    "surface": "CL",
    "draw": [
@@ -28493,7 +28493,7 @@
    "date": "2014-09-01",
    "opened": "",
    "name": "Shanghai CH",
-   "event": "Shanghai",
+   "event": "Shanghai CH",
    "country": "CHN",
    "surface": "H",
    "draw": [
@@ -29087,7 +29087,7 @@
    "date": "2014-10-20",
    "opened": "",
    "name": "Madrid FUT",
-   "event": "Madrid",
+   "event": "Madrid FUT",
    "country": "ESP",
    "surface": "H",
    "draw": [
@@ -29504,7 +29504,7 @@
    "date": "2012-12-31",
    "opened": "",
    "name": "Sao Paulo CH",
-   "event": "Sao Paulo",
+   "event": "Sao Paulo CH",
    "country": "BRA",
    "surface": "H",
    "draw": [
@@ -29967,7 +29967,7 @@
    "date": "2013-02-11",
    "opened": "",
    "name": "Zagreb FUT",
-   "event": "Zagreb",
+   "event": "Zagreb FUT",
    "country": "CRO",
    "surface": "IH",
    "draw": [
@@ -30381,7 +30381,7 @@
    "date": "2013-04-01",
    "opened": "",
    "name": "Rome FUT",
-   "event": "Rome",
+   "event": "Rome FUT (14d)",
    "country": "ITA",
    "surface": "CL",
    "draw": [
@@ -30650,8 +30650,8 @@
    "code": "17d",
    "date": "2013-04-22",
    "opened": "",
-   "name": "Sao Paulo CH",
-   "event": "Sao Paulo",
+   "name": "Sao Paulo 2 CH",
+   "event": "Sao Paulo 2 CH",
    "country": "BRA",
    "surface": "CL",
    "draw": [
@@ -30975,7 +30975,7 @@
    "date": "2013-05-20",
    "opened": "",
    "name": "Bucharest FUT",
-   "event": "Bucharest",
+   "event": "Bucharest FUT",
    "country": "ROU",
    "surface": "CL",
    "draw": [
@@ -31407,7 +31407,7 @@
    "date": "2013-07-08",
    "opened": "",
    "name": "Beijing CH",
-   "event": "Beijing",
+   "event": "Beijing CH",
    "country": "CHN",
    "surface": "H",
    "draw": [
@@ -31857,7 +31857,7 @@
    "date": "2013-08-19",
    "opened": "",
    "name": "Poznan FUT",
-   "event": "Poznan",
+   "event": "Poznan FUT (34c)",
    "country": "POL",
    "surface": "CL",
    "draw": [
@@ -31875,7 +31875,7 @@
    "date": "2013-08-19",
    "opened": "",
    "name": "San Juan FUT",
-   "event": "San Juan",
+   "event": "San Juan FUT (34d)",
    "country": "ARG",
    "surface": "CL",
    "draw": [
@@ -32019,7 +32019,7 @@
    "date": "2013-09-02",
    "opened": "",
    "name": "Shanghai CH",
-   "event": "Shanghai",
+   "event": "Shanghai CH",
    "country": "CHN",
    "surface": "H",
    "draw": [
@@ -32577,7 +32577,7 @@
    "date": "2013-10-21",
    "opened": "",
    "name": "Buenos Aires CH",
-   "event": "Buenos Aires",
+   "event": "Buenos Aires CH",
    "country": "ARG",
    "surface": "CL",
    "draw": [
@@ -32716,7 +32716,7 @@
    "date": "2013-11-04",
    "opened": "",
    "name": "Bogota CH*",
-   "event": "Bogota",
+   "event": "Bogota CH",
    "country": "COL",
    "surface": "CL",
    "draw": [
@@ -33012,7 +33012,7 @@
    "date": "2012-01-02",
    "opened": "",
    "name": "Sao Paulo CH",
-   "event": "Sao Paulo",
+   "event": "Sao Paulo CH",
    "country": "BRA",
    "surface": "H",
    "draw": [
@@ -34010,7 +34010,7 @@
    "date": "2012-04-16",
    "opened": "",
    "name": "Rome CH",
-   "event": "Rome",
+   "event": "Rome CH",
    "country": "ITA",
    "surface": "CL",
    "draw": [
@@ -35155,7 +35155,7 @@
    "date": "2012-07-30",
    "opened": "",
    "name": "Beijing CH",
-   "event": "Beijing",
+   "event": "Beijing CH",
    "country": "CHN",
    "surface": "H",
    "draw": [
@@ -35479,7 +35479,7 @@
    "date": "2012-09-03",
    "opened": "",
    "name": "Shanghai CH",
-   "event": "Shanghai",
+   "event": "Shanghai CH",
    "country": "CHN",
    "surface": "H",
    "draw": [
@@ -35515,7 +35515,7 @@
    "date": "2012-09-10",
    "opened": "",
    "name": "Istanbul CH",
-   "event": "Istanbul",
+   "event": "Istanbul CH",
    "country": "TUR",
    "surface": "H",
    "draw": [
@@ -35731,7 +35731,7 @@
    "date": "2012-09-24",
    "opened": "",
    "name": "Madrid CH",
-   "event": "Madrid",
+   "event": "Madrid CH",
    "country": "ESP",
    "surface": "CL",
    "draw": [
@@ -36073,7 +36073,7 @@
    "date": "2012-10-22",
    "opened": "",
    "name": "Buenos Aires CH",
-   "event": "Buenos Aires",
+   "event": "Buenos Aires CH",
    "country": "ARG",
    "surface": "CL",
    "draw": [
@@ -36971,7 +36971,7 @@
    "date": "2011-02-21",
    "opened": "",
    "name": "Casablanca CH",
-   "event": "Casablanca",
+   "event": "Casablanca CH",
    "country": "MOR",
    "surface": "CL",
    "draw": [
@@ -37133,7 +37133,7 @@
    "date": "2011-03-14",
    "opened": "",
    "name": "San Jose CH",
-   "event": "San Jose",
+   "event": "San Jose CH",
    "country": "USA",
    "surface": "H",
    "draw": [
@@ -37367,7 +37367,7 @@
    "date": "2011-04-11",
    "opened": "",
    "name": "Rome CH",
-   "event": "Rome",
+   "event": "Rome CH",
    "country": "ITA",
    "surface": "CL",
    "draw": [
@@ -37403,7 +37403,7 @@
    "date": "2011-04-11",
    "opened": "",
    "name": "Johannesburg CH",
-   "event": "Johannesburg",
+   "event": "Johannesburg CH",
    "country": "RSA",
    "surface": "H",
    "draw": [
@@ -37673,7 +37673,7 @@
    "date": "2011-05-09",
    "opened": "",
    "name": "Zagreb CH",
-   "event": "Zagreb",
+   "event": "Zagreb CH",
    "country": "CRO",
    "surface": "CL",
    "draw": [
@@ -39018,7 +39018,7 @@
    "date": "2011-09-26",
    "opened": "",
    "name": "Madrid CH",
-   "event": "Madrid",
+   "event": "Madrid CH",
    "country": "ESP",
    "surface": "CL",
    "draw": [
@@ -39486,7 +39486,7 @@
    "date": "2011-11-07",
    "opened": "",
    "name": "Buenos Aires CH",
-   "event": "Buenos Aires",
+   "event": "Buenos Aires CH",
    "country": "ARG",
    "surface": "CL",
    "draw": [
@@ -53800,8 +53800,8 @@
    "code": "50c",
    "date": "2026-12-13",
    "opened": "27/11/2026",
-   "name": "La Paz CH",
-   "event": "La Paz",
+   "name": "La Paz 2 CH",
+   "event": "La Paz 2 CH",
    "country": "BOL",
    "surface": "CL",
    "draw": [

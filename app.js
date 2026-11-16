@@ -795,6 +795,10 @@ function makeTable(cfg){
   }
   const CAP = 600;
   function render(){
+    /* A column can disappear (the Events filter hides some), and a sort on it
+       would order the rows by a figure nobody can see. */
+    if(state.key && !cfg.cols().some(c=>c.k===state.key)){
+      state.key=cfg.defaultSort||null; state.dir=cfg.defaultDir||1; }
     head();
     const all = sorted(cfg.rows());
     /* Drawing tens of thousands of rows locks the page for the best part of a
@@ -859,6 +863,49 @@ const isQ  = s => /^Q\d*$/i.test(String(s||"").trim());
 const isLL = s => /^LL\d*$/i.test(String(s||"").trim());
 const rankNum = v => { const n=parseInt(v,10); return isNaN(n)?null:n; };
 
+/* The Events filter on the Players and Doubles tabs. Each match counts as
+   main draw ("main"), as qualifying alongside it ("qual"), as the record
+   itself in a qualifying view ("q"), or not at all (null).
+   Challengers are whatever the calendar marks as one (CH, FUT, ITF, the
+   NextGen and Challenger Finals). The year-end Finals and the team events
+   file their round robins as qualifying, but those are main-draw matches
+   and count as such. Hopman Cup and WTC Dusseldorf only count under All. */
+const EVENT_LEVELS = [
+  ["atp","ATP main draw"], ["gs","Grand Slams"], ["atpq","ATP qualifying"],
+  ["ch","Challenger main draw"], ["chq","Challenger qualifying"], ["all","All events"]];
+const LEVEL_NOTE = {
+  all:"Every event, Challengers included. W\u2013L is the main-draw record; qualifying has its own columns.",
+  atp:"Main draws at tour level \u2014 Grand Slams, Masters, the year-end Finals and the rest of the ATP calendar. Challengers, Futures and the team events are left out.",
+  gs:"Grand Slam main draws only.",
+  atpq:"Qualifying at tour-level events, Grand Slams included. W\u2013L is the qualifying record.",
+  ch:"Main draws at Challenger, Futures and ITF events, the NextGen and Challenger Finals included.",
+  chq:"Qualifying at Challenger, Futures and ITF events. W\u2013L is the qualifying record."};
+const isQualLevel = lv => lv==="atpq" || lv==="chq";
+/* A season filter is one year ("2021") or a span of whole years
+   (["2021","2026"]); either end of a span may be left open with "". */
+function inSeasons(season, want){
+  if(!want) return true;
+  if(!Array.isArray(want)) return season===want;
+  const [a,b]=want;
+  return (!a || season>=a) && (!b || season<=b);
+}
+function matchBucket(m, level){
+  const c=calFor(m.event, m.season);
+  const rr = isTeamEvent(m.event) || !!(c && /Finals$/i.test(c.name||""));
+  const main = m.stage==="Main" || rr;
+  if(!level || level==="all") return main ? "main" : "qual";
+  if(isTeamEvent(m.event)) return null;
+  const ch = !!(c && c.challenger);
+  switch(level){
+    case "atp":  return main && !ch ? "main" : null;
+    case "gs":   return main && REC_SLAMS[m.event] ? "main" : null;
+    case "ch":   return main && ch ? "main" : null;
+    case "atpq": return !main && !ch ? "q" : null;
+    case "chq":  return !main && ch ? "q" : null;
+  }
+  return null;
+}
+
 function blankRec(){
   const r={w:0,l:0,titles:0,finals:0,sfs:0,t10w:0,t10l:0,
            qw:0,ql:0,qualified:0,mdQw:0,mdQl:0,mdLLw:0,mdLLl:0,lastTitle:""};
@@ -884,18 +931,23 @@ function surfaceCols(v){
   return o;
 }
 
-function derivePlayers(surface, season){
+function derivePlayers(surface, season, level){
   const rec = new Map();
   const get = n => { const k=keyOf(n); if(!rec.has(k)) rec.set(k,blankRec()); return rec.get(k); };
 
   for(const r of MATCHES){
     if(r.disc!=="Singles" || r.isBye) continue;
-    if(season && r.season!==season) continue;
+    if(!inSeasons(r.season, season)) continue;
+    const b=matchBucket(r, level);
+    if(!b) continue;
     const surf=surfaceOf(r);
     if(surface && surf!==surface) continue;
     const W=get(r.winner), L=get(r.loser);
     if(surf){ W["s_"+surf]++; L["l_"+surf]++; }
-    if(r.stage==="Main"){
+    if(b==="q"){
+      W.w++; L.l++;
+      if(r.round==="QFR") W.qualified++;
+    } else if(b==="main"){
       W.w++; L.l++;
       const lr=rankNum(r.loserRank), wr=rankNum(r.winnerRank);
       if(lr!==null && lr<=10) W.t10w++;
@@ -927,9 +979,9 @@ function derivePlayers(surface, season){
      every match \u2014 fine for one season, ten seconds across eighteen. One pass
      in date order does both for everybody. */
   const bestR=new Map(), bestRun=new Map(), run=new Map(), lastYr=new Map();
-  inOrder(MATCHES.filter(m=>m.disc==="Singles" && !m.isBye)).forEach(m=>{
+  inOrder(MATCHES.filter(m=>m.disc==="Singles" && !m.isBye && matchBucket(m, level))).forEach(m=>{
     if(surface && surfaceOf(m)!==surface) return;
-    if(season && m.season!==season) return;
+    if(!inSeasons(m.season, season)) return;
     const w=keyOf(m.winner), l=keyOf(m.loser);
     const yr=parseInt(m.season,10);
     [w,l].forEach(k=>{ if(seasonGap(lastYr.get(k), yr)) run.set(k,0); if(!isNaN(yr)) lastYr.set(k,yr); });
@@ -949,7 +1001,7 @@ function derivePlayers(surface, season){
   return out;
 }
 
-function deriveTeams(surface, season){
+function deriveTeams(surface, season, level){
   const rec = new Map(), disp = new Map();
   const get = t => { const k=teamKeyOf(t);
     if(!rec.has(k)){ rec.set(k,blankRec()); disp.set(k,canonTeam(t)); }
@@ -957,12 +1009,17 @@ function deriveTeams(surface, season){
 
   for(const r of MATCHES){
     if(r.disc!=="Doubles" || r.isBye) continue;
-    if(season && r.season!==season) continue;
+    if(!inSeasons(r.season, season)) continue;
+    const b=matchBucket(r, level);
+    if(!b) continue;
     const surf=surfaceOf(r);
     if(surface && surf!==surface) continue;
     const W=get(r.winner), L=get(r.loser);
     if(surf){ W["s_"+surf]++; L["l_"+surf]++; }
-    if(r.stage==="Main"){
+    if(b==="q"){
+      W.w++; L.l++;
+      if(r.round==="QFR") W.qualified++;
+    } else if(b==="main"){
       W.w++; L.l++;
       if(titleFinal(r)){ W.titles++; L.finals++; W.lastTitle=r.event; }
       if(r.round==="SF"){ L.sfs++; }
@@ -2207,6 +2264,22 @@ const TEAM_COLS = [
   {k:"lastTitle",h:"Most Recent Title"}
 ];
 
+/* The columns follow the Events filter: the main-draw views drop the
+   qualifying columns, and a qualifying view keeps only what means something
+   there (its W\u2013L is the qualifying record, "Times Qualified" its titles). */
+const QUAL_VIEW_COLS = new Set(["player","team","country","w","l","pct","qualified",
+  "surf_H","surf_CL","surf_G","surf_IH","bestSurface","best","streak"]);
+const QUAL_ONLY_COLS = new Set(["qw","ql","qualified"]);
+function colsFor(cols, level){
+  if(!level || level==="all") return cols;
+  if(isQualLevel(level)) return cols.filter(c=>QUAL_VIEW_COLS.has(c.k));
+  return cols.filter(c=>!QUAL_ONLY_COLS.has(c.k));
+}
+const playerLevel = () => val("pLevel") || "atp";
+const teamLevel   = () => val("tLevel") || "atp";
+const playerCols  = () => colsFor(PLAYER_COLS, playerLevel());
+const teamCols    = () => colsFor(TEAM_COLS, teamLevel());
+
 const TITLE_COLS = [
   {k:"event",h:"Event",render:r=>{
       const b=document.createElement("button"); b.className="linkish"; b.textContent=r.event;
@@ -3254,7 +3327,7 @@ function parseCalendar(text, seasonOverride){
 
     out.push({season:"", code:week, date, opened, name, event:baseEventName(name),
       country, surface, draw:sizes, manager,
-      challenger:/\bCH\*?\b/i.test(name) || /\bITF\b/i.test(name),
+      challenger:/\bCH\*?\b/i.test(name) || /\b(ITF|FUT|Futures)\b/i.test(name) || /NextGen/i.test(name),
       _year:yr});
   });
 
@@ -3273,6 +3346,34 @@ function parseCalendar(text, seasonOverride){
   return {rows:out, bad, notes};
 }
 
+/* Two tournaments in one season can share a city: a Challenger in Rome in
+   April and the Masters in May. Under one event name their results would run
+   together, so the calendar keeps them apart. The tour event keeps the plain
+   name; a Challenger takes its calendar name ("Rome CH"), and a second one
+   of the same name is numbered ("Sao Paulo 2 CH"). */
+function separateSharedEvents(seasons){
+  seasons.forEach(sea=>{
+    const rows=CALENDAR.filter(c=>c.season===sea);
+    const taken=new Set(rows.map(c=>c.event.toLowerCase()));
+    const by=new Map();
+    rows.forEach(c=>{ if(!by.has(c.event)) by.set(c.event,[]); by.get(c.event).push(c); });
+    by.forEach((list,ev)=>{
+      if(list.length<2) return;
+      list.sort((a,b)=>(a.challenger-b.challenger) || String(a.date).localeCompare(String(b.date)));
+      const seen=new Map();
+      list.slice(1).forEach(c=>{
+        let nm=String(c.name).replace(/\*/g,"").trim();
+        const n=(seen.get(nm)||(list[0].name.replace(/\*/g,"").trim()===nm?1:0))+1;
+        seen.set(nm,n);
+        if(n>1){ const i=nm.lastIndexOf(" "); nm=`${nm.slice(0,i)} ${n} ${nm.slice(i+1)}`; c.name=nm; }
+        if(taken.has(nm.toLowerCase())) nm=`${nm} (${c.code})`;
+        taken.add(nm.toLowerCase());
+        c.event=nm;
+      });
+    });
+  });
+}
+
 on("btnCal","click",()=>{
   const msg=$("calMsg"); msg.className="msg";
   const text=val("calIn");
@@ -3289,7 +3390,12 @@ on("btnCal","click",()=>{
      one month at a time doesn't discard the rest of the year. */
   const incoming=new Set(rows.map(r=>r.season+"|"+r.code));
   const before=CALENDAR.length;
+  /* A row pasted again keeps the event name it already had, which may have
+     been set by hand to keep it apart from another tournament. */
+  const had=new Map(CALENDAR.map(c=>[c.season+"|"+c.code+"|"+c.name, c.event]));
+  rows.forEach(r=>{ const e=had.get(r.season+"|"+r.code+"|"+r.name); if(e) r.event=e; });
   CALENDAR = CALENDAR.filter(c=>!incoming.has(c.season+"|"+c.code)).concat(rows);
+  separateSharedEvents(seasons);
   CAL_INDEX=null;
   const replaced=before + rows.length - CALENDAR.length;
 
@@ -6073,13 +6179,21 @@ function matchRows(){
       when: whenOf(m.event, m.season) + "|" + m.event +
             "|" + String(99-roundRank(m.round)).padStart(2,"0")}));
 }
+/* The From and To pickers. Both open at the ends of the archive (all time);
+   picked the wrong way round, they're read the right way round. */
+function yearSpan(fromId, toId){
+  let a=val(fromId), b=val(toId);
+  if(!a && !b) return "";
+  if(a && b && a>b) [a,b]=[b,a];
+  return [a,b];
+}
 function playerRows(){
-  const q=val("pQ").trim().toLowerCase(), c=val("pCtry"), s=val("pSurf"), y=val("pYear");
-  return derivePlayers(s, y).filter(p=>(!c||p.country===c)&&(!q||hay(p.player,p.country).includes(q)));
+  const q=val("pQ").trim().toLowerCase(), c=val("pCtry"), s=val("pSurf"), y=yearSpan("pFrom","pTo");
+  return derivePlayers(s, y, playerLevel()).filter(p=>(!c||p.country===c)&&(!q||hay(p.player,p.country).includes(q)));
 }
 function teamRows(){
-  const q=val("tQ").trim().toLowerCase(), s=val("tSurf"), y=val("tYear");
-  return deriveTeams(s, y).filter(t=>!q||t.team.toLowerCase().includes(q));
+  const q=val("tQ").trim().toLowerCase(), s=val("tSurf"), y=yearSpan("tFrom","tTo");
+  return deriveTeams(s, y, teamLevel()).filter(t=>!q||t.team.toLowerCase().includes(q));
 }
 /* Both tables read best in playing order rather than alphabetically, so each
    row carries the tournament's calendar date. Rounds sort within a tournament
@@ -6120,9 +6234,9 @@ const tMatches = makeTable({head:"mHead",body:"mBody",empty:"mEmpty",
     wrap.appendChild(b); wrap.appendChild(x);
     return wrap; }});
 const tPlayers = makeTable({head:"pHead",body:"pBody",empty:"pEmpty",
-  cols:()=>PLAYER_COLS, rows:playerRows, defaultSort:"w", defaultDir:-1});
+  cols:playerCols, rows:playerRows, defaultSort:"w", defaultDir:-1});
 const tTeams   = makeTable({head:"tHead",body:"tBody",empty:"tEmpty",
-  cols:()=>TEAM_COLS, rows:teamRows, defaultSort:"w", defaultDir:-1});
+  cols:teamCols, rows:teamRows, defaultSort:"w", defaultDir:-1});
 const tTitles  = makeTable({head:"ttHead",body:"ttBody",empty:"ttEmpty",
   cols:()=>TITLE_COLS, rows:titleRows, defaultSort:"when", defaultDir:-1});
 
@@ -7166,16 +7280,24 @@ function syncFilters(){
     .sort((a,b)=>ROUND_ORDER.indexOf(a)-ROUND_ORDER.indexOf(b)));
   syncCalendarEvents();
   fill("pCtry", uniq(derivePlayers().map(p=>p.country)).sort());
-  /* Year pickers open on All time; each lists only seasons that have matches
-     in that discipline, newest first. */
-  [["pYear","Singles"],["tYear","Doubles"]].forEach(([id,disc])=>{
+  /* From and To open on the first and latest seasons, i.e. all time. Each
+     lists every season on the calendar or in the results, oldest first, so a
+     span can start in a year whose results aren't in yet. Whole seasons only. */
+  [["pFrom","Singles","First season"],["pTo","Singles","Latest season"],
+   ["tFrom","Doubles","First season"],["tTo","Doubles","Latest season"]].forEach(([id,disc,open])=>{
     const el=$(id); if(!el) return;
     const keep=el.value;
-    const yrs=uniq(MATCHES.filter(m=>m.disc===disc && !m.isBye).map(m=>m.season))
-      .sort((a,b)=>b.localeCompare(a));
-    el.innerHTML='<option value="">All time</option>';
+    const yrs=uniq(MATCHES.filter(m=>m.disc===disc && !m.isBye).map(m=>m.season)
+      .concat(CALENDAR.map(c=>c.season))).sort((a,b)=>a.localeCompare(b));
+    el.innerHTML=`<option value="">${open}</option>`;
     yrs.forEach(y=>{ const o=document.createElement("option"); o.value=y; o.textContent=y; el.appendChild(o); });
     el.value = yrs.includes(keep) ? keep : "";
+  });
+  [["pLevel","pLevelNote"],["tLevel","tLevelNote"]].forEach(([id,note])=>{
+    const el=$(id); if(!el) return;
+    if(!el.options.length) EVENT_LEVELS.forEach(([v,t])=>{
+      const o=document.createElement("option"); o.value=v; o.textContent=t; el.appendChild(o); });
+    setText(note, LEVEL_NOTE[el.value||"atp"]);
   });
   ["pSurf","tSurf"].forEach(id=>{
     const el=$(id); if(!el || el.options.length>1) return;
@@ -7404,16 +7526,19 @@ $("nav").addEventListener("click", e=>{
 
 ["mQ","mDisc","mStage","mEvent","mRound"].forEach(id=>{
   on(id,"input",()=>tMatches.render()); on(id,"change",()=>tMatches.render()); });
-["pQ","pYear","pCtry","pSurf"].forEach(id=>{
+["pQ","pFrom","pTo","pCtry","pSurf"].forEach(id=>{
   on(id,"input",()=>tPlayers.render()); on(id,"change",()=>tPlayers.render()); });
+on("pLevel","change",()=>{ setText("pLevelNote", LEVEL_NOTE[playerLevel()]); tPlayers.render(); });
+on("tLevel","change",()=>{ setText("tLevelNote", LEVEL_NOTE[teamLevel()]); tTeams.render(); });
 on("tQ","input",()=>tTeams.render());
 on("tSurf","change",()=>tTeams.render());
-on("tYear","change",()=>tTeams.render());
+on("tFrom","change",()=>tTeams.render());
+on("tTo","change",()=>tTeams.render());
 on("ttQ","input",()=>tTitles.render());
 
 on("btnMcsv","click",()=>downloadCsv(MATCH_COLS,matchRows(),"matches.csv"));
-on("btnPcsv","click",()=>downloadCsv(PLAYER_COLS,playerRows(),"players.csv"));
-on("btnTcsv","click",()=>downloadCsv(TEAM_COLS,teamRows(),"teams.csv"));
+on("btnPcsv","click",()=>downloadCsv(playerCols(),playerRows(),"players.csv"));
+on("btnTcsv","click",()=>downloadCsv(teamCols(),teamRows(),"teams.csv"));
 on("btnTtcsv","click",()=>downloadCsv(TITLE_COLS,titleRows(),"titles.csv"));
 
 on("btnWipe", "click",()=>{
