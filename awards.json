@@ -1,11 +1,9 @@
 {
   "format": "tt-awards/1",
-  "note": "One entry per season. type is player, team (doubles pair as Name/Name), event, manager or text. To add votes to an award, give it \"votes\": [{\"name\": \"vjatceslav\", \"votes\": 12}, {\"name\": \"Jo95\", \"votes\": 5}]. Names are the same as in the results.",
+  "note": "One entry per season. award is the name used for the row in the All years table; title (optional) is the name posted that year, shown on the card. type is player, team (doubles pair as Name/Name), event, manager or text. manager (optional, a name or a list) credits a tournament's manager. To add votes, give an award \"votes\": [{\"name\": \"vjatceslav\", \"votes\": 12}, {\"name\": \"Jo95\", \"votes\": 5}]. Names are the same as in the results.",
   "seasons": [
     {
       "season": "2025",
-      "announced": "2025-12-27",
-      "by": "BMT360",
       "awards": [
         {"group": "Players", "award": "Player of the Year", "type": "player", "winners": ["vjatceslav"]},
         {"group": "Players", "award": "Doubles Team of the Year", "type": "team", "winners": ["BMT360/starluk"]},
@@ -18,8 +16,345 @@
         {"group": "Tournaments", "award": "ATP250/500 Tournament of the Year", "type": "event", "winners": ["Buenos Aires"]},
         {"group": "Tournaments", "award": "Challenger of the Year", "type": "event", "winners": ["Florianopolis CH"]},
         {"group": "Community", "award": "Manager of the Year", "type": "manager", "winners": ["tommyboy0515"]},
+        {"group": "Community", "award": "Rookie Manager of the Year", "type": "manager", "winners": ["andrepeixe", "Fogmeister", "p_varna"]},
         {"group": "Community", "award": "Yemok & Biliana Sportsmanship Award", "type": "player", "winners": ["Bublike"]},
         {"group": "Community", "award": "DeccyB123 Contribution to TT Award", "type": "player", "winners": ["BMT360"]}
+      ]
+    },
+    {
+      "season": "2024",
+      "awards": [
+        {"group": "Players", "award": "Player of the Year", "type": "player", "winners": ["Pauchis"]},
+        {"group": "Players", "award": "Doubles Team of the Year", "type": "team", "winners": ["Snowwy/Jaker"]},
+        {"group": "Players", "award": "Most Improved Player of the Year", "type": "player", "winners": ["jpaulo1610"]},
+        {"group": "Players", "award": "NextGen Player of the Year", "type": "player", "winners": ["TimIsMyName"]},
+        {"group": "Players", "award": "Challenger King/Queen", "type": "player", "winners": ["eltrico"]},
+        {"group": "Tournaments", "award": "ATP250/500 Tournament of the Year", "type": "event", "winners": ["Rio de Janeiro", "Barcelona"]},
+        {"group": "Tournaments", "award": "Challenger of the Year", "type": "event", "winners": ["Aix en Provence CH*", "Szczecin CH*"]},
+        {"group": "Community", "award": "Manager of the Year", "type": "manager", "winners": ["tommyboy0515"]},
+        {"group": "Community", "award": "Rookie Manager of the Year", "type": "manager", "winners": ["Bublike"]},
+        {"group": "Community", "award": "Yemok & Biliana Sportsmanship Award", "type": "player", "winners": ["Bublike"]},
+        {"group": "Community", "award": "DeccyB123 Contribution to TT Award", "type": "player", "winners": ["anny"]}
+      ]
+    },
+    {
+      "season": "2023",
+      "awards": [
+        {"group": "Players", "award": "Player of the Year", "type": "player", "winners": ["alejan_milos"]},
+        {"group": "Players", "award": "Doubles Team of the Year", "type": "team", "winners": ["Snowwy/Jaker"]},
+        {"group": "Players", "award": "Most Improved Player of the Year", "type": "player", "winners": ["starluk"]},
+        {"group": "Players", "award": "NextGen Player of the Year", "type": "player", "winners": ["SapfoSakellaridiFan"]},
+        {"group": "Players", "award": "Challenger King/Queen", "type": "player", "winners": ["AlexandreLagazzi"]},
+        {"group": "Players", "award": "Disappointment of the Year", "type": "player", "winners": ["chenhw"]},
+        {"group": "Players", "award": "Fact of the Year", "type": "text", "winners": ["Snowwy/Jaker win two Grand Slam titles"]},
+        {"group": "Tournaments", "award": "Grand Slam of the Year", "type": "event", "winners": ["Roland Garros"]},
+        {"group": "Tournaments", "award": "ATP1000 Tournament of the Year", "type": "event", "winners": ["Indian Wells"]},
+        {"group": "Tournaments", "award": "ATP250/500 Tournament of the Year", "type": "event", "winners": ["Queen's"]},
+        {"group": "Tournaments", "award": "Challenger of the Year", "type": "event", "winners": ["Surbiton CH*"]},
+        {"group": "Community", "award": "Manager of the Year", "type": "manager", "winners": ["Normand"]},
+        {"group": "Community", "award": "Yemok & Biliana Sportsmanship Award", "type": "player", "winners": ["anny"]},
+        {"group": "Community", "award": "DeccyB123 Contribution to TT Award", "type": "player", "winners": ["Snowwy"]}
+      ]
+    },
+    {
+      "season": "2022",
+      "awards": [
+        {"group": "Players", "award": "Player of the Year", "type": "player", "winners": ["Hidalgo"]},
+        {"group": "Players", "award": "Doubles Team of the Year", "type": "team", "winners": ["Hidalgo/doghater"]},
+        {"group": "Players", "award": "Most Improved Player of the Year", "type": "player", "winners": ["Rik."]},
+        {"group": "Players", "award": "NextGen Player of the Year", "type": "player", "winners": ["tommyboy0515"]},
+        {"group": "Players", "award": "Challenger King/Queen", "type": "player", "winners": ["flynn25"]},
+        {"group": "Players", "award": "Disappointment of the Year", "type": "player", "winners": ["NextGenKing"]},
+        {"group": "Players", "award": "Fact of the Year", "type": "text", "winners": ["Hidalgo no. 1 in singles and doubles at the same time"]},
+        {"group": "Tournaments", "award": "Grand Slam of the Year", "type": "event", "winners": ["Roland Garros"]},
+        {"group": "Tournaments", "award": "ATP1000 Tournament of the Year", "type": "event", "winners": ["Monte Carlo"]},
+        {"group": "Tournaments", "award": "ATP250/500 Tournament of the Year", "type": "event", "winners": ["Tel Aviv"]},
+        {"group": "Tournaments", "award": "Challenger of the Year", "type": "event", "winners": ["Cary CH", "Yokkaichi CH"]},
+        {"group": "Community", "award": "Manager of the Year", "type": "manager", "winners": ["anny"]},
+        {"group": "Community", "award": "Rookie Manager of the Year", "type": "manager", "winners": ["tommyboy0515"]},
+        {"group": "Community", "award": "Yemok & Biliana Sportsmanship Award", "type": "player", "winners": ["Cazorla"]},
+        {"group": "Community", "award": "DeccyB123 Contribution to TT Award", "type": "player", "winners": ["Normand"]}
+      ]
+    },
+    {
+      "season": "2021",
+      "awards": [
+        {"group": "Players", "award": "Player of the Year", "type": "player", "winners": ["sdtoot"]},
+        {"group": "Players", "award": "Doubles Team of the Year", "type": "team", "winners": ["Hidalgo/doghater"]},
+        {"group": "Players", "award": "Most Improved Player of the Year", "type": "player", "winners": ["Snowwy"]},
+        {"group": "Players", "award": "Challenger King/Queen", "type": "player", "winners": ["eljab"]},
+        {"group": "Players", "award": "Disappointment of the Year", "type": "player", "winners": ["alejan_milos"]},
+        {"group": "Players", "award": "Fact of the Year", "type": "text", "winners": ["Hidalgo/doghater year-end no. 1 for the second time in three seasons"]},
+        {"group": "Tournaments", "award": "Grand Slam of the Year", "type": "event", "winners": ["Australian Open", "Roland Garros"]},
+        {"group": "Tournaments", "award": "ATP1000 Tournament of the Year", "type": "event", "winners": ["Monte Carlo", "Madrid", "Cincinnati"]},
+        {"group": "Tournaments", "award": "ATP250/500 Tournament of the Year", "type": "event", "winners": ["St. Petersburg"]},
+        {"group": "Tournaments", "award": "Challenger of the Year", "type": "event", "winners": ["Florianopolis", "Tulln CH"]},
+        {"group": "Community", "award": "Manager of the Year", "type": "manager", "winners": ["anny"]},
+        {"group": "Community", "award": "Yemok & Biliana Sportsmanship Award", "type": "player", "winners": ["NDee"]},
+        {"group": "Community", "award": "DeccyB123 Contribution to TT Award", "type": "player", "winners": ["dinkulpus"]}
+      ]
+    },
+    {
+      "season": "2020",
+      "awards": [
+        {"group": "Players", "award": "Player of the Year", "type": "player", "winners": ["jimmyj@y"]},
+        {"group": "Players", "award": "Doubles Team of the Year", "type": "team", "winners": ["Taz Warrior/timmieboy04"]},
+        {"group": "Tournaments", "award": "Tournament of the Year", "title": "Best Tennis Tipping Tournament", "type": "event", "winners": ["Paris"], "manager": "MikiKuba"},
+        {"group": "Community", "award": "Manager of the Year", "type": "manager", "winners": ["anny"]},
+        {"group": "Community", "award": "Yemok & Biliana Sportsmanship Award", "type": "player", "winners": ["MikiKuba", "jervisjames"]},
+        {"group": "Community", "award": "DeccyB123 Contribution to TT Award", "type": "player", "winners": ["BMT360"]}
+      ]
+    },
+    {
+      "season": "2019",
+      "awards": [
+        {"group": "Players", "award": "Player of the Year", "type": "player", "winners": ["alejan_milos"]},
+        {"group": "Players", "award": "Doubles Team of the Year", "type": "team", "winners": ["doghater/Hidalgo"]},
+        {"group": "Players", "award": "Most Improved Player of the Year", "type": "player", "winners": ["Bebek21"]},
+        {"group": "Players", "award": "Challenger King/Queen", "type": "player", "winners": ["Thomiek"]},
+        {"group": "Players", "award": "Disappointment of the Year", "type": "player", "winners": ["chowdahead25", "Bulker95"]},
+        {"group": "Players", "award": "Fact of the Year", "type": "text", "winners": ["Bebek21’s 10-month rise to no. 1"]},
+        {"group": "Tournaments", "award": "Grand Slam of the Year", "type": "event", "winners": ["Australian Open"], "manager": "a1canada"},
+        {"group": "Tournaments", "award": "ATP1000 Tournament of the Year", "title": "ATP Masters Tournament of the Year", "type": "event", "winners": ["Paris"], "manager": "a1canada"},
+        {"group": "Tournaments", "award": "ATP250/500 Tournament of the Year", "type": "event", "winners": ["Dubai"]},
+        {"group": "Tournaments", "award": "Challenger of the Year", "type": "event", "winners": ["Indian Wells CH*"], "manager": "Snowwy"},
+        {"group": "Community", "award": "Manager of the Year", "type": "manager", "winners": ["a1canada"]},
+        {"group": "Community", "award": "Rookie Manager of the Year", "type": "manager", "winners": ["anny"]},
+        {"group": "Community", "award": "Yemok & Biliana Sportsmanship Award", "type": "player", "winners": ["Mae", "PetecoKraus"]},
+        {"group": "Community", "award": "DeccyB123 Contribution to TT Award", "type": "player", "winners": ["a1canada"]}
+      ]
+    },
+    {
+      "season": "2018",
+      "awards": [
+        {"group": "Players", "award": "Player of the Year", "type": "player", "winners": ["Himalaya"]},
+        {"group": "Players", "award": "Doubles Team of the Year", "title": "Team of the Year", "type": "team", "winners": ["Herzeleid/Kirilenko-Fan"]},
+        {"group": "Players", "award": "Most Improved Player of the Year", "type": "player", "winners": ["Mae"]},
+        {"group": "Players", "award": "NextGen Player of the Year", "title": "NextGen Newcomer of the Year", "type": "player", "winners": ["FelipeL"]},
+        {"group": "Players", "award": "Challenger King/Queen", "type": "player", "winners": ["Mighty Hams"]},
+        {"group": "Players", "award": "Disappointment of the Year", "type": "player", "winners": ["Randy"]},
+        {"group": "Players", "award": "Fact of the Year", "type": "text", "winners": ["Himalaya no. 1 after being doubles no. 1 in 2017"]},
+        {"group": "Tournaments", "award": "Grand Slam of the Year", "type": "event", "winners": ["Australian Open"]},
+        {"group": "Tournaments", "award": "ATP1000 Tournament of the Year", "type": "event", "winners": ["Monte Carlo", "Cincinnati"]},
+        {"group": "Tournaments", "award": "ATP250/500 Tournament of the Year", "type": "event", "winners": ["Rio de Janeiro"]},
+        {"group": "Tournaments", "award": "Challenger of the Year", "type": "event", "winners": ["Montevideo CH"]},
+        {"group": "Community", "award": "Manager of the Year", "type": "manager", "winners": ["a1canada"]},
+        {"group": "Community", "award": "Rookie Manager of the Year", "type": "manager", "winners": ["nachotuerto"]},
+        {"group": "Community", "award": "Yemok & Biliana Sportsmanship Award", "type": "player", "winners": ["a1canada"]},
+        {"group": "Community", "award": "DeccyB123 Contribution to TT Award", "type": "player", "winners": ["ibreak4coffee"]}
+      ]
+    },
+    {
+      "season": "2017",
+      "awards": [
+        {"group": "Players", "award": "Player of the Year", "type": "player", "winners": ["sergiopoker6"]},
+        {"group": "Players", "award": "Doubles Team of the Year", "title": "Team of the Year", "type": "team", "winners": ["Himalaya/PDK"]},
+        {"group": "Players", "award": "Most Improved Player of the Year", "title": "Most Improved Player", "type": "player", "winners": ["supertom"]},
+        {"group": "Players", "award": "NextGen Player of the Year", "title": "Newcomer of the Year", "type": "player", "winners": ["VictorHaas"]},
+        {"group": "Players", "award": "Challenger King/Queen", "type": "player", "winners": ["vjatceslav"]},
+        {"group": "Players", "award": "Disappointment of the Year", "type": "player", "winners": ["Cazorla"]},
+        {"group": "Players", "award": "Fact of the Year", "type": "text", "winners": ["sergiopoker6 in three Grand Slam finals"]},
+        {"group": "Tournaments", "award": "Grand Slam of the Year", "title": "Grand Slam/ATP 1000 of the Year", "type": "event", "winners": ["Roland Garros"]},
+        {"group": "Tournaments", "award": "ATP250/500 Tournament of the Year", "type": "event", "winners": ["Rio de Janeiro"]},
+        {"group": "Tournaments", "award": "Challenger of the Year", "type": "event", "winners": ["Dallas CH*"], "manager": "a1canada"},
+        {"group": "Community", "award": "Manager of the Year", "type": "manager", "winners": ["rus59"]},
+        {"group": "Community", "award": "Yemok & Biliana Sportsmanship Award", "type": "player", "winners": ["a1canada"]},
+        {"group": "Community", "award": "DeccyB123 Contribution to TT Award", "type": "player", "winners": ["Taz Warrior"]}
+      ]
+    },
+    {
+      "season": "2016",
+      "awards": [
+        {"group": "Players", "award": "Player of the Year", "type": "player", "winners": ["digor"]},
+        {"group": "Players", "award": "Doubles Team of the Year", "title": "Team of the Year", "type": "team", "winners": ["buji/RHB1993", "Rodrigo R3/Elmo Jr"]},
+        {"group": "Players", "award": "Most Improved Player of the Year", "title": "Most Improved Player", "type": "player", "winners": ["buji"]},
+        {"group": "Players", "award": "NextGen Player of the Year", "title": "Newcomer of the Year", "type": "player", "winners": ["PDK"]},
+        {"group": "Players", "award": "Challenger King/Queen", "type": "player", "winners": ["Rumpas"]},
+        {"group": "Players", "award": "Disappointment of the Year", "type": "player", "winners": ["FERNET"]},
+        {"group": "Players", "award": "Fact of the Year", "type": "text", "winners": ["keqtqiadv’s career Grand Slam in doubles"]},
+        {"group": "Players", "award": "Match of the Year", "type": "text", "winners": ["Wimbledon singles QF"]},
+        {"group": "Tournaments", "award": "Grand Slam of the Year", "title": "Grand Slam/ATP 1000 of the Year", "type": "event", "winners": ["Australian Open"]},
+        {"group": "Tournaments", "award": "ATP250/500 Tournament of the Year", "type": "event", "winners": ["Acapulco", "Queen's", "Chengdu"]},
+        {"group": "Tournaments", "award": "Challenger of the Year", "type": "event", "winners": ["Aix en Provence CH*", "Kaohsiung CH*"]},
+        {"group": "Community", "award": "Manager of the Year", "type": "manager", "winners": ["Randy"]},
+        {"group": "Community", "award": "Yemok & Biliana Sportsmanship Award", "type": "player", "winners": ["Litotes"]},
+        {"group": "Community", "award": "DeccyB123 Contribution to TT Award", "type": "player", "winners": ["Taz Warrior"]}
+      ]
+    },
+    {
+      "season": "2015",
+      "awards": [
+        {"group": "Players", "award": "Player of the Year", "type": "player", "winners": ["Rodrigo R3"]},
+        {"group": "Players", "award": "Doubles Team of the Year", "type": "team", "winners": ["FERNET/Gallina"]},
+        {"group": "Players", "award": "Most Improved Player of the Year", "type": "player", "winners": ["Chilenaitor"]},
+        {"group": "Players", "award": "NextGen Player of the Year", "title": "Newcomer of the Year", "type": "player", "winners": ["Darth Revan"]},
+        {"group": "Players", "award": "Challenger King/Queen", "type": "player", "winners": ["rus59"]},
+        {"group": "Players", "award": "Disappointment of the Year", "type": "player", "winners": ["Tomek."]},
+        {"group": "Players", "award": "Fact of the Year", "type": "text", "winners": ["keqtqiadv & the WTF"]},
+        {"group": "Players", "award": "Match of the Year", "type": "text", "winners": ["Wimbledon R16, Chilenaitor"]},
+        {"group": "Tournaments", "award": "Grand Slam of the Year", "title": "Grand Slam/ATP 1000 of the Year", "type": "event", "winners": ["Roland Garros", "Wimbledon"]},
+        {"group": "Tournaments", "award": "ATP250/500 Tournament of the Year", "type": "event", "winners": ["Marseille"]},
+        {"group": "Tournaments", "award": "Challenger of the Year", "type": "event", "winners": ["Bordeaux CH*"]},
+        {"group": "Community", "award": "Manager of the Year", "type": "manager", "winners": ["bry17may"]},
+        {"group": "Community", "award": "Yemok & Biliana Sportsmanship Award", "type": "player", "winners": ["bavaria100"]},
+        {"group": "Community", "award": "DeccyB123 Contribution to TT Award", "type": "player", "winners": ["Taz Warrior"]}
+      ]
+    },
+    {
+      "season": "2014",
+      "awards": [
+        {"group": "Players", "award": "Player of the Year", "type": "player", "winners": ["Tytta!."]},
+        {"group": "Players", "award": "Doubles Team of the Year", "type": "team", "winners": ["Tytta!./keqtqiadv"]},
+        {"group": "Players", "award": "Most Improved Player of the Year", "type": "player", "winners": ["Redkop", "Shaddad"]},
+        {"group": "Players", "award": "NextGen Player of the Year", "title": "Newcomer of the Year", "type": "player", "winners": ["Nightcrawl3r"]},
+        {"group": "Players", "award": "Challenger King/Queen", "type": "player", "winners": ["ESimp"]},
+        {"group": "Players", "award": "Disappointment of the Year", "type": "player", "winners": ["Djalma"]},
+        {"group": "Players", "award": "Fact of the Year", "type": "text", "winners": ["Tytta!. no. 1 in singles and doubles"]},
+        {"group": "Players", "award": "Match of the Year", "type": "text", "winners": ["Toronto singles final"]},
+        {"group": "Tournaments", "award": "Grand Slam of the Year", "title": "Grand Slam/ATP 1000 of the Year", "type": "event", "winners": ["Roland Garros"]},
+        {"group": "Tournaments", "award": "ATP250/500 Tournament of the Year", "type": "event", "winners": ["Halle"]},
+        {"group": "Tournaments", "award": "Challenger of the Year", "type": "event", "winners": ["Bratislava CH*"]},
+        {"group": "Community", "award": "Manager of the Year", "type": "manager", "winners": ["bry17may"]},
+        {"group": "Community", "award": "Yemok & Biliana Sportsmanship Award", "type": "player", "winners": ["Litotes"]},
+        {"group": "Community", "award": "DeccyB123 Contribution to TT Award", "type": "player", "winners": ["valac222"]}
+      ]
+    },
+    {
+      "season": "2013",
+      "awards": [
+        {"group": "Players", "award": "Player of the Year", "type": "player", "winners": ["Hidalgo"]},
+        {"group": "Players", "award": "Doubles Team of the Year", "type": "team", "winners": ["keqtqiadv/Tytta!."]},
+        {"group": "Players", "award": "Most Improved Player of the Year", "type": "player", "winners": ["sdtoot"]},
+        {"group": "Players", "award": "NextGen Player of the Year", "title": "Newcomer of the Year", "type": "player", "winners": ["samanosuke"]},
+        {"group": "Players", "award": "Challenger King/Queen", "type": "player", "winners": ["buji"]},
+        {"group": "Players", "award": "Disappointment of the Year", "type": "player", "winners": ["Belludal"]},
+        {"group": "Players", "award": "Fact of the Year", "type": "text", "winners": ["Euroquitter"]},
+        {"group": "Players", "award": "Match of the Year", "type": "text", "winners": ["Euroquitter’s win in Australian Open R1"]},
+        {"group": "Tournaments", "award": "Grand Slam of the Year", "title": "Grand Slam/ATP 1000 of the Year", "type": "event", "winners": ["U.S. Open"]},
+        {"group": "Tournaments", "award": "ATP250/500 Tournament of the Year", "type": "event", "winners": ["Halle", "Hamburg"]},
+        {"group": "Tournaments", "award": "Challenger of the Year", "type": "event", "winners": ["Mons CH*", "Noumea CH"]},
+        {"group": "Community", "award": "Manager of the Year", "type": "manager", "winners": ["AdeyC"]},
+        {"group": "Community", "award": "Yemok & Biliana Sportsmanship Award", "type": "player", "winners": ["savesthedizzle"]},
+        {"group": "Community", "award": "DeccyB123 Contribution to TT Award", "type": "player", "winners": ["keqtqiadv"]}
+      ]
+    },
+    {
+      "season": "2012",
+      "awards": [
+        {"group": "Players", "award": "Player of the Year", "type": "player", "winners": ["Belludal"]},
+        {"group": "Players", "award": "Doubles Team of the Year", "type": "team", "winners": ["Machado/mcarvalho"]},
+        {"group": "Players", "award": "Most Improved Player of the Year", "type": "player", "winners": ["abollo"]},
+        {"group": "Players", "award": "NextGen Player of the Year", "title": "Newcomer of the Year", "type": "player", "winners": ["sergiodmm"]},
+        {"group": "Players", "award": "Challenger King/Queen", "type": "player", "winners": ["bavaria100"]},
+        {"group": "Players", "award": "Disappointment of the Year", "type": "player", "winners": ["Gavnich77"]},
+        {"group": "Players", "award": "Fact of the Year", "type": "text", "winners": ["Boarder35m & Roland Garros"]},
+        {"group": "Players", "award": "Match of the Year", "type": "text", "winners": ["U.S. Open final"]},
+        {"group": "Tournaments", "award": "Grand Slam of the Year", "title": "Grand Slam/ATP 1000 of the Year", "type": "event", "winners": ["Roland Garros"]},
+        {"group": "Tournaments", "award": "ATP250/500 Tournament of the Year", "type": "event", "winners": ["Barcelona"]},
+        {"group": "Tournaments", "award": "Challenger of the Year", "type": "event", "winners": ["Helsinki CH*", "Braunschweig CH*"]},
+        {"group": "Community", "award": "Manager of the Year", "type": "manager", "winners": ["AdeyC"]},
+        {"group": "Community", "award": "Yemok & Biliana Sportsmanship Award", "type": "player", "winners": ["volc0mizado", "dinkulpus"]},
+        {"group": "Community", "award": "DeccyB123 Contribution to TT Award", "type": "player", "winners": ["AdeyC"]}
+      ]
+    },
+    {
+      "season": "2011",
+      "awards": [
+        {"group": "Players", "award": "Player of the Year", "type": "player", "winners": ["TankingTheSet"]},
+        {"group": "Players", "award": "Doubles Team of the Year", "type": "team", "winners": ["Belludal/Ilovetheblues_86"]},
+        {"group": "Players", "award": "Most Improved Player of the Year", "type": "player", "winners": ["Belludal"]},
+        {"group": "Players", "award": "NextGen Player of the Year", "title": "Newcomer of the Year", "type": "player", "winners": ["Holmzy"]},
+        {"group": "Players", "award": "Challenger King/Queen", "type": "player", "winners": ["appleGirl"]},
+        {"group": "Players", "award": "Disappointment of the Year", "type": "player", "winners": ["Labamba"]},
+        {"group": "Players", "award": "Fact of the Year", "type": "text", "winners": ["Goldenoldie managed 28 tournaments"]},
+        {"group": "Players", "award": "Match of the Year", "type": "text", "winners": ["Hellcat/njnetswill win twice at the WTF"]},
+        {"group": "Tournaments", "award": "Grand Slam of the Year", "title": "Grand Slam/ATP 1000 of the Year", "type": "event", "winners": ["U.S. Open"]},
+        {"group": "Tournaments", "award": "ATP250/500 Tournament of the Year", "type": "event", "winners": ["Dubai"]},
+        {"group": "Tournaments", "award": "Challenger of the Year", "type": "event", "winners": ["Helsinki CH"]},
+        {"group": "Community", "award": "Manager of the Year", "type": "manager", "winners": ["Marto"]},
+        {"group": "Community", "award": "Yemok & Biliana Sportsmanship Award", "type": "player", "winners": ["keqtqiadv"]},
+        {"group": "Community", "award": "DeccyB123 Contribution to TT Award", "type": "player", "winners": ["sfar"]}
+      ]
+    },
+    {
+      "season": "2010",
+      "awards": [
+        {"group": "Players", "award": "Player of the Year", "type": "player", "winners": ["Björki"]},
+        {"group": "Players", "award": "Doubles Team of the Year", "type": "team", "winners": ["Duncan/JeffCandoi"]},
+        {"group": "Players", "award": "Most Improved Player of the Year", "type": "player", "winners": ["dusan1610"]},
+        {"group": "Players", "award": "NextGen Player of the Year", "title": "Newcomer of the Year", "type": "player", "winners": ["Goldenoldie"]},
+        {"group": "Players", "award": "Challenger King/Queen", "type": "player", "winners": ["Cheeky Chick"]},
+        {"group": "Players", "award": "Disappointment of the Year", "type": "player", "winners": ["Netin!"]},
+        {"group": "Players", "award": "Fact of the Year", "type": "text", "winners": ["USA in the Davis Cup"]},
+        {"group": "Players", "award": "Match of the Year", "type": "text", "winners": ["Hotzenplotz & -Evita-, Wimbledon R64"]},
+        {"group": "Tournaments", "award": "Grand Slam of the Year", "title": "Grand Slam/ATP 1000 of the Year", "type": "event", "winners": ["Australian Open"]},
+        {"group": "Tournaments", "award": "ATP250/500 Tournament of the Year", "type": "event", "winners": ["Bucharest"]},
+        {"group": "Tournaments", "award": "Challenger of the Year", "type": "event", "winners": ["Dallas CH", "Cherbourg CH", "Kosice CH"]},
+        {"group": "Community", "award": "Manager of the Year", "type": "manager", "winners": ["Boarder35m"]},
+        {"group": "Community", "award": "Yemok & Biliana Sportsmanship Award", "type": "player", "winners": ["Snowwy"]}
+      ]
+    },
+    {
+      "season": "2009",
+      "awards": [
+        {"group": "Players", "award": "Player of the Year", "type": "player", "winners": ["Tytta!."]},
+        {"group": "Players", "award": "Doubles Team of the Year", "type": "team", "winners": ["Nando_L/Netin!"]},
+        {"group": "Players", "award": "Most Improved Player of the Year", "type": "player", "winners": ["Betty"]},
+        {"group": "Players", "award": "NextGen Player of the Year", "title": "Newcomer of the Year", "type": "player", "winners": ["Pauchis"]},
+        {"group": "Players", "award": "Challenger King/Queen", "type": "player", "winners": ["Pauchis"]},
+        {"group": "Players", "award": "Disappointment of the Year", "type": "player", "winners": ["Renaud"]},
+        {"group": "Players", "award": "Fact of the Year", "type": "text", "winners": ["greatkingrat’s decision"]},
+        {"group": "Players", "award": "Match of the Year", "type": "text", "winners": ["Wimbledon finals"]},
+        {"group": "Tournaments", "award": "Grand Slam of the Year", "title": "GS/ATP 1000 Tournament of the Year", "type": "event", "winners": ["Australian Open"]},
+        {"group": "Tournaments", "award": "ATP250/500 Tournament of the Year", "type": "event", "winners": ["Hamburg"]},
+        {"group": "Tournaments", "award": "Challenger of the Year", "title": "Challenger Tournament of the Year", "type": "event", "winners": ["Buenos Aires CH"]},
+        {"group": "Community", "award": "Manager of the Year", "type": "manager", "winners": ["Boarder35m"]},
+        {"group": "Community", "award": "Yemok & Biliana Sportsmanship Award", "type": "player", "winners": ["-Evita-"]},
+        {"group": "Community", "award": "DeccyB123 Contribution to TT Award", "type": "player", "winners": ["Gavnich77"]}
+      ]
+    },
+    {
+      "season": "2008",
+      "awards": [
+        {"group": "Players", "award": "Player of the Year", "type": "player", "winners": ["scythe19pro"]},
+        {"group": "Players", "award": "Doubles Team of the Year", "type": "team", "winners": ["keqtqiadv/scythe19pro"]},
+        {"group": "Players", "award": "Most Improved Player of the Year", "type": "player", "winners": ["Nando_L"]},
+        {"group": "Players", "award": "Challenger King/Queen", "title": "Challenger King", "type": "player", "winners": ["Tennis-Engineer"]},
+        {"group": "Players", "award": "Disappointment of the Year", "type": "player", "winners": ["GustavoM_Fan"]},
+        {"group": "Players", "award": "Fact of the Year", "type": "text", "winners": ["Cagon / quality TT discussion"]},
+        {"group": "Players", "award": "Match of the Year", "type": "text", "winners": ["FiBeR d. Labamba"]},
+        {"group": "Tournaments", "award": "Grand Slam of the Year", "title": "GS/MS Tournament of the Year", "type": "event", "winners": ["Roland Garros"], "manager": ["FiBeR", "TTD"]},
+        {"group": "Tournaments", "award": "ATP250/500 Tournament of the Year", "title": "IS Tournament of the Year", "type": "event", "winners": ["Vina del Mar"]},
+        {"group": "Tournaments", "award": "Challenger of the Year", "title": "Challenger Tournament of the Year", "type": "event", "winners": ["Prostejov CH"]},
+        {"group": "Community", "award": "Manager of the Year", "type": "manager", "winners": ["FiBeR"]},
+        {"group": "Community", "award": "Yemok & Biliana Sportsmanship Award", "type": "player", "winners": ["Zirconek"]}
+      ]
+    },
+    {
+      "season": "2007",
+      "awards": [
+        {"group": "Players", "award": "Player of the Year", "type": "player", "winners": ["keqtqiadv"]},
+        {"group": "Players", "award": "Doubles Team of the Year", "type": "team", "winners": ["savesthedizzle/Sheva"], "note": "Posted as savestheday91/Sheva"},
+        {"group": "Players", "award": "Most Improved Player of the Year", "type": "player", "winners": ["adee-gee"]},
+        {"group": "Players", "award": "NextGen Player of the Year", "title": "Newcomer of the Year", "type": "player", "winners": ["Gutturnio D.O.C."]},
+        {"group": "Players", "award": "Challenger King/Queen", "title": "Challenger King", "type": "player", "winners": ["Gutturnio D.O.C."]},
+        {"group": "Players", "award": "Disappointment of the Year", "type": "player", "winners": ["GustavoM_Fan"]},
+        {"group": "Players", "award": "Fact of the Year", "type": "text", "winners": ["greatkingrat’s comeback"]},
+        {"group": "Players", "award": "Match of the Year", "type": "text", "winners": ["Tomek/Garlichead v PaulHopkins"]},
+        {"group": "Tournaments", "award": "Tournament of the Year", "type": "event", "winners": ["Roland Garros"], "manager": "yemok"},
+        {"group": "Community", "award": "Manager of the Year", "type": "manager", "winners": ["adee-gee"]},
+        {"group": "Community", "award": "Yemok & Biliana Sportsmanship Award", "type": "player", "winners": ["Labamba"]}
+      ]
+    },
+    {
+      "season": "2006",
+      "awards": [
+        {"group": "Players", "award": "Doubles Team of the Year", "type": "team", "winners": ["Bubba08/silverwhite"]},
+        {"group": "Players", "award": "Match of the Year", "type": "text", "winners": ["keqtqiadv d. its.like.that, Roland Garros R16"]},
+        {"group": "Tournaments", "award": "ATP1000 Tournament of the Year", "title": "ATP Masters Series Tournament of the Year", "type": "event", "winners": ["Toronto"]},
+        {"group": "Tournaments", "award": "ATP250/500 Tournament of the Year", "title": "IS Tournament of the Year", "type": "event", "winners": ["Kitzbühel"]},
+        {"group": "Community", "award": "Manager of the Year", "type": "manager", "winners": ["keqtqiadv"]},
+        {"group": "Community", "award": "Yemok & Biliana Sportsmanship Award", "title": "Sportsmanship Award", "type": "player", "winners": ["Gavnich77"]}
       ]
     }
   ]

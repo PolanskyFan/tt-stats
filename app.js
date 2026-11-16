@@ -4570,7 +4570,7 @@ function playerAwards(name){
   AWARDS.forEach(s=>s.awards.forEach(a=>{
     if(!["player","team","manager"].includes(a.type)) return;
     if(a.winners.some(w=>String(w).split("/").some(p=>keyOf(p.trim())===k)))
-      out.push({award:a.award, season:s.season});
+      out.push({award:a.title||a.award, season:s.season});
   }));
   return out;
 }
@@ -4589,7 +4589,9 @@ function awardsCss(){
 .awcard .aww .linkish:hover{color:var(--line)}
 .awamp{color:var(--slate);margin:0 6px}
 .awcard .aww .awamp{font-weight:500}
+.awcard .aww.txt{font-size:19px;font-weight:600;line-height:1.25}
 .awcard .awnote{font-size:11.5px;color:var(--slate);margin-top:3px}
+.awcard .awnote .linkish{font-size:11.5px}
 .awvotes{margin-top:11px;border-top:1px solid var(--rule);padding-top:8px}
 .awv{display:grid;grid-template-columns:1fr 70px 30px;gap:8px;align-items:center;font-size:12.5px;padding:2px 0}
 .awv .bar{height:5px;background:rgba(232,239,234,.13);position:relative}
@@ -4597,23 +4599,60 @@ function awardsCss(){
 .awv.top .bar i{background:var(--ball)}
 .awv .n{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--slate);text-align:right}
 .awv .linkish{font-size:12.5px}
-.awtable td{white-space:normal;vertical-align:top}
-.awtable td:first-child{white-space:nowrap;color:var(--slate)}
+.awwas{font-family:"IBM Plex Sans",sans-serif;font-weight:400;font-size:12px;color:var(--slate);white-space:nowrap}
+.awtable td{white-space:normal;vertical-align:top;min-width:140px}
+.awtable td .awone{display:block}
+.awtable td .awone+.awone{margin-top:3px}
+.awtable td:first-child{white-space:nowrap;color:var(--slate);position:sticky;left:0;z-index:1;background:var(--court)}
+.awtable th:first-child{left:0;z-index:3}
 `;
   document.head.appendChild(st);
 }
 
+/* The event name the results use for an award's tournament. The 2007-2018
+   results name Challengers without the "CH" the calendar adds, so a name with
+   no results of its own is looked up on that season's calendar. */
+function awardEvent(w, season){
+  const has=e=>MATCHES.some(m=>m.event===e && (m.season||"")===season);
+  if(has(w)) return w;
+  const c=CALENDAR.find(x=>x.season===season && x.name===w);
+  return c && c.event && has(c.event) ? c.event : null;
+}
+
 /* One winner (or one name in a vote list) as a link to the right page. */
 function awardName(type, w, season){
-  if(type==="player") return nameLinks(w,"Singles");
-  if(type==="team") return nameLinks(w,"Doubles");
-  if(type==="manager"){
-    const b=document.createElement("button"); b.className="linkish"; b.textContent=w;
-    b.addEventListener("click",()=>showManager(w)); return b;
+  if(type==="player" || type==="team"){
+    /* A player who has since changed name shows under the current name,
+       with the name the award was given to beside it. */
+    const disc=type==="team"?"Doubles":"Singles";
+    const wrap=document.createElement("span");
+    String(w).split("/").forEach((p,i)=>{
+      p=p.trim();
+      if(i){ const x=document.createElement("span"); x.className="dim"; x.textContent=" / "; wrap.appendChild(x); }
+      const nm=canonName(p);
+      if(!REG.has(keyOf(p))){   // no results or rankings on the site
+        const x=document.createElement("span"); x.textContent=p; wrap.appendChild(x); return;
+      }
+      const b=document.createElement("button"); b.className="linkish"; b.textContent=nm;
+      b.addEventListener("click",()=>showPlayer(nm,disc)); wrap.appendChild(b);
+      if(rawKey(nm)!==rawKey(p)){
+        const was=document.createElement("span"); was.className="awwas"; was.textContent=` (as ${p})`;
+        wrap.appendChild(was);
+      }
+    });
+    return wrap;
   }
-  if(type==="event" && MATCHES.some(m=>m.event===w && (m.season||"")===season)){
+  if(type==="manager"){
+    const c=CALENDAR.find(x=>x.manager && x.manager.toLowerCase()===String(w).toLowerCase());
+    if(c){
+      const b=document.createElement("button"); b.className="linkish"; b.textContent=w;
+      b.addEventListener("click",()=>showManager(c.manager)); return b;
+    }
+  }
+  const ev = type==="event" ? awardEvent(w, season) : null;
+  if(ev){
     const b=document.createElement("button"); b.className="linkish"; b.textContent=w;
-    b.addEventListener("click",()=>showEvent(w,season)); return b;
+    b.addEventListener("click",()=>showEvent(ev,season)); return b;
   }
   const s=document.createElement("span"); s.textContent=w; return s;
 }
@@ -4655,13 +4694,8 @@ function renderAwards(){
 
   const S=AWARDS.find(s=>s.season===AWARDS_UI.season);
   const lede=document.createElement("p"); lede.className="lede";
-  let when="";
-  if(S.announced){
-    const d=new Date(S.announced+"T12:00:00");
-    if(!isNaN(d)) when=` Announced on the forum on ${d.toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})}`
-      + (S.by?` by ${S.by}`:"")+".";
-  }
-  lede.textContent=`The Tennis Tipping Awards for the ${S.season} season.${when}`;
+  const played=MATCHES.some(m=>(m.season||"")===S.season);
+  lede.textContent=`The Tennis Tipping Awards for the ${S.season} season, as posted on the forum.`;
   mount.appendChild(lede);
 
   const groups=[];
@@ -4677,11 +4711,20 @@ function renderAwards(){
     const grid=document.createElement("div"); grid.className="awgrid";
     G.list.forEach(a=>{
       const c=document.createElement("div"); c.className="awcard";
-      const k=document.createElement("div"); k.className="awk"; k.textContent=a.award;
-      const w=document.createElement("div"); w.className="aww";
+      const k=document.createElement("div"); k.className="awk"; k.textContent=a.title||a.award;
+      const w=document.createElement("div"); w.className="aww"+(a.type==="text"?" txt":"");
       w.appendChild(awardWinners(a, S.season));
       c.appendChild(k); c.appendChild(w);
-      if(a.type==="event" && a.winners.some(x=>!MATCHES.some(m=>m.event===x && (m.season||"")===S.season))){
+      if(a.manager){
+        const n=document.createElement("div"); n.className="awnote";
+        n.appendChild(document.createTextNode("Managed by "));
+        [].concat(a.manager).forEach((m,i)=>{
+          if(i) n.appendChild(document.createTextNode(" and "));
+          n.appendChild(awardName("manager", m, S.season));
+        });
+        c.appendChild(n);
+      }
+      if(played && a.type==="event" && a.winners.some(x=>!awardEvent(x, S.season))){
         const n=document.createElement("div"); n.className="awnote";
         n.textContent="Results not on the site yet"; c.appendChild(n);
       }
@@ -4727,7 +4770,11 @@ function renderAwardsTable(mount){
     AWARDS.forEach(s=>{
       const td=document.createElement("td");
       const a=s.awards.find(x=>x.award===nm);
-      if(a) td.appendChild(awardWinners(a, s.season)); else td.innerHTML='<span class="dim">—</span>';
+      if(a) a.winners.forEach(w=>{
+        const d=document.createElement("span"); d.className="awone";
+        d.appendChild(awardName(a.type, w, s.season)); td.appendChild(d);
+      });
+      else td.innerHTML='<span class="dim">\u2014</span>';
       tr.appendChild(td);
     });
     body.appendChild(tr);

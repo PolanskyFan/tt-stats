@@ -50386,7 +50386,7 @@
     28,
     10
    ],
-   "manager": "Gutturnio D.O.C.",
+   "manager": "Spadea TT",
    "challenger": true
   },
   {
@@ -51097,7 +51097,7 @@
     32,
     13
    ],
-   "manager": "Gutturnio D.O.C.",
+   "manager": "Spadea TT",
    "challenger": true
   },
   {
@@ -51547,7 +51547,7 @@
     32,
     0
    ],
-   "manager": "Gutturnio D.O.C.",
+   "manager": "Spadea TT",
    "challenger": false
   },
   {
@@ -51685,7 +51685,7 @@
     32,
     16
    ],
-   "manager": "Gutturnio D.O.C.",
+   "manager": "Spadea TT",
    "challenger": true
   },
   {
@@ -51837,7 +51837,7 @@
     32,
     16
    ],
-   "manager": "Gutturnio D.O.C.",
+   "manager": "Spadea TT",
    "challenger": true
   },
   {
@@ -54758,6 +54758,22 @@
   {
    "from": "ll supertom",
    "to": "supertom"
+  },
+  {
+   "from": "sapfosakellaridfan",
+   "to": "sapfosakellaridifan"
+  },
+  {
+   "from": "sapfosakellaridif",
+   "to": "sapfosakellaridifan"
+  },
+  {
+   "from": "sapfosakkelarridifan",
+   "to": "sapfosakellaridifan"
+  },
+  {
+   "from": "gutturnio d.o.c.",
+   "to": "spadea tt"
   }
  ],
  "countryAccepted": [
@@ -57589,7 +57605,7 @@
   },
   {
    "key": "sapfosakellaridifan",
-   "name": "SapfoSakkelaridiFan",
+   "name": "SapfoSakellaridiFan",
    "country": "POL"
   },
   {
@@ -57861,10 +57877,6 @@
   {
    "key": "cazorla",
    "name": "Cazorla"
-  },
-  {
-   "key": "sapfosakellaridfan",
-   "name": "SapfoSakellaridFan"
   },
   {
    "key": "tommyboy0515",
