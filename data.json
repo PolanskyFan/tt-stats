@@ -1,6 +1,6 @@
 {
  "format": "tennis-tipping/1",
- "savedAt": "2026-11-16T15:00:00.000Z",
+ "savedAt": "2026-11-17T01:00:45.000Z",
  "matchFiles": [
   "matches-2026.json",
   "matches-2025.json",
@@ -55376,7 +55376,19 @@
   "toomuchraquet",
   "ambrozius"
  ],
- "missingAccepted": [],
+ "missingAccepted": [
+  "2025|Hamilton|Doubles|Main|QF|chenhw / shaddad",
+  "2025|Agadir|Singles|Main|R32|bublike",
+  "2025|Braunschweig|Singles|Qualifying|QR1|lisandro",
+  "2025|Hamilton|Doubles|Main|R16|matty1 / phiil",
+  "2025|Hamilton|Doubles|Main|R16|andrepeixe / fogmeister",
+  "2025|Ilkley|Singles|Main|R32|bebek21",
+  "2025|Ilkley|Singles|Main|R32|matty1",
+  "2025|Orleans|Singles|Main|R32|catgamer",
+  "2025|Orleans|Singles|Main|R32|applegate",
+  "2025|Skopje|Doubles|Main|R16|matty1 / phiil",
+  "2025|Skopje|Singles|Main|R32|matty1"
+ ],
  "countryChecks": [
   {
    "key": "scarecrows",
@@ -55977,6 +55989,12 @@
    "name": "rafagami",
    "code": "BRA",
    "why": "helper draw (2025 Challenger): Oeiras 2025, Oeiras 2025 doubles"
+  },
+  {
+   "key": "harald bluetooth",
+   "name": "Harald Bluetooth",
+   "code": "NOR",
+   "why": "helper draw (2025 Challengers): Bratislava"
   }
  ],
  "countryChecksKept": [
