@@ -52359,7 +52359,12 @@
    "event": "Miami",
    "country": "USA",
    "surface": "H",
-   "draw": [],
+   "draw": [
+    128,
+    0,
+    0,
+    0
+   ],
    "manager": "",
    "challenger": false
   },
@@ -52372,7 +52377,12 @@
    "event": "Valencia",
    "country": "ESP",
    "surface": "CL",
-   "draw": [],
+   "draw": [
+    32,
+    0,
+    0,
+    0
+   ],
    "manager": "DeccyB123",
    "challenger": false
   },
@@ -52385,7 +52395,12 @@
    "event": "Houston",
    "country": "USA",
    "surface": "CL",
-   "draw": [],
+   "draw": [
+    32,
+    0,
+    0,
+    0
+   ],
    "manager": "JMG",
    "challenger": false
   },
