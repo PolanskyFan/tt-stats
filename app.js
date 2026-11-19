@@ -744,7 +744,7 @@ const EDIT = document.body.dataset.mode === "edit";
 /* index.html, desk.html and app.js are uploaded together. Updating only some
    of them leaves a page whose markup and code disagree, which shows up as a
    blank tab rather than an error, so they carry a matching stamp. */
-const APP_VERSION = "2026-11-18b";
+const APP_VERSION = "2026-11-19b";
 const esc = s => String(s).replace(/[&<>"']/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
@@ -5012,6 +5012,9 @@ function applyHash(){
     case "records":
       if(a==="Doubles" || a==="Both" || a==="Singles") REC_UI.tab=a;
       return go("records");
+    case "game":
+      GAME_UI.page = ["coverage","rules"].includes(a) ? a : "state";
+      viewOnly("game"); renderGame(); return !!$("v-game");
     case "season":
       if(a) SEASON_UI.season=a;
       seasonView(); renderSeason(); return !!$("v-season");
@@ -5659,13 +5662,7 @@ function seasonList(){
 
 /* Switches to the season view without going through the menu button, whose
    click would set the address to plain "#season" and drop the year. */
-function seasonView(){
-  document.querySelectorAll(".view").forEach(v=>v.classList.remove("on"));
-  const v=$("v-season"); if(v) v.classList.add("on");
-  document.querySelectorAll("#nav button").forEach(b=>
-    b.setAttribute("aria-selected", String(b.dataset.view==="season")));
-  window.scrollTo(0,0);
-}
+function seasonView(){ viewOnly("season"); }
 function showSeason(season, disc){
   SEASON_UI.season=String(season);
   if(disc) SEASON_UI.disc=disc;
@@ -5987,6 +5984,508 @@ function seasonCss(){
 .ssgrid .ssh{margin:0 0 4px;font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:16px;
   text-transform:uppercase;letter-spacing:.03em;color:var(--slate)}
 .ssch{display:inline-flex;align-items:center;gap:6px;margin:0 0 8px;cursor:pointer}`;
+  document.head.appendChild(st);
+}
+
+/* ==================================================================
+   THE GAME
+   Three pages under one tab: the state of the game season by season
+   (players, newcomers, countries, tournaments, draw sizes), coverage
+   (which seasons and tournaments have results on the site, and what is
+   still missing), and the rules, with their history, read from
+   rules.json. Like awards.json, rules.json is edited by hand and the
+   desk never saves it.
+   ================================================================== */
+const GAME_UI = {page:"state", season:"", showCH:false};
+let RULES = null;
+
+async function loadRules(){
+  try{
+    const r = await fetch("rules.json", {cache:"no-store"});
+    if(!r.ok) return;
+    const j = await r.json();
+    RULES = {
+      note: typeof j.note==="string" ? j.note : "",
+      current: (Array.isArray(j.current) ? j.current : [])
+        .filter(t=>t && t.topic && Array.isArray(t.items)),
+      history: (Array.isArray(j.history) ? j.history : [])
+        .filter(h=>h && h.text)
+        .sort((a,b)=>String(b.date||b.season||"").localeCompare(String(a.date||a.season||"")))
+    };
+  }catch(e){ RULES=null; }
+  renderGame();
+}
+
+/* Opens a view without its menu button, whose click would reset the
+   address to the bare view name. */
+function viewOnly(name){
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("on"));
+  const v=$("v-"+name); if(v) v.classList.add("on");
+  document.querySelectorAll("#nav button").forEach(b=>
+    b.setAttribute("aria-selected", String(b.dataset.view===name)));
+  window.scrollTo(0,0);
+}
+
+function showGame(page, season){
+  GAME_UI.page=page||"state";
+  if(season!==undefined) GAME_UI.season=season;
+  viewOnly("game");
+  setHash("game"+(GAME_UI.page==="state" ? "" : "/"+GAME_UI.page));
+  renderGame();
+}
+
+/* ---------- a small bar chart: one series, one bar a season ---------- */
+/* points: [{x, y (number or null for no data), tip}]. Drawn once the card
+   is on the page, at the card's own width, so the text stays its size. */
+function seasonBars(points, opts){
+  const wrap=document.createElement("div"); wrap.className="gbchart";
+  const tip=document.createElement("div"); tip.className="gbtip"; tip.hidden=true;
+  wrap.appendChild(tip);
+  const fmt=opts.fmt||(v=>Number(v).toLocaleString());
+  const draw=()=>{
+    const W=Math.max(260, wrap.clientWidth||520), H=opts.height||190;
+    const m={t:18, r:8, b:24, l:38};
+    const pw=W-m.l-m.r, ph=H-m.t-m.b;
+    const vals=points.map(p=>p.y).filter(v=>v!=null);
+    const maxV=Math.max(1, ...vals);
+    const stepRaw=maxV/4, mag=Math.pow(10, Math.floor(Math.log10(stepRaw)));
+    const step=[1,2,2.5,5,10].map(k=>k*mag).find(s=>s>=stepRaw)||mag*10;
+    const top=Math.ceil(maxV/step)*step;
+    const y=v=>m.t+ph-(v/top)*ph;
+    const band=pw/points.length, bw=Math.max(3, Math.min(26, band-2));
+    const NS=SVGNS, svg=document.createElementNS(NS,"svg");
+    svg.setAttribute("viewBox",`0 0 ${W} ${H}`); svg.setAttribute("width",W); svg.setAttribute("height",H);
+    svg.setAttribute("role","img"); svg.setAttribute("aria-label", opts.label||"");
+    const el=(tag, at, txt)=>{ const e=document.createElementNS(NS,tag);
+      Object.entries(at).forEach(([k,v])=>e.setAttribute(k,v)); if(txt!=null) e.textContent=txt; svg.appendChild(e); return e; };
+    for(let v=0; v<=top+1e-9; v+=step){
+      el("line",{x1:m.l, x2:W-m.r, y1:y(v), y2:y(v), class: v===0 ? "gbbase" : "gbgrid"});
+      el("text",{x:m.l-6, y:y(v)+3.5, class:"gbax", "text-anchor":"end"}, fmt(Math.round(v*100)/100));
+    }
+    const every=Math.max(1, Math.ceil(points.length*34/pw));
+    points.forEach((p,i)=>{
+      const cx=m.l+band*i+band/2;
+      if((points.length-1-i)%every===0)
+        el("text",{x:cx, y:H-6, class:"gbax", "text-anchor":"middle"}, p.x);
+      if(p.y==null){
+        el("text",{x:cx, y:m.t+ph-4, class:"gbnone", "text-anchor":"middle"}, "·");
+      } else if(p.y>0){
+        const x0=cx-bw/2, y0=y(p.y), r=Math.min(3, bw/2, m.t+ph-y0);
+        el("path",{class:"gbbar", d:`M${x0},${m.t+ph}V${y0+r}Q${x0},${y0} ${x0+r},${y0}H${x0+bw-r}Q${x0+bw},${y0} ${x0+bw},${y0+r}V${m.t+ph}Z`});
+      }
+      if(i===points.length-1 && p.y!=null)
+        el("text",{x:cx, y:y(p.y)-5, class:"gbval", "text-anchor":"middle"}, fmt(p.y));
+      const hit=el("rect",{x:m.l+band*i, y:m.t, width:band, height:ph, class:"gbhit"});
+      const t=document.createElementNS(NS,"title"); t.textContent=p.tip; hit.appendChild(t);
+      hit.addEventListener("mouseenter",()=>{
+        tip.textContent=p.tip; tip.hidden=false;
+        const left=Math.min(Math.max(cx-70, 0), W-150);
+        tip.style.left=left+"px"; tip.style.top=(p.y==null ? m.t+ph-30 : Math.max(0, y(p.y)-38))+"px";
+      });
+      hit.addEventListener("mouseleave",()=>{ tip.hidden=true; });
+      if(opts.onClick) hit.addEventListener("click",()=>opts.onClick(p));
+    });
+    wrap.querySelectorAll("svg").forEach(s=>s.remove());
+    wrap.insertBefore(svg, tip);
+  };
+  requestAnimationFrame(draw);
+  return wrap;
+}
+
+function gameCard(title, node, note){
+  const c=document.createElement("div"); c.className="gbcard";
+  const h=document.createElement("h4"); h.textContent=title; c.appendChild(h);
+  c.appendChild(node);
+  if(note){ const p=document.createElement("p"); p.className="gbnote"; p.textContent=note; c.appendChild(p); }
+  return c;
+}
+
+/* ---------- figures for every season ---------- */
+let GAME_CACHE=null;
+function gameSeasons(){
+  const key=[MATCHES.length, WEEKS.length, CALENDAR.length, REG.size, ALIAS.size, AWARDS.length].join("|");
+  if(GAME_CACHE && GAME_CACHE.key===key) return GAME_CACHE.rows;
+  const seasons=seasonList().slice().reverse();
+  const newest=seasons[seasons.length-1];
+  const ix=tlIndex();
+  const debut=seasonDebuts("Singles");
+  const firstRank=tourSeasons("Singles").slice(-1)[0];
+  const last=new Map();
+  tourWeeks("Singles").forEach(w=>(w.list||[]).forEach(r=>last.set(keyOf(r.name), w.season)));
+  const newBy={}, leftBy={};
+  debut.forEach(w=>{ newBy[w.season]=(newBy[w.season]||0)+1; });
+  last.forEach(s=>{ leftBy[s]=(leftBy[s]||0)+1; });
+  const matchesBy={};
+  MATCHES.forEach(m=>{ if(!m.isBye) matchesBy[m.season]=(matchesBy[m.season]||0)+1; });
+  const endOf=tour=>{ const by={}; tourWeeks(tour).forEach(w=>{ by[w.season]=w; }); return by; };
+  const endS=endOf("Singles"), endD=endOf("Doubles");
+  const weeksBy=tour=>{ const by={}; tourWeeks(tour).forEach(w=>{ by[w.season]=(by[w.season]||0)+1; }); return by; };
+  const wS=weeksBy("Singles"), wD=weeksBy("Doubles");
+  const today=coverCutoff();
+  const special=c=>/final|hopman|wtc|olymp/i.test(c.name||"");
+  const rows=seasons.map(s=>{
+    const cal=CALENDAR.filter(c=>String(c.season)===s);
+    const tour=cal.filter(c=>!c.challenger), ch=cal.filter(c=>c.challenger);
+    const played=c=>!c.date || c.date<=today;
+    const has=c=>ix.has.has(c.event+"|"+s+"|Singles") || ix.has.has(c.event+"|"+s+"|Doubles");
+    const draws=tour.filter(c=>!special(c) && (c.draw||[])[0]>8).map(c=>c.draw[0]);
+    const ew=endS[s], ed=endD[s];
+    const uniq=list=>{ const k=new Set(); (list||[]).forEach(r=>k.add(keyOf(r.name))); return k.size; };
+    const ctry=new Set(); (ew ? ew.list||[] : []).forEach(r=>{
+      const c=canonCountry(r.name)||r.country; if(c && /^[A-Z]{3}$/.test(c)) ctry.add(c); });
+    const no1=ew ? (ew.list||[]).filter(r=>r.rank===Math.min(...ew.list.map(x=>x.rank))) : [];
+    return {
+      season:s, live:s===newest,
+      tourN:tour.length, chN:ch.length,
+      tourDue:tour.filter(played).length, chDue:ch.filter(played).length,
+      tourHas:tour.filter(has).length, chHas:ch.filter(has).length,
+      avgDraw: draws.length ? Math.round(draws.reduce((a,b)=>a+b,0)/draws.length) : null,
+      ranked: ew ? uniq(ew.list) : null, rankedD: ed ? uniq(ed.list) : null,
+      endWeek: ew ? weekLabel(ew) : "", est: !!(ew && ew.est),
+      newN: s===firstRank || !ew ? null : (newBy[s]||0),
+      leftN: s===newest || !ew ? null : (leftBy[s]||0),
+      countries: ew ? ctry.size : null,
+      no1: no1.map(r=>canonName(r.name)).join(" & "), no1pts: no1.length ? no1[0].points : null,
+      matches: matchesBy[s]||0,
+      weeksS: wS[s]||0, weeksD: wD[s]||0,
+      awards: (AWARDS.find(a=>a.season===s)||{awards:[]}).awards.length
+    };
+  });
+  GAME_CACHE={key, rows};
+  return rows;
+}
+
+/* ---------- what is missing ---------- */
+/* Tournaments count as played once their week is over: the latest start
+   date counted is a week before today. */
+function coverCutoff(){
+  const d=new Date(); d.setDate(d.getDate()-7);
+  return d.toISOString().slice(0,10);
+}
+/* Main-draw match counts by round, per event, season and discipline (byes
+   included, as they fill a line of the draw). */
+let COVER_CACHE=null;
+function coverRounds(){
+  if(COVER_CACHE && COVER_CACHE.key===MATCHES.length) return COVER_CACHE.map;
+  const map=new Map();
+  MATCHES.forEach(m=>{
+    if(m.stage!=="Main") return;
+    const k=m.event+"|"+m.season+"|"+m.disc;
+    let r=map.get(k); if(!r){ r={}; map.set(k,r); }
+    r[m.round]=(r[m.round]||0)+1;
+  });
+  COVER_CACHE={key:MATCHES.length, map};
+  return map;
+}
+const COVER_LAB={1:"F",2:"SF",4:"QF",8:"R16",16:"R32",32:"R64",64:"R128",128:"R256"};
+
+/* Gaps in a draw after its first round played: a round with fewer than half
+   its matches ("SF 0/2"). A first round that's short is usually byes, or a
+   smaller draw than the calendar says, so it isn't counted. */
+function drawGaps(rounds){
+  const sizes=Object.keys(COVER_LAB).map(Number).filter(z=>rounds[COVER_LAB[z]]);
+  if(!sizes.length) return [];
+  const out=[];
+  for(let z=Math.max(...sizes)/2; z>=1; z/=2){
+    const v=rounds[COVER_LAB[z]]||0;
+    if(v<z/2) out.push(`${COVER_LAB[z]} ${v}/${z}`);
+  }
+  return out;
+}
+
+function missingFor(season, showCH){
+  const ix=tlIndex(), rounds=coverRounds();
+  const today=coverCutoff();
+  const special=c=>/final|hopman|wtc|olymp/i.test(c.name||"");
+  const out=[];
+  CALENDAR.forEach(c=>{
+    const s=String(c.season);
+    if(season && s!==season) return;
+    if(c.challenger && !showCH) return;
+    if(c.date && c.date>today) return;
+    const d=c.draw||[];
+    const hasS=ix.has.has(c.event+"|"+s+"|Singles"), hasD=ix.has.has(c.event+"|"+s+"|Doubles");
+    const what=[];
+    if(!hasS && !hasD) what.push("No results");
+    else{
+      if(!hasS && d[0]) what.push("No singles results");
+      if(!hasD && d[2] && !special(c)) what.push("No doubles results");
+      if(!special(c)){
+        ["Singles","Doubles"].forEach(disc=>{
+          const g=drawGaps(rounds.get(c.event+"|"+s+"|"+disc)||{});
+          if(g.length) what.push(`${disc} draw incomplete (${g.join(", ")})`);
+        });
+      }
+    }
+    if(what.length) out.push({c, season:s, code:c.code||"", date:c.date||"", name:c.name||c.event,
+      level:c.challenger ? "Challenger" : "Tour", what:what.join("; "), has:hasS||hasD});
+  });
+  return out.sort((a,b)=>b.season.localeCompare(a.season) || a.date.localeCompare(b.date) || a.code.localeCompare(b.code));
+}
+
+/* ---------- the page ---------- */
+function renderGame(){
+  if(!viewOn("v-game")) return;
+  const mount=$("gameMount"); if(!mount) return;
+  mount.innerHTML="";
+  gameCss();
+  const h=document.createElement("h3"); h.className="sec"; h.style.marginTop="0";
+  h.textContent="The game"; mount.appendChild(h);
+  const nav=document.createElement("div"); nav.className="subnav";
+  [["state","State of the game"],["coverage","Coverage"],["rules","Rules"]].forEach(([k,label])=>{
+    const b=document.createElement("button"); b.textContent=label;
+    b.setAttribute("aria-pressed", String(GAME_UI.page===k));
+    b.addEventListener("click",()=>showGame(k));
+    nav.appendChild(b);
+  });
+  mount.appendChild(nav);
+  if(GAME_UI.page==="coverage") renderCoverage(mount);
+  else if(GAME_UI.page==="rules") renderRules(mount);
+  else renderGameState(mount);
+}
+
+function renderGameState(mount){
+  const rows=gameSeasons();
+  if(!rows.length){ mount.insertAdjacentHTML("beforeend",`<div class="empty"><strong>Nothing loaded yet</strong></div>`); return; }
+  const live=rows.find(r=>r.live);
+  const intro=document.createElement("p"); intro.className="hint"; intro.style.marginTop="0";
+  intro.textContent=`How the game has grown and changed, season by season. Player counts come from the singles rankings, `
+    + `which run without a break from 2007, so they cover seasons whose results aren't on the site. `
+    + (live ? `${live.season} is still going: its figures use the latest list (${live.endWeek}).` : "");
+  mount.appendChild(intro);
+
+  const n=v=>v==null ? "—" : Number(v).toLocaleString();
+  const grid=document.createElement("div"); grid.className="gbgrid2";
+  const card=(title, key, tipf, note, fmt)=>{
+    const pts=rows.map(r=>({x:r.season, y:r[key], r, tip:tipf(r)}));
+    grid.appendChild(gameCard(title, seasonBars(pts, {label:title, fmt, onClick:p=>showSeason(p.x)}), note));
+  };
+  card("Players in the singles rankings", "ranked",
+    r=>r.ranked==null ? `${r.season}: no ranking list` : `${r.season}: ${n(r.ranked)} players${r.live?" (latest list)":" at year end"}${r.est?" (est.)":""}`,
+    "Everyone with an event in the past 52 weeks, on the last list of the season.");
+  card("Newcomers", "newN",
+    r=>r.newN==null ? `${r.season}: —` : `${r.season}: ${n(r.newN)} players ranked for the first time`,
+    "Players ranked for the first time. Not counted for the first season of rankings, when everyone is new.");
+  card("Last season in the rankings", "leftN",
+    r=>r.leftN==null ? `${r.season}: —` : `${r.season}: ${n(r.leftN)} players last ranked`,
+    "Players whose final ranking came that season (not counted for the current season).");
+  card("Countries", "countries",
+    r=>r.countries==null ? `${r.season}: no ranking list` : `${r.season}: ${n(r.countries)} countries`,
+    "Countries of the players on the last singles list of the season.");
+  card("Tour events", "tourN", r=>`${r.season}: ${n(r.tourN)} tour events on the calendar`, "Every non-Challenger event on the game's calendar.");
+  card("Challenger events", "chN", r=>`${r.season}: ${n(r.chN)} Challenger and Futures events`, "Challengers, Futures and other events off the ATP calendar.");
+  card("Average singles draw", "avgDraw",
+    r=>r.avgDraw==null ? `${r.season}: —` : `${r.season}: ${r.avgDraw} players on average`,
+    "Main-draw size of tour events, leaving out the Finals, team events and the Olympics.");
+  card("Points of the no. 1", "no1pts",
+    r=>r.no1pts==null ? `${r.season}: —` : `${r.season}: ${r.no1} with ${n(r.no1pts)} points${r.est?" (est.)":""}`,
+    "Singles no. 1 on the last list of the season. 2007–2010 are estimates, and the points table has changed over the years.");
+  mount.appendChild(grid);
+  const tip=document.createElement("p"); tip.className="hint"; tip.textContent="Point at a bar for its figure; click it for that season's page.";
+  mount.appendChild(tip);
+
+  const sh=document.createElement("h3"); sh.className="sec"; sh.textContent="Season by season"; mount.appendChild(sh);
+  mount.appendChild(tableOf([
+    {k:"season",h:"Season",cls:"mono",render:r=>seasonLink(r.season), csv:r=>r.season},
+    {k:"ranked",h:"Ranked (S)",cls:"num",render:r=>n(r.ranked), csv:r=>r.ranked},
+    {k:"rankedD",h:"Ranked (D)",cls:"num",render:r=>n(r.rankedD), csv:r=>r.rankedD},
+    {k:"newN",h:"New",cls:"num",render:r=>n(r.newN), csv:r=>r.newN},
+    {k:"leftN",h:"Last ranked",cls:"num",render:r=>n(r.leftN), csv:r=>r.leftN},
+    {k:"countries",h:"Countries",cls:"num",render:r=>n(r.countries), csv:r=>r.countries},
+    {k:"tourN",h:"Tour events",cls:"num"},
+    {k:"chN",h:"Challengers",cls:"num"},
+    {k:"avgDraw",h:"Avg draw",cls:"num",render:r=>n(r.avgDraw), csv:r=>r.avgDraw},
+    {k:"no1",h:"No. 1 at year end",render:r=>{ const s=document.createElement("span");
+      s.textContent=r.no1 ? `${r.no1}${r.live?" (now)":""}` : "—"; return s; }, csv:r=>r.no1},
+    {k:"no1pts",h:"Points",cls:"num",render:r=>n(r.no1pts)+(r.est?" est.":""), csv:r=>r.no1pts}
+  ], rows.slice().reverse()));
+}
+
+function renderCoverage(mount){
+  const rows=gameSeasons();
+  if(!rows.length) return;
+  const n=v=>Number(v||0).toLocaleString();
+  const withRes=rows.filter(r=>r.matches), without=rows.filter(r=>!r.matches);
+  const tot=k=>rows.reduce((a,r)=>a+(r[k]||0),0);
+  const intro=document.createElement("p"); intro.className="hint"; intro.style.marginTop="0";
+  intro.textContent="Which seasons and tournaments have results on the site so far, and what is still to be entered.";
+  mount.appendChild(intro);
+
+  const grid=document.createElement("div"); grid.className="statgrid";
+  [["Seasons with results", `${withRes.length} of ${rows.length}`, without.length ? "none yet: "+without.map(r=>r.season).join(", ") : "every season"],
+   ["Matches on the site", n(tot("matches")), `${withRes[0]?withRes[0].season:""}–${withRes.length?withRes[withRes.length-1].season:""}`],
+   ["Tour events with results", `${n(tot("tourHas"))} of ${n(tot("tourDue"))}`, `${Math.round(tot("tourHas")/Math.max(1,tot("tourDue"))*100)}% of those played so far`],
+   ["Challengers with results", `${n(tot("chHas"))} of ${n(tot("chDue"))}`, `${Math.round(tot("chHas")/Math.max(1,tot("chDue"))*100)}%`],
+   ["Ranking lists", n(tot("weeksS")+tot("weeksD")), `${n(tot("weeksS"))} singles, ${n(tot("weeksD"))} doubles`]
+  ].forEach(([k,v,note])=>{
+    const c=document.createElement("div"); c.className="stat";
+    c.innerHTML=`<span class="k">${esc(k)}</span><span class="v">${esc(v)}</span><span class="note">${esc(note)}</span>`;
+    grid.appendChild(c);
+  });
+  mount.appendChild(grid);
+
+  const cg=document.createElement("div"); cg.className="gbgrid2";
+  cg.appendChild(gameCard("Matches on the site", seasonBars(rows.map(r=>({x:r.season, y:r.matches||null,
+    tip:r.matches ? `${r.season}: ${n(r.matches)} matches` : `${r.season}: no results on the site`})),
+    {label:"Matches on the site", onClick:p=>showSeason(p.x)}), "A dot marks a season with no results on the site yet."));
+  cg.appendChild(gameCard("Tour events with results (%)", seasonBars(rows.map(r=>({x:r.season,
+    y:r.tourDue && r.matches ? Math.round(r.tourHas/r.tourDue*100) : null,
+    tip:`${r.season}: ${r.tourHas} of ${r.tourDue} tour events played so far`})),
+    {label:"Tour events with results", fmt:v=>v+"%", onClick:p=>showSeason(p.x)}), "Share of the season's tour events, played so far, that have results."));
+  mount.appendChild(cg);
+
+  const sh=document.createElement("h3"); sh.className="sec"; sh.textContent="Season by season"; mount.appendChild(sh);
+  const bar=(has, due)=>{
+    const w=document.createElement("span"); w.className="gbcov";
+    const pct=due ? has/due : 0;
+    const t=document.createElement("span"); t.className="gbcovt"; t.textContent=due ? `${has} / ${due}` : "—";
+    const b=document.createElement("span"); b.className="gbcovb";
+    const f=document.createElement("span"); f.style.width=Math.round(pct*100)+"%"; if(pct>=1) f.className="full";
+    b.appendChild(f); w.append(t, b); return w;
+  };
+  mount.appendChild(tableOf([
+    {k:"season",h:"Season",cls:"mono",render:r=>seasonLink(r.season), csv:r=>r.season},
+    {k:"tourHas",h:"Tour events",render:r=>bar(r.tourHas, r.tourDue), csv:r=>`${r.tourHas}/${r.tourDue}`},
+    {k:"chHas",h:"Challengers",render:r=>bar(r.chHas, r.chDue), csv:r=>`${r.chHas}/${r.chDue}`},
+    {k:"matches",h:"Matches",cls:"num",render:r=>r.matches ? n(r.matches) : "—", csv:r=>r.matches},
+    {k:"weeksS",h:"Singles lists",cls:"num"},
+    {k:"weeksD",h:"Doubles lists",cls:"num"},
+    {k:"awards",h:"Awards",cls:"num",render:r=>r.awards||"—", csv:r=>r.awards}
+  ], rows.slice().reverse()));
+
+  /* what is missing, for a season or for every season with results */
+  const mh=document.createElement("h3"); mh.className="sec"; mh.textContent="Missing results"; mount.appendChild(mh);
+  const bar2=document.createElement("div"); bar2.className="gbbar2";
+  const opts=[["","Seasons with results"]].concat(rows.slice().reverse().map(r=>[r.season, r.season+(r.matches?"":" (no results)")]));
+  const pick=selectOf(opts, GAME_UI.season, v=>{ GAME_UI.season=v; renderGame(); });
+  pick.setAttribute("aria-label","Season");
+  const lab=document.createElement("label"); lab.className="hint gbch";
+  const cb=document.createElement("input"); cb.type="checkbox"; cb.checked=GAME_UI.showCH;
+  cb.addEventListener("change",()=>{ GAME_UI.showCH=cb.checked; renderGame(); });
+  lab.append(cb, document.createTextNode(" Include Challengers"));
+  bar2.append(pick, lab); mount.appendChild(bar2);
+
+  const noRes=new Set(without.map(r=>r.season));
+  const list=missingFor(GAME_UI.season, GAME_UI.showCH).filter(m=>GAME_UI.season || !noRes.has(m.season));
+  if(!GAME_UI.season && without.length){
+    const p=document.createElement("p"); p.className="hint";
+    p.textContent=`Not listed: ${without.map(r=>r.season).join(", ")}, which have no results at all yet. Pick one above to see its tournaments.`;
+    mount.appendChild(p);
+  }
+  if(!list.length){
+    const p=document.createElement("p"); p.className="hint"; p.textContent="Nothing missing here."; mount.appendChild(p);
+    return;
+  }
+  const cnt=document.createElement("p"); cnt.className="hint";
+  cnt.textContent=`${list.length} tournament${list.length===1?"":"s"} still to enter.`;
+  mount.appendChild(cnt);
+  mount.appendChild(tableOf([
+    {k:"season",h:"Season",cls:"mono",render:r=>seasonLink(r.season), csv:r=>r.season},
+    {k:"code",h:"Wk",cls:"mono"},
+    {k:"date",h:"Date",cls:"mono"},
+    {k:"name",h:"Tournament",render:r=>{
+      if(!r.has){ const s=document.createElement("span"); s.textContent=r.name; return s; }
+      const b=document.createElement("button"); b.className="linkish"; b.textContent=r.name;
+      b.addEventListener("click",()=>showEvent(r.c.event, r.season)); return b; }, csv:r=>r.name},
+    {k:"level",h:"",cls:"dim"},
+    {k:"what",h:"Missing"}
+  ], list));
+}
+
+function renderRules(mount){
+  if(!RULES || (!RULES.current.length && !RULES.history.length)){
+    const p=document.createElement("p"); p.className="hint"; p.style.marginTop="0";
+    p.textContent="The rules and their history aren't on the site yet.";
+    mount.appendChild(p); return;
+  }
+  if(RULES.note){
+    const p=document.createElement("p"); p.className="hint"; p.style.marginTop="0"; p.textContent=RULES.note; mount.appendChild(p);
+  }
+  if(RULES.current.length){
+    const h=document.createElement("h3"); h.className="sec"; h.textContent="The rules today"; mount.appendChild(h);
+    const g=document.createElement("div"); g.className="gbrules";
+    RULES.current.forEach(t=>{
+      const d=document.createElement("div"); d.className="gbcard";
+      const h4=document.createElement("h4"); h4.textContent=t.topic; d.appendChild(h4);
+      const ul=document.createElement("ul");
+      t.items.forEach(it=>{ const li=document.createElement("li"); li.textContent=it; ul.appendChild(li); });
+      d.appendChild(ul);
+      if(t.table) d.appendChild(rulesTable(t.table));
+      g.appendChild(d);
+    });
+    mount.appendChild(g);
+  }
+  if(RULES.history.length){
+    const h=document.createElement("h3"); h.className="sec"; h.textContent="History"; mount.appendChild(h);
+    const ol=document.createElement("ol"); ol.className="gbhist";
+    RULES.history.forEach(e=>{
+      const li=document.createElement("li");
+      const when=document.createElement("span"); when.className="gbwhen";
+      when.textContent=e.date ? fmtDate(e.date) : (e.season||"");
+      const body=document.createElement("div");
+      if(e.topic){ const tp=document.createElement("span"); tp.className="gbtopic"; tp.textContent=e.topic; body.appendChild(tp); }
+      const tx=document.createElement("p"); tx.textContent=e.text; body.appendChild(tx);
+      if(e.table) body.appendChild(rulesTable(e.table));
+      li.append(when, body); ol.appendChild(li);
+    });
+    mount.appendChild(ol);
+  }
+}
+
+/* A table in rules.json: {"columns": [...], "rows": [[...], ...]}, e.g. a
+   points table for an era. */
+function rulesTable(t){
+  const cols=(t.columns||[]).map((c,i)=>({k:"c"+i, h:String(c), cls:i ? "num" : ""}));
+  const rows=(t.rows||[]).map(r=>Object.fromEntries((r||[]).map((v,i)=>["c"+i, v==null?"":String(v)])));
+  return tableOf(cols, rows);
+}
+
+function fmtDate(d){
+  const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(d));
+  if(!m) return String(d);
+  const names=["January","February","March","April","May","June","July","August","September","October","November","December"];
+  return `${+m[3]} ${names[+m[2]-1]} ${m[1]}`;
+}
+
+function gameCss(){
+  if($("gameCss")) return;
+  const st=document.createElement("style"); st.id="gameCss";
+  st.textContent=`
+.gbgrid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:18px;margin-top:6px}
+.gbcard{background:var(--panel);border:1px solid var(--rule);padding:14px 16px 12px;min-width:0}
+.gbcard h4{margin:0 0 6px;font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:17px;
+  text-transform:uppercase;letter-spacing:.03em}
+.gbnote{margin:6px 0 0;font-size:12px;color:var(--slate)}
+.gbchart{position:relative;width:100%}
+.gbchart svg{display:block;max-width:100%;height:auto;overflow:visible}
+.gbgrid{stroke:var(--rule);stroke-width:1}
+.gbbase{stroke:var(--rule-strong);stroke-width:1}
+.gbax{fill:var(--slate);font-family:"IBM Plex Mono",monospace;font-size:10px}
+.gbval{fill:var(--line);font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600}
+.gbnone{fill:var(--slate);font-size:16px}
+.gbbar{fill:var(--ball)}
+.gbhit{fill:transparent;cursor:pointer}
+.gbhit:hover{fill:rgba(232,239,234,.06)}
+.gbtip{position:absolute;pointer-events:none;background:var(--court);border:1px solid var(--rule-strong);
+  color:var(--line);font-size:12px;padding:5px 8px;white-space:nowrap;z-index:5}
+.gbcov{display:inline-flex;align-items:center;gap:10px;min-width:170px}
+.gbcovt{font-family:"IBM Plex Mono",monospace;font-size:12.5px;min-width:72px;text-align:right}
+.gbcovb{display:inline-block;width:90px;height:6px;background:var(--rule);border-radius:3px;overflow:hidden}
+.gbcovb span{display:block;height:100%;background:var(--slate);border-radius:3px}
+.gbcovb span.full{background:var(--ball)}
+.gbbar2{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;margin-bottom:6px}
+.gbbar2 select{width:auto;background:var(--panel);color:var(--line);border:1px solid var(--rule-strong);
+  padding:5px 8px;font-family:"IBM Plex Mono",monospace;font-size:13px}
+.gbch{display:inline-flex;align-items:center;gap:6px;margin:0;cursor:pointer}
+.gbrules{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:18px}
+.gbrules ul{margin:0;padding-left:18px}
+.gbrules li{margin:0 0 6px;line-height:1.45}
+.gbhist{list-style:none;margin:0;padding:0;border-left:2px solid var(--rule-strong)}
+.gbhist li{display:grid;grid-template-columns:150px 1fr;gap:4px 18px;padding:10px 0 10px 16px;border-bottom:1px solid var(--rule)}
+.gbhist p{margin:2px 0 0}
+.gbwhen{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--slate);padding-top:2px}
+.gbtopic{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ball)}
+@media (max-width:600px){ .gbhist li{grid-template-columns:1fr} }`;
   document.head.appendChild(st);
 }
 
@@ -8294,7 +8793,7 @@ function refreshAll(){
   tMatches.render(); tPlayers.render(); tTeams.render();
   tTitles.render(); renderRankings();
   renderCalendar(); renderEvent(); renderManagers(); renderH2H(); renderLuck(); renderProfile();
-  renderOverview(); renderSeason(); renderRecords(); renderAwards(); renderManagerPage();
+  renderOverview(); renderSeason(); renderGame(); renderRecords(); renderAwards(); renderManagerPage();
   renderPreview();
   renderReview(); renderIssues(); renderSummary(); renderWeekManager();
   renderFileManager(); renderMatchManager(); renderUndo();
@@ -9165,3 +9664,4 @@ refreshAll();
 checkVersion();
 autoload().then(()=>{ if(location.hash) applyHash(); });
 loadAwards();
+loadRules();

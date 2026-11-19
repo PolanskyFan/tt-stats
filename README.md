@@ -16,6 +16,7 @@ site is worked out in the browser from the data files in this repository.
 | `matches-<year>.json` | One season of results (2007–2018 and 2023 on; 2019–2022 aren't on the site yet). |
 | `rankings-<year>.json` | One season of singles and doubles ranking lists (2007 on; 2007–2010 are estimates, marked "(est.)"). |
 | `awards.json` | The end-of-season Tennis Tipping Awards. Edited by hand; the editor never saves it. |
+| `rules.json` | The game's rules today and their history, for The Game tab. Edited by hand; the editor never saves it. |
 | `README.md` | This file. |
 
 `index.html`, `desk.html` and `app.js` are the code and are always uploaded
@@ -38,11 +39,13 @@ together. Everything else is data.
 | **Records** | Singles, doubles and combined record tables: titles, wins, runs, upsets, rivalries, partners and more. |
 | **Titles** | Champions, finalists and semi-finalists of every event. |
 | **Awards** | The Tennis Tipping Awards by season, plus an All years table. |
+| **The Game** | Three pages. *State of the game*: charts and a season table of players in the rankings, newcomers, players' last seasons, countries, tour and Challenger events, average draw size and the no. 1's points. *Coverage*: which seasons and tournaments have results on the site, and a list of what's missing (no results, no singles or doubles, draws with rounds missing), by season, with Challengers on a tick box. *Rules*: the rules today and their history, from `rules.json`. |
 | **Singles / Doubles Rankings** | Week lists, No. 1s & top 10, year-end, movers and a two-player compare (see below). |
 | **Player pages** | Click any name. Headline figures, awards, a **Grand Slam & Masters timeline**, results by surface and by season, partners, ranking chart, titles, most-played opponents and recent matches. |
 
 Every page has its own address (for example `#player/Snowwy`,
-`#event/Paris/2026` or `#season/2015`), so any page can be linked to directly.
+`#event/Paris/2026`, `#season/2015` or `#game/coverage`), so any page can be
+linked to directly.
 
 ### How things are counted
 
@@ -202,6 +205,14 @@ optional `title` (the name used that year), a `type` (`player`, `team`,
 `event`, `manager` or `text`) and its `winners`. A tournament award can name
 its `manager`; otherwise the calendar's manager for that event is credited. To
 show a vote, add `"votes": [{"name": "vjatceslav", "votes": 12}, …]`.
+
+**`rules.json`** (`"format": "tt-rules/1"`) — `note` is a line under the
+heading; `current` is a list of topics, each `{"topic": "Rankings", "items":
+["…", "…"]}`; `history` is a list of changes, each with a `date`
+(`"2020-03-16"`) or a `season` (`"2007"`), an optional `topic`, and the `text`.
+Newest first is worked out for you. A topic or a change can carry a table, for
+example a points table for an era: `"table": {"columns": ["Round", "Grand Slam",
+"Masters"], "rows": [["W", 2000, 1000], ["F", 1200, 600]]}`.
 
 The player list isn't stored anywhere: it's rebuilt from the matches and
 rankings every time, so it always matches the data.

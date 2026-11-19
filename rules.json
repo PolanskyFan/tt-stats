@@ -1,0 +1,50 @@
+{
+  "format": "tt-rules/1",
+  "note": "The rules of Tennis Tipping as they stand today, and how they have changed over the years.",
+  "current": [
+    {
+      "topic": "Rankings",
+      "items": [
+        "Rankings run over a rolling 52 weeks: points drop off exactly 52 weeks after they were won.",
+        "A player's best 18 events count, and the four Grand Slams always count.",
+        "The year-end Finals counts as a 19th event.",
+        "The Hopman Cup and WTC Dusseldorf don't give ranking points.",
+        "Doubles rankings follow the same rules, with the points going to each player of the team.",
+        "A list is posted every Monday the ATP publishes its rankings. There is no cut-off: everyone with an event in the past 52 weeks is listed."
+      ]
+    },
+    {
+      "topic": "Ties in the rankings",
+      "items": [
+        "First, the most points from Grand Slam, Masters 1000 and World Tour Finals main draws.",
+        "Then the fewest events played, counting missed Grand Slams the player could have played.",
+        "Then the highest points from a single tournament, then the second highest, and so on."
+      ]
+    },
+    {
+      "topic": "Draws",
+      "items": [
+        "A lucky loser is a player who lost in the last round of qualifying. An alternate (ALT) can also come in as a lucky loser."
+      ]
+    },
+    {
+      "topic": "Tournaments",
+      "items": [
+        "Futures carry the same points as Challengers and are counted with them, along with other events that aren't on the ATP calendar.",
+        "The NextGen Finals counts as a Challenger event."
+      ]
+    }
+  ],
+  "history": [
+    {
+      "date": "2020-03-16",
+      "topic": "Rankings",
+      "text": "The rankings were frozen from 16 March to 24 August 2020. Weeks in the freeze don't count towards weeks at no. 1 or in the top 10."
+    },
+    {
+      "season": "2007",
+      "topic": "Rankings",
+      "text": "The ranking points used from 2007 to 2010 weren't recorded, and the points table has changed since. The site's lists for those seasons are estimates rebuilt from the results."
+    }
+  ]
+}
