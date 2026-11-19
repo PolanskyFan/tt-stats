@@ -1,130 +1,227 @@
 # Tennis Tipping — Results Desk
 
-Turns pasted draw sheets into a searchable, sortable results site. No build
-step, no server, no database.
+The results, rankings and records of the Tennis Tipping game, from 2007 to
+today, as a static site on GitHub Pages: **polanskyfan.github.io/tt-stats**.
+No build step, no server, no database, nothing to pay for. Every figure on the
+site is worked out in the browser from the data files in this repository.
 
-```
-index.html              the public site      <- commit this
-app.js                  the shared logic     <- commit this
-data.json               index: matches, merges, pinned names
-rankings-2026.json      one file per season
-rankings-2025.json      ...
-desk.html               the editor           <- keep on your computer
-```
+## What's in the repository
 
-Rankings are split by season because they're by far the bulk of the data: one
-season of one tour is roughly 4,400 rows. Splitting means entering a week
-rewrites that year's file only, so a commit is kilobytes rather than megabytes
-and the repository history stays small.
+| File | What it is |
+|---|---|
+| `index.html` | The public site. It has no way to change anything. |
+| `desk.html` | The editor: the same site plus the Add data and Issues tabs and the publish panel. Open it at `polanskyfan.github.io/tt-stats/desk.html`. |
+| `app.js` | The code both pages share. |
+| `data.json` | The index: which season files exist, the tournament calendar, name merges, pinned names and countries, team titles, and every "settled" decision from the Issues tab. It holds no matches. |
+| `matches-<year>.json` | One season of results (2007–2018 and 2023 on; 2019–2022 aren't on the site yet). |
+| `rankings-<year>.json` | One season of singles and doubles ranking lists (2007 on; 2007–2010 are estimates, marked "(est.)"). |
+| `awards.json` | The end-of-season Tennis Tipping Awards. Edited by hand; the editor never saves it. |
+| `README.md` | This file. |
 
-Inside a season file the names are held once in a dictionary and each row is a
-plain array, which is about a sixth the size of the obvious layout — roughly
-100 KB per season rather than 600 KB.
+`index.html`, `desk.html` and `app.js` are the code and are always uploaded
+together. Everything else is data.
+
+---
+
+## The public site
+
+| Tab | What it shows |
+|---|---|
+| **Overview** | Season span and totals, the current top five on both tours, the latest champions, and **Milestones**: the most recent 100th/200th… wins, first titles and 5th/10th… titles, plus who is closest to their next one. |
+| **Seasons** | One page a year, with Singles/Doubles: year-end (or latest) top 10 against the first list of the year, weeks at no. 1, the Grand Slam, Masters and Finals champions, the season's leaders (titles, wins, win rate), biggest climbers, newcomers (first ranked that season), the awards, and every tournament with its champions and manager. Seasons with no results still show their rankings, awards and calendar. Season numbers on player pages open these. |
+| **Calendar** | Every tournament of a season with its surface, draw sizes and manager. Challengers are hidden unless you tick the box. Click a tournament for its event page. |
+| **Event pages** | A proper draw sheet for each draw (singles, doubles, qualifying), the champions, draw luck, the round-robin groups for the year-end Finals, Hopman Cup and WTC Dusseldorf, and the same tournament in other seasons. |
+| **Matches** | Every match, searchable, with CSV download. |
+| **Players** / **Teams** | Career tables for singles players and doubles teams. Filters for event level (ATP main draw by default, Grand Slams, ATP qualifying, Challenger, Challenger qualifying or all events), a From/To season range, surface, and country for players. |
+| **Managers** | Tournaments run by each manager. |
+| **Head to Head** | Two players' or two teams' full record against each other. |
+| **Records** | Singles, doubles and combined record tables: titles, wins, runs, upsets, rivalries, partners and more. |
+| **Titles** | Champions, finalists and semi-finalists of every event. |
+| **Awards** | The Tennis Tipping Awards by season, plus an All years table. |
+| **Singles / Doubles Rankings** | Week lists, No. 1s & top 10, year-end, movers and a two-player compare (see below). |
+| **Player pages** | Click any name. Headline figures, awards, a **Grand Slam & Masters timeline**, results by surface and by season, partners, ranking chart, titles, most-played opponents and recent matches. |
+
+Every page has its own address (for example `#player/Snowwy`,
+`#event/Paris/2026` or `#season/2015`), so any page can be linked to directly.
+
+### How things are counted
+
+- **Wins and losses** on the Players and Teams tabs, the Records page and the
+  milestones are main-draw matches. The player page's Record card counts
+  qualifying too.
+- **Byes** and matches where neither player sent picks count for nobody. They
+  stay in the draw sheets.
+- **Titles** are main-draw finals won. Team events (Hopman Cup, WTC
+  Dusseldorf) are team titles and are counted separately.
+- **Grand Slam & Masters timeline**: one column a season, from the player's
+  first season to their last. A cell shows the round lost in (`W` for a title,
+  `RR` for the Finals round robin, `Q1`–`Q3` for a qualifying loss), `–` for an
+  event they didn't play, and `·` where the event has no results on the site.
+  Montreal and Toronto share the Canada row; Hamburg is a Masters to 2008 and
+  Shanghai from 2009. Only the tour event counts: a Challenger with the same
+  name is filed separately (`Rome CH`).
+- **Milestones**: every 100th main-draw win, a first title and every 5th title,
+  at every level, counted exactly as on the Records page. They appear once
+  every season file has loaded. Seasons with no results on the site don't
+  count, so long-time players' real totals are higher.
+- **Ranks on matches** come from the ranking week the draw was tagged with
+  (2023 on) or, for 2007–2018, the latest list dated on or before the
+  tournament week.
+- **Weeks at no. 1 and in the top 10** are calendar weeks: a list counts until
+  the next one, and the 2020 ranking freeze (16 March to 24 August) isn't counted.
+- **No-score (0–0) matches** are only flagged when a whole main-draw round is
+  0–0, or when the winner can't be worked out from the next round. A lone 0–0
+  in a scored round is a real result.
+- Seasons before 2019 come from the game's old database, which kept one figure
+  a side: no tiebreak (SR) or set detail.
 
 ---
 
-## Why the editor is a separate file
+## The editor (desk.html)
 
-`index.html` contains no way to add anything. No paste boxes, no save button,
-no editing code at all. A visitor cannot alter what they see beyond sorting and
-filtering it.
+Open `polanskyfan.github.io/tt-stats/desk.html`. It loads every file from the
+site by itself, exactly as the public page does, and adds:
 
-That isn't a password, and it doesn't need to be. This is a static site: there's
-no server and no database, so nothing a visitor types anywhere could reach your
-data. The only way `data.json` changes is you pushing a commit to GitHub, which
-your account protects. Keeping `desk.html` off the site just means nobody lands
-on an editor and thinks they're supposed to fill it in.
+- **Add data** — paste a draw, a ranking list or calendar rows; the matches and
+  weeks loaded, with Remove buttons; the file list with Save buttons; and the
+  **Publish to GitHub** panel.
+- **Issues** — everything questionable that the page refused to settle on its
+  own (see *What it refuses to do quietly* below). The counter in the menu is
+  the number still open.
 
-You can commit `desk.html` too if you'd rather have it everywhere — it still
-can't write to your repository. That's your call, and it changes nothing about
-how safe the data is.
+`desk.html` sits in the repository like the other files. That's safe: it can
+only change the repository with your token, and the token is never written
+into the file. A visitor who opens it can play with their own copy in their
+browser, but nothing they do reaches the site.
 
----
+The editor still works from your hard drive too: open the file, then use
+**Load a whole folder** or **Load files…** (the browser blocks a local page
+from loading files by itself).
 
 ## Day-to-day use
 
-1. Open `desk.html` and click **Load a whole folder**, pointing it at the folder
-   holding your files. The index and every season go in together, in the right
-   order. **Load files…** does the same for a hand-picked selection — hold Ctrl
-   or Cmd to choose several — which is how you open just the seasons you plan to
-   touch. Seasons you don't load are left alone; the index keeps listing them and
-   their files are never rewritten.
-2. Paste the week's ranking post into the right-hand box. Add rankings.
-3. For each tournament: name the event, pick the ranking week, paste the draw. Add draw.
+1. Open the editor and wait for the seasons to load.
+2. Paste the week's ranking post and click **Add rankings**.
+3. For each tournament: name the event, pick the ranking week, paste the whole
+   thread post, **Read draw**, check the preview, **Add**.
 4. Check the **Issues** tab if the counter is showing anything.
-5. **Save all files**, and put every download next to `index.html`. The file list
-   marks which ones actually changed — usually just `data.json` and the current
-   season, so those are the only two you need to commit.
+5. **Publish changed files.** Usually that's `data.json` and the current
+   season's match and ranking files.
 
-Step 5 matters. Nothing is written automatically — until you save, the data
-lives only in that browser tab. The page warns you if you try to close it with
-unsaved work, and the *Your data file* panel shows an amber note.
+Nothing is written until you publish (or save). Until then the changes live
+only in that browser tab; the page warns you if you try to close it with
+unsaved work.
 
-The published site looks for `data.json` beside itself and loads it automatically.
+## Publishing
 
-> **The editor runs from your hard drive, so it can't auto-load.** Browsers block
-> a local page from reading a local file, so opening `desk.html` shows an empty
-> table and a console warning. That's expected — use **Load a data file** and pick
-> `data.json` by hand. The published site has no such restriction and loads by
-> itself.
+### With the publish button (the usual way)
+
+The **Publish to GitHub** panel on the Add data tab writes the changed files
+straight into the repository, the same bytes the Save buttons would download.
+
+Set it up once:
+
+1. On GitHub: **Settings → Developer settings → Personal access tokens →
+   Fine-grained tokens → Generate new token**.
+2. Repository access: **Only select repositories → tt-stats**.
+3. Permissions: **Contents → Read and write**. Nothing else.
+4. Give it an expiry date, generate it, and paste it into the panel.
+   **Remember these settings** keeps it in this browser.
+
+Then **Publish changed files** after each session. **Check the connection**
+tests the token without writing anything, and **Forget the token** removes it
+from the browser (it stays live on GitHub until you delete it there). If a file
+has changed on GitHub since this browser last published it (another computer, a
+hand upload), the panel asks before replacing it.
+
+The token is stored in this browser for the whole `polanskyfan.github.io`
+address, so don't add outside scripts or widgets to any page published under
+that account. If a computer is lost, delete the token on GitHub and make a new
+one.
+
+### By hand
+
+**Save all files** downloads the changed files. Upload them on GitHub with
+**Add file → Upload files**, replacing the old ones.
+
+### Updating the code
+
+Upload `index.html`, `desk.html` and `app.js` together, and nothing else: the
+data files are yours and should only ever be replaced by files saved from the
+editor. The pages check that the three match; if they don't, a banner says
+*These files are from different versions*. GitHub Pages takes a minute or two to
+update, and a hard refresh (Cmd-Shift-R) clears an old copy.
 
 ---
 
-## Publishing to GitHub Pages
+## Helpers
 
-1. Create a repository (public, if you want the free Pages hosting).
-2. Add `index.html`, `app.js` and `data.json` to the root. Commit and push.
-3. Repository **Settings → Pages**.
-4. Under *Build and deployment*, set **Source** to *Deploy from a branch*, pick
-   your branch and the `/ (root)` folder. Save.
-5. Wait a minute or two. Your site appears at
-   `https://<your-username>.github.io/<repository-name>/`
+A helper gets a pack with `index.html`, `desk.html`, `app.js`, a trimmed
+`data.json` listing only the season files in the pack, and those season files.
+They enter results in the editor and send back **only their season match
+file** — never their `data.json`. A reduced pack must never be saved over the
+real files: it quietly drops decisions about players it can't see.
 
-To update it afterwards, commit a new `data.json`. That's the whole workflow —
-you never need to touch `index.html` or `app.js` again.
+Each helper file is merged and checked before publishing: spelling against the
+known players, event names against the calendar, and the shape of every draw.
 
-If a change doesn't show up, it's almost always the browser holding an old copy
-of `data.json`. A hard refresh (Ctrl-Shift-R, or Cmd-Shift-R on a Mac) clears it.
+---
 
-### If a tab comes up blank
+## The data files
 
-The page tells you why, in a banner under the tabs. The usual causes:
+All plain JSON, readable and diffable. Every commit is a restore point, so a
+bad upload can be put right with GitHub's history.
+
+**`data.json`** (`"format": "tennis-tipping/1"`) — `matchFiles` and
+`rankingFiles` list the season files; `calendar` holds one row per tournament
+(season, week code, date, name, event name, country, surface, draw sizes,
+manager, whether it's a Challenger); `aliases` maps old usernames to current
+ones; `pinned` holds chosen spellings and countries; `teamTitles` and
+`teamGroups` hold the team events; the rest are the settled Issues-tab
+decisions, so they never come back.
+
+**`matches-<year>.json`** (`"format": "tt-matches/1"`) — `words` is a list of
+every text value used that season, and each entry in `rows` is one match as an
+array of 20 values, text given as positions in `words`:
+
+```
+event, round, discipline, stage, ranking week,
+winner seed, winner, winner country, loser seed, loser, loser country,
+winner score, loser score, winner SR, loser SR,
+winner rank, loser rank (-1 = none), how the result was read, bye (1/0), tied (1/0)
+```
+
+**`rankings-<year>.json`** (`"format": "tt-rankings/1"`) — `players` and
+`countries` are lists of names; each entry in `weeks` is one list: `t` is the
+tour (`S` or `D`), `n` the week name, and each row in `r` is
+`[rank, previous rank, player, country, points, events played]`.
+
+**`awards.json`** (`"format": "tt-awards/1"`) — one entry per season. Each
+award has a `group`, an `award` (the row name in the All years table), an
+optional `title` (the name used that year), a `type` (`player`, `team`,
+`event`, `manager` or `text`) and its `winners`. A tournament award can name
+its `manager`; otherwise the calendar's manager for that event is credited. To
+show a vote, add `"votes": [{"name": "vjatceslav", "votes": 12}, …]`.
+
+The player list isn't stored anywhere: it's rebuilt from the matches and
+rankings every time, so it always matches the data.
+
+---
+
+## If a tab comes up blank
+
+The page says why, in a banner under the menu.
 
 | Banner | Fix |
 |---|---|
 | *data.json returned 404* | The file isn't beside `index.html`, or the name isn't lower-case `data.json`. |
-| *These files are from different versions* | `index.html`, `desk.html` and `app.js` must be uploaded as a set. Upload all three, then hard-refresh. |
-| *This page is older than app.js* | Same cause — re-upload the HTML files. |
-| *Opened straight from your hard drive* | Expected over `file://`. Use **Load a data file** in the editor. |
+| *These files are from different versions* | Upload `index.html`, `desk.html` and `app.js` as a set, then hard-refresh. |
+| *This page is older than app.js* | Same cause: re-upload the HTML files. |
+| *Opened straight from your hard drive* | Expected for a local file. Use **Load a whole folder** in the editor. |
 | *data.json isn't valid JSON* | Re-save from the editor and upload again. |
-
-No banner and still blank means the data really is empty for that tab — with no
-matches loaded, Matches, Players, Teams and Titles are all legitimately empty
-while Rankings still shows.
+| *… file(s) couldn't be loaded* | A season file named in `data.json` is missing from the repository. |
 
 ---
-
-## What gets worked out for you
-
-Nothing below is typed in. It's all derived from the match rows, so it can't
-drift out of step with the results the way a spreadsheet formula can.
-
-- **Winners.** Read from the bracket — whoever appears in the next round won the
-  last one. That beats reading the colour of the text, and it settles matches
-  that are level on every tiebreak. Where the bracket genuinely can't say (a
-  final, or a qualifying final with no main draw loaded yet), the page asks you
-  rather than guessing.
-- **Ranks.** Filled from the ranking week you tag a draw with. Matching ignores
-  capitalisation, so the ranking list's `Digor` finds the draw sheet's `digor`.
-- **Ranking history.** Click any player, anywhere, for their week-by-week chart
-  plus current rank, career high, season high and low, weeks at number one and
-  weeks in the top 10. The chart switches between ranking and points.
-- **Player records.** Wins, losses, titles, finals lost, semis lost, record
-  against the top 10, qualifying record, and main-draw record as a qualifier or
-  as a lucky loser.
-- **Team records.** A team is its *pair of players*, so partner order never
-  splits one record into two, and a change of partner correctly starts a new one.
-- **Titles.** Winner, finalist and both semi-finalists for every event.
 
 ## What it refuses to do quietly
 
@@ -178,32 +275,6 @@ confirmed dates — sit in a collapsed *Settled earlier* section at the bottom w
 an Undo beside each, so the list above only ever shows what's new.
 
 ---
-
-## The data file
-
-Plain JSON. Readable, diffable, and easy to back up.
-
-```jsonc
-{
-  "format":  "tennis-tipping/1",
-  "savedAt": "2026-08-26T...",
-  "matches": [ /* one object per match */ ],
-  "weeks":   [ { "name": "January 5th", "season": "2026", "list": [ /* rankings */ ] } ],
-  "pinned":  [ /* only the name and country choices you've overridden */ ]
-}
-```
-
-The player registry isn't stored — it's rebuilt from the matches and rankings
-every time, so it always reflects the current data. Only your manual overrides
-persist. Loading is checked: a file that isn't the right shape is refused with a
-reason rather than half-loaded.
-
-Since it's JSON in Git, every commit is a restore point. If an entry goes wrong,
-`git revert` puts the site back.
-
----
-
-## Rounds it understands
 
 ## Pasting draws
 
@@ -283,6 +354,16 @@ The sizes then name the rounds, which works the same for a 32, 64 or 128 draw.
 The preview says plainly when rounds were inferred rather than read, so you can
 check the names before committing.
 
+## Rounds it understands
+
+| Stage | Rounds |
+|---|---|
+| Main | `F` `SF` `QF` `R16` `R32` `R64` `R128` `R256` `R512` |
+| Qualifying | `QFR` (or `FQR`) `QR3` `QR2` `QR1` |
+
+Set **Stage** before adding a draw. If the round names don't match the stage,
+the page says so instead of dropping the rows.
+
 ## Pasting rankings
 
 The title line is read whichever way round it's written — `Rankings 2026:
@@ -313,13 +394,29 @@ Leave **Tour** on *Auto* to take it from the title. If a title has no year, the
 page says so and you can type one into **Season**; without it, weeks from
 different years collide.
 
-| Stage | Rounds |
-|---|---|
-| Main | `F` `SF` `QF` `R16` `R32` `R64` `R128` `R256` `R512` |
-| Qualifying | `QFR` (or `FQR`) `QR3` `QR2` `QR1` |
+## Ranking weeks
 
-Set **Stage** before adding a draw. If the round names don't match the stage,
-the page says so instead of dropping the rows.
+Each ranking list belongs to a tour — **Singles** or **Doubles** — chosen when
+you paste it. They're kept apart everywhere: separate tabs, separate histories,
+separate career highs. Only singles weeks can be tagged onto a draw, since only
+singles matches carry rank columns.
+
+A week is identified by its tour, season and name together, so "January 5th
+2008" and "January 5th 2026" are separate weeks rather than one overwriting the
+other. Always set the season when pasting a back year.
+
+Week names like "August 3rd" are read as real dates, so the list, the chart and
+"most recent" all follow the calendar rather than the order you happened to
+paste things in. A week whose name can't be read as a date is marked *no date
+read* in the week manager and sorted to the end — rename it if you'd rather it
+sat in sequence.
+
+The **Ranking weeks loaded** panel on the Add data tab lists every week with a
+**Remove** button. Removing a singles week that matches were tagged with clears
+those rank columns, and you're warned first with a count.
+
+Pasting a week that already exists on the same tour replaces it rather than
+duplicating it, and the view jumps to whichever week you just added.
 
 ## Seeds
 
@@ -341,7 +438,7 @@ load, so you don't need to fix anything by hand.
 
 ## The rankings tabs
 
-Each tour has four views:
+Each tour has five views:
 
 | View | What it shows |
 |---|---|
@@ -372,11 +469,6 @@ rest are unaffected. The Compare table and the debut list mark them the same way
 
 ---
 
-> **Never overwrite your own data files with copies from elsewhere.** `data.json`
-> and the `rankings-*.json` files are *your* data. Only ever replace them with
-> files you saved from the editor. When you update the code, upload `index.html`,
-> `desk.html` and `app.js` and nothing else.
-
 ## Undoing a mistake
 
 **Matches loaded** on the Add data tab lists every group of matches as it was
@@ -388,53 +480,6 @@ An **Undo** bar appears after anything is added or removed and takes back that
 one step, including any ranks that were filled in at the same time. It's a
 single step, not a history — once you do the next thing, the previous state is
 gone.
-
-## Which files to load
-
-`data.json` first — it holds the matches and tells the page which seasons exist.
-Then each `rankings-<year>.json` you actually need.
-
-- **Entering a season for the first time?** Load nothing for it. Just paste; the
-  file appears when you save.
-- **Adding to a season already on the site?** Load that year's file first, or
-  you'll save a version containing only the weeks you just pasted.
-Loading a folder is the usual way in. Files that aren't recognised are skipped
-and named, and loading the same folder twice replaces what's open rather than
-stacking a second copy of every week.
-
-- **Seasons you don't load** appear as *not loaded* in the file list and are
-  never rewritten. Leave those files in the repository — `data.json` keeps
-  listing them, so the site still loads them.
-
-Career high and weeks-at-number-one are worked out from whatever is loaded, so
-open every season if you want those to read correctly while you work. It makes
-no difference to what gets saved.
-
-## Ranking weeks
-
-Each ranking list belongs to a tour — **Singles** or **Doubles** — chosen when
-you paste it. They're kept apart everywhere: separate tabs, separate histories,
-separate career highs. Only singles weeks can be tagged onto a draw, since only
-singles matches carry rank columns.
-
-A week is identified by its tour, season and name together, so "January 5th
-2008" and "January 5th 2026" are separate weeks rather than one overwriting the
-other. Always set the season when pasting a back year.
-
-Week names like "August 3rd" are read as real dates, so the list, the chart and
-"most recent" all follow the calendar rather than the order you happened to
-paste things in. A week whose name can't be read as a date is marked *no date
-read* in the week manager and sorted to the end — rename it if you'd rather it
-sat in sequence.
-
-The **Ranking weeks loaded** panel on the Add data tab lists every week with a
-**Remove** button. Removing a singles week that matches were tagged with clears
-those rank columns, and you're warned first with a count.
-
-Pasting a week that already exists on the same tour replaces it rather than
-duplicating it, and the view jumps to whichever week you just added.
-
----
 
 ## When a player changes username
 

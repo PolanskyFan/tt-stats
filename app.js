@@ -744,7 +744,7 @@ const EDIT = document.body.dataset.mode === "edit";
 /* index.html, desk.html and app.js are uploaded together. Updating only some
    of them leaves a page whose markup and code disagree, which shows up as a
    blank tab rather than an error, so they carry a matching stamp. */
-const APP_VERSION = "2026-09-03f";
+const APP_VERSION = "2026-11-18b";
 const esc = s => String(s).replace(/[&<>"']/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
@@ -4529,6 +4529,20 @@ function renderProfile(){
 
   awardsSection(mount, awards);
 
+  /* Grand Slams, Masters and the Finals, season by season */
+  const tl=slamTimeline(name, disc, ms);
+  if(tl){
+    const tlh=document.createElement("h3"); tlh.className="sec"; tlh.textContent="Grand Slam & Masters timeline";
+    mount.appendChild(tlh);
+    mount.appendChild(tl);
+    const lg=document.createElement("p"); lg.className="hint tllegend";
+    lg.textContent="W won the title \u00b7 F, SF, QF, R16\u2026 the round lost in \u00b7 RR round robin \u00b7 "
+      + "Q1\u2013Q3 lost in qualifying \u00b7 \u2013 didn't play \u00b7 \u00b7 no results on the site. "
+      + "Titles and W\u2013L count the main draw (and the Finals round robin). Click a result to open the draw.";
+    mount.appendChild(lg);
+    requestAnimationFrame(()=>{ tl.scrollLeft=tl.scrollWidth; });
+  }
+
   /* surfaces */
   const bySurf=new Map();
   ms.forEach(m=>{
@@ -4549,7 +4563,8 @@ function renderProfile(){
   if(seasons.length>1 || (seasons[0] && seasons[0].season!=="\u2014")){
     const sh2=document.createElement("h3"); sh2.className="sec"; sh2.textContent="Season by season";
     mount.appendChild(sh2);
-    mount.appendChild(tableOf([{k:"season",h:"Season",cls:"mono"},{k:"w",h:"W",cls:"num"},
+    mount.appendChild(tableOf([{k:"season",h:"Season",cls:"mono",
+        render:r=>/^\d{4}$/.test(r.season) ? seasonLink(r.season) : document.createTextNode(r.season), csv:r=>r.season},{k:"w",h:"W",cls:"num"},
       {k:"l",h:"L",cls:"num"},{k:"pct",h:"Win rate",cls:"num"},{k:"titles",h:"Titles",cls:"num"},
       {k:"finals",h:"Finals lost",cls:"num"},{k:"sfs",h:"Semis lost",cls:"num"},
       {k:"events",h:"Tournaments",cls:"num"}], seasons));
@@ -4997,6 +5012,9 @@ function applyHash(){
     case "records":
       if(a==="Doubles" || a==="Both" || a==="Singles") REC_UI.tab=a;
       return go("records");
+    case "season":
+      if(a) SEASON_UI.season=a;
+      seasonView(); renderSeason(); return !!$("v-season");
     case "awards":
       if(a) AWARDS_UI.season=a;
       renderAwards(); return go("awards");
@@ -5139,6 +5157,238 @@ function partnerRows(name){
 }
 
 /* ==================================================================
+   GRAND SLAM TIMELINE
+   The round a player reached at each Grand Slam, Masters and the
+   year-end Finals, one column a season, the way the ATP sets out a
+   player's performance timeline. A Masters row only counts the tour
+   event (the Challengers that share a name are filed as "Rome CH" and
+   so on), Hamburg is a Masters to 2008 and Shanghai from 2009, and
+   Montreal and Toronto share the Canada row.
+   ================================================================== */
+const TL_ROWS = [
+  {group:"Grand Slams", label:"Australian Open", events:["Australian Open"]},
+  {group:"Grand Slams", label:"Roland Garros",   events:["Roland Garros"]},
+  {group:"Grand Slams", label:"Wimbledon",       events:["Wimbledon"]},
+  {group:"Grand Slams", label:"U.S. Open",       events:["U.S. Open"]},
+  {group:"Masters", label:"Indian Wells", events:["Indian Wells"]},
+  {group:"Masters", label:"Miami",        events:["Miami"]},
+  {group:"Masters", label:"Monte Carlo",  events:["Monte Carlo"]},
+  {group:"Masters", label:"Madrid",       events:["Madrid"]},
+  {group:"Masters", label:"Rome",         events:["Rome"]},
+  {group:"Masters", label:"Hamburg",      events:["Hamburg"], until:2008},
+  {group:"Masters", label:"Canada",       events:["Montreal","Toronto"]},
+  {group:"Masters", label:"Cincinnati",   events:["Cincinnati"]},
+  {group:"Masters", label:"Shanghai",     events:["Shanghai"], from:2009},
+  {group:"Masters", label:"Paris",        events:["Paris"]},
+  {group:"Finals", label:"Year-end Finals", yef:true}
+];
+
+/* What the timeline needs to know about every tournament, worked out once
+   until the data changes: which calendar rows are tour events, which event
+   is the year-end Finals each season (its name has changed over the years),
+   which events have results, and each qualifying draw's rounds in playing
+   order so a loss reads Q1, Q2 or Q3. */
+let TL_CACHE = null;
+function tlIndex(){
+  const key=MATCHES.length+"|"+CALENDAR.length;
+  if(TL_CACHE && TL_CACHE.key===key) return TL_CACHE;
+  const tour=new Set(), yef=new Map();
+  CALENDAR.forEach(c=>{
+    if(!c.challenger) tour.add(c.event+"|"+(c.season||""));
+    /* "ATP Finals" in the calendar, or the newer rows named for Turin ("WTF Turin") */
+    if(c.name==="ATP Finals" || (!c.challenger && /\bWTF\b/i.test(c.name||""))){
+      if(!yef.has(c.season)) yef.set(c.season, new Set());
+      yef.get(c.season).add(c.event);
+    }
+  });
+  const has=new Set(), qr=new Map();
+  MATCHES.forEach(m=>{
+    if(m.isBye) return;
+    const k=m.event+"|"+m.season+"|"+m.disc;
+    has.add(k);
+    if(m.stage!=="Main"){
+      let s=qr.get(k); if(!s){ s=new Set(); qr.set(k,s); }
+      s.add(m.round);
+    }
+  });
+  const lv=r => QUAL_LEVELS[r]!==undefined ? QUAL_LEVELS[r] : 9;
+  const qOrder=new Map();
+  qr.forEach((s,k)=>qOrder.set(k, [...s].sort((a,b)=>lv(b)-lv(a))));
+  TL_CACHE={key, tour, yef, has, qOrder};
+  return TL_CACHE;
+}
+
+/* The events a row stands for in one season: none where it wasn't held or
+   wasn't a Masters that year. */
+function tlEvents(row, season, ix){
+  const y=parseInt(season,10);
+  if(row.from && y<row.from) return [];
+  if(row.until && y>row.until) return [];
+  if(row.yef) return [...(ix.yef.get(season)||[])];
+  return row.events.filter(ev=>ix.tour.has(ev+"|"+season));
+}
+
+/* How far a player got, from their matches at one tournament. */
+function tlResult(list, name, ix, key, yef){
+  const score = m => `${m.loserScore}–${m.winnerScore}`;
+  const main=list.filter(m=>m.stage==="Main");
+  if(main.length){
+    const won=main.filter(m=>wonBy(m,name)), lost=main.filter(m=>!wonBy(m,name));
+    const fin=won.find(m=>m.round==="F");
+    if(fin) return {label:"W", cls:"tlw", m:fin,
+      tip:`Won the title, beat ${sideOf(fin,"loser")} ${fin.winnerScore}–${fin.loserScore}`};
+    if(lost.length){
+      const m=lost.reduce((a,b)=>b.level<a.level?b:a);
+      return {label:m.round, cls: m.round==="F" ? "tlf" : (m.level<=2 ? "tld" : ""), m,
+        tip:`Lost to ${sideOf(m,"winner")} in the ${m.round}, ${score(m)}`};
+    }
+    const m=won.reduce((a,b)=>b.level<a.level?b:a);
+    const reached=MAIN_LABEL[m.level-1]||m.round;
+    return {label:reached, cls:"", m,
+      tip:`Reached the ${reached}; the result after that isn't on the site`};
+  }
+  if(yef) return {label:"RR", cls:"", m:list[0], tip:"Played the round robin"};
+  const lost=list.filter(m=>!wonBy(m,name));
+  if(lost.length){
+    const m=lost[0], i=(ix.qOrder.get(key)||[]).indexOf(m.round);
+    return {label:"Q"+(i<0?"":i+1), cls:"tlq", m, q:true,
+      tip:`Lost to ${sideOf(m,"winner")} in qualifying (${m.round}), ${score(m)}`};
+  }
+  return {label:"Q", cls:"tlq", m:list[list.length-1], q:true,
+    tip:"Came through qualifying; the main-draw result isn't on the site"};
+}
+
+/* The grid itself, or null for a player who never played one of these. */
+function slamTimeline(name, disc, ms){
+  const ix=tlIndex();
+  const mine=new Map();
+  ms.forEach(m=>{
+    const k=m.event+"|"+m.season;
+    if(!mine.has(k)) mine.set(k,[]);
+    mine.get(k).push(m);
+  });
+  const yrs=[...new Set(ms.map(m=>parseInt(m.season,10)).filter(y=>!isNaN(y)))];
+  if(!yrs.length) return null;
+  const lo=Math.min(...yrs), hi=Math.max(...yrs);
+  const cols=[...loadedYears()].filter(y=>y>=lo && y<=hi).sort((a,b)=>a-b).map(String);
+  const rows=TL_ROWS.filter(r=>cols.some(s=>{
+    const y=+s; return !(r.from && y<r.from) && !(r.until && y>r.until); }));
+
+  let any=false;
+  const built=rows.map(row=>{
+    let titles=0, w=0, l=0;
+    const cells=cols.map(season=>{
+      const evs=tlEvents(row, season, ix);
+      if(!evs.length) return {kind:"x"};
+      const list=[].concat(...evs.map(ev=>mine.get(ev+"|"+season)||[]));
+      if(list.length){
+        any=true;
+        list.forEach(m=>{
+          if(m.stage!=="Main" && !row.yef) return;
+          wonBy(m,name) ? w++ : l++;
+        });
+        const ev=list[0].event;
+        const res=tlResult(list, name, ix, ev+"|"+season+"|"+disc, row.yef);
+        if(res.label==="W") titles++;
+        return {kind:"r", res};
+      }
+      const held=evs.some(ev=>ix.has.has(ev+"|"+season+"|"+disc));
+      return {kind: held ? "dash" : "na"};
+    });
+    return {row, cells, titles, wl:(w||l) ? `${w}–${l}` : ""};
+  });
+  if(!any) return null;
+
+  tlCss();
+  const wrap=document.createElement("div"); wrap.className="tablescroll tlwrap";
+  const tbl=document.createElement("table"); tbl.className="tl";
+  const gapAt=i => i>0 && (+cols[i])-(+cols[i-1])>1;
+
+  const thead=document.createElement("thead"), htr=document.createElement("tr");
+  const th0=document.createElement("th"); th0.className="nosort tlname"; th0.textContent="Tournament";
+  htr.appendChild(th0);
+  cols.forEach((s,i)=>{
+    const th=document.createElement("th"); th.className="nosort"; th.appendChild(seasonLink(s));
+    if(gapAt(i)){ th.classList.add("tlgap");
+      th.title=`${+cols[i-1]+1}–${+s-1}: no results on the site`; }
+    htr.appendChild(th);
+  });
+  ["Titles","W–L"].forEach(h=>{
+    const th=document.createElement("th"); th.className="nosort tlsum"; th.textContent=h; htr.appendChild(th); });
+  thead.appendChild(htr); tbl.appendChild(thead);
+
+  const tb=document.createElement("tbody");
+  let group="";
+  built.forEach(({row, cells, titles, wl})=>{
+    if(row.group!==group){
+      group=row.group;
+      const gr=document.createElement("tr"); gr.className="tlg";
+      const gth=document.createElement("th"); gth.textContent=group; gr.appendChild(gth);
+      const gtd=document.createElement("td"); gtd.colSpan=cols.length+2; gr.appendChild(gtd);
+      tb.appendChild(gr);
+    }
+    const tr=document.createElement("tr");
+    const th=document.createElement("th"); th.textContent=row.label; tr.appendChild(th);
+    cells.forEach((c,i)=>{
+      const td=document.createElement("td");
+      if(gapAt(i)) td.classList.add("tlgap");
+      if(c.kind==="r"){
+        const r=c.res;
+        if(r.cls) td.classList.add(r.cls);
+        const b=document.createElement("button"); b.textContent=r.label; b.title=r.tip;
+        b.addEventListener("click",()=>{
+          showEvent(r.m.event, r.m.season);
+          EVENT_UI.disc=disc; EVENT_UI.stage=r.q ? "Qualifying" : "Main";
+          renderEvent();
+        });
+        td.appendChild(b);
+      } else if(c.kind==="dash"){ td.classList.add("tldash"); td.textContent="–"; td.title="Didn't play"; }
+      else if(c.kind==="na"){ td.classList.add("tlna"); td.textContent="·"; td.title="No results on the site"; }
+      tr.appendChild(td);
+    });
+    const t1=document.createElement("td"); t1.className="tlsum"; t1.textContent=titles||""; tr.appendChild(t1);
+    const t2=document.createElement("td"); t2.className="tlsum"; t2.textContent=wl; tr.appendChild(t2);
+    tb.appendChild(tr);
+  });
+  tbl.appendChild(tb); wrap.appendChild(tbl);
+  return wrap;
+}
+
+function tlCss(){
+  if($("tlCss")) return;
+  const st=document.createElement("style"); st.id="tlCss";
+  st.textContent=`
+.tl{width:auto;font-family:"IBM Plex Mono",monospace;font-size:12px}
+.tl thead th{text-align:center;padding:9px 3px;letter-spacing:.04em}
+.tl thead th.tlname{text-align:left}
+.tl thead th .linkish{color:var(--slate);border-bottom-color:transparent}
+.tl thead th .linkish:hover{color:var(--ball);border-bottom-color:var(--ball)}
+.tl th.tlname,.tl tbody th{position:sticky;left:0;z-index:3;background:var(--court)}
+.tl tbody th{text-align:left;font-family:"IBM Plex Sans",system-ui,sans-serif;font-weight:500;font-size:13px;
+  padding:5px 16px 5px 0;white-space:nowrap;border-bottom:1px solid var(--rule)}
+.tl tbody td{padding:3px 2px;text-align:center}
+.tl tbody tr:hover th{background:var(--panel)}
+.tl tr.tlg th{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ball);font-weight:500;padding:16px 0 6px;border-bottom:1px solid var(--rule-strong)}
+.tl tr.tlg td{border-bottom:1px solid var(--rule-strong)}
+.tl tr.tlg:hover,.tl tr.tlg:hover th{background:none}
+.tl td button{background:none;border:0;font:inherit;color:var(--line);cursor:pointer;
+  min-width:38px;padding:3px 4px;border-radius:2px}
+.tl td button:hover{outline:1px solid var(--ball)}
+.tl td.tlw button{background:var(--ball);color:var(--court);font-weight:600}
+.tl td.tlf button{color:var(--ball);font-weight:600}
+.tl td.tld button{font-weight:600}
+.tl td.tlq button{color:var(--slate)}
+.tl td.tldash{color:var(--slate)}
+.tl td.tlna{color:rgba(126,152,166,.35)}
+.tl .tlgap{border-left:2px solid var(--rule-strong)}
+.tl .tlsum{padding-left:14px;text-align:right;color:var(--line)}
+.tl thead th.tlsum{text-align:right}
+.tllegend{font-size:11.5px}`;
+  document.head.appendChild(st);
+}
+
+/* ==================================================================
    SEEDS
    Whether being seeded is worth anything, which in a tipping game is a
    fair question to ask of the seeding itself.
@@ -5255,8 +5505,489 @@ function renderOverview(){
       {k:"dWinner",h:"Doubles",render:r=>r.dWinner?nameLinks(r.dWinner,"Doubles"):"\u2014", csv:r=>r.dWinner}
     ], recent));
   }
+  renderMilestones(mount);
   const note=detailNote(seasons);
   if(note) mount.appendChild(note);
+}
+
+/* ==================================================================
+   MILESTONES
+   Every hundredth main-draw win, a first title and every fifth one,
+   counted the way the Records page counts them: main-draw matches at
+   every level, byes and no-picks matches left out, doubles credited to
+   each player. Seasons with no results on the site don't count.
+   ================================================================== */
+const MS_WINS = 100, MS_TITLES = 5;
+let MS_CACHE = null;
+function milestoneData(){
+  const key=[MATCHES.length, WEEKS.length, REG.size, ALIAS.size, CALENDAR.length].join("|");
+  if(MS_CACHE && MS_CACHE.key===key) return MS_CACHE;
+  const T={Singles:new Map(), Doubles:new Map()}, hits=[];
+  const unit=(disc, raw)=>{
+    const k=keyOf(raw); let u=T[disc].get(k);
+    if(!u){ u={name:canonName(raw), disc, w:0, titles:0, last:""}; T[disc].set(k,u); }
+    return u;
+  };
+  const sides=(m, which)=> m.disc==="Doubles"
+    ? String(m[which]).split("/").map(p=>p.trim()).filter(p=>p && !isByeName(p))
+    : (isByeName(m[which]) ? [] : [m[which]]);
+  let seq=0;
+  for(const m of inOrder(MATCHES.filter(x=>!x.isBye && T[x.disc]))){
+    seq++;
+    const ws=sides(m,"winner"), ls=sides(m,"loser");
+    ls.forEach(p=>{ unit(m.disc,p).last=m.season; });
+    ws.forEach(p=>{
+      const u=unit(m.disc,p); u.last=m.season;
+      if(m.stage!=="Main") return;
+      u.w++;
+      if(u.w%MS_WINS===0) hits.push({seq, name:u.name, disc:m.disc, kind:"win", n:u.w, m});
+      if(titleFinal(m)){
+        u.titles++;
+        if(u.titles===1 || u.titles%MS_TITLES===0)
+          hits.push({seq, name:u.name, disc:m.disc, kind:"title", n:u.titles, m});
+      }
+    });
+  }
+  hits.sort((a,b)=>b.seq-a.seq);
+  const latest=[...loadedYears()].sort((a,b)=>b-a)[0];
+  MS_CACHE={key, hits, latest:latest==null ? "" : String(latest),
+    units:[...T.Singles.values(), ...T.Doubles.values()]};
+  return MS_CACHE;
+}
+
+/* Milestones need every season: counted from a few, a 400th win would be
+   someone's 120th. Checked once per change in the loaded data. */
+let MS_LOADED = null;
+function msAllLoaded(){
+  const key=MATCHES.length+"|"+MATCH_SEASONS.size;
+  if(!MS_LOADED || MS_LOADED.key!==key) MS_LOADED={key, ok:!unloadedMatchSeasons().length};
+  return MS_LOADED.ok;
+}
+
+const msLabel = (kind, n) => kind==="win" ? `${ordinal(n)} win`
+  : n===1 ? "First title" : `${ordinal(n)} title`;
+
+/* Who is closest to the next one: players with a match in the latest season,
+   five wins or fewer from a hundred, or one title from a fifth. Six of each. */
+function milestonesNear(D){
+  const out=[];
+  D.units.forEach(u=>{
+    if(u.last!==D.latest) return;
+    const nw=Math.floor(u.w/MS_WINS+1)*MS_WINS;
+    if(u.w>0 && nw-u.w<=5) out.push({name:u.name, disc:u.disc, kind:"win", now:u.w, next:nw, need:nw-u.w});
+    const nt=Math.floor(u.titles/MS_TITLES+1)*MS_TITLES;
+    if(u.titles>=MS_TITLES-1 && nt-u.titles===1)
+      out.push({name:u.name, disc:u.disc, kind:"title", now:u.titles, next:nt, need:1});
+  });
+  /* the closest six of each, so titles (always one away) don't crowd out wins */
+  const by=(a,b)=>a.need-b.need || b.next-a.next
+    || String(a.name).toLowerCase().localeCompare(String(b.name).toLowerCase());
+  const wins=out.filter(r=>r.kind==="win").sort(by).slice(0,6);
+  const titles=out.filter(r=>r.kind==="title").sort(by).slice(0,6);
+  return [...wins, ...titles].sort(by);
+}
+
+function renderMilestones(mount){
+  const h=document.createElement("h3"); h.className="sec"; h.textContent="Milestones";
+  mount.appendChild(h);
+  if(!msAllLoaded()){
+    const p=document.createElement("p"); p.className="hint";
+    p.textContent="Milestones count every season, so they appear once all the season files have loaded.";
+    mount.appendChild(p);
+    return;
+  }
+  const D=milestoneData();
+  const evBtn=r=>{
+    const w=document.createElement("span");
+    const b=document.createElement("button"); b.className="linkish"; b.textContent=`${r.m.event} ${r.m.season}`;
+    b.addEventListener("click",()=>{ showEvent(r.m.event, r.m.season); EVENT_UI.disc=r.disc; renderEvent(); });
+    const rd=document.createElement("span"); rd.className="rnd"; rd.textContent=" "+r.m.round;
+    w.append(b, rd);
+    return w;
+  };
+  const recent=D.hits.slice(0,12);
+  if(recent.length){
+    mount.appendChild(tableOf([
+      {k:"name",h:"Player",render:r=>nameLinks(r.name,r.disc), csv:r=>r.name},
+      {k:"disc",h:"",cls:"dim"},
+      {k:"what",h:"Milestone",render:r=>{
+        const s=document.createElement("span"); s.style.cssText="color:var(--ball);font-weight:600";
+        s.textContent=msLabel(r.kind,r.n); return s; }, csv:r=>msLabel(r.kind,r.n)},
+      {k:"where",h:"Where",render:evBtn, csv:r=>`${r.m.event} ${r.m.season} ${r.m.round}`},
+      {k:"beat",h:"Beat",render:r=>nameLinks(sideOf(r.m,"loser"), r.disc), csv:r=>sideOf(r.m,"loser")}
+    ], recent));
+  }
+  const near=milestonesNear(D);
+  if(near.length){
+    const h2=document.createElement("h3"); h2.className="sec"; h2.style.fontSize="18px";
+    h2.textContent="Coming up"; mount.appendChild(h2);
+    mount.appendChild(tableOf([
+      {k:"name",h:"Player",render:r=>nameLinks(r.name,r.disc), csv:r=>r.name},
+      {k:"disc",h:"",cls:"dim"},
+      {k:"nextLabel",h:"Next milestone"},
+      {k:"needLabel",h:"To go",cls:"mono"},
+      {k:"nowLabel",h:"So far",cls:"num"}
+    ], near.map(r=>({...r, nextLabel:msLabel(r.kind,r.next),
+      needLabel:`${r.need} ${r.kind==="win" ? (r.need===1?"win":"wins") : "title"}`,
+      nowLabel:`${r.now} ${r.kind==="win" ? "wins" : "titles"}`}))));
+  }
+  const p=document.createElement("p"); p.className="hint";
+  p.textContent=`Every ${MS_WINS}th main-draw win, a first title and every ${MS_TITLES}th, at every level, `
+    + `counted as on the Records page. Coming up lists players with a match in ${D.latest}. `
+    + `Seasons with no results on the site don't count, so long-time players' real totals are higher.`;
+  mount.appendChild(p);
+}
+
+/* ==================================================================
+   SEASON PAGES
+   One page a year: the year-end rankings, who spent weeks at no. 1, the
+   biggest champions, the season's leaders, climbers and newcomers, the
+   awards and every tournament with its champions. Seasons with no
+   results on the site still show their rankings, awards and calendar.
+   ================================================================== */
+const SEASON_UI = {season:"", disc:"Singles", showCH:false};
+
+function seasonList(){
+  const s=new Set();
+  CALENDAR.forEach(c=>{ if(c.season) s.add(String(c.season)); });
+  WEEKS.forEach(w=>{ if(w.season) s.add(String(w.season)); });
+  loadedYears().forEach(y=>s.add(String(y)));
+  MATCH_SEASONS.forEach(x=>s.add(String(x)));
+  AWARDS.forEach(a=>s.add(String(a.season)));
+  return [...s].filter(x=>/^\d{4}$/.test(x)).sort((a,b)=>b.localeCompare(a));
+}
+
+/* Switches to the season view without going through the menu button, whose
+   click would set the address to plain "#season" and drop the year. */
+function seasonView(){
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("on"));
+  const v=$("v-season"); if(v) v.classList.add("on");
+  document.querySelectorAll("#nav button").forEach(b=>
+    b.setAttribute("aria-selected", String(b.dataset.view==="season")));
+  window.scrollTo(0,0);
+}
+function showSeason(season, disc){
+  SEASON_UI.season=String(season);
+  if(disc) SEASON_UI.disc=disc;
+  seasonView();
+  setHash("season/"+enc(SEASON_UI.season));
+  renderSeason();
+}
+
+/* A season number that opens its page. */
+function seasonLink(season){
+  const b=document.createElement("button"); b.className="linkish"; b.textContent=season;
+  b.title=`The ${season} season`;
+  b.addEventListener("click",()=>showSeason(season));
+  return b;
+}
+
+/* The season each player first appears in a ranking list, per tour. */
+let SEASON_DEBUT = null;
+function seasonDebuts(tour){
+  const key=WEEKS.length+"|"+REG.size+"|"+ALIAS.size;
+  if(!SEASON_DEBUT || SEASON_DEBUT.key!==key) SEASON_DEBUT={key};
+  if(SEASON_DEBUT[tour]) return SEASON_DEBUT[tour];
+  const first=new Map();
+  tourWeeks(tour).forEach(w=>(w.list||[]).forEach(r=>{
+    const k=keyOf(r.name);
+    if(!first.has(k)) first.set(k, w);
+  }));
+  return (SEASON_DEBUT[tour]=first);
+}
+
+/* Main-draw wins, losses, titles and finals for one season, counted as on
+   the Records page (doubles credited to each player). */
+function seasonLeaders(season, disc){
+  const by=new Map();
+  const unit=raw=>{
+    const k=keyOf(raw); let u=by.get(k);
+    if(!u){ u={name:canonName(raw), w:0, l:0, titles:0, finals:0, won:[]}; by.set(k,u); }
+    return u;
+  };
+  const sides=raw=> disc==="Doubles"
+    ? String(raw).split("/").map(p=>p.trim()).filter(p=>p && !isByeName(p))
+    : (isByeName(raw) ? [] : [raw]);
+  MATCHES.forEach(m=>{
+    if(m.season!==season || m.disc!==disc || m.isBye || m.stage!=="Main") return;
+    const tf=titleFinal(m);
+    sides(m.winner).forEach(p=>{ const u=unit(p); u.w++; if(tf){ u.titles++; u.finals++; u.won.push(m.event); } });
+    sides(m.loser).forEach(p=>{ const u=unit(p); u.l++; if(tf) u.finals++; });
+  });
+  return [...by.values()].map(u=>({...u, played:u.w+u.l, record:`${u.w}–${u.l}`,
+    pct:(u.w+u.l) ? Math.round(u.w/(u.w+u.l)*100)+"%" : ""}));
+}
+
+/* Grand Slam, Masters or year-end Finals, for the big-titles table. */
+function seasonTier(event, season, ix){
+  if(REC_SLAMS[event]) return "Grand Slam";
+  const yef=ix.yef.get(season);
+  if(yef && yef.has(event)) return "Finals";
+  if(recMastersName(event, season) && ix.tour.has(event+"|"+season)) return "Masters";
+  return "";
+}
+
+function renderSeason(){
+  if(!viewOn("v-season")) return;
+  const mount=$("seasonMount"); if(!mount) return;
+  mount.innerHTML="";
+  const seasons=seasonList();
+  if(!seasons.length){
+    mount.innerHTML=`<div class="empty"><strong>Nothing loaded yet</strong></div>`;
+    return;
+  }
+  if(!seasons.includes(SEASON_UI.season)) SEASON_UI.season=seasons[0];
+  const season=SEASON_UI.season, disc=SEASON_UI.disc;
+  const newest=seasons[0], idx=seasons.indexOf(season);
+  seasonCss();
+
+  /* heading, with the previous and next season either side */
+  const top=document.createElement("div"); top.className="sstop";
+  const h=document.createElement("h3"); h.className="sec"; h.style.margin="0";
+  h.textContent=`${season} season`;
+  const step=(label, s)=>{
+    const b=document.createElement("button"); b.className="btn sm"; b.textContent=label;
+    if(!s){ b.disabled=true; b.style.opacity=".4"; }
+    else b.addEventListener("click",()=>showSeason(s));
+    return b;
+  };
+  const pick=selectOf(seasons.map(s=>[s,s]), season, v=>showSeason(v));
+  pick.setAttribute("aria-label","Season");
+  const ctl=document.createElement("div"); ctl.className="ssctl";
+  ctl.append(step(`\u2190 ${seasons[idx+1]||""}`.trim(), seasons[idx+1]), pick,
+    step(`${seasons[idx-1]||""} \u2192`.trim(), seasons[idx-1]));
+  top.append(h, ctl);
+  mount.appendChild(top);
+
+  const nav=document.createElement("div"); nav.className="subnav";
+  ["Singles","Doubles"].forEach(d=>{
+    const b=document.createElement("button"); b.textContent=d;
+    b.setAttribute("aria-pressed", String(d===disc));
+    b.addEventListener("click",()=>{ SEASON_UI.disc=d; renderSeason(); });
+    nav.appendChild(b);
+  });
+  mount.appendChild(nav);
+
+  const ix=tlIndex();
+  const ms=MATCHES.filter(m=>m.season===season && !m.isBye);
+  const cal=CALENDAR.filter(c=>String(c.season)===season);
+  const weeks=tourWeeks(disc).filter(w=>w.season===season);
+  const startW=weeks[0]||null, endW=weeks[weeks.length-1]||null;
+  const live=season===newest;
+  const est=weeks.some(w=>w.est);
+
+  const notes=[];
+  if(live) notes.push("The season is still going: the figures are so far.");
+  if(!ms.length) notes.push("No results from this season are on the site yet, so it shows the rankings, awards and calendar only.");
+  else if(!unloadedMatchSeasons().includes(season) && cal.length && !live){
+    const noRes=cal.filter(c=>!c.challenger && !ix.has.has(c.event+"|"+season+"|Singles")).length;
+    if(noRes) notes.push(`${noRes} tour event${noRes===1?" has":"s have"} no results on the site.`);
+  }
+  if(est) notes.push(EST_NOTE);
+  notes.forEach(t=>{ const p=document.createElement("p"); p.className="hint"; p.style.marginTop="0"; p.textContent=t; mount.appendChild(p); });
+
+  /* headline figures */
+  const people=new Set();
+  ms.forEach(m=>[m.winner,m.loser].forEach(s=>String(s).split("/").forEach(p=>{
+    p=p.trim(); if(p && !isByeName(p)) people.add(keyOf(p)); })));
+  const debuts=seasonDebuts(disc);
+  const newcomers=[];
+  debuts.forEach((w,k)=>{ if(w.season===season) newcomers.push(k); });
+  const firstRankSeason=tourSeasons(disc).slice(-1)[0];
+  const leaders=seasonLeaders(season, disc);
+  const mostT=leaders.slice().sort((a,b)=>b.titles-a.titles || b.w-a.w)[0];
+  const endTop=endW ? (endW.list||[]).filter(r=>r.rank===Math.min(...endW.list.map(x=>x.rank))) : [];
+  const tourN=cal.filter(c=>!c.challenger).length;
+
+  const grid=document.createElement("div"); grid.className="statgrid";
+  const cards=[
+    ["Tournaments", String(cal.length), cal.length ? `${tourN} tour, ${cal.length-tourN} Challenger` : ""],
+    ["Matches", ms.length ? ms.length.toLocaleString() : "—",
+      ms.length ? `${new Set(ms.map(m=>m.event)).size} events with results` : "no results on the site"],
+    ["Players", people.size ? String(people.size) : "—", "singles or doubles"]
+  ];
+  if(endTop.length) cards.push([live ? "No. 1 now" : "Year-end no. 1",
+    endTop.map(r=>canonName(r.name)).join(" & "), `${disc.toLowerCase()} · ${weekLabel(endW)}`]);
+  if(mostT && mostT.titles) cards.push(["Most titles", mostT.name, `${mostT.titles} ${disc.toLowerCase()} title${mostT.titles===1?"":"s"}`]);
+  if(season!==firstRankSeason && weeks.length) cards.push(["Newcomers", String(newcomers.length), `first ranked in ${season} (${disc.toLowerCase()})`]);
+  cards.forEach(([k,v,note])=>{
+    const c=document.createElement("div"); c.className="stat";
+    c.innerHTML=`<span class="k">${esc(k)}</span><span class="v">${esc(v)}</span><span class="note">${esc(note||"")}</span>`;
+    grid.appendChild(c);
+  });
+  mount.appendChild(grid);
+
+  const section=(title, node, hint)=>{
+    if(!node) return;
+    const s=document.createElement("h3"); s.className="sec"; s.textContent=title;
+    mount.appendChild(s); mount.appendChild(node);
+    if(hint){ const p=document.createElement("p"); p.className="hint"; p.textContent=hint; mount.appendChild(p); }
+  };
+  const evLink=(event, label)=>{
+    const b=document.createElement("button"); b.className="linkish"; b.textContent=label||event;
+    b.addEventListener("click",()=>{ showEvent(event, season); EVENT_UI.disc=disc; renderEvent(); });
+    return b;
+  };
+  /* one player, doubles included: their name opens the right tab of their page */
+  const pName={k:"name",h:"Player",render:r=>{
+    const b=document.createElement("button"); b.className="linkish"; b.textContent=r.name;
+    b.addEventListener("click",()=>showPlayer(r.name, disc)); return b; }, csv:r=>r.name};
+
+  /* the year-end (or latest) top ten, against the first list of the year */
+  if(endW){
+    const startIx=new Map(); (startW && startW!==endW ? startW.list||[] : []).forEach(r=>{
+      const k=keyOf(r.name); if(!startIx.has(k)) startIx.set(k, r.rank); });
+    const seen=new Set();
+    const rows=(endW.list||[]).slice().sort((a,b)=>a.rank-b.rank).filter(r=>{
+      const k=keyOf(r.name); if(seen.has(k)) return false; seen.add(k); return r.rank<=10; })
+      .map(r=>{ const s=startIx.get(keyOf(r.name));
+        return {rank:r.rank, name:canonName(r.name), country:canonCountry(r.name)||r.country, points:r.points,
+          start: startW && startW!==endW ? (s ? "#"+s : "NR") : "",
+          move: s ? s-r.rank : null}; });
+    const cols=[{k:"rank",h:"#",cls:"num"}, pName, {k:"country",h:"",cls:"ctry"},
+      {k:"points",h:"Points",cls:"num"}];
+    if(startW && startW!==endW) cols.push({k:"start",h:`${startW.name}`,cls:"num"},
+      {k:"move",h:"",cls:"num",render:r=>r.move==null ? '<span class="dim">new</span>'
+        : r.move>0 ? `<span style="color:var(--ball)">▲ ${r.move}</span>`
+        : r.move<0 ? `<span class="dim">▼ ${-r.move}</span>` : '<span class="dim">–</span>', csv:r=>r.move});
+    section(live ? `Top 10 — ${weekLabel(endW)}` : `Year-end top 10 — ${weekLabel(endW)}`,
+      tableOf(cols, rows));
+
+    /* weeks at no. 1 within the season */
+    const span=weekSpans(tourWeeks(disc)), all=tourWeeks(disc), wk=new Map();
+    all.forEach((w,i)=>{
+      if(w.season!==season) return;
+      const list=w.list||[]; if(!list.length) return;
+      const best=Math.min(...list.map(r=>r.rank)), done=new Set();
+      list.forEach(r=>{ if(r.rank!==best) return; const k=keyOf(r.name); if(done.has(k)) return; done.add(k);
+        const e=wk.get(k)||{name:canonName(r.name), weeks:0}; e.weeks+=span[i]; wk.set(k,e); });
+    });
+    const no1=[...wk.values()].filter(e=>e.weeks>0).sort((a,b)=>b.weeks-a.weeks);
+    if(no1.length) section("Weeks at no. 1", tableOf([pName, {k:"weeks",h:"Weeks",cls:"num"}], no1),
+      "Calendar weeks: a list counts until the next one is posted.");
+  }
+
+  /* Grand Slams, Masters and the Finals */
+  const titles=deriveTitles().filter(t=>t.season===season);
+  const tByEv=new Map(titles.map(t=>[t.event,t]));
+  const big=titles.map(t=>({...t, tier:seasonTier(t.event, season, ix), when:whenOf(t.event, season)}))
+    .filter(t=>t.tier).sort((a,b)=>a.when.localeCompare(b.when));
+  const champ=(v,d)=> v ? nameLinks(v,d) : document.createTextNode("—");
+  if(big.length) section("Grand Slam, Masters & Finals champions", tableOf([
+    {k:"event",h:"Tournament",render:r=>evLink(r.event), csv:r=>r.event},
+    {k:"tier",h:"",cls:"dim"},
+    {k:"sWinner",h:"Singles",render:r=>champ(r.sWinner,"Singles"), csv:r=>r.sWinner},
+    {k:"sFinalist",h:"Runner-up",render:r=>champ(r.sFinalist,"Singles"), csv:r=>r.sFinalist},
+    {k:"dWinner",h:"Doubles",render:r=>champ(r.dWinner,"Doubles"), csv:r=>r.dWinner}
+  ], big));
+
+  /* the season's leaders */
+  if(leaders.length){
+    const wrap=document.createElement("div"); wrap.className="ssgrid";
+    const card=(title, rows, cols)=>{
+      const d=document.createElement("div");
+      const t=document.createElement("h4"); t.className="ssh"; t.textContent=title; d.appendChild(t);
+      d.appendChild(tableOf(cols, rows)); wrap.appendChild(d);
+    };
+    const byT=leaders.filter(u=>u.titles).sort((a,b)=>b.titles-a.titles || b.w-a.w || a.l-b.l).slice(0,10);
+    if(byT.length) card("Most titles", byT, [pName, {k:"titles",h:"Titles",cls:"num"},
+      {k:"finals",h:"Finals",cls:"num"}, {k:"record",h:"W–L",cls:"num"}]);
+    card("Most wins", leaders.slice().sort((a,b)=>b.w-a.w || a.l-b.l).slice(0,10),
+      [pName, {k:"w",h:"Wins",cls:"num"}, {k:"record",h:"W–L",cls:"num"}, {k:"pct",h:"Win %",cls:"num"}]);
+    const minP=Math.max(10, Math.round(Math.max(...leaders.map(u=>u.played))*0.4));
+    const byPct=leaders.filter(u=>u.played>=minP).sort((a,b)=>b.w/b.played-a.w/a.played || b.w-a.w).slice(0,10);
+    if(byPct.length) card(`Best win rate (${minP}+ matches)`, byPct,
+      [pName, {k:"pct",h:"Win %",cls:"num"}, {k:"record",h:"W–L",cls:"num"}]);
+    section(`${disc} leaders`, wrap, "Main-draw matches at every level, counted as on the Records page.");
+  }
+
+  /* climbers and newcomers, from the first and last lists of the season */
+  if(startW && endW && startW!==endW){
+    const a=new Map(); (startW.list||[]).forEach(r=>{ const k=keyOf(r.name); if(!a.has(k)) a.set(k,r.rank); });
+    const seen=new Set();
+    const climb=(endW.list||[]).filter(r=>{ const k=keyOf(r.name); if(seen.has(k)) return false; seen.add(k); return a.has(k); })
+      .map(r=>({name:canonName(r.name), from:a.get(keyOf(r.name)), to:r.rank}))
+      .map(r=>({...r, gain:r.from-r.to})).filter(r=>r.gain>0)
+      .sort((x,y)=>y.gain-x.gain || x.to-y.to).slice(0,10);
+    if(climb.length) section("Biggest climbers", tableOf([pName,
+      {k:"from",h:startW.name,cls:"num"}, {k:"to",h:endW.name,cls:"num"},
+      {k:"gain",h:"Places",cls:"num",render:r=>`<span style="color:var(--ball)">▲ ${r.gain}</span>`, csv:r=>r.gain}
+    ], climb), `From the first list of ${season} to the ${live?"latest":"last"}, players ranked in both.`);
+  }
+  if(season!==firstRankSeason && newcomers.length){
+    const best=new Map();
+    weeks.forEach(w=>(w.list||[]).forEach(r=>{ const k=keyOf(r.name);
+      if(!best.has(k) || r.rank<best.get(k)) best.set(k, r.rank); }));
+    const endIx=new Map(); (endW ? endW.list||[] : []).forEach(r=>{ const k=keyOf(r.name); if(!endIx.has(k)) endIx.set(k,r.rank); });
+    const rows=newcomers.map(k=>{ const w=debuts.get(k);
+      const r=(w.list||[]).find(x=>keyOf(x.name)===k)||{};
+      return {name:canonName(r.name||k), country:canonCountry(r.name||k)||r.country||"", debut:w.name,
+        best:best.get(k)||"", end:endIx.has(k) ? endIx.get(k) : "NR"}; })
+      .sort((x,y)=>(x.best||9999)-(y.best||9999)).slice(0,12);
+    section(`Newcomers — ${newcomers.length}`, tableOf([pName, {k:"country",h:"",cls:"ctry"},
+      {k:"debut",h:"First ranked",cls:"mono"}, {k:"best",h:`Best in ${season}`,cls:"num"},
+      {k:"end",h:live?"Now":"Year-end",cls:"num"}], rows),
+      `Players whose first ${disc.toLowerCase()} ranking came in ${season}${newcomers.length>12?"; the twelve who rose highest":""}.`);
+  }
+
+  /* the awards */
+  const aw=AWARDS.find(s=>s.season===season);
+  if(aw && aw.awards.length){
+    awardsCss();
+    const rows=aw.awards.map(a=>({a, award:a.title||a.award}));
+    const t=tableOf([{k:"award",h:"Award"},
+      {k:"w",h:"Winner",render:r=>awardWinners(r.a, season), csv:r=>r.a.winners.join(" & ")}], rows);
+    section("Tennis Tipping Awards", t);
+    const go=document.createElement("button"); go.className="btn sm"; go.style.marginTop="10px";
+    go.textContent=`${season} awards page →`;
+    go.addEventListener("click",()=>{ AWARDS_UI.season=season; openView("awards"); setHash("awards/"+season); renderAwards(); });
+    mount.appendChild(go);
+  }
+
+  /* every tournament, in calendar order */
+  if(cal.length){
+    const h2=document.createElement("h3"); h2.className="sec"; h2.textContent="Tournaments";
+    mount.appendChild(h2);
+    const lab=document.createElement("label"); lab.className="hint ssch";
+    const cb=document.createElement("input"); cb.type="checkbox"; cb.checked=SEASON_UI.showCH;
+    cb.addEventListener("change",()=>{ SEASON_UI.showCH=cb.checked; renderSeason(); });
+    lab.append(cb, document.createTextNode(` Show Challengers (${cal.length-tourN})`));
+    mount.appendChild(lab);
+    const rows=cal.filter(c=>SEASON_UI.showCH || !c.challenger)
+      .slice().sort((a,b)=>String(a.date).localeCompare(String(b.date)) || String(a.code).localeCompare(String(b.code)))
+      .map(c=>{ const t=tByEv.get(c.event)||{};
+        return {c, code:c.code, date:c.date, name:c.name||c.event, surface:SURFACE_NAME[c.surface]||c.surface||"",
+          s:t.sWinner||"", d:t.dWinner||"", manager:c.manager||"",
+          has: ix.has.has(c.event+"|"+season+"|Singles") || ix.has.has(c.event+"|"+season+"|Doubles")}; });
+    mount.appendChild(tableOf([
+      {k:"code",h:"Wk",cls:"mono"},
+      {k:"date",h:"Date",cls:"mono"},
+      {k:"name",h:"Tournament",render:r=>r.has ? evLink(r.c.event, r.name) : (()=>{ const s=document.createElement("span");
+        s.textContent=r.name; return s; })(), csv:r=>r.name},
+      {k:"surface",h:"Surface",cls:"dim"},
+      {k:"s",h:"Singles",render:r=>r.s ? nameLinks(r.s,"Singles") : document.createTextNode(r.has?"—":""), csv:r=>r.s},
+      {k:"d",h:"Doubles",render:r=>r.d ? nameLinks(r.d,"Doubles") : document.createTextNode(r.has?"—":""), csv:r=>r.d},
+      {k:"manager",h:"Manager",render:r=>{ if(!r.manager) return document.createTextNode("");
+        const b=document.createElement("button"); b.className="linkish"; b.textContent=r.manager;
+        b.addEventListener("click",()=>showManager(r.manager)); return b; }, csv:r=>r.manager}
+    ], rows));
+  }
+}
+
+function seasonCss(){
+  if($("seasonCss")) return;
+  const st=document.createElement("style"); st.id="seasonCss";
+  st.textContent=`
+.sstop{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px}
+.sstop h3{margin-right:auto !important}
+.sstop select{width:auto;flex:none;background:var(--panel);color:var(--line);border:1px solid var(--rule-strong);
+  padding:5px 8px;font-family:"IBM Plex Mono",monospace;font-size:13px}
+.ssctl{display:flex;align-items:center;gap:8px}
+.ssgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));gap:22px 30px;align-items:start}
+.ssgrid .ssh{margin:0 0 4px;font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:16px;
+  text-transform:uppercase;letter-spacing:.03em;color:var(--slate)}
+.ssch{display:inline-flex;align-items:center;gap:6px;margin:0 0 8px;cursor:pointer}`;
+  document.head.appendChild(st);
 }
 
 /* ==================================================================
@@ -7563,7 +8294,7 @@ function refreshAll(){
   tMatches.render(); tPlayers.render(); tTeams.render();
   tTitles.render(); renderRankings();
   renderCalendar(); renderEvent(); renderManagers(); renderH2H(); renderLuck(); renderProfile();
-  renderOverview(); renderRecords(); renderAwards(); renderManagerPage();
+  renderOverview(); renderSeason(); renderRecords(); renderAwards(); renderManagerPage();
   renderPreview();
   renderReview(); renderIssues(); renderSummary(); renderWeekManager();
   renderFileManager(); renderMatchManager(); renderUndo();
