@@ -197,7 +197,10 @@ winner rank, loser rank (-1 = none), how the result was read, bye (1/0), tied (1
 **`rankings-<year>.json`** (`"format": "tt-rankings/1"`) — `players` and
 `countries` are lists of names; each entry in `weeks` is one list: `t` is the
 tour (`S` or `D`), `n` the week name, and each row in `r` is
-`[rank, previous rank, player, country, points, events played]`.
+`[rank, previous rank, player, country, points, events played]`. A file with
+`"estimated": true` holds rebuilt lists (2007–2010; none survive); a single
+rebuilt week in a real season carries `"e": 1` instead (February 2006). The
+desk keeps both when it saves.
 
 **`awards.json`** (`"format": "tt-awards/1"`) — one entry per season. Each
 award has a `group`, an `award` (the row name in the All years table), an

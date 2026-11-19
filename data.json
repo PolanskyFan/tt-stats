@@ -17,7 +17,8 @@
   "matches-2010.json",
   "matches-2009.json",
   "matches-2008.json",
-  "matches-2007.json"
+  "matches-2007.json",
+  "matches-2006.json"
  ],
  "rankingFiles": [
   "rankings-2026.json",
@@ -39,7 +40,8 @@
   "rankings-2010.json",
   "rankings-2009.json",
   "rankings-2008.json",
-  "rankings-2007.json"
+  "rankings-2007.json",
+  "rankings-2006.json"
  ],
  "calendar": [
   {
@@ -52098,6 +52100,78 @@
   },
   {
    "season": "2006",
+   "code": "3a",
+   "date": "2006-01-16",
+   "opened": "",
+   "name": "Australian Open",
+   "event": "Australian Open",
+   "country": "AUS",
+   "surface": "H",
+   "draw": [
+    64,
+    0,
+    0,
+    0
+   ],
+   "manager": "",
+   "challenger": false
+  },
+  {
+   "season": "2006",
+   "code": "5a",
+   "date": "2006-01-30",
+   "opened": "",
+   "name": "Delray Beach",
+   "event": "Delray Beach",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    16,
+    0,
+    0,
+    0
+   ],
+   "manager": "",
+   "challenger": false
+  },
+  {
+   "season": "2006",
+   "code": "5b",
+   "date": "2006-01-30",
+   "opened": "",
+   "name": "Vina del Mar",
+   "event": "Vina del Mar",
+   "country": "CHI",
+   "surface": "CL",
+   "draw": [
+    16,
+    0,
+    0,
+    0
+   ],
+   "manager": "",
+   "challenger": false
+  },
+  {
+   "season": "2006",
+   "code": "5c",
+   "date": "2006-01-30",
+   "opened": "",
+   "name": "Zagreb",
+   "event": "Zagreb",
+   "country": "CRO",
+   "surface": "IH",
+   "draw": [
+    16,
+    0,
+    0,
+    0
+   ],
+   "manager": "",
+   "challenger": false
+  },
+  {
+   "season": "2006",
    "code": "7a",
    "date": "2006-02-13",
    "opened": "",
@@ -52105,7 +52179,12 @@
    "event": "Marseille",
    "country": "FRA",
    "surface": "IH",
-   "draw": [],
+   "draw": [
+    16,
+    0,
+    8,
+    0
+   ],
    "manager": "DeccyB123",
    "challenger": false
   },
@@ -52118,7 +52197,12 @@
    "event": "Buenos Aires",
    "country": "ARG",
    "surface": "CL",
-   "draw": [],
+   "draw": [
+    16,
+    0,
+    8,
+    0
+   ],
    "manager": "Gavnich77",
    "challenger": false
   },
@@ -52131,7 +52215,12 @@
    "event": "San Jose",
    "country": "USA",
    "surface": "IH",
-   "draw": [],
+   "draw": [
+    16,
+    0,
+    8,
+    0
+   ],
    "manager": "Nimrodg",
    "challenger": false
   },
@@ -52144,7 +52233,12 @@
    "event": "Rotterdam",
    "country": "NED",
    "surface": "IH",
-   "draw": [],
+   "draw": [
+    16,
+    0,
+    8,
+    0
+   ],
    "manager": "DeccyB123",
    "challenger": false
   },
@@ -52157,7 +52251,12 @@
    "event": "Memphis",
    "country": "USA",
    "surface": "IH",
-   "draw": [],
+   "draw": [
+    16,
+    0,
+    8,
+    0
+   ],
    "manager": "Gavnich77",
    "challenger": false
   },
@@ -52170,7 +52269,12 @@
    "event": "Costa do Sauipe",
    "country": "BRA",
    "surface": "CL",
-   "draw": [],
+   "draw": [
+    16,
+    0,
+    8,
+    0
+   ],
    "manager": "sharpeirob",
    "challenger": false
   },
@@ -52183,7 +52287,12 @@
    "event": "Dubai",
    "country": "UAE",
    "surface": "H",
-   "draw": [],
+   "draw": [
+    32,
+    0,
+    16,
+    0
+   ],
    "manager": "DeccyB123",
    "challenger": false
   },
@@ -52196,7 +52305,12 @@
    "event": "Acapulco",
    "country": "MEX",
    "surface": "CL",
-   "draw": [],
+   "draw": [
+    32,
+    0,
+    4,
+    0
+   ],
    "manager": "Gavnich77",
    "challenger": false
   },
@@ -52209,7 +52323,12 @@
    "event": "Las Vegas",
    "country": "USA",
    "surface": "H",
-   "draw": [],
+   "draw": [
+    16,
+    0,
+    0,
+    0
+   ],
    "manager": "$@M",
    "challenger": false
   },
@@ -52222,7 +52341,12 @@
    "event": "Indian Wells",
    "country": "USA",
    "surface": "H",
-   "draw": [],
+   "draw": [
+    128,
+    0,
+    32,
+    0
+   ],
    "manager": "Gavnich77",
    "challenger": false
   },

@@ -2323,6 +2323,8 @@ function weekDate(name, season){
 const tourWeeks   = tour => WEEKS.filter(w => (w.tour||"Singles") === tour);
 const weekLabel   = w => w ? w.name + (w.season ? ` ${w.season}` : "") + (w.est ? " (est.)" : "") : "";
 const EST_NOTE = "Estimated ranking. The original lists from 2007 to 2010 are lost, so these are rebuilt from the results and the points of the time.";
+const EST_NOTE_2006 = "Estimated ranking. The lists before 6 March 2006 are lost, so this one is rebuilt from the draws, with round points that fit the later lists.";
+const estNote = w => (w && String(w.season)==="2006") ? EST_NOTE_2006 : EST_NOTE;
 /* A history entry keeps its week under .week, not .name, so it needs its own
    label helper — using weekLabel on one silently produced "undefined 2026". */
 const histLabel   = h => h ? h.week + (h.season ? ` ${h.season}` : "") : "";
@@ -2686,7 +2688,7 @@ function renderWeekPanel(tour, mount){
   bar.appendChild(field("", dl));
   mount.appendChild(bar);
   if(week && week.est){
-    const en=document.createElement("p"); en.className="hint"; en.textContent=EST_NOTE;
+    const en=document.createElement("p"); en.className="hint"; en.textContent=estNote(week);
     mount.appendChild(en);
   }
 
@@ -2867,7 +2869,7 @@ function renderRankRecords(tour, mount){
   const ws=tourWeeks(tour);
   if(ws.some(w=>w.est)){
     const en=document.createElement("p"); en.className="hint";
-    en.textContent="Weeks from 2007 to 2010 are counted from estimated rankings (marked est.), rebuilt from the results.";
+    en.textContent="Weeks from 2007 to 2010 (and February 2006) are counted from estimated rankings (marked est.), rebuilt from the results.";
     mount.appendChild(en);
   }
   const bestOne=R.one.reduce((m,o)=>o.longest>m.longest?o:m, R.one[0]);
@@ -5780,7 +5782,9 @@ function renderSeason(){
     const noRes=cal.filter(c=>!c.challenger && !ix.has.has(c.event+"|"+season+"|Singles")).length;
     if(noRes) notes.push(`${noRes} tour event${noRes===1?" has":"s have"} no results on the site.`);
   }
-  if(est) notes.push(EST_NOTE);
+  if(est) notes.push(String(season)==="2006"
+    ? "The first three lists (6, 20 and 27 February) are estimated: the lists before 6 March 2006 are lost, so they are rebuilt from the draws."
+    : EST_NOTE);
   notes.forEach(t=>{ const p=document.createElement("p"); p.className="hint"; p.style.marginTop="0"; p.textContent=t; mount.appendChild(p); });
 
   /* headline figures */
@@ -6763,8 +6767,8 @@ function recContext(){
   /* A player's singles rank in the week of the tournament, as stored on the
      match row. Rows from 2024 on took it from the draw; the 2007 to 2018 rows
      were filled from the ranking lists (the latest list dated on or before the
-     Monday nearest the tournament's calendar date, starting with the estimated
-     list of 9 July 2007). Reading the row keeps these records in step with the
+     Monday nearest the tournament's calendar date, and no more than ten weeks
+     older; January 2007 uses the real list of 4 December 2006). Reading the row keeps these records in step with the
      Players tab, which counts the same figures. */
   const rankOf=(m, which)=>{
     const v=m[which+"Rank"];
@@ -7150,8 +7154,8 @@ function recTables(D, ctx, suffix){
 
   /* ---- by rank at the time (singles) ---- */
   if(mode==="solo"){
-    const rankNote="Rank in the week of the tournament. Before 2011 the ranks come from the estimated rankings, "
-      + "starting after Wimbledon 2007.";
+    const rankNote="Rank in the week of the tournament. From 2007 to 2010 the ranks come from the estimated rankings "
+      + "(the first weeks of 2007 from the last list of 2006).";
     const other=(k,h)=>({k,h,render:r=>nameLinks(r[k],"Singles"),csv:r=>r[k]});
     const rnd={k:"round",h:"Round",cls:"rnd"};
     T.no1Wins={title:"Most wins over the no. 1", by:["n"], hint:rankNote,
@@ -7365,7 +7369,7 @@ function renderRecords(){
     if(!rr || !rr.one.length) return [];
     const who={k:"name",h:"Player",render:r=>nameLinks(r.name,tour),csv:r=>r.name};
     const num=(k,h)=>({k,h,cls:"num"});
-    const est=tourWeeks(tour).some(w=>w.est) ? " Weeks from 2007 to 2010 come from the estimated rankings." : "";
+    const est=tourWeeks(tour).some(w=>w.est) ? " Weeks from 2007 to 2010 (and February 2006) come from the estimated rankings." : "";
     return [
       {title:`Most weeks at no. 1`, by:["weeks"],
         hint:"Calendar weeks. More on the "+tour+" Rankings tab."+est,
@@ -9236,8 +9240,13 @@ function encodeSeason(season){
   const out = {format:RANKINGS_FORMAT, season, savedAt:new Date().toISOString(),
           players, countries, weeks};
   /* 2007-2010 have no surviving lists; theirs are rebuilt from the results.
-     The flag travels with the season file so the desk never drops it. */
-  if(WEEKS.some(w=>seasonKey(w)===season && w.est)) out.estimated = true;
+     The flag travels with the season file so the desk never drops it. A
+     season where only some weeks are estimated (February 2006) marks those
+     weeks one by one with "e". */
+  const sw=WEEKS.filter(w=>seasonKey(w)===season);
+  const allEst=sw.length>0 && sw.every(w=>w.est);
+  if(allEst) out.estimated = true;
+  else sw.forEach((w,i)=>{ if(w.est) weeks[i].e = 1; });
   return out;
 }
 
@@ -9258,7 +9267,7 @@ function decodeSeason(data){
     list.forEach(r=>{ index.set(keyOf(r.name), r.rank); seePlayer(r.name, r.country); });
     WEEKS.push({name:w.n, season: data.season==="unknown" ? "" : data.season,
                 tour: w.t==="D" ? "Doubles" : "Singles",
-                list, index, date:weekDate(w.n, data.season), est:!!data.estimated});
+                list, index, date:weekDate(w.n, data.season), est:!!(data.estimated || w.e)});
   });
 }
 
