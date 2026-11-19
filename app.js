@@ -744,7 +744,7 @@ const EDIT = document.body.dataset.mode === "edit";
 /* index.html, desk.html and app.js are uploaded together. Updating only some
    of them leaves a page whose markup and code disagree, which shows up as a
    blank tab rather than an error, so they carry a matching stamp. */
-const APP_VERSION = "2026-11-19b";
+const APP_VERSION = "2026-11-19c";
 const esc = s => String(s).replace(/[&<>"']/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
@@ -5927,6 +5927,14 @@ function renderSeason(){
       `Players whose first ${disc.toLowerCase()} ranking came in ${season}${newcomers.length>12?"; the twelve who rose highest":""}.`);
   }
 
+  /* players who left the rankings that season, top-100 careers only */
+  if(!live){
+    const fw=seasonFarewells(season, disc);
+    if(fw) section(`Left the rankings \u2014 ${fw.childNodes.length}`, fw,
+      `Players whose last ${disc.toLowerCase()} ranking came in ${season}, with a career high in the top 100. `
+      + `Open one for a short look at their career; results count the seasons on the site.`);
+  }
+
   /* the awards */
   const aw=AWARDS.find(s=>s.season===season);
   if(aw && aw.awards.length){
@@ -5983,8 +5991,171 @@ function seasonCss(){
 .ssgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));gap:22px 30px;align-items:start}
 .ssgrid .ssh{margin:0 0 4px;font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:16px;
   text-transform:uppercase;letter-spacing:.03em;color:var(--slate)}
-.ssch{display:inline-flex;align-items:center;gap:6px;margin:0 0 8px;cursor:pointer}`;
+.ssch{display:inline-flex;align-items:center;gap:6px;margin:0 0 8px;cursor:pointer}
+.ssbye{border-top:1px solid var(--rule-strong)}
+.ssbye details{border-bottom:1px solid var(--rule)}
+.ssbye summary{display:grid;grid-template-columns:minmax(0,1.6fr) 44px 52px 92px minmax(0,1.4fr);gap:10px;align-items:center;
+  padding:9px 4px 9px 22px;cursor:pointer;list-style:none;position:relative}
+.ssbye summary::-webkit-details-marker{display:none}
+.ssbye summary::before{content:"▸";position:absolute;left:4px;color:var(--slate);transition:transform .15s}
+.ssbye details[open] summary::before{transform:rotate(90deg);color:var(--ball)}
+.ssbye summary:hover{background:var(--panel)}
+.ssbye summary .linkish{justify-self:start;text-align:left}
+.ssbye summary .mono{font-family:"IBM Plex Mono",monospace;text-align:right}
+.ssbyebody{padding:4px 12px 14px 22px}
+.ssbyebody ul{margin:0 0 10px;padding-left:18px}
+.ssbyebody li{margin:0 0 5px;line-height:1.45}
+@media (max-width:640px){ .ssbye summary{grid-template-columns:minmax(0,1fr) 40px 48px} .ssbye summary .dim{display:none} }`;
   document.head.appendChild(st);
+}
+
+/* ==================================================================
+   LEFT THE RANKINGS
+   On a season page: players whose last ranking came that season and
+   whose career high was inside the top 100, each opening to a short
+   career summary (rankings, titles, big results, managing, awards).
+   ================================================================== */
+
+/* Every player's first and last list and career high on one tour. */
+let RANK_CAREER = null;
+function rankCareers(tour){
+  const key=WEEKS.length+"|"+REG.size+"|"+ALIAS.size;
+  if(!RANK_CAREER || RANK_CAREER.key!==key) RANK_CAREER={key};
+  if(RANK_CAREER[tour]) return RANK_CAREER[tour];
+  const ws=tourWeeks(tour), span=weekSpans(ws), by=new Map();
+  ws.forEach((w,i)=>{
+    const seen=new Set();
+    (w.list||[]).forEach(r=>{
+      const k=keyOf(r.name); if(seen.has(k)) return; seen.add(k);
+      let c=by.get(k);
+      if(!c){ c={key:k, raw:r.name, country:r.country, first:w, last:w, high:r.rank, highW:w,
+        weeks:0, no1:0, top10:0}; by.set(k,c); }
+      c.last=w; c.raw=r.name; if(r.country) c.country=r.country;
+      if(r.rank<c.high){ c.high=r.rank; c.highW=w; }
+      c.weeks+=span[i];
+      if(r.rank===1) c.no1+=span[i];
+      if(r.rank<=10) c.top10+=span[i];
+    });
+  });
+  return (RANK_CAREER[tour]=by);
+}
+
+const FW_ORDER=["W","F","SF","QF","R16","R32","R64","R128"];
+
+/* The short career summary, as a list of lines. Built when the row is
+   first opened, so a season page with many farewells stays quick. */
+function farewellLines(name, tour){
+  const out=[];
+  const plural=(n,w)=>`${n} ${w}${n===1?"":"s"}`;
+  const ix=tlIndex();
+  const k=keyOf(name);
+
+  /* rankings, on both tours */
+  ["Singles","Doubles"].forEach(t=>{
+    const c=rankCareers(t).get(k); if(!c) return;
+    const yrs=c.first.season===c.last.season ? c.first.season : `${c.first.season}–${c.last.season}`;
+    let line=`${t}: career high #${c.high} (${weekLabel(c.highW).replace(" (est.)",", est.")}), ranked ${yrs}, ${plural(c.weeks,"week")} in the rankings`;
+    if(c.no1) line+=`, ${plural(c.no1,"week")} at no. 1`;
+    else if(c.top10) line+=`, ${plural(c.top10,"week")} in the top 10`;
+    out.push(line+".");
+  });
+
+  /* results: titles, the biggest of them, win-loss, best Grand Slam */
+  const msBy={Singles:playerMatches(name,"Singles"), Doubles:playerMatches(name,"Doubles")};
+  ["Singles","Doubles"].forEach(d=>{
+    const ms=msBy[d];
+    if(!ms.length) return;
+    const main=ms.filter(m=>m.stage==="Main");
+    const w=main.filter(m=>wonBy(m,name)).length, l=main.length-w;
+    const titles=main.filter(m=>titleFinal(m) && wonBy(m,name));
+    const finals=main.filter(m=>titleFinal(m)).length;
+    const big=titles.map(m=>({m, tier:seasonTier(m.event, m.season, ix)})).filter(x=>x.tier)
+      .sort((a,b)=>a.m.season.localeCompare(b.m.season));
+    let line=`${d}: ${w}–${l} in main draws`;
+    if(titles.length) line+=`, ${plural(titles.length,"title")} from ${plural(finals,"final")}`;
+    if(big.length) line+=` (${big.map(x=>`${x.m.event} ${x.m.season}`).join(", ")})`;
+    /* best Grand Slam run */
+    const slams=new Map();
+    ms.forEach(m=>{ if(!REC_SLAMS[m.event]) return; const key=m.event+"|"+m.season;
+      if(!slams.has(key)) slams.set(key,[]); slams.get(key).push(m); });
+    let best=null;
+    slams.forEach((list,key)=>{
+      const r=tlResult(list, name, ix, key+"|"+d, false);
+      const rank=FW_ORDER.indexOf(r.label);
+      if(rank<0) return;
+      if(!best || rank<best.rank || (rank===best.rank && key<best.key)) best={rank, label:r.label, key};
+    });
+    if(best && !titles.some(m=>REC_SLAMS[m.event])){
+      const [ev, yr]=best.key.split("|");
+      const words={W:"won", F:"final", SF:"semifinal", QF:"quarterfinal"}[best.label] || best.label;
+      line+=`; best Grand Slam: ${words}, ${ev} ${yr}`;
+    }
+    out.push(line+".");
+  });
+
+  /* the last match on the site */
+  const all=inOrder(msBy.Singles.concat(msBy.Doubles));
+  const lm=all[all.length-1];
+  if(lm){
+    const won=wonBy(lm,name);
+    const opp=sideOf(lm, won ? "loser" : "winner");
+    out.push(`Last match on the site: ${won?"beat":"lost to"} ${opp}, ${lm.event} ${lm.season} ${lm.round}${lm.disc==="Doubles"?" (doubles)":""}.`);
+  }
+
+  /* managing */
+  const ran=CALENDAR.filter(c=>c.manager && keyOf(c.manager)===k);
+  if(ran.length){
+    const yrs=[...new Set(ran.map(c=>String(c.season)))].sort();
+    const slams=ran.filter(c=>REC_SLAMS[c.event]).length;
+    const masters=ran.filter(c=>!REC_SLAMS[c.event] && seasonTier(c.event, String(c.season), ix)==="Masters").length;
+    const extra=[slams ? plural(slams,"Grand Slam") : "", masters ? `${masters} Masters` : ""].filter(Boolean).join(" and ");
+    out.push(`Managed ${plural(ran.length,"tournament")} (${yrs.length>1 ? yrs[0]+"–"+yrs[yrs.length-1] : yrs[0]})${extra ? ", including "+extra : ""}.`);
+  }
+
+  /* awards */
+  const aw=playerAwards(name);
+  if(aw.length){
+    const list=aw.slice().sort((a,b)=>a.season.localeCompare(b.season))
+      .map(a=>`${a.award} ${a.season}${a.event ? " ("+a.event+")" : ""}`);
+    out.push(`Awards: ${list.join("; ")}.`);
+  }
+  return out;
+}
+
+function seasonFarewells(season, disc){
+  const list=[...rankCareers(disc).values()]
+    .filter(c=>c.last.season===season && c.high<=100)
+    .sort((a,b)=>a.high-b.high || a.highW.date-b.highW.date);
+  if(!list.length) return null;
+  const wrap=document.createElement("div"); wrap.className="ssbye";
+  list.forEach(c=>{
+    const name=canonName(c.raw);
+    const det=document.createElement("details");
+    const sum=document.createElement("summary");
+    const nm=document.createElement("button"); nm.className="linkish"; nm.textContent=name;
+    nm.addEventListener("click",e=>{ e.preventDefault(); e.stopPropagation(); showPlayer(name, disc); });
+    const ct=document.createElement("span"); ct.className="ctry"; ct.textContent=canonCountry(c.raw)||c.country||"";
+    const hi=document.createElement("span"); hi.className="mono"; hi.textContent=`#${c.high}`;
+    hi.title=`Career high, ${weekLabel(c.highW)}`;
+    const yrs=document.createElement("span"); yrs.className="dim";
+    yrs.textContent=c.first.season===c.last.season ? c.first.season : `${c.first.season}–${c.last.season}`;
+    const last=document.createElement("span"); last.className="dim ssbyelast";
+    last.textContent=`last ranked ${c.last.name}`;
+    sum.append(nm, ct, hi, yrs, last);
+    det.appendChild(sum);
+    const body=document.createElement("div"); body.className="ssbyebody";
+    det.appendChild(body);
+    det.addEventListener("toggle",()=>{
+      if(!det.open || body.childNodes.length) return;
+      const ul=document.createElement("ul");
+      farewellLines(name, disc).forEach(t=>{ const li=document.createElement("li"); li.textContent=t; ul.appendChild(li); });
+      const go=document.createElement("button"); go.className="btn sm"; go.textContent="Full career →";
+      go.addEventListener("click",()=>showPlayer(name, disc));
+      body.append(ul, go);
+    });
+    wrap.appendChild(det);
+  });
+  return wrap;
 }
 
 /* ==================================================================
