@@ -6,6 +6,7 @@
   "matches-2025.json",
   "matches-2024.json",
   "matches-2023.json",
+  "matches-2019.json",
   "matches-2018.json",
   "matches-2017.json",
   "matches-2016.json",
@@ -12273,7 +12274,7 @@
     128,
     128,
     64,
-    64
+    32
    ],
    "manager": "a1canada",
    "challenger": false
@@ -52550,6 +52551,19 @@
   },
   {
    "season": "2006",
+   "code": "21c",
+   "date": "2006-05-21",
+   "opened": "",
+   "name": "WTC Dusseldorf",
+   "event": "WTC Dusseldorf",
+   "country": "GER",
+   "surface": "CL",
+   "draw": [],
+   "manager": "",
+   "challenger": false
+  },
+  {
+   "season": "2006",
    "code": "21b",
    "date": "2006-05-28",
    "opened": "",
@@ -52972,9 +52986,9 @@
    "country": "CHN",
    "surface": "H",
    "draw": [
-    32,
+    64,
     0,
-    16,
+    32,
     0
    ],
    "manager": "",
@@ -52990,9 +53004,9 @@
    "country": "ROU",
    "surface": "CL",
    "draw": [
-    32,
+    64,
     0,
-    16,
+    32,
     0
    ],
    "manager": "invu2day",
@@ -53045,7 +53059,7 @@
    "surface": "IH",
    "draw": [
     32,
-    0,
+    16,
     16,
     0
    ],
@@ -53063,7 +53077,7 @@
    "surface": "H",
    "draw": [
     32,
-    0,
+    8,
     16,
     0
    ],
@@ -53081,7 +53095,7 @@
    "surface": "CL",
    "draw": [
     32,
-    0,
+    16,
     16,
     0
    ],
@@ -53099,7 +53113,7 @@
    "surface": "IH",
    "draw": [
     32,
-    0,
+    16,
     16,
     0
    ],
@@ -53135,7 +53149,7 @@
    "surface": "IH",
    "draw": [
     32,
-    0,
+    16,
     16,
     0
    ],
@@ -53153,7 +53167,7 @@
    "surface": "IH",
    "draw": [
     32,
-    0,
+    8,
     16,
     0
    ],
@@ -53171,7 +53185,7 @@
    "surface": "IH",
    "draw": [
     32,
-    0,
+    16,
     16,
     0
    ],
@@ -53207,7 +53221,7 @@
    "surface": "IH",
    "draw": [
     32,
-    0,
+    16,
     16,
     0
    ],
@@ -53225,7 +53239,7 @@
    "surface": "IH",
    "draw": [
     32,
-    0,
+    8,
     16,
     0
    ],
@@ -53243,7 +53257,7 @@
    "surface": "IH",
    "draw": [
     32,
-    0,
+    16,
     16,
     0
    ],
@@ -53261,7 +53275,7 @@
    "surface": "IH",
    "draw": [
     128,
-    0,
+    24,
     64,
     0
    ],
@@ -55785,7 +55799,33 @@
   "2006|Wimbledon|Doubles|Main|R64|adee-gee / bad gambler",
   "2006|Wimbledon|Singles|Main|R64|blue orange",
   "2006|Wimbledon|Singles|Main|R64|muniu",
-  "2006|Wimbledon|Singles|Main|R64|tal20"
+  "2006|Wimbledon|Singles|Main|R64|tal20",
+  "2006|Bangkok|Singles|Main|R16|muniu",
+  "2006|Bangkok|Singles|Main|R32|damita",
+  "2006|Beijing|Doubles|Main|R16|coreyschucky / shotgun blues",
+  "2006|Beijing|Doubles|Main|R32|biliana / yemok",
+  "2006|Lyon|Doubles|Main|QF|bubba08 / silverwhite",
+  "2006|Lyon|Doubles|Main|QF|half-a-cat / kindablue",
+  "2006|Lyon|Doubles|Main|R16|guille&tati4life / slokid",
+  "2006|Lyon|Doubles|Main|R16|scala / siders",
+  "2006|Madrid|Doubles|Main|R32|jxneutron / marksman",
+  "2006|Madrid|Doubles|Main|R32|nimrodg / qczi",
+  "2006|Madrid|Doubles|Main|R64|coreyschucky / zackbusner",
+  "2006|Madrid|Doubles|Main|R64|crocodile / kalleonair",
+  "2006|Madrid|Singles|Main|R128|deccyb123",
+  "2006|Madrid|Singles|Main|R64|carstenl01",
+  "2006|Metz|Singles|Qualifying|QFR|freesbee",
+  "2006|Metz|Singles|Qualifying|QR2|yarkko",
+  "2006|Paris|Doubles|Main|R32|muniu / radjan",
+  "2006|Paris|Doubles|Main|R32|scala / siders",
+  "2006|St. Petersburg|Singles|Qualifying|QR2|gaynor",
+  "2006|St. Petersburg|Singles|Qualifying|QR2|superior1",
+  "2006|Tokyo|Doubles|Main|R32|adee-gee / keqtqiadv",
+  "2006|Tokyo|Singles|Main|R32|a skywalker",
+  "2006|Tokyo|Singles|Main|R64|invu2day",
+  "2006|Vienna|Singles|Qualifying|QR2|*julie*",
+  "2006|Vienna|Singles|Qualifying|QR2|pixie",
+  "2019|Australian Open|Doubles|Qualifying|QR1|broseghini / jimmyj@y"
  ],
  "countryChecks": [
   {
@@ -56413,6 +56453,23 @@
  ],
  "teamTitles": [
   {
+   "season": "2006",
+   "event": "WTC Dusseldorf",
+   "team": "USA",
+   "players": [
+    "_pyromatic",
+    "coreyschucky",
+    "Grinder"
+   ],
+   "runnerUp": "FIN",
+   "beat": [
+    "el guero",
+    "Labamba",
+    "Smasher"
+   ],
+   "score": "2-1"
+  },
+  {
    "season": "2007",
    "event": "WTC Dusseldorf",
    "team": "BRA",
@@ -56609,6 +56666,95 @@
   }
  ],
  "teamGroups": [
+  {
+   "season": "2006",
+   "event": "WTC Dusseldorf",
+   "source": "posted results",
+   "groups": [
+    {
+     "name": "Group 1",
+     "teams": [
+      {
+       "team": "GBR",
+       "name": "Great Britain",
+       "players": [
+        "Forever-Delayed",
+        "Marksman",
+        "elroyf"
+       ]
+      },
+      {
+       "team": "AUS",
+       "name": "Australia",
+       "players": [
+        "$@M",
+        "Peta Pan",
+        "robrulz5"
+       ]
+      },
+      {
+       "team": "FRA",
+       "name": "France",
+       "players": [
+        "Bubba08",
+        "Crocodile",
+        "JBdV"
+       ]
+      },
+      {
+       "team": "USA",
+       "name": "United States",
+       "players": [
+        "_pyromatic",
+        "coreyschucky",
+        "Grinder"
+       ]
+      }
+     ]
+    },
+    {
+     "name": "Group 2",
+     "teams": [
+      {
+       "team": "FIN",
+       "name": "Finland",
+       "players": [
+        "el guero",
+        "Labamba",
+        "Smasher"
+       ]
+      },
+      {
+       "team": "ROM",
+       "name": "Romania",
+       "players": [
+        "Aleka",
+        "Mara_M",
+        "Sandra",
+        "scythe19pro"
+       ]
+      },
+      {
+       "team": "GER",
+       "name": "Germany",
+       "players": [
+        "bavaria100",
+        "JMG",
+        "KalleOnAir"
+       ]
+      },
+      {
+       "team": "BRA",
+       "name": "Brazil",
+       "players": [
+        "keqtqiadv",
+        "Shotgun Blues"
+       ]
+      }
+     ]
+    }
+   ]
+  },
   {
    "season": "2008",
    "event": "Hopman Cup",
