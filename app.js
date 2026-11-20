@@ -1001,11 +1001,17 @@ function derivePlayers(surface, season, level){
   return out;
 }
 
-function deriveTeams(surface, season, level){
-  const rec = new Map(), disp = new Map();
-  const get = t => { const k=teamKeyOf(t);
-    if(!rec.has(k)){ rec.set(k,blankRec()); disp.set(k,canonTeam(t)); }
+function deriveTeams(surface, season, level, byPlayer){
+  const rec = new Map(), disp = new Map(), mates = new Map();
+  const get1 = (k, shown) => {
+    if(!rec.has(k)){ rec.set(k,blankRec()); disp.set(k,shown); }
     return rec.get(k); };
+  /* "byPlayer" counts each doubles player on their own, whoever the partner
+     was, so a player's whole doubles record is one row. */
+  const sides = t => byPlayer
+    ? String(t).split("/").map(p=>p.trim()).filter(p=>p && !isByeName(p)).map(p=>get1(keyOf(p), canonName(p)))
+    : [get1(teamKeyOf(t), canonTeam(t))];
+  const each = (list, f) => list.forEach(f);
 
   for(const r of MATCHES){
     if(r.disc!=="Doubles" || r.isBye) continue;
@@ -1014,25 +1020,31 @@ function deriveTeams(surface, season, level){
     if(!b) continue;
     const surf=surfaceOf(r);
     if(surface && surf!==surface) continue;
-    const W=get(r.winner), L=get(r.loser);
-    if(surf){ W["s_"+surf]++; L["l_"+surf]++; }
+    const Ws=sides(r.winner), Ls=sides(r.loser);
+    if(byPlayer) [r.winner, r.loser].forEach(t=>{
+      const ks=String(t).split("/").map(p=>p.trim()).filter(p=>p && !isByeName(p)).map(p=>keyOf(p));
+      ks.forEach(k=>{ let s=mates.get(k); if(!s){ s=new Set(); mates.set(k,s); } ks.forEach(o=>{ if(o!==k) s.add(o); }); });
+    });
+    if(surf){ each(Ws,W=>W["s_"+surf]++); each(Ls,L=>L["l_"+surf]++); }
     if(b==="q"){
-      W.w++; L.l++;
-      if(r.round==="QFR") W.qualified++;
+      each(Ws,W=>W.w++); each(Ls,L=>L.l++);
+      if(r.round==="QFR") each(Ws,W=>W.qualified++);
     } else if(b==="main"){
-      W.w++; L.l++;
-      if(titleFinal(r)){ W.titles++; L.finals++; W.lastTitle=r.event; }
-      if(r.round==="SF"){ L.sfs++; }
-      if(isQ(r.winnerSeed)) W.mdQw++;
-      if(isQ(r.loserSeed))  L.mdQl++;
+      each(Ws,W=>W.w++); each(Ls,L=>L.l++);
+      if(titleFinal(r)){ each(Ws,W=>{ W.titles++; W.lastTitle=r.event; }); each(Ls,L=>L.finals++); }
+      if(r.round==="SF"){ each(Ls,L=>L.sfs++); }
+      if(isQ(r.winnerSeed)) each(Ws,W=>W.mdQw++);
+      if(isQ(r.loserSeed))  each(Ls,L=>L.mdQl++);
     } else {
-      W.qw++; L.ql++;
-      if(r.round==="QFR") W.qualified++;
+      each(Ws,W=>W.qw++); each(Ls,L=>L.ql++);
+      if(r.round==="QFR") each(Ws,W=>W.qualified++);
     }
   }
   const out=[];
   for(const [k,v] of rec){
-    out.push({key:k, team:disp.get(k), w:v.w, l:v.l,
+    out.push({key:k, team:disp.get(k), player:disp.get(k),
+      country: byPlayer ? ((REG.get(k)||{}).country||"") : "",
+      partners: byPlayer ? (mates.get(k)||new Set()).size : 0, w:v.w, l:v.l,
       pct:(v.w+v.l)?v.w/(v.w+v.l):-1, titles:v.titles, finals:v.finals, sfs:v.sfs,
       qw:v.qw, ql:v.ql, qualified:v.qualified, mdQw:v.mdQw, mdQl:v.mdQl,
       lastTitle:v.lastTitle, ...surfaceCols(v)});
@@ -2264,10 +2276,21 @@ const TEAM_COLS = [
   {k:"lastTitle",h:"Most Recent Title"}
 ];
 
+/* The Doubles tab's "Players" view: each player's doubles record, whoever
+   the partner was. Same figures as the team view, plus how many partners. */
+const DPLAYER_COLS = [
+  {k:"player",h:"Player",render:r=>{
+      const b=document.createElement("button"); b.className="linkish"; b.textContent=r.player;
+      b.addEventListener("click",()=>showPlayer(r.player,"Doubles")); return b;
+    }, csv:r=>r.player},
+  {k:"country",h:"Country",cls:"ctry"},
+  {k:"partners",h:"Partners",cls:"num",desc:true}]
+  .concat(TEAM_COLS.filter(c=>c.k!=="team"));
+
 /* The columns follow the Events filter: the main-draw views drop the
    qualifying columns, and a qualifying view keeps only what means something
    there (its W\u2013L is the qualifying record, "Times Qualified" its titles). */
-const QUAL_VIEW_COLS = new Set(["player","team","country","w","l","pct","qualified",
+const QUAL_VIEW_COLS = new Set(["player","team","country","partners","w","l","pct","qualified",
   "surf_H","surf_CL","surf_G","surf_IH","bestSurface","best","streak"]);
 const QUAL_ONLY_COLS = new Set(["qw","ql","qualified"]);
 function colsFor(cols, level){
@@ -2277,8 +2300,9 @@ function colsFor(cols, level){
 }
 const playerLevel = () => val("pLevel") || "atp";
 const teamLevel   = () => val("tLevel") || "atp";
+const teamView    = () => val("tView") || "teams";
 const playerCols  = () => colsFor(PLAYER_COLS, playerLevel());
-const teamCols    = () => colsFor(TEAM_COLS, teamLevel());
+const teamCols    = () => colsFor(teamView()==="players" ? DPLAYER_COLS : TEAM_COLS, teamLevel());
 
 const TITLE_COLS = [
   {k:"event",h:"Event",render:r=>{
@@ -5027,6 +5051,7 @@ function applyHash(){
       return go("manager");
     case "records":
       if(a==="Doubles" || a==="Both" || a==="Singles") REC_UI.tab=a;
+      REC_UI.level = b==="ch" ? "ch" : "all";
       return go("records");
     case "game":
       GAME_UI.page = ["coverage","rules"].includes(a) ? a : "state";
@@ -6685,7 +6710,7 @@ function gameCss(){
    Every figure comes from one pass over the matches in playing order,
    and the result is kept until the data changes.
    ================================================================== */
-const REC_UI = {tab:"Singles", open:new Set()};
+const REC_UI = {tab:"Singles", level:"all", open:new Set()};
 let REC_CACHE = null;
 function invalidateRecords(){ REC_CACHE=null; }
 
@@ -6708,7 +6733,10 @@ const recName = (a,b) => String(a.name).toLowerCase().localeCompare(String(b.nam
 
 /* Everything the three pages share: which seasons are loaded, what each
    tournament is, and the matches of each discipline in playing order. */
-function recContext(){
+/* level "all" counts every match; "ch" only Challenger events — whatever
+   the calendar marks as one, so Futures, ITF and the Challenger and NextGen
+   Finals too. */
+function recContext(level){
   const yrs=loadedYears(), gap=seasonGap;
 
   const cal=new Map();
@@ -6790,9 +6818,10 @@ function recContext(){
   };
 
   const orders={};
-  const order=disc=>orders[disc] || (orders[disc]=inOrder(MATCHES.filter(m=>m.disc===disc && !m.isBye)));
+  const inLevel=m=> level!=="ch" || (!isTeamEvent(m.event) && flagsOf(m.event+"|"+m.season).ch);
+  const order=disc=>orders[disc] || (orders[disc]=inOrder(MATCHES.filter(m=>m.disc===disc && !m.isBye && inLevel(m))));
   const sorted=[...yrs].sort((a,b)=>a-b);
-  return {yrs, years:sorted, maxYr:sorted.length?sorted[sorted.length-1]:null, gap, flagsOf, tierOf, tourLevel, rankOf, order};
+  return {yrs, years:sorted, maxYr:sorted.length?sorted[sorted.length-1]:null, gap, flagsOf, tierOf, tourLevel, rankOf, order, level:level||"all"};
 }
 
 /* One pass over a discipline. "solo" counts singles players, "team" doubles
@@ -6922,7 +6951,7 @@ function recBuild(ctx, disc, mode){
       if(lr===1){ W.no1W++; W.no1Last=m; }
       if(lr && lr<=10){ W.t10w++; if(wr && wr>lr) upsets.push({m, wr, lr, w:W.name, l:L.name}); }
       if(wr && wr<=10) L.t10l++;
-      if(tf && wr && ctx.tourLevel(m)) rankedTitles.push({m, wr, w:W.name});
+      if(tf && wr && (ctx.level==="ch" || ctx.tourLevel(m))) rankedTitles.push({m, wr, w:W.name});
     }
 
     if(mode!=="member" && ws.length && ls.length){
@@ -6956,17 +6985,18 @@ function recRun(ctx, entries, test){
 }
 
 function recData(){
+  const level=REC_UI.level==="ch" ? "ch" : "all";
   const key=[MATCHES.length, WEEKS.length, REG.size, ALIAS.size, CALENDAR.length].join("|");
-  if(REC_CACHE && REC_CACHE.key===key) return REC_CACHE;
-  const ctx=recContext();
+  if(!REC_CACHE || REC_CACHE.key!==key) REC_CACHE={key, levels:{}};
+  if(REC_CACHE.levels[level]) return REC_CACHE.levels[level];
+  const ctx=recContext(level);
   const made={};
   const get=(name, disc, mode)=>made[name] || (made[name]=recBuild(ctx, disc, mode));
-  REC_CACHE={key, ctx,
+  return (REC_CACHE.levels[level]={key, ctx,
     solo:()=>get("solo","Singles","solo"),
     team:()=>get("team","Doubles","team"),
     member:()=>get("member","Doubles","member"),
-    rank:tour=>made["rank"+tour] || (made["rank"+tour]=tourWeeks(tour).length>1 ? recordRows(tour) : null)};
-  return REC_CACHE;
+    rank:tour=>made["rank"+tour] || (made["rank"+tour]=tourWeeks(tour).length>1 ? recordRows(tour) : null)});
 }
 
 /* ---------------- the tables ---------------- */
@@ -7191,7 +7221,9 @@ function recTables(D, ctx, suffix){
       rows:D.rankedTitles.filter(x=>ctx.tierOf(x.m)).sort((a,b)=>b.wr-a.wr || recName({name:a.w},{name:b.w})).slice(0,25)
         .map(x=>({name:x.w, wr:x.wr, event:x.m.event, evSeason:x.m.season, season:x.m.season}))};
     T.lowChamps={title:"Lowest-ranked champions", by:["wr"],
-      hint:"Every tournament the calendar doesn't mark as a Challenger. Champions with no ranking at the time are left out.",
+      hint: ctx.level==="ch"
+        ? "Every Challenger and Futures event. Champions with no ranking at the time are left out."
+        : "Every tournament the calendar doesn't mark as a Challenger. Champions with no ranking at the time are left out.",
       cols:[who, num("wr","Rank"), evCol, mono("season","Season")],
       rows:D.rankedTitles.slice().sort((a,b)=>b.wr-a.wr || recName({name:a.w},{name:b.w})).slice(0,25)
         .map(x=>({name:x.w, wr:x.wr, event:x.m.event, evSeason:x.m.season, season:x.m.season}))};
@@ -7284,7 +7316,7 @@ function recCard(grid, spec, file){
     const hl=spec.hl||by;
     cols=[{k:"_rk",h:"#",cls:"num rk"}].concat(cols.map(c=>hl.includes(c.k) ? {...c, cls:(c.cls?c.cls+" ":"")+"rv"} : c));
   }
-  const id=REC_UI.tab+"|"+spec.title;
+  const id=REC_UI.tab+"|"+REC_UI.level+"|"+spec.title;
   const body=document.createElement("div");
   const draw=()=>{
     body.innerHTML="";
@@ -7334,10 +7366,15 @@ function renderRecords(){
   [["Singles","Singles"],["Doubles","Doubles"],["Both","Singles & doubles"]].forEach(([k,label])=>{
     const b=document.createElement("button"); b.textContent=label;
     b.setAttribute("aria-pressed", String(REC_UI.tab===k));
-    b.addEventListener("click",()=>{ REC_UI.tab=k; setHash("records/"+k); renderRecords(); });
+    b.addEventListener("click",()=>{ REC_UI.tab=k; setHash("records/"+k+(REC_UI.level==="ch"?"/ch":"")); renderRecords(); });
     nav.appendChild(b);
   });
   mount.appendChild(nav);
+  const chView = REC_UI.level==="ch";
+  const lv=document.createElement("div"); lv.className="controls"; lv.style.margin="0 0 12px";
+  lv.appendChild(field("Events", selectOf([["all","All matches"],["ch","Challengers (Futures included)"]], REC_UI.level,
+    v=>{ REC_UI.level=v; setHash("records/"+REC_UI.tab+(v==="ch"?"/ch":"")); renderRecords(); })));
+  mount.appendChild(lv);
 
   /* which seasons the records cover, as ranges */
   const ranges=[]; let a=null, prev=null;
@@ -7349,8 +7386,11 @@ function renderRecords(){
   if(a!==null) ranges.push(recSpan(a,prev));
   const lede=document.createElement("p"); lede.className="lede";
   lede.textContent=`Records from the seasons with results on the site: ${ranges.join(" and ")}. `
-    + "Wins and losses are main-draw matches, as on the Players tab; winning runs count every match. "
-    + "The Hopman Cup and WTC Dusseldorf are team titles, so they are not counted as singles or doubles titles here.";
+    + (chView
+      ? "Challenger events only: Challengers, Futures and ITF events, and the Challenger and NextGen Finals. "
+        + "Wins and losses are main-draw matches; winning runs count every Challenger match, qualifying included."
+      : "Wins and losses are main-draw matches, as on the Players tab; winning runs count every match. "
+        + "The Hopman Cup and WTC Dusseldorf are team titles, so they are not counted as singles or doubles titles here.");
   mount.appendChild(lede);
 
   const jump=document.createElement("div"); jump.className="recjump";
@@ -7373,12 +7413,13 @@ function renderRecords(){
     jb.addEventListener("click",()=>h.scrollIntoView({behavior:"smooth", block:"start"}));
     jump.appendChild(jb);
     const grid=document.createElement("div"); grid.className="recgrid";
-    specs.forEach(s=>recCard(grid, s, slug(REC_UI.tab+" "+s.title)));
+    specs.forEach(s=>recCard(grid, s, slug(REC_UI.tab+(chView?" challenger":"")+" "+s.title)));
     mount.appendChild(grid);
   };
 
   /* weeks at no. 1 and in the top ten, from the ranking lists */
   const rankSpecs=(tour)=>{
+    if(chView) return [];   // the ranking lists cover every event, not Challengers alone
     const rr=R.rank(tour);
     if(!rr || !rr.one.length) return [];
     const who={k:"name",h:"Player",render:r=>nameLinks(r.name,tour),csv:r=>r.name};
@@ -7534,7 +7575,7 @@ function renderRecords(){
       rows:top(all.map(p=>({name:p.name, n:p.events, seasons:p.seasons, span:p.span})), (x,y)=>y.seasons-x.seasons || y.n-x.n)};
 
     /* no. 1 on both tours */
-    const rs=R.rank("Singles"), rd=R.rank("Doubles");
+    const rs=chView ? null : R.rank("Singles"), rd=chView ? null : R.rank("Doubles");
     let both=null;
     if(rs && rd){
       const dm=new Map(rd.one.map(r=>[r.key, r]));
@@ -7678,7 +7719,9 @@ function playerRows(){
 }
 function teamRows(){
   const q=val("tQ").trim().toLowerCase(), s=val("tSurf"), y=yearSpan("tFrom","tTo");
-  return deriveTeams(s, y, teamLevel()).filter(t=>!q||t.team.toLowerCase().includes(q));
+  const byPlayer=teamView()==="players";
+  return deriveTeams(s, y, teamLevel(), byPlayer)
+    .filter(t=>!q||hay(t.team, byPlayer ? t.country : "").includes(q));
 }
 /* Both tables read best in playing order rather than alphabetically, so each
    row carries the tournament's calendar date. Rounds sort within a tournament
@@ -9016,6 +9059,10 @@ $("nav").addEventListener("click", e=>{
 on("pLevel","change",()=>{ setText("pLevelNote", LEVEL_NOTE[playerLevel()]); tPlayers.render(); });
 on("tLevel","change",()=>{ setText("tLevelNote", LEVEL_NOTE[teamLevel()]); tTeams.render(); });
 on("tQ","input",()=>tTeams.render());
+on("tView","change",()=>{
+  const pl=teamView()==="players";
+  const q=$("tQ"); if(q) q.placeholder = pl ? "Player or country\u2026" : "Team or player\u2026";
+  tTeams.render(); });
 on("tSurf","change",()=>tTeams.render());
 on("tFrom","change",()=>tTeams.render());
 on("tTo","change",()=>tTeams.render());
@@ -9023,7 +9070,7 @@ on("ttQ","input",()=>tTitles.render());
 
 on("btnMcsv","click",()=>downloadCsv(MATCH_COLS,matchRows(),"matches.csv"));
 on("btnPcsv","click",()=>downloadCsv(playerCols(),playerRows(),"players.csv"));
-on("btnTcsv","click",()=>downloadCsv(teamCols(),teamRows(),"teams.csv"));
+on("btnTcsv","click",()=>downloadCsv(teamCols(),teamRows(),teamView()==="players"?"doubles-players.csv":"teams.csv"));
 on("btnTtcsv","click",()=>downloadCsv(TITLE_COLS,titleRows(),"titles.csv"));
 
 on("btnWipe", "click",()=>{

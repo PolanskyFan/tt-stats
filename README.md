@@ -33,10 +33,10 @@ together. Everything else is data.
 | **Calendar** | Every tournament of a season with its surface, draw sizes and manager. Challengers are hidden unless you tick the box. Click a tournament for its event page. |
 | **Event pages** | A proper draw sheet for each draw (singles, doubles, qualifying), the champions, draw luck, the round-robin groups for the year-end Finals, Hopman Cup and WTC Dusseldorf, and the same tournament in other seasons. |
 | **Matches** | Every match, searchable, with CSV download. |
-| **Players** / **Teams** | Career tables for singles players and doubles teams. Filters for event level (ATP main draw by default, Grand Slams, ATP qualifying, Challenger, Challenger qualifying or all events), a From/To season range, surface, and country for players. |
+| **Players** / **Teams** | Career tables for singles players and doubles teams. Filters for event level (ATP main draw by default, Grand Slams, ATP qualifying, Challenger, Challenger qualifying or all events), a From/To season range, surface, and country for players. On the Teams tab, **Show: Players** gives each player's whole doubles record, whoever the partner was, with the number of partners. |
 | **Managers** | Tournaments run by each manager. |
 | **Head to Head** | Two players' or two teams' full record against each other. |
-| **Records** | Singles, doubles and combined record tables: titles, wins, runs, upsets, rivalries, partners and more. |
+| **Records** | Singles, doubles and combined record tables: titles, wins, runs, upsets, rivalries, partners and more. **Events: All matches** (the default) or **Challengers** (Futures, ITF and the Challenger and NextGen Finals included) — the same tables counted on Challenger events only; the ranking-list tables (weeks at no. 1, top 10) only show under All matches. Addresses: `#records/Singles`, `#records/Singles/ch`. |
 | **Titles** | Champions, finalists and semi-finalists of every event. |
 | **Awards** | The Tennis Tipping Awards by season, plus an All years table. |
 | **The Game** | Three pages. *State of the game*: charts and a season table of players in the rankings, newcomers, players' last seasons, countries, tour and Challenger events, average draw size and the no. 1's points. *Coverage*: which seasons and tournaments have results on the site, and a list of what's missing (no results, no singles or doubles, draws with rounds missing), by season, with Challengers on a tick box. *Rules*: the rules today and their history, from `rules.json`. |
