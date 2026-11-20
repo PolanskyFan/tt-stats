@@ -52575,7 +52575,12 @@
    "event": "Halle",
    "country": "GER",
    "surface": "G",
-   "draw": [],
+   "draw": [
+    32,
+    0,
+    16,
+    0
+   ],
    "manager": "Labamba",
    "challenger": false
   },
@@ -52588,7 +52593,12 @@
    "event": "Queen's",
    "country": "GBR",
    "surface": "G",
-   "draw": [],
+   "draw": [
+    64,
+    0,
+    32,
+    0
+   ],
    "manager": "Gavnich77",
    "challenger": false
   },
@@ -52601,7 +52611,12 @@
    "event": "s-Hertogenbosch",
    "country": "NED",
    "surface": "G",
-   "draw": [],
+   "draw": [
+    32,
+    0,
+    16,
+    0
+   ],
    "manager": "JMG",
    "challenger": false
   },
@@ -52614,7 +52629,12 @@
    "event": "Nottingham",
    "country": "GBR",
    "surface": "G",
-   "draw": [],
+   "draw": [
+    32,
+    0,
+    16,
+    0
+   ],
    "manager": "gaynor",
    "challenger": false
   },
@@ -52665,7 +52685,7 @@
    "surface": "CL",
    "draw": [
     32,
-    0,
+    4,
     16,
     0
    ],
@@ -52736,9 +52756,9 @@
    "country": "GER",
    "surface": "CL",
    "draw": [
-    48,
+    64,
     0,
-    16,
+    32,
     0
    ],
    "manager": "Bavaria100",
@@ -52754,7 +52774,7 @@
    "country": "USA",
    "surface": "H",
    "draw": [
-    48,
+    32,
     0,
     16,
     0
@@ -52773,7 +52793,7 @@
    "surface": "H",
    "draw": [
     32,
-    0,
+    6,
     16,
     0
    ],
@@ -52808,9 +52828,9 @@
    "country": "AUT",
    "surface": "CL",
    "draw": [
-    48,
+    64,
     0,
-    16,
+    32,
     0
    ],
    "manager": "tiptopdaisy",
@@ -52827,7 +52847,7 @@
    "surface": "CL",
    "draw": [
     32,
-    0,
+    8,
     16,
     0
    ],
@@ -52844,9 +52864,9 @@
    "country": "USA",
    "surface": "H",
    "draw": [
-    48,
-    0,
+    64,
     16,
+    32,
     0
    ],
    "manager": "Scala",
@@ -52862,9 +52882,9 @@
    "country": "CAN",
    "surface": "H",
    "draw": [
-    64,
+    128,
     0,
-    32,
+    64,
     0
    ],
    "manager": "Bavaria100",
@@ -52880,9 +52900,9 @@
    "country": "USA",
    "surface": "H",
    "draw": [
-    64,
+    128,
     0,
-    32,
+    64,
     0
    ],
    "manager": "gaynor",
@@ -52898,9 +52918,9 @@
    "country": "USA",
    "surface": "H",
    "draw": [
-    48,
+    128,
     0,
-    16,
+    64,
     0
    ],
    "manager": "Marksman",
@@ -55709,7 +55729,63 @@
   "2006|Szczecin|Doubles|Main|R16|guille&tati4life / latenista",
   "2006|Szczecin|Doubles|Main|QF|cancionanimal / davidcuervacho",
   "2006|Naples|Singles|Qualifying|QR2|tankman",
-  "2006|Naples|Singles|Qualifying|QFR|silly sally"
+  "2006|Naples|Singles|Qualifying|QFR|silly sally",
+  "2006|Amersfoort|Singles|Main|R16|nicofan",
+  "2006|Amersfoort|Singles|Main|R32|cleo1986",
+  "2006|Bastad|Singles|Main|R16|nygel",
+  "2006|Bastad|Singles|Main|R32|balloon",
+  "2006|Cincinnati|Doubles|Main|R32|+alonso / pyromatic",
+  "2006|Cincinnati|Doubles|Main|R32|j-5 / mario66",
+  "2006|Cincinnati|Doubles|Main|R64|damita / zoltan83",
+  "2006|Cincinnati|Doubles|Main|R64|mara m / misspovafan",
+  "2006|Cincinnati|Singles|Main|R128|hamburggirl",
+  "2006|Cincinnati|Singles|Main|R64|pyromatic",
+  "2006|Indianapolis|Doubles|Main|QF|bubba08 / silverwhite",
+  "2006|Indianapolis|Doubles|Main|R16|mara m / scythe19pro",
+  "2006|Indianapolis|Singles|Main|R16|melvins",
+  "2006|Indianapolis|Singles|Main|R32|dupuis2006",
+  "2006|Kitzbühel|Doubles|Main|R16|davidcuervacho / wojtek",
+  "2006|Kitzbühel|Doubles|Main|R32|gustavom fan / srinath kng",
+  "2006|New Haven|Doubles|Main|R32|many-stranded",
+  "2006|New Haven|Singles|Main|R64|many-stranded",
+  "2006|Newport|Doubles|Main|QF|berdych fan / glennmirnyi",
+  "2006|Newport|Doubles|Main|R16|faik kheft / mat87to",
+  "2006|Nottingham|Doubles|Main|R16|$@m / aiken drum",
+  "2006|Queen's|Doubles|Main|R16|caralimon / elroyf",
+  "2006|Queen's|Doubles|Main|R16|deccyb123 / tal20",
+  "2006|Queen's|Doubles|Main|R32|alansk / gaynor",
+  "2006|Queen's|Doubles|Main|R32|scala / siders",
+  "2006|Queen's|Singles|Main|R32|+alonso",
+  "2006|Queen's|Singles|Main|R32|almouchie",
+  "2006|Sopot|Singles|Main|R16|vianzfzf",
+  "2006|Sopot|Singles|Main|R32|invu2day",
+  "2006|Stuttgart|Doubles|Main|R16|linus / robrulz5",
+  "2006|Stuttgart|Doubles|Main|R32|juanrodriquez / pigpen stinks",
+  "2006|Toronto|Doubles|Main|R32|aleka / deea",
+  "2006|Toronto|Doubles|Main|R32|elroyf / taz warrior",
+  "2006|Toronto|Singles|Main|R128|duncan",
+  "2006|Toronto|Singles|Main|R128|marksman",
+  "2006|Toronto|Singles|Main|R64|m-a-r-a",
+  "2006|U.S. Open|Doubles|Main|R32|buffel / nikigreat",
+  "2006|U.S. Open|Doubles|Main|R32|latenista / misspovafan",
+  "2006|U.S. Open|Doubles|Main|R32|plasticbertrand / sharpeirob",
+  "2006|U.S. Open|Doubles|Main|R64|coreyschucky / robrulz5",
+  "2006|U.S. Open|Doubles|Main|R64|foosimoo / linus",
+  "2006|U.S. Open|Singles|Main|R128|latenista",
+  "2006|U.S. Open|Singles|Main|R64|carstenl01",
+  "2006|Washington D.C.|Doubles|Main|R16|$@m / garlichead",
+  "2006|Washington D.C.|Doubles|Main|R32|berdych fan / glennmirnyi",
+  "2006|Washington D.C.|Singles|Main|R32|dupuis2006",
+  "2006|Washington D.C.|Singles|Main|R64|jbdv",
+  "2006|Washington D.C.|Singles|Qualifying|QFR|pixie",
+  "2006|Washington D.C.|Singles|Qualifying|QR2|alexiana",
+  "2006|Wimbledon|Doubles|Main|R32|damita / julio",
+  "2006|Wimbledon|Doubles|Main|R32|davidcuervacho / enjoy incubus",
+  "2006|Wimbledon|Doubles|Main|R64|$@m / aiken drum",
+  "2006|Wimbledon|Doubles|Main|R64|adee-gee / bad gambler",
+  "2006|Wimbledon|Singles|Main|R64|blue orange",
+  "2006|Wimbledon|Singles|Main|R64|muniu",
+  "2006|Wimbledon|Singles|Main|R64|tal20"
  ],
  "countryChecks": [
   {
