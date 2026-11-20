@@ -5051,7 +5051,7 @@ function applyHash(){
       return go("manager");
     case "records":
       if(a==="Doubles" || a==="Both" || a==="Singles") REC_UI.tab=a;
-      REC_UI.level = b==="ch" ? "ch" : "all";
+      REC_UI.level = (b==="ch" || b==="atp") ? b : "all";
       return go("records");
     case "game":
       GAME_UI.page = ["coverage","rules"].includes(a) ? a : "state";
@@ -6733,9 +6733,10 @@ const recName = (a,b) => String(a.name).toLowerCase().localeCompare(String(b.nam
 
 /* Everything the three pages share: which seasons are loaded, what each
    tournament is, and the matches of each discipline in playing order. */
-/* level "all" counts every match; "ch" only Challenger events — whatever
-   the calendar marks as one, so Futures, ITF and the Challenger and NextGen
-   Finals too. */
+/* level "all" counts every match; "atp" only tour-level events (everything
+   the calendar doesn't mark as a Challenger, team events left out, as on the
+   Players tab); "ch" only Challenger events — whatever the calendar marks as
+   one, so Futures, ITF and the Challenger and NextGen Finals too. */
 function recContext(level){
   const yrs=loadedYears(), gap=seasonGap;
 
@@ -6818,7 +6819,9 @@ function recContext(level){
   };
 
   const orders={};
-  const inLevel=m=> level!=="ch" || (!isTeamEvent(m.event) && flagsOf(m.event+"|"+m.season).ch);
+  const inLevel=m=> level==="ch" ? (!isTeamEvent(m.event) && flagsOf(m.event+"|"+m.season).ch)
+    : level==="atp" ? (!isTeamEvent(m.event) && !flagsOf(m.event+"|"+m.season).ch)
+    : true;
   const order=disc=>orders[disc] || (orders[disc]=inOrder(MATCHES.filter(m=>m.disc===disc && !m.isBye && inLevel(m))));
   const sorted=[...yrs].sort((a,b)=>a-b);
   return {yrs, years:sorted, maxYr:sorted.length?sorted[sorted.length-1]:null, gap, flagsOf, tierOf, tourLevel, rankOf, order, level:level||"all"};
@@ -6985,7 +6988,7 @@ function recRun(ctx, entries, test){
 }
 
 function recData(){
-  const level=REC_UI.level==="ch" ? "ch" : "all";
+  const level=["ch","atp"].includes(REC_UI.level) ? REC_UI.level : "all";
   const key=[MATCHES.length, WEEKS.length, REG.size, ALIAS.size, CALENDAR.length].join("|");
   if(!REC_CACHE || REC_CACHE.key!==key) REC_CACHE={key, levels:{}};
   if(REC_CACHE.levels[level]) return REC_CACHE.levels[level];
@@ -7366,14 +7369,14 @@ function renderRecords(){
   [["Singles","Singles"],["Doubles","Doubles"],["Both","Singles & doubles"]].forEach(([k,label])=>{
     const b=document.createElement("button"); b.textContent=label;
     b.setAttribute("aria-pressed", String(REC_UI.tab===k));
-    b.addEventListener("click",()=>{ REC_UI.tab=k; setHash("records/"+k+(REC_UI.level==="ch"?"/ch":"")); renderRecords(); });
+    b.addEventListener("click",()=>{ REC_UI.tab=k; setHash("records/"+k+(REC_UI.level!=="all"?"/"+REC_UI.level:"")); renderRecords(); });
     nav.appendChild(b);
   });
   mount.appendChild(nav);
-  const chView = REC_UI.level==="ch";
+  const chView = REC_UI.level==="ch", atpView = REC_UI.level==="atp";
   const lv=document.createElement("div"); lv.className="controls"; lv.style.margin="0 0 12px";
-  lv.appendChild(field("Events", selectOf([["all","All matches"],["ch","Challengers (Futures included)"]], REC_UI.level,
-    v=>{ REC_UI.level=v; setHash("records/"+REC_UI.tab+(v==="ch"?"/ch":"")); renderRecords(); })));
+  lv.appendChild(field("Events", selectOf([["all","All matches"],["atp","ATP (tour level)"],["ch","Challengers (Futures included)"]], REC_UI.level,
+    v=>{ REC_UI.level=v; setHash("records/"+REC_UI.tab+(v!=="all"?"/"+v:"")); renderRecords(); })));
   mount.appendChild(lv);
 
   /* which seasons the records cover, as ranges */
@@ -7386,7 +7389,11 @@ function renderRecords(){
   if(a!==null) ranges.push(recSpan(a,prev));
   const lede=document.createElement("p"); lede.className="lede";
   lede.textContent=`Records from the seasons with results on the site: ${ranges.join(" and ")}. `
-    + (chView
+    + (atpView
+      ? "Tour-level events only: Grand Slams, Masters, the year-end Finals and the rest of the ATP calendar. "
+        + "Challengers, Futures and the team events (Hopman Cup, WTC Dusseldorf) are left out. "
+        + "Wins and losses are main-draw matches; winning runs count every tour-level match, qualifying included."
+      : chView
       ? "Challenger events only: Challengers, Futures and ITF events, and the Challenger and NextGen Finals. "
         + "Wins and losses are main-draw matches; winning runs count every Challenger match, qualifying included."
       : "Wins and losses are main-draw matches, as on the Players tab; winning runs count every match. "
@@ -7413,13 +7420,13 @@ function renderRecords(){
     jb.addEventListener("click",()=>h.scrollIntoView({behavior:"smooth", block:"start"}));
     jump.appendChild(jb);
     const grid=document.createElement("div"); grid.className="recgrid";
-    specs.forEach(s=>recCard(grid, s, slug(REC_UI.tab+(chView?" challenger":"")+" "+s.title)));
+    specs.forEach(s=>recCard(grid, s, slug(REC_UI.tab+(chView?" challenger":atpView?" atp":"")+" "+s.title)));
     mount.appendChild(grid);
   };
 
   /* weeks at no. 1 and in the top ten, from the ranking lists */
   const rankSpecs=(tour)=>{
-    if(chView) return [];   // the ranking lists cover every event, not Challengers alone
+    if(chView || atpView) return [];   // the ranking lists cover every event, so they show under All matches only
     const rr=R.rank(tour);
     if(!rr || !rr.one.length) return [];
     const who={k:"name",h:"Player",render:r=>nameLinks(r.name,tour),csv:r=>r.name};
@@ -7575,7 +7582,7 @@ function renderRecords(){
       rows:top(all.map(p=>({name:p.name, n:p.events, seasons:p.seasons, span:p.span})), (x,y)=>y.seasons-x.seasons || y.n-x.n)};
 
     /* no. 1 on both tours */
-    const rs=chView ? null : R.rank("Singles"), rd=chView ? null : R.rank("Doubles");
+    const rs=(chView||atpView) ? null : R.rank("Singles"), rd=(chView||atpView) ? null : R.rank("Doubles");
     let both=null;
     if(rs && rd){
       const dm=new Map(rd.one.map(r=>[r.key, r]));

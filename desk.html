@@ -499,8 +499,11 @@ Matches Remaining: 0
   <!-- TEAMS ------------------------------------------------------------ -->
   <section class="view" id="v-teams">
     <p class="lede">Teams are identified by their pair of players, so partner order never splits a
-      record in two. Change a partner and it's correctly a different team.</p>
+      record in two. Change a partner and it's correctly a different team. Show Players for each
+      player's whole doubles record, whoever the partner was.</p>
     <div class="controls">
+      <div class="field sm"><label for="tView">Show</label>
+        <select id="tView"><option value="teams">Teams</option><option value="players">Players</option></select></div>
       <div class="field"><label for="tLevel">Events</label>
         <select id="tLevel"></select></div>
       <div class="field grow"><label for="tQ">Search</label>
@@ -546,7 +549,7 @@ Matches Remaining: 0
   </section>
 
 </div>
-<script src="app.js?v=2026-11-19c"></script>
+<script src="app.js?v=2026-11-20b"></script>
 
 <script>
 /* ==================================================================
