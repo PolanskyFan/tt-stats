@@ -52362,7 +52362,7 @@
    "draw": [
     128,
     0,
-    0,
+    32,
     0
    ],
    "manager": "",
@@ -52380,7 +52380,7 @@
    "draw": [
     32,
     0,
-    0,
+    16,
     0
    ],
    "manager": "DeccyB123",
@@ -52398,7 +52398,7 @@
    "draw": [
     32,
     0,
-    0,
+    8,
     0
    ],
    "manager": "JMG",
@@ -52413,7 +52413,12 @@
    "event": "Monte Carlo",
    "country": "MON",
    "surface": "CL",
-   "draw": [],
+   "draw": [
+    64,
+    0,
+    32,
+    0
+   ],
    "manager": "DeccyB123",
    "challenger": false
   },
@@ -52426,7 +52431,12 @@
    "event": "Barcelona",
    "country": "ESP",
    "surface": "CL",
-   "draw": [],
+   "draw": [
+    64,
+    0,
+    16,
+    0
+   ],
    "manager": "gaynor",
    "challenger": false
   },
@@ -52439,7 +52449,12 @@
    "event": "Casablanca",
    "country": "MOR",
    "surface": "CL",
-   "draw": [],
+   "draw": [
+    32,
+    0,
+    16,
+    0
+   ],
    "manager": "invu2day",
    "challenger": false
   },
@@ -52452,7 +52467,12 @@
    "event": "Munich",
    "country": "GER",
    "surface": "CL",
-   "draw": [],
+   "draw": [
+    32,
+    0,
+    16,
+    0
+   ],
    "manager": "invu2day",
    "challenger": false
   },
@@ -52465,7 +52485,12 @@
    "event": "Estoril",
    "country": "POR",
    "surface": "CL",
-   "draw": [],
+   "draw": [
+    32,
+    0,
+    16,
+    0
+   ],
    "manager": "Labamba",
    "challenger": false
   },
@@ -52478,7 +52503,12 @@
    "event": "Rome",
    "country": "ITA",
    "surface": "CL",
-   "draw": [],
+   "draw": [
+    64,
+    0,
+    32,
+    0
+   ],
    "manager": "Labamba",
    "challenger": false
   },
@@ -52491,7 +52521,12 @@
    "event": "Hamburg",
    "country": "GER",
    "surface": "CL",
-   "draw": [],
+   "draw": [
+    64,
+    0,
+    32,
+    0
+   ],
    "manager": "DeccyB123",
    "challenger": false
   },
@@ -52504,7 +52539,12 @@
    "event": "Portschach",
    "country": "AUT",
    "surface": "CL",
-   "draw": [],
+   "draw": [
+    32,
+    0,
+    16,
+    0
+   ],
    "manager": "A_Skywalker",
    "challenger": false
   },
@@ -52517,7 +52557,12 @@
    "event": "Roland Garros",
    "country": "FRA",
    "surface": "CL",
-   "draw": [],
+   "draw": [
+    128,
+    0,
+    32,
+    12
+   ],
    "manager": "Forever-Delayed",
    "challenger": false
   },

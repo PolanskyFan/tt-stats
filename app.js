@@ -3575,6 +3575,14 @@ function buildDraw(shown){
       i=(wonLoose[col-1].get(loose(p.raw))||[]).find(j=>!claimed.has(prev[j]));
       viaLoose = i!==undefined;
     }
+    if(i===undefined && col>0){
+      /* A "dead match" (neither player went through; method "dead match")
+         leaves its place to a lucky loser: hang it under the player who
+         took the place, so the draw shows where he came in. */
+      const j=prev.findIndex(m=>!claimed.has(m) && m.method==="dead match");
+      if(j>=0){ const nd=matchNode(prev[j], j, col);
+        return {...nd, raw:p.raw, seed:p.seed, country:p.country, rank:p.rank, bye:p.bye, dead:true}; }
+    }
     if(i===undefined){
       /* No match the round before. In the first round that's a bye, shown
          as one; any later and it's a gap in the data, so the name simply
@@ -3788,7 +3796,13 @@ function drawSheet(shown, caption, avail){
     cn.style.cssText=`left:${xOf(nd.col)}px;top:${nd.kids[0].y-1}px;height:${nd.kids[1].y-nd.kids[0].y+1}px`;
     frag.appendChild(cn);
     const m=nd.match;
-    if(m && !m.isBye && !isByeSide(m.loser) && !isByeSide(m.winner)){
+    if(m && m.method==="dead match"){
+      const sc=document.createElement("div"); sc.className="dsc";
+      sc.textContent = nd.dead ? "dead match · LL in" : "dead match";
+      sc.style.cssText=`left:${xOf(nd.col)}px;top:${nd.y+1}px`;
+      frag.appendChild(sc);
+    }
+    else if(m && !m.isBye && !isByeSide(m.loser) && !isByeSide(m.winner)){
       let t=`${m.winnerScore}–${m.loserScore}`;
       if(m.winnerScore===m.loserScore && m.winnerSC!==m.loserSC) t+=` · SC ${m.winnerSC}–${m.loserSC}`;
       const sc=document.createElement("div"); sc.className="dsc"; sc.textContent=t;

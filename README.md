@@ -194,6 +194,11 @@ winner score, loser score, winner SR, loser SR,
 winner rank, loser rank (-1 = none), how the result was read, bye (1/0), tied (1/0)
 ```
 
+A row flagged as a bye doesn't count as a win or loss. Older posted draws
+also use it for "no picks" walkovers and for a "dead match" (neither player
+went through); the draw sheet shows a dead match under the lucky loser who
+took the place.
+
 **`rankings-<year>.json`** (`"format": "tt-rankings/1"`) — `players` and
 `countries` are lists of names; each entry in `weeks` is one list: `t` is the
 tour (`S` or `D`), `n` the week name, and each row in `r` is
