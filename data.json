@@ -1,6 +1,6 @@
 {
  "format": "tennis-tipping/1",
- "savedAt": "2026-11-17T02:26:48.162Z",
+ "savedAt": "2026-11-20T13:53:15.000Z",
  "matchFiles": [
   "matches-2026.json",
   "matches-2025.json",
@@ -52638,6 +52638,24 @@
   },
   {
    "season": "2006",
+   "code": "27a",
+   "date": "2006-07-03",
+   "opened": "",
+   "name": "Biella CH",
+   "event": "Biella",
+   "country": "ITA",
+   "surface": "CL",
+   "draw": [
+    32,
+    0,
+    16,
+    0
+   ],
+   "manager": "keqtqiadv",
+   "challenger": true
+  },
+  {
+   "season": "2006",
    "code": "28a",
    "date": "2006-07-10",
    "opened": "",
@@ -52908,6 +52926,24 @@
   },
   {
    "season": "2006",
+   "code": "36a",
+   "date": "2006-09-04",
+   "opened": "",
+   "name": "Dusseldorf CH",
+   "event": "Dusseldorf",
+   "country": "GER",
+   "surface": "CL",
+   "draw": [
+    32,
+    0,
+    16,
+    0
+   ],
+   "manager": "tiptopdaisy",
+   "challenger": true
+  },
+  {
+   "season": "2006",
    "code": "37a",
    "date": "2006-09-11",
    "opened": "",
@@ -52955,6 +52991,24 @@
     32,
     0,
     16,
+    0
+   ],
+   "manager": "",
+   "challenger": true
+  },
+  {
+   "season": "2006",
+   "code": "38c",
+   "date": "2006-09-18",
+   "opened": "",
+   "name": "Lubbock CH",
+   "event": "Lubbock",
+   "country": "USA",
+   "surface": "H",
+   "draw": [
+    32,
+    0,
+    0,
     0
    ],
    "manager": "",
@@ -53205,11 +53259,29 @@
    "surface": "IH",
    "draw": [
     32,
-    0,
+    16,
     16,
     0
    ],
    "manager": "GlennMirnyi",
+   "challenger": true
+  },
+  {
+   "season": "2006",
+   "code": "45b",
+   "date": "2006-11-06",
+   "opened": "",
+   "name": "Buenos Aires CH",
+   "event": "Buenos Aires CH",
+   "country": "ARG",
+   "surface": "CL",
+   "draw": [
+    32,
+    4,
+    16,
+    0
+   ],
+   "manager": "Foosimoo",
    "challenger": true
   },
   {
@@ -53245,6 +53317,42 @@
   },
   {
    "season": "2006",
+   "code": "46b",
+   "date": "2006-11-13",
+   "opened": "",
+   "name": "Asuncion CH",
+   "event": "Asuncion",
+   "country": "PAR",
+   "surface": "CL",
+   "draw": [
+    32,
+    0,
+    16,
+    0
+   ],
+   "manager": "GustavoM_Fan",
+   "challenger": true
+  },
+  {
+   "season": "2006",
+   "code": "46c",
+   "date": "2006-11-13",
+   "opened": "",
+   "name": "Helsinki CH",
+   "event": "Helsinki",
+   "country": "FIN",
+   "surface": "IH",
+   "draw": [
+    32,
+    0,
+    16,
+    0
+   ],
+   "manager": "Karim_Vlasic",
+   "challenger": true
+  },
+  {
+   "season": "2006",
    "code": "47a",
    "date": "2006-11-20",
    "opened": "",
@@ -53254,7 +53362,7 @@
    "surface": "IH",
    "draw": [
     32,
-    0,
+    16,
     16,
     0
    ],
@@ -53272,7 +53380,7 @@
    "surface": "IH",
    "draw": [
     32,
-    0,
+    16,
     16,
     0
    ],
@@ -53290,7 +53398,7 @@
    "surface": "H",
    "draw": [
     32,
-    0,
+    32,
     16,
     0
    ],
@@ -54958,6 +55066,22 @@
   {
    "from": "gutturnio d.o.c.",
    "to": "spadea tt"
+  },
+  {
+   "from": "vaibrasil",
+   "to": "caio brasil"
+  },
+  {
+   "from": "deb!",
+   "to": "deboogle!."
+  },
+  {
+   "from": "s.k.",
+   "to": "s.k"
+  },
+  {
+   "from": "frees",
+   "to": "freesbee"
   }
  ],
  "countryAccepted": [
@@ -55571,7 +55695,21 @@
   "2025|Orleans|Singles|Main|R32|catgamer",
   "2025|Orleans|Singles|Main|R32|applegate",
   "2025|Skopje|Doubles|Main|R16|matty1 / phiil",
-  "2025|Skopje|Singles|Main|R32|matty1"
+  "2025|Skopje|Singles|Main|R32|matty1",
+  "2006|Biella|Doubles|Main|R16|half-a-cat / marcelwks",
+  "2006|Biella|Doubles|Main|QF|jbdv / juanrodriquez",
+  "2006|Bratislava|Singles|Qualifying|QR2|ellery",
+  "2006|Bratislava|Singles|Qualifying|QFR|dupuis2006",
+  "2006|Buenos Aires CH|Doubles|Main|R16|+alonso / latenista",
+  "2006|Buenos Aires CH|Doubles|Main|QF|marcelwks / that tennis kid",
+  "2006|Dusseldorf|Doubles|Main|R16|cancionanimal / enjoy incubus",
+  "2006|Dusseldorf|Doubles|Main|QF|$@m / jmg",
+  "2006|Maui|Singles|Qualifying|QR1|marksman",
+  "2006|Naples|Singles|Qualifying|QR2|blue heart24",
+  "2006|Szczecin|Doubles|Main|R16|guille&tati4life / latenista",
+  "2006|Szczecin|Doubles|Main|QF|cancionanimal / davidcuervacho",
+  "2006|Naples|Singles|Qualifying|QR2|tankman",
+  "2006|Naples|Singles|Qualifying|QFR|silly sally"
  ],
  "countryChecks": [
   {
@@ -60128,6 +60266,16 @@
   {
    "key": "tmjordan",
    "country": "CAN"
+  },
+  {
+   "key": "s.k",
+   "name": "S.K",
+   "country": "AUS"
+  },
+  {
+   "key": "freesbee",
+   "name": "Freesbee",
+   "country": "ESP"
   }
  ]
 }
