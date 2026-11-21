@@ -869,13 +869,14 @@ const rankNum = v => { const n=parseInt(v,10); return isNaN(n)?null:n; };
    Challengers are whatever the calendar marks as one (CH, FUT, ITF, the
    NextGen and Challenger Finals). The year-end Finals and the team events
    file their round robins as qualifying, but those are main-draw matches
-   and count as such. Hopman Cup and WTC Dusseldorf only count under All. */
+   and count as such. Hopman Cup, WTC Dusseldorf and the exhibitions (Australian
+   Open Mixed) only count under All. */
 const EVENT_LEVELS = [
   ["atp","ATP main draw"], ["gs","Grand Slams"], ["atpq","ATP qualifying"],
   ["ch","Challenger main draw"], ["chq","Challenger qualifying"], ["all","All events"]];
 const LEVEL_NOTE = {
   all:"Every event, Challengers included. W\u2013L is the main-draw record; qualifying has its own columns.",
-  atp:"Main draws at tour level \u2014 Grand Slams, Masters, the year-end Finals and the rest of the ATP calendar. Challengers, Futures and the team events are left out.",
+  atp:"Main draws at tour level \u2014 Grand Slams, Masters, the year-end Finals and the rest of the ATP calendar. Challengers, Futures, the team events and the Australian Open Mixed exhibition are left out.",
   gs:"Grand Slam main draws only.",
   atpq:"Qualifying at tour-level events, Grand Slams included. W\u2013L is the qualifying record.",
   ch:"Main draws at Challenger, Futures and ITF events, the NextGen and Challenger Finals included.",
@@ -894,7 +895,7 @@ function matchBucket(m, level){
   const rr = isTeamEvent(m.event) || !!(c && /Finals$/i.test(c.name||""));
   const main = m.stage==="Main" || rr;
   if(!level || level==="all") return main ? "main" : "qual";
-  if(isTeamEvent(m.event)) return null;
+  if(allOnly(m.event)) return null;
   const ch = !!(c && c.challenger);
   switch(level){
     case "atp":  return main && !ch ? "main" : null;
@@ -1058,7 +1059,7 @@ function deriveTitles(){
   const loseOf = r => r.disc==="Doubles" ? canonTeam(r.loser)  : canonName(r.loser);
 
   for(const r of MATCHES){
-    if(r.stage!=="Main" || r.isBye || isTeamEvent(r.event)) continue;
+    if(r.stage!=="Main" || r.isBye || allOnly(r.event)) continue;
     if(r.round!=="F" && r.round!=="SF") continue;
     const k = r.event+"||"+r.season;
     if(!ev.has(k)) ev.set(k,{event:r.event, season:r.season,
@@ -1505,9 +1506,15 @@ function repeatsIn(shown){
    year-end Finals' round robin. */
 const TEAM_EVENTS = new Set(["Hopman Cup","WTC Dusseldorf"]);
 const isTeamEvent = ev => TEAM_EVENTS.has(ev);
+/* Exhibitions: a normal knockout draw that is shown, but counts like the team
+   events — only under "All events", and its final is not a title. */
+const EXHIBITIONS = new Set(["Australian Open Mixed"]);
+const isExhibition = ev => EXHIBITIONS.has(ev);
+/* Team events and exhibitions: left out of every view but "All", never a title. */
+const allOnly = ev => isTeamEvent(ev) || isExhibition(ev);
 /* A final that counts as a singles or doubles title. A team event's final
    matches don't: the cup goes to the country that wins the final tie. */
-const titleFinal = m => m.round==="F" && !isTeamEvent(m.event);
+const titleFinal = m => m.round==="F" && !allOnly(m.event);
 /* Team-event champions, from data.json (teamTitles): the country that won the
    final tie and everybody who played the final for it. A team title is kept
    apart from singles and doubles titles. */
@@ -3949,10 +3956,11 @@ function renderEvent(){
   }
   if(!isTeamEvent(event)) ["Singles","Doubles"].forEach(disc=>{
     const f=ms.find(m=>m.disc===disc && m.stage==="Main" && m.round==="F");
+    if(!f && isExhibition(event)) return;
     const nm = f ? (disc==="Doubles"?canonTeam(f.winner):canonName(f.winner)) : "\u2014";
     const runner = f ? (disc==="Doubles"?canonTeam(f.loser):canonName(f.loser)) : "";
     const card=document.createElement("div"); card.className="stat";
-    card.innerHTML=`<span class="k">${disc} champion</span>
+    card.innerHTML=`<span class="k">${disc} champion${isExhibition(event)?" (exhibition)":""}</span>
       <span class="v" style="font-size:20px;line-height:1.25">${esc(nm)}</span>
       <span class="note">${runner?"beat "+esc(runner):""}</span>`;
     grid.appendChild(card);
@@ -4019,7 +4027,8 @@ function renderEvent(){
   if(EVENT_UI.stage==="Main" && rrQual[EVENT_UI.disc]) mount.appendChild(rrIndividualView(rrQual[EVENT_UI.disc], EVENT_UI.disc));
   mount.appendChild(drawSheet(shown, `${event}${season?" "+season:""}`, mount.clientWidth));
   const hint=document.createElement("p"); hint.className="hint";
-  hint.textContent="Point at a name to follow that player through the draw; click it for their page. "
+  hint.textContent=(isExhibition(event) ? "An exhibition: the draw is shown, but its matches only count under \u201cAll events\u201d and the final isn't a title. " : "")
+    + "Point at a name to follow that player through the draw; click it for their page. "
     + "Results are kept in draw order, but not which line of a first-round pair each player was on, "
     + "so seeds are placed by convention and otherwise the winner is shown on top.";
   mount.appendChild(hint);
@@ -6336,7 +6345,7 @@ function gameSeasons(){
   const weeksBy=tour=>{ const by={}; tourWeeks(tour).forEach(w=>{ by[w.season]=(by[w.season]||0)+1; }); return by; };
   const wS=weeksBy("Singles"), wD=weeksBy("Doubles");
   const today=coverCutoff();
-  const special=c=>/final|hopman|wtc|olymp/i.test(c.name||"");
+  const special=c=>/final|hopman|wtc|olymp|mixed/i.test(c.name||"");
   const rows=seasons.map(s=>{
     const cal=CALENDAR.filter(c=>String(c.season)===s);
     const tour=cal.filter(c=>!c.challenger), ch=cal.filter(c=>c.challenger);
@@ -6410,7 +6419,7 @@ function drawGaps(rounds){
 function missingFor(season, showCH){
   const ix=tlIndex(), rounds=coverRounds();
   const today=coverCutoff();
-  const special=c=>/final|hopman|wtc|olymp/i.test(c.name||"");
+  const special=c=>/final|hopman|wtc|olymp|mixed/i.test(c.name||"");
   const out=[];
   CALENDAR.forEach(c=>{
     const s=String(c.season);
@@ -6819,8 +6828,8 @@ function recContext(level){
   };
 
   const orders={};
-  const inLevel=m=> level==="ch" ? (!isTeamEvent(m.event) && flagsOf(m.event+"|"+m.season).ch)
-    : level==="atp" ? (!isTeamEvent(m.event) && !flagsOf(m.event+"|"+m.season).ch)
+  const inLevel=m=> level==="ch" ? (!allOnly(m.event) && flagsOf(m.event+"|"+m.season).ch)
+    : level==="atp" ? (!allOnly(m.event) && !flagsOf(m.event+"|"+m.season).ch)
     : true;
   const order=disc=>orders[disc] || (orders[disc]=inOrder(MATCHES.filter(m=>m.disc===disc && !m.isBye && inLevel(m))));
   const sorted=[...yrs].sort((a,b)=>a-b);
@@ -7391,13 +7400,14 @@ function renderRecords(){
   lede.textContent=`Records from the seasons with results on the site: ${ranges.join(" and ")}. `
     + (atpView
       ? "Tour-level events only: Grand Slams, Masters, the year-end Finals and the rest of the ATP calendar. "
-        + "Challengers, Futures and the team events (Hopman Cup, WTC Dusseldorf) are left out. "
+        + "Challengers, Futures, the team events (Hopman Cup, WTC Dusseldorf) and the Australian Open Mixed exhibition are left out. "
         + "Wins and losses are main-draw matches; winning runs count every tour-level match, qualifying included."
       : chView
       ? "Challenger events only: Challengers, Futures and ITF events, and the Challenger and NextGen Finals. "
         + "Wins and losses are main-draw matches; winning runs count every Challenger match, qualifying included."
       : "Wins and losses are main-draw matches, as on the Players tab; winning runs count every match. "
-        + "The Hopman Cup and WTC Dusseldorf are team titles, so they are not counted as singles or doubles titles here.");
+        + "The Hopman Cup and WTC Dusseldorf are team titles, so they are not counted as singles or doubles titles here, "
+        + "and the Australian Open Mixed was an exhibition, so it has no titles.");
   mount.appendChild(lede);
 
   const jump=document.createElement("div"); jump.className="recjump";

@@ -1,6 +1,6 @@
 {
  "format": "tennis-tipping/1",
- "savedAt": "2026-11-20T13:53:15.000Z",
+ "savedAt": "2026-11-21T04:46:37.000Z",
  "matchFiles": [
   "matches-2026.json",
   "matches-2025.json",
@@ -26110,7 +26110,9 @@
    "event": "Kooyong",
    "country": "AUS",
    "surface": "H",
-   "draw": [],
+   "draw": [
+    16
+   ],
    "manager": "Hidalgo",
    "challenger": false
   },
@@ -29273,7 +29275,10 @@
    "event": "ATP Finals",
    "country": "GBR",
    "surface": "IH",
-   "draw": [],
+   "draw": [
+    8,
+    8
+   ],
    "manager": "randy72391",
    "challenger": false
   },
@@ -29636,7 +29641,9 @@
    "event": "Kooyong",
    "country": "AUS",
    "surface": "H",
-   "draw": [],
+   "draw": [
+    16
+   ],
    "manager": "Felipe Abe",
    "challenger": false
   },
@@ -33108,7 +33115,9 @@
    "event": "Kooyong",
    "country": "AUS",
    "surface": "H",
-   "draw": [],
+   "draw": [
+    16
+   ],
    "manager": "keqtqiadv",
    "challenger": false
   },
@@ -36550,7 +36559,9 @@
    "event": "Kooyong",
    "country": "AUS",
    "surface": "H",
-   "draw": [],
+   "draw": [
+    16
+   ],
    "manager": "-Eve-",
    "challenger": false
   },
@@ -39819,7 +39830,9 @@
    "event": "Kooyong",
    "country": "AUS",
    "surface": "H",
-   "draw": [],
+   "draw": [
+    16
+   ],
    "manager": "Labamba",
    "challenger": false
   },
@@ -43039,7 +43052,9 @@
    "event": "Kooyong",
    "country": "AUS",
    "surface": "H",
-   "draw": [],
+   "draw": [
+    16
+   ],
    "manager": "Labamba",
    "challenger": false
   },
@@ -56663,6 +56678,38 @@
     "Nikki♥"
    ],
    "score": "3-0"
+  },
+  {
+   "season": "2011",
+   "event": "WTC Dusseldorf",
+   "team": "ARG",
+   "players": [
+    "Gallina",
+    "Mago#01",
+    "Nev"
+   ],
+   "runnerUp": "CRO",
+   "beat": [
+    "_AA_",
+    "Machiavelli"
+   ],
+   "score": "2-1"
+  },
+  {
+   "season": "2012",
+   "event": "WTC Dusseldorf",
+   "team": "GBR",
+   "players": [
+    "Forever-Delayed",
+    "jmjhb",
+    "Taz Warrior"
+   ],
+   "runnerUp": "IND",
+   "beat": [
+    "FERNET",
+    "maru_angi"
+   ],
+   "score": "3-0"
   }
  ],
  "teamGroups": [
@@ -58107,6 +58154,186 @@
         "Cheeky Chick",
         "Forever-Delayed",
         "ippigetis"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "season": "2011",
+   "event": "WTC Dusseldorf",
+   "source": "posted results",
+   "groups": [
+    {
+     "name": "Golden Group",
+     "teams": [
+      {
+       "team": "GER",
+       "name": "Germany",
+       "players": [
+        "ZackBusner",
+        "Boarder35m",
+        "Hotzenplotz",
+        "Kingroger"
+       ]
+      },
+      {
+       "team": "USA",
+       "name": "USA",
+       "players": [
+        "njnetswill",
+        "Snoo Foo",
+        "Thunderfish8",
+        "jcreback"
+       ]
+      },
+      {
+       "team": "ARG",
+       "name": "Argentina",
+       "players": [
+        "Gallina",
+        "Mago#01",
+        "Nev"
+       ]
+      },
+      {
+       "team": "NED",
+       "name": "Netherlands",
+       "players": [
+        "rvugt",
+        "Sheva"
+       ]
+      }
+     ]
+    },
+    {
+     "name": "Silver Group",
+     "teams": [
+      {
+       "team": "BRA",
+       "name": "Brazil",
+       "players": [
+        "HNDiamond",
+        "Belludal",
+        "Ilovetheblues_86"
+       ]
+      },
+      {
+       "team": "GBR",
+       "name": "Great Britain",
+       "players": [
+        "Taz Warrior",
+        "jmjhb"
+       ]
+      },
+      {
+       "team": "AUS",
+       "name": "Australia",
+       "players": [
+        "jmf07",
+        "JervisJames",
+        "Australian_dream2009",
+        "Matt121"
+       ]
+      },
+      {
+       "team": "CRO",
+       "name": "Croatia",
+       "players": [
+        "_AA_",
+        "Machiavelli"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "season": "2012",
+   "event": "WTC Dusseldorf",
+   "source": "posted entry list",
+   "groups": [
+    {
+     "name": "Golden Group",
+     "teams": [
+      {
+       "team": "GBR",
+       "name": "Great Britain",
+       "players": [
+        "Taz Warrior",
+        "Forever-Delayed",
+        "jmjhb"
+       ]
+      },
+      {
+       "team": "ARG",
+       "name": "Argentina",
+       "players": [
+        "FiBeR",
+        "manu86",
+        "karo_em9",
+        "mechi"
+       ]
+      },
+      {
+       "team": "BRA",
+       "name": "Brazil",
+       "players": [
+        "Belludal",
+        "Rodrigo R3",
+        "JeffCandoi",
+        "Lisandro"
+       ]
+      },
+      {
+       "team": "GER",
+       "name": "Germany",
+       "players": [
+        "Herzeleid",
+        "Kingroger",
+        "RHB1993"
+       ]
+      }
+     ]
+    },
+    {
+     "name": "Silver Group",
+     "teams": [
+      {
+       "team": "USA",
+       "name": "USA",
+       "players": [
+        "MWHF_FTW",
+        "Thunderfish8",
+        "Capriati Rules"
+       ]
+      },
+      {
+       "team": "CRO",
+       "name": "Croatia",
+       "players": [
+        "_AA_",
+        "Machiavelli",
+        "Deathless Mortal"
+       ]
+      },
+      {
+       "team": "CAN",
+       "name": "Canada",
+       "players": [
+        "156mphserve",
+        "Dudisela75",
+        "Transcender",
+        "Keech"
+       ]
+      },
+      {
+       "team": "IND",
+       "name": "India",
+       "players": [
+        "FERNET",
+        "maru_angi"
        ]
       }
      ]
